@@ -145,6 +145,35 @@ Typical live-only install:
 python3 -m pip install -e .
 ```
 
+### Network proxy for WSL mirrored networking
+
+Passivbot's CCXT REST clients automatically honor standard proxy environment
+variables when one is configured. This is useful when WSL uses
+[mirrored networking](https://learn.microsoft.com/windows/wsl/networking#mirrored-mode-networking)
+and Windows runs v2rayN.
+
+If v2rayN's **HTTP or mixed-proxy** listener is on port `10808`, add the following
+to your WSL shell profile (for example, `~/.bashrc` or `~/.zshrc`):
+
+```sh
+export HTTP_PROXY=http://127.0.0.1:10808
+export HTTPS_PROXY=http://127.0.0.1:10808
+export NO_PROXY=localhost,127.0.0.1,::1
+```
+
+Open a new WSL shell after saving the profile. With mirrored networking, the
+Windows loopback address is available from WSL, so `127.0.0.1` reaches the Windows
+proxy. Replace `10808` if your v2rayN HTTP/mixed listener uses a different port.
+Do not use a SOCKS-only listener in these HTTP proxy variables. Keep proxy
+credentials, if any, out of Passivbot configuration files and the repository.
+
+This setting applies to public data downloads and exchange REST requests. Verify
+the public endpoint before starting a bot:
+
+```sh
+curl -I https://fapi.binance.com/fapi/v1/exchangeInfo
+```
+
 ### Step 5 (optional): Build Rust Extensions
 
 Passivbot will attempt to build the necessary Rust extensions automatically, but they can also be built manually by navigating to the `passivbot-rust` directory and using `maturin`:

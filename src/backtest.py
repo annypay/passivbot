@@ -946,6 +946,9 @@ class BacktestExecutionSettings:
     market_order_slippage_pct: float
     pnls_max_lookback_days: str | float
     pnls_max_lookback_days_backtest_value: float
+    execution_delay_bars: int
+    intrabar_fill_order: str
+    execution_audit_path: str | None
 
 
 @dataclass
@@ -2189,7 +2192,7 @@ async def prepare_hlcvs_mss(
     candle_interval_minutes = config.get("backtest", {}).get(
         "candle_interval_minutes", 1
     ) or 1
-    if exchange == "combined":
+    if exchange == "combined" and not get_optional_config_value(config, "backtest.hlcvs_data_dir"):
         backtest_cfg = config.setdefault("backtest", {})
         configured_exchanges = [
             to_ccxt_exchange_id(value)
@@ -2364,8 +2367,12 @@ def _coerce_config_bool(value, *, field_name):
 def get_backtest_execution_settings(
     config, *, is_runtime_compiled: bool = False
 ) -> BacktestExecutionSettings:
+    from config.validate import validate_backtest_execution_settings
+
     if not is_runtime_compiled:
         config = compile_runtime_config(config, runtime="backtest", record_step=False)
+    backtest_config = require_config_value(config, "backtest")
+    validate_backtest_execution_settings(backtest_config)
     market_order_slippage_pct = float(
         get_optional_config_value(config, "backtest.market_order_slippage_pct", 0.0005)
         or 0.0
@@ -2397,6 +2404,9 @@ def get_backtest_execution_settings(
         market_order_slippage_pct=market_order_slippage_pct,
         pnls_max_lookback_days=pnls_max_lookback.display_value,
         pnls_max_lookback_days_backtest_value=pnls_max_lookback.to_backtest_days_value(),
+        execution_delay_bars=backtest_config["execution_delay_bars"],
+        intrabar_fill_order=backtest_config["intrabar_fill_order"],
+        execution_audit_path=backtest_config["execution_audit_path"],
     )
 
 
@@ -2421,6 +2431,18 @@ def log_backtest_execution_settings(
     logging.info(
         "[backtest]   pnls_max_lookback_days = %s (live)",
         execution_settings.pnls_max_lookback_days,
+    )
+    logging.info(
+        "[backtest]   execution_delay_bars = %s (backtest; extra full-bar create/cancel latency)",
+        execution_settings.execution_delay_bars,
+    )
+    logging.info(
+        "[backtest]   intrabar_fill_order = %s (backtest; HLC ordering convention, not an OHLC path)",
+        execution_settings.intrabar_fill_order,
+    )
+    logging.info(
+        "[backtest]   execution_audit_path = %s (backtest; streamed fill provenance CSV)",
+        execution_settings.execution_audit_path,
     )
 
 
@@ -2714,6 +2736,9 @@ def prep_backtest_args(
             "market_order_slippage_pct": execution_settings.market_order_slippage_pct,
             "market_orders_allowed": execution_settings.market_orders_allowed,
             "market_order_near_touch_threshold": execution_settings.market_order_near_touch_threshold,
+            "execution_delay_bars": execution_settings.execution_delay_bars,
+            "intrabar_fill_order": execution_settings.intrabar_fill_order,
+            "execution_audit_path": execution_settings.execution_audit_path,
             "forager_score_hysteresis_pct": float(
                 get_optional_live_value(config, "forager_score_hysteresis_pct", 0.02)
                 or 0.0
@@ -3220,18 +3245,20 @@ async def main():
         )
         return
 
-    for ex in backtest_exchanges:
-        await load_markets(ex)
-    await format_approved_ignored_coins(
-        config, backtest_exchanges, prefer_backtest_coin_source_keys=True
-    )
+    if get_optional_config_value(config, "backtest.hlcvs_data_dir"):
+        # Preserve the input before the verified dataset supplies its effective universe.
+        config["_original_backtest_config"] = deepcopy(config)
+    else:
+        for ex in backtest_exchanges:
+            await load_markets(ex)
+        await format_approved_ignored_coins(
+            config, backtest_exchanges, prefer_backtest_coin_source_keys=True
+        )
     config["disable_plotting"] = (
         args.disable_plotting if args.disable_plotting is not None else False
     )
     config["backtest"]["cache_dir"] = {}
     config["backtest"]["coins"] = {}
-    if get_optional_config_value(config, "backtest.hlcvs_data_dir"):
-        config["_original_backtest_config"] = deepcopy(config)
     force_refetch_gaps = getattr(args, "force_refetch_gaps", False)
 
     # New behavior: derive data strategy from exchange count

@@ -424,6 +424,10 @@ mod core {
         /// callers that do not explicitly establish live data unavailability.
         #[serde(default)]
         pub allow_missing_strategy_inputs: bool,
+        /// Internal backtest absence, never accepted from a live JSON payload.
+        /// Legal only for a nontradable symbol with no inventory.
+        #[serde(skip)]
+        pub backtest_market_data_unavailable: bool,
         /// Backtest-only hint: next candle range for "peek fill" decisions.
         /// `None` => unknown (live mode), default to full-grid expansion.
         pub next_candle: Option<NextCandle>,
@@ -3223,14 +3227,18 @@ mod core {
         let mut diagnostics = OrchestratorDiagnostics::default();
 
         // Validate invariants:
-        // - order books must be present and non-zero (no silent fallbacks)
+        // - consumed order books must be present and non-zero (no silent fallbacks)
         // - symbols must be indexed by `symbol_idx` for O(1) access in hot loops
         let n_symbols = input.symbols.len();
         for (pos, s) in input.symbols.iter().enumerate() {
-            if !(s.order_book.bid.is_finite()
-                && s.order_book.ask.is_finite()
-                && s.order_book.bid > 0.0
-                && s.order_book.ask > 0.0)
+            let needs_book =
+                s.tradable || s.long.position.size != 0.0 || s.short.position.size != 0.0;
+            if (s.backtest_market_data_unavailable && needs_book)
+                || (!s.backtest_market_data_unavailable
+                    && !(s.order_book.bid.is_finite()
+                        && s.order_book.ask.is_finite()
+                        && s.order_book.bid > 0.0
+                        && s.order_book.ask > 0.0))
             {
                 return Err(OrchestratorError::InvalidOrderBook {
                     symbol_idx: s.symbol_idx,
@@ -4623,6 +4631,7 @@ mod core {
             bp.entry_initial_qty_pct = 1.0;
 
             SymbolInput {
+                backtest_market_data_unavailable: false,
                 symbol_idx: idx,
                 order_book: OrderBook {
                     bid: 100.0,

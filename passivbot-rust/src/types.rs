@@ -301,6 +301,14 @@ impl Default for EquityHardStopLossConfig {
     }
 }
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IntrabarFillOrder {
+    #[default]
+    CloseFirst,
+    EntryFirst,
+}
+
 #[derive(Clone, Debug)]
 pub struct BacktestParams {
     pub starting_balance: f64,
@@ -330,6 +338,9 @@ pub struct BacktestParams {
     pub market_order_near_touch_threshold: f64,
     pub market_order_slippage_pct: f64,
     pub forager_score_hysteresis_pct: f64,
+    pub execution_delay_bars: usize,
+    pub intrabar_fill_order: IntrabarFillOrder,
+    pub execution_audit_path: Option<String>,
     pub candle_interval_minutes: u64, // 1 for 1m candles (default), 5 for 5m, etc.
 }
 

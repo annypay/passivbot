@@ -112,7 +112,7 @@ from warmup_utils import compute_backtest_warmup_minutes, compute_per_coin_warmu
 from backtest_universe import effective_backtest_data_coins
 
 
-HLCV_PREPARATION_ALGORITHM_VERSION = 7
+HLCV_PREPARATION_ALGORITHM_VERSION = 8
 VOLUME_NORMALIZATION_LOOKBACK_DAYS = 60
 VOLUME_NORMALIZATION_MIN_COMMON_FRACTION = 0.95
 VOLUME_NORMALIZATION_MIN_ELIGIBLE_DAYS_FRACTION = 0.80
@@ -1173,6 +1173,121 @@ class HLCVManager:
         ).reset_index(drop=True)
 
 
+def _align_btc_benchmark_prices(
+    btc_df: pd.DataFrame,
+    timestamps: np.ndarray,
+    *,
+    gap_tolerance_ohlcvs_minutes: float,
+    source_exchange: str,
+) -> np.ndarray:
+    """Align completed 1m closes using only the same or an earlier candle-open label.
+
+    Both source and destination label the completed candle, not its decision boundary:
+    the close labelled t becomes available at t + 60_000. Exact labels need no shift.
+    """
+    context = f"BTC/USD benchmark source={source_exchange}"
+    minute_ms = 60_000
+
+    def minute_timestamps(values, label):
+        values = np.asarray(values)
+        if (
+            values.ndim != 1
+            or values.size == 0
+            or values.dtype.kind not in "iuf"
+            or not np.isfinite(values).all()
+            or np.any(values < 0)
+            or np.any(values >= 2**63)
+            or np.any(values % minute_ms != 0)
+        ):
+            raise HlcvsDataIntegrityError(
+                f"{context}: {label} timestamps must be nonempty finite minute-aligned "
+                "millisecond labels; repair BTC 1m coverage"
+            )
+        values = values.astype(np.int64, copy=False)
+        if np.any(values[1:] <= values[:-1]):
+            raise HlcvsDataIntegrityError(
+                f"{context}: {label} timestamps must be strictly increasing without duplicates"
+            )
+        return values
+
+    destination_ts = minute_timestamps(timestamps, "destination")
+    if np.any(np.diff(destination_ts) != minute_ms):
+        raise HlcvsDataIntegrityError(
+            f"{context}: destination timestamps must cover every required minute"
+        )
+    if not {"timestamp", "close"}.issubset(btc_df.columns):
+        raise HlcvsDataIntegrityError(
+            f"{context}: source requires timestamp and close columns; repair BTC 1m coverage"
+        )
+    source_ts = minute_timestamps(btc_df["timestamp"].to_numpy(), "source")
+    prices = btc_df["close"].to_numpy()
+    if prices.ndim != 1 or prices.dtype.kind not in "iuf":
+        raise HlcvsDataIntegrityError(f"{context}: source closes must be numeric prices")
+    if "valid" in btc_df.columns:
+        valid = btc_df["valid"].eq(True).to_numpy(dtype=bool)
+        source_ts, prices = source_ts[valid], prices[valid]
+    invalid_prices = ~np.isfinite(prices) | (prices <= 0)
+    if invalid_prices.any():
+        first_invalid = int(np.flatnonzero(invalid_prices)[0])
+        raise HlcvsDataIntegrityError(
+            f"{context}: source closes must be positive and finite; "
+            f"invalid_rows={int(invalid_prices.sum())} first_invalid_ts={int(source_ts[first_invalid])}; "
+            "repair BTC 1m coverage"
+        )
+    try:
+        tolerance_minutes = float(gap_tolerance_ohlcvs_minutes)
+    except (TypeError, ValueError, OverflowError):
+        raise HlcvsDataIntegrityError(
+            f"{context}: backtest.gap_tolerance_ohlcvs_minutes must be finite and nonnegative"
+        ) from None
+    if not np.isfinite(tolerance_minutes) or tolerance_minutes < 0:
+        raise HlcvsDataIntegrityError(
+            f"{context}: backtest.gap_tolerance_ohlcvs_minutes must be finite and nonnegative"
+        )
+
+    if source_ts.size == 0 or source_ts[0] > destination_ts[0]:
+        raise HlcvsDataIntegrityError(
+            f"{context}: no valid close at or before required_start_ts={int(destination_ts[0])}; "
+            f"repair BTC 1m coverage for the unchanged window ending at {int(destination_ts[-1])}; "
+            "future prices cannot supply the leading basis"
+        )
+
+    source_indices = np.searchsorted(source_ts, destination_ts, side="right") - 1
+    ages_minutes = (destination_ts - source_ts[source_indices]) // minute_ms
+    filled_indices = np.flatnonzero(ages_minutes)
+    if filled_indices.size:
+        gap_minutes = ages_minutes[filled_indices].copy()
+        next_indices = source_indices[filled_indices] + 1
+        internal = next_indices < source_ts.size
+        # Count the complete known gap, including any part outside the destination window.
+        gap_minutes[internal] = (
+            source_ts[next_indices[internal]] - source_ts[next_indices[internal] - 1]
+        ) // minute_ms - 1
+        excessive = gap_minutes > tolerance_minutes
+        if excessive.any():
+            first_excessive = int(np.flatnonzero(excessive)[0])
+            destination_index = int(filled_indices[first_excessive])
+            raise HlcvsDataIntegrityError(
+                f"{context}: missing coverage at timestamp={int(destination_ts[destination_index])} "
+                f"requires a {int(gap_minutes[first_excessive])}-minute past fill, exceeding "
+                f"backtest.gap_tolerance_ohlcvs_minutes={tolerance_minutes:g}; "
+                f"last_valid_ts={int(source_ts[source_indices[destination_index]])}; "
+                "repair BTC 1m coverage without shortening the requested window"
+            )
+        logging.warning(
+            "[ohlcv] BTC/USD benchmark past-only fill source=%s rows=%d range=%d..%d "
+            "max_age_minutes=%d max_gap_minutes=%d tolerance_minutes=%g",
+            source_exchange,
+            int(filled_indices.size),
+            int(destination_ts[filled_indices[0]]),
+            int(destination_ts[filled_indices[-1]]),
+            int(ages_minutes[filled_indices].max()),
+            int(gap_minutes.max()),
+            tolerance_minutes,
+        )
+    return prices[source_indices]
+
+
 async def prepare_hlcvs(
     config: dict,
     exchange: str,
@@ -1180,7 +1295,8 @@ async def prepare_hlcvs(
     force_refetch_gaps: bool = False,
     skip_v2_local: bool = False,
 ):
-    if _has_explicit_ohlcv_source_dir(config):
+    source_dir_only = _has_explicit_ohlcv_source_dir(config)
+    if source_dir_only:
         skip_v2_local = True
     if not skip_v2_local:
         try:
@@ -1241,7 +1357,7 @@ async def prepare_hlcvs(
         )
 
         om.update_date_range(int(timestamps[0]), int(timestamps[-1]))
-        btc_df = await om.get_ohlcvs("BTC")
+        btc_df = await om.get_ohlcvs("BTC", source_dir_only=source_dir_only)
         btc_source_exchange = exchange
 
         if btc_df.empty and exchange != "binanceusdm":
@@ -1256,10 +1372,13 @@ async def prepare_hlcvs(
                 gap_tolerance_ohlcvs_minutes=require_config_value(
                     config, "backtest.gap_tolerance_ohlcvs_minutes"
                 ),
+                ohlcv_source_dir=config.get("backtest", {}).get("ohlcv_source_dir"),
             )
             try:
                 btc_fallback_om.update_date_range(int(timestamps[0]), int(timestamps[-1]))
-                btc_df = await btc_fallback_om.get_ohlcvs("BTC")
+                btc_df = await btc_fallback_om.get_ohlcvs(
+                    "BTC", source_dir_only=source_dir_only
+                )
                 if not btc_df.empty:
                     btc_source_exchange = "binanceusdm"
             finally:
@@ -1274,14 +1393,14 @@ async def prepare_hlcvs(
 
         logging.info("using BTC/USD benchmark source: %s", btc_source_exchange)
 
-        btc_df = (
-            btc_df.set_index("timestamp")
-            .reindex(timestamps, method="ffill")
-            .ffill()
-            .bfill()
-            .reset_index()
+        btc_usd_prices = _align_btc_benchmark_prices(
+            btc_df,
+            timestamps,
+            gap_tolerance_ohlcvs_minutes=require_config_value(
+                config, "backtest.gap_tolerance_ohlcvs_minutes"
+            ),
+            source_exchange=btc_source_exchange,
         )
-        btc_usd_prices = btc_df["close"].values
 
         warmup_provided = max(0, int(max(0, requested_start_ts - int(timestamps[0])) // minute_ms))
         candidate_report = mss.pop("__candidate_report__", [])
@@ -4554,14 +4673,14 @@ async def prepare_hlcvs_combined(
 
         logging.info("using BTC/USD benchmark source: %s", btc_source_exchange)
 
-        btc_df = (
-            btc_df.set_index("timestamp")
-            .reindex(timestamps, method="ffill")
-            .ffill()
-            .bfill()
-            .reset_index()
+        btc_usd_prices = _align_btc_benchmark_prices(
+            btc_df,
+            timestamps,
+            gap_tolerance_ohlcvs_minutes=require_config_value(
+                config, "backtest.gap_tolerance_ohlcvs_minutes"
+            ),
+            source_exchange=btc_source_exchange,
         )
-        btc_usd_prices = btc_df["close"].values
 
         warmup_provided = max(0, int(max(0, requested_start_ts - int(timestamps[0])) // minute_ms))
         candidate_report = mss.pop("__candidate_report__", [])
@@ -5522,7 +5641,9 @@ async def _load_combined_btc_prices(
                 if not btc_df.empty:
                     btc_source_exchange = btc_exchange
                     logging.info("using BTC/USD benchmark direct source dir from %s", btc_exchange)
-                    return btc_df.loc[:, ["timestamp", "close"]], btc_source_exchange
+                    return btc_df.loc[
+                        :, ["timestamp", "close", *(["valid"] if "valid" in btc_df.columns else [])]
+                    ], btc_source_exchange
                 continue
             btc_symbol = btc_om.get_symbol("BTC")
             btc_rng = await _resolve_v2_store_range(

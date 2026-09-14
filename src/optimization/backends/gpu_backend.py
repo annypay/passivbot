@@ -393,6 +393,9 @@ GPU_SUPPORTED_SUITE_NON_BOT_OVERRIDE_PATHS = {
 def _validate_gpu_static_scope(config: dict) -> str:
     """Reject immutable GPU limitations without touching data or optional runtime state."""
 
+    from optimization.gpu.service import validate_gpu_execution_settings
+
+    validate_gpu_execution_settings(config)
     strategy_kind = (
         str(config.get("live", {}).get("strategy_kind", "")).strip().lower()
     )

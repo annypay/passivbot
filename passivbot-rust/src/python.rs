@@ -2076,8 +2076,48 @@ fn backtest_params_from_dict(dict: &PyDict) -> PyResult<BacktestParams> {
         })
     };
     let hard_stop_cfg = parse_hsl_cfg(dict, "equity_hard_stop_loss")?;
+    let execution_delay_bars = match dict.get_item("execution_delay_bars")? {
+        Some(item) => {
+            if item.is_instance_of::<pyo3::types::PyBool>() {
+                return Err(PyValueError::new_err(
+                    "execution_delay_bars must be an integer >= 0, not bool",
+                ));
+            }
+            item.extract::<usize>().map_err(|_| {
+                PyValueError::new_err("execution_delay_bars must be an integer >= 0")
+            })?
+        }
+        None => 0,
+    };
+    let intrabar_fill_order = match dict.get_item("intrabar_fill_order")? {
+        Some(item) => match item.extract::<String>()?.as_str() {
+            "close_first" => crate::types::IntrabarFillOrder::CloseFirst,
+            "entry_first" => crate::types::IntrabarFillOrder::EntryFirst,
+            _ => {
+                return Err(PyValueError::new_err(
+                    "intrabar_fill_order must be close_first or entry_first",
+                ))
+            }
+        },
+        None => crate::types::IntrabarFillOrder::CloseFirst,
+    };
+    let execution_audit_path = match dict.get_item("execution_audit_path")? {
+        Some(item) if !item.is_none() => {
+            let path = item.extract::<String>()?;
+            if path.trim().is_empty() {
+                return Err(PyValueError::new_err(
+                    "execution_audit_path must be a nonempty string or None",
+                ));
+            }
+            Some(path)
+        }
+        _ => None,
+    };
 
     Ok(BacktestParams {
+        execution_delay_bars,
+        intrabar_fill_order,
+        execution_audit_path,
         starting_balance: extract_value(dict, "starting_balance")?,
         maker_fee: extract_value(dict, "maker_fee")?,
         taker_fee: extract_value(dict, "taker_fee")?,

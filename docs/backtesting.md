@@ -70,14 +70,76 @@ The workspace includes `config`, `analysis`, `fills`, `balance_and_equity`, `hlc
 `timestamps`, `btc_usd_prices`, `coins`, `market_settings`, `candles_for_coin`, and
 `plot_fills_for_coin`.
 
+## Candle Causality And Execution Assumptions
+
+Exact Rust backtests calculate new orders after the signal candle has completed.
+They do not use the next candle's high/low to decide which orders to generate.
+Grid expansion follows current position state, including sequential entry staging,
+and existing orders are checked for fills before the current candle updates strategy
+features. An order cannot fill against the candle that generated it.
+
+Simulation-only settings belong under `backtest`:
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| `execution_delay_bars` | `0` | Extra complete bars before order creates, cancellations, and replacements take effect. `0` is nominal T+1; `1` is a T+2 latency scenario. |
+| `intrabar_fill_order` | `"close_first"` | Process closes before entries, or use `"entry_first"` as an alternative ordering scenario. |
+| `execution_audit_path` | `null` | Optional CSV destination for fill-level decision, activation, and fill-candle provenance. Use a separate destination for each run. |
+
+Latency applies to the order lifecycle, not just the reported fill timestamp.
+Unchanged resting orders retain their identity; a cancelled order can remain
+fillable until cancellation becomes effective. A consumed order cannot fill again
+from a delayed snapshot. Delayed actions can change the realized slot and exposure
+path even when strategy parameters and risk gates are unchanged.
+
+Audit files are created exclusively: an existing destination is never overwritten,
+and creation or write failures reject the run. Each row records one consumed order,
+its decision and activation boundaries, and the containing fill-candle interval;
+it is not a complete create/cancel event log.
+
+For example, to examine an extra bar of latency and entry-first ordering:
+
+```bash
+passivbot backtest path/to/config.json \
+  --execution-delay-bars 1 \
+  --intrabar-fill-order entry_first \
+  --execution-audit-path backtests/execution.csv
+```
+
+The HLCV engine input does not contain Open or tick/order-book events. Neither
+ordering reconstructs an actual `O-H-L-C` or `O-L-H-C` path, and the two outcomes
+are not guaranteed best/worst profit bounds. T+2 is a sensitivity convention, not
+a measured or guaranteed exchange delay. Non-default execution ordering/latency
+and execution-audit output require exact CPU evaluation; GPU screening proxies
+reject unsupported settings.
+
+The existing fill `timestamp` remains the candle-open label, not an exact
+exchange-confirmed execution time. The full candle is known only at its close.
+Resting buys still require `low < limit`, sells require `high > limit`, and equality
+alone does not fill a limit order. Full maker fills omit queue position, partial
+fills, spread, and the true order-acceptance time.
+
 ## HLCV Data Contract
 
 Direct or prepared backtest inputs must contain finite high, low, and close prices throughout
 each symbol's declared valid window. Internal all-NaN gaps are rejected before simulation;
 missing prices never turn a held position's unrealized PnL into zero. Missing rows before a
 symbol's listing or after its declared end remain permitted while it is flat. A position still
-held when its valuation candle becomes unavailable rejects the run. These checks also apply to
-GPU preparation and do not replace the normal data materializer's gap repair policy.
+held when its valuation candle becomes unavailable rejects the run. These coverage checks
+also apply to GPU preparation and do not replace the normal data materializer's gap repair
+policy. Exact Rust backtests do not infer a known delisting announcement from the future
+end of a dataset and exit on its last priced candle.
+
+BTC benchmark alignment uses only a close with the same or an earlier completed-candle
+label. A missing leading basis is an error, not permission to backfill from a later price.
+Permitted internal or tail forward-fills remain bounded by the configured gap tolerance
+and emit a warning. Repair missing source coverage rather than silently shortening the run.
+
+Dense storage placeholders outside a symbol's source/valid window do not establish
+tradability or indicator readiness. Preserve valid-window and warmup metadata when
+replaying or slicing a cache. A flat zero-volume row alone cannot distinguish a real
+no-trade candle from a synthesized row, and a checksum establishes content identity,
+not the historical provenance of every row.
 
 Without `backtest.ohlcv_source_dir`, backtest and optimize data preparation follows one
 deterministic order:
@@ -126,6 +188,23 @@ the override dataset:
 - `dataset`: adopt the override dataset's effective coins and timestamp window.
   This is useful for exact artifact replay when the cache itself should define the
   run universe and date range.
+
+Non-suite CLI overrides skip current exchange market discovery, coin normalization,
+and combined-source preparation lookups. Both modes use the verified saved market
+settings; intersection identifiers are matched only against identities recorded
+in the dataset and its manifest, not current market caches or guessed symbols.
+Intersection mode requires explicit approved coins (`all` requires market
+discovery); use `dataset` mode for
+the manifest's saved universe and long/short membership. Dataset mode also retains
+the manifest's requested trading start separately from its stored warmup rows.
+Missing or conflicting saved metadata fails rather than triggering a download.
+
+Override results save the pre-override input as `config.original.json` and the
+effective replay configuration as `config.json`. Strategy parameters remain those
+of the input config; selecting a dataset does not restore a historical strategy
+config. For exact strategy replay, supply that config as well. Full-array selection
+reuses the verified contiguous arrays without an additional HLCV copy; subsets
+are copied only when contiguous layout requires it.
 
 ## Backtest CLI args
 

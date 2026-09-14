@@ -18,8 +18,9 @@ use crate::strategies::{
 use crate::trailing::{reset_trailing_bundle, update_trailing_bundle_with_candle};
 use crate::types::{
     BacktestParams, Balance, BotParams, BotParamsPair, EMABands, Equities,
-    EquityHardStopLossConfig, ExchangeParams, Fill, Order, OrderBook, OrderType, Position,
-    RuntimeBudgetState, RuntimeBudgetStatePair, StrategyParamsPairValue, TrailingPriceBundle,
+    EquityHardStopLossConfig, ExchangeParams, Fill, IntrabarFillOrder, Order, OrderBook, OrderType,
+    Position, RuntimeBudgetState, RuntimeBudgetStatePair, StrategyParamsPairValue,
+    TrailingPriceBundle,
 };
 use crate::utils::{
     calc_auto_unstuck_allowance, calc_new_psize_pprice, calc_pnl_long, calc_pnl_short,
@@ -53,7 +54,7 @@ const DEBUG_TRACE_COIN_FILTER: Option<&str> = None;
 use ndarray::{ArrayView1, ArrayView3};
 use serde_json;
 use std::collections::VecDeque;
-use std::fs::{create_dir_all, File};
+use std::fs::{create_dir_all, File, OpenOptions};
 use std::io::{BufWriter, Write};
 use std::path::Path;
 use std::time::Instant;
@@ -363,6 +364,139 @@ pub struct OpenOrderBundle {
 pub struct BacktestOrder {
     pub order: Order,
     pub execution_type: orchestrator::ExecutionType,
+    pub lifecycle: Option<OrderLifecycle>,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct OrderLifecycle {
+    pub id: u64,
+    pub decision_index: usize,
+    pub active_from: usize,
+    pub cancel_at: Option<usize>,
+}
+
+impl BacktestOrder {
+    fn same_intent(&self, other: &Self) -> bool {
+        self.order.qty == other.order.qty
+            && self.order.price == other.order.price
+            && self.order.order_type == other.order.order_type
+            && self.execution_type == other.execution_type
+    }
+
+    fn is_active_at(&self, k: usize) -> bool {
+        self.lifecycle.map_or(true, |l| {
+            l.active_from <= k && l.cancel_at.map_or(true, |cancel_at| k < cancel_at)
+        })
+    }
+}
+
+fn reconcile_order_lifecycle(
+    existing: &mut Vec<BacktestOrder>,
+    desired: Vec<BacktestOrder>,
+    decision_index: usize,
+    active_from: usize,
+    next_id: &mut u64,
+) {
+    let mut matched = vec![false; existing.len()];
+    let mut creates = Vec::new();
+    for mut order in desired {
+        let matching = existing.iter().enumerate().position(|(i, old)| {
+            !matched[i]
+                && old.lifecycle.map_or(true, |l| l.cancel_at.is_none())
+                && old.same_intent(&order)
+        });
+        if let Some(i) = matching {
+            matched[i] = true;
+        } else {
+            order.lifecycle = Some(OrderLifecycle {
+                id: *next_id,
+                decision_index,
+                active_from,
+                cancel_at: None,
+            });
+            *next_id = next_id.checked_add(1).expect("backtest order ID overflow");
+            creates.push(order);
+        }
+    }
+    for (i, old) in existing.iter_mut().enumerate() {
+        if !matched[i] {
+            if let Some(lifecycle) = old.lifecycle.as_mut() {
+                lifecycle.cancel_at.get_or_insert(active_from);
+            } else {
+                // Only unit fixtures inject already-resting orders without provenance.
+                old.lifecycle = Some(OrderLifecycle {
+                    id: *next_id,
+                    decision_index,
+                    active_from: decision_index,
+                    cancel_at: Some(active_from),
+                });
+                *next_id += 1;
+            }
+        }
+    }
+    existing.extend(creates);
+}
+
+struct ExecutionAuditWriter {
+    path: String,
+    writer: BufWriter<File>,
+}
+
+impl ExecutionAuditWriter {
+    fn new(path: &str) -> Result<Self, String> {
+        if path.trim().is_empty() {
+            return Err("execution_audit_path must be nonempty".to_string());
+        }
+        let file = OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(path)
+            .map_err(|e| format!("cannot create execution audit {path:?}: {e}"))?;
+        let mut result = Self {
+            path: path.to_string(),
+            writer: BufWriter::new(file),
+        };
+        writeln!(result.writer,
+            "order_id,symbol,pside,order_type,decision_index,decision_close_timestamp_ms,activation_index,activation_timestamp_ms,fill_index,fill_candle_open_timestamp_ms,fill_candle_close_timestamp_ms,fill_qty,fill_price"
+        ).map_err(|e| format!("cannot write execution audit {path:?}: {e}"))?;
+        result.flush()?;
+        Ok(result)
+    }
+
+    fn fill(
+        &mut self,
+        lifecycle: OrderLifecycle,
+        fill: &Fill,
+        pside: usize,
+        first_ms: u64,
+        interval_ms: u64,
+    ) -> Result<(), String> {
+        let symbol = format!("\"{}\"", fill.coin.replace('"', "\"\""));
+        writeln!(
+            self.writer,
+            "{},{},{},{},{},{},{},{},{},{},{},{},{}",
+            lifecycle.id,
+            symbol,
+            if pside == LONG { "long" } else { "short" },
+            fill.order_type.to_string(),
+            lifecycle.decision_index,
+            first_ms + (lifecycle.decision_index as u64 + 1) * interval_ms,
+            lifecycle.active_from,
+            first_ms + lifecycle.active_from as u64 * interval_ms,
+            fill.index,
+            fill.timestamp_ms,
+            fill.timestamp_ms + interval_ms,
+            fill.fill_qty,
+            fill.fill_price
+        )
+        .map_err(|e| format!("cannot write execution audit {:?}: {e}", self.path))
+    }
+
+    fn flush(&mut self) -> Result<(), String> {
+        self.writer
+            .flush()
+            .map_err(|e| format!("cannot flush execution audit {:?}: {e}", self.path))
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -396,17 +530,6 @@ impl OpenOrders {
         Self {
             long: (0..n_coins).map(|_| OpenOrderBundle::default()).collect(),
             short: (0..n_coins).map(|_| OpenOrderBundle::default()).collect(),
-        }
-    }
-
-    fn clear_all(&mut self) {
-        for bundle in self.long.iter_mut() {
-            bundle.entries.clear();
-            bundle.closes.clear();
-        }
-        for bundle in self.short.iter_mut() {
-            bundle.entries.clear();
-            bundle.closes.clear();
         }
     }
 }
@@ -599,6 +722,7 @@ pub struct Backtest<'a> {
     n_coins: usize,
     ema_alphas: Vec<EmaAlphas>,
     emas: Vec<EMAs>,
+    ema_seeded: Vec<bool>,
     orchestrator_ema_slots: Vec<OrchestratorEmaSlots>,
     needs_volume_ema_long: bool,
     needs_volume_ema_short: bool,
@@ -622,6 +746,8 @@ pub struct Backtest<'a> {
     current_step: usize,
     positions: Positions,
     open_orders: OpenOrders,
+    next_order_id: u64,
+    execution_audit: Option<ExecutionAuditWriter>,
     trailing_prices: TrailingPrices,
     pnl_cumsum_running: f64,
     pnl_cumsum_max: f64,
@@ -643,7 +769,6 @@ pub struct Backtest<'a> {
     any_trailing_long: bool,
     any_trailing_short: bool,
     equities: Equities,
-    last_valid_timestamps: Vec<Option<usize>>,
     did_fill_long: Vec<bool>,
     did_fill_short: Vec<bool>,
     last_increase_fill_timestamp_long: Vec<Option<u64>>,
@@ -1355,37 +1480,24 @@ impl<'a> Backtest<'a> {
         let symbols: Vec<orchestrator::SymbolInput> = indices
             .into_iter()
             .map(|idx| {
-                let (start, end) = self.coin_valid_range(idx).unwrap_or((0, 0));
-                let price_idx = k.clamp(start, end);
-                let close_price = self.hlcvs_value(price_idx, idx, CLOSE).max(f64::EPSILON);
+                let close_price = if self.coin_is_valid_at(idx, k) {
+                    self.hlcvs_value(k, idx, CLOSE)
+                } else {
+                    f64::NAN
+                };
 
                 let order_book = OrderBook {
                     bid: close_price,
                     ask: close_price,
                 };
                 let exchange = self.exchange_params_list[idx].clone();
-                let effective_min_cost = calc_effective_min_cost(close_price, &exchange);
+                let effective_min_cost = if close_price.is_finite() {
+                    calc_effective_min_cost(close_price, &exchange)
+                } else {
+                    f64::NAN
+                };
 
                 let tradable = self.coin_is_tradeable_at(idx, k);
-                let next_candle = if k + 1 < self.hlcvs.shape()[0] {
-                    let tradable_next = self.coin_is_tradeable_at(idx, k + 1);
-                    let (low, high) = if tradable_next {
-                        (
-                            self.hlcvs_value(k + 1, idx, LOW),
-                            self.hlcvs_value(k + 1, idx, HIGH),
-                        )
-                    } else {
-                        (0.0, 0.0)
-                    };
-                    Some(orchestrator::NextCandle {
-                        low,
-                        high,
-                        tradable: tradable_next,
-                    })
-                } else {
-                    None
-                };
-                let within_valid_range_now = self.coin_is_within_valid_range_at(idx, k);
 
                 let pos_long = self.positions.long[idx];
                 let pos_short = self.positions.short[idx];
@@ -1394,24 +1506,6 @@ impl<'a> Backtest<'a> {
                     self.configured_mode(idx, LONG);
                 let mut mode_short: Option<orchestrator::TradingMode> =
                     self.configured_mode(idx, SHORT);
-
-                if let Some(delist_timestamp) = self.last_valid_timestamps[idx] {
-                    if k >= delist_timestamp {
-                        if pos_long.size != 0.0 {
-                            mode_long = Some(orchestrator::TradingMode::Panic);
-                        }
-                        if pos_short.size != 0.0 {
-                            mode_short = Some(orchestrator::TradingMode::Panic);
-                        }
-                    }
-                } else {
-                    if !within_valid_range_now && pos_long.size != 0.0 {
-                        mode_long = Some(orchestrator::TradingMode::Panic);
-                    }
-                    if !within_valid_range_now && pos_short.size != 0.0 {
-                        mode_short = Some(orchestrator::TradingMode::Panic);
-                    }
-                }
 
                 if self.backtest_params.filter_by_min_effective_cost {
                     if !self.coin_passes_min_effective_cost(idx, LONG) && pos_long.size == 0.0 {
@@ -1536,12 +1630,13 @@ impl<'a> Backtest<'a> {
                 let trailing_short = self.trailing_prices.short[idx].clone();
 
                 orchestrator::SymbolInput {
+                    backtest_market_data_unavailable: !self.coin_is_valid_at(idx, k),
                     symbol_idx: idx,
                     order_book,
                     exchange,
                     tradable,
                     allow_missing_strategy_inputs: false,
-                    next_candle,
+                    next_candle: None,
                     effective_min_cost,
                     emas,
                     forager_m1: None,
@@ -1597,7 +1692,7 @@ impl<'a> Backtest<'a> {
                 strategy_kind: self.strategy_kind,
             },
             symbols,
-            peek_hints,
+            peek_hints: peek_hints.or_else(|| Some(self.position_expansion_hints())),
             forager_hysteresis,
         }
     }
@@ -1649,39 +1744,29 @@ impl<'a> Backtest<'a> {
         input.global.realized_pnl_cumsum_max = effective_cumsum_max;
         input.global.realized_pnl_cumsum_last = effective_cumsum_last;
 
-        input.peek_hints = peek_hints;
+        input.peek_hints = peek_hints.or_else(|| Some(self.position_expansion_hints()));
         input.forager_hysteresis = forager_hysteresis;
 
         for sym in input.symbols.iter_mut() {
             let idx = sym.symbol_idx;
-            let (start, end) = self.coin_valid_range(idx).unwrap_or((0, 0));
-            let price_idx = k.clamp(start, end);
-            let close_price = self.hlcvs_value(price_idx, idx, CLOSE).max(f64::EPSILON);
+            let close_price = if self.coin_is_valid_at(idx, k) {
+                self.hlcvs_value(k, idx, CLOSE)
+            } else {
+                f64::NAN
+            };
 
             sym.order_book.bid = close_price;
             sym.order_book.ask = close_price;
+            sym.backtest_market_data_unavailable = !self.coin_is_valid_at(idx, k);
             sym.tradable = self.coin_is_tradeable_at(idx, k);
-            sym.next_candle = if k + 1 < self.hlcvs.shape()[0] {
-                let tradable_next = self.coin_is_tradeable_at(idx, k + 1);
-                let (low, high) = if tradable_next {
-                    (
-                        self.hlcvs_value(k + 1, idx, LOW),
-                        self.hlcvs_value(k + 1, idx, HIGH),
-                    )
-                } else {
-                    (0.0, 0.0)
-                };
-                Some(orchestrator::NextCandle {
-                    low,
-                    high,
-                    tradable: tradable_next,
-                })
-            } else {
-                None
-            };
+            sym.next_candle = None;
 
             let exchange = &sym.exchange;
-            sym.effective_min_cost = calc_effective_min_cost(close_price, exchange);
+            sym.effective_min_cost = if close_price.is_finite() {
+                calc_effective_min_cost(close_price, exchange)
+            } else {
+                f64::NAN
+            };
 
             let pos_long = self.positions.long[idx];
             let pos_short = self.positions.short[idx];
@@ -1697,28 +1782,9 @@ impl<'a> Backtest<'a> {
             sym.long.runtime_budget = Some(self.runtime_budget[idx].long.clone());
             sym.short.runtime_budget = Some(self.runtime_budget[idx].short.clone());
 
-            let within_valid_range_now = self.coin_is_within_valid_range_at(idx, k);
             let mut mode_long: Option<orchestrator::TradingMode> = self.configured_mode(idx, LONG);
             let mut mode_short: Option<orchestrator::TradingMode> =
                 self.configured_mode(idx, SHORT);
-
-            if let Some(delist_timestamp) = self.last_valid_timestamps[idx] {
-                if k >= delist_timestamp {
-                    if pos_long.size != 0.0 {
-                        mode_long = Some(orchestrator::TradingMode::Panic);
-                    }
-                    if pos_short.size != 0.0 {
-                        mode_short = Some(orchestrator::TradingMode::Panic);
-                    }
-                }
-            } else {
-                if !within_valid_range_now && pos_long.size != 0.0 {
-                    mode_long = Some(orchestrator::TradingMode::Panic);
-                }
-                if !within_valid_range_now && pos_short.size != 0.0 {
-                    mode_short = Some(orchestrator::TradingMode::Panic);
-                }
-            }
 
             if self.backtest_params.filter_by_min_effective_cost {
                 if !self.coin_passes_min_effective_cost(idx, LONG) && pos_long.size == 0.0 {
@@ -1920,15 +1986,10 @@ impl<'a> Backtest<'a> {
 
         for i in 0..n_coins {
             let mut first = first_valid_idx[i];
-            if first >= n_timesteps {
-                first = n_timesteps.saturating_sub(1);
-            }
+            first = first.min(n_timesteps);
             let mut last = last_valid_idx[i];
             if last >= n_timesteps {
                 last = n_timesteps.saturating_sub(1);
-            }
-            if last < first {
-                last = first;
             }
             first_valid_idx[i] = first;
             last_valid_idx[i] = last;
@@ -1940,13 +2001,10 @@ impl<'a> Backtest<'a> {
                 warm
             };
             let provided_trade_idx = trade_start_idx[i];
-            let trade_idx = first
-                .saturating_add(warm_bars)
-                .min(last)
-                .max(provided_trade_idx);
+            let trade_idx = first.saturating_add(warm_bars).max(provided_trade_idx);
             trade_start_idx[i] = trade_idx;
 
-            let expected_trade_idx = first.saturating_add(warm_bars).min(last);
+            let expected_trade_idx = first.saturating_add(warm_bars);
             debug_assert!(
                 trade_idx >= expected_trade_idx,
                 "trade start index mismatch for coin {}: expected at least {} but got {}",
@@ -1959,34 +2017,41 @@ impl<'a> Backtest<'a> {
 
         let initial_emas = (0..n_coins)
             .map(|i| {
-                let start_idx = first_valid_idx
-                    .get(i)
-                    .copied()
-                    .unwrap_or(0)
-                    .min(n_timesteps.saturating_sub(1));
+                let available = first_valid_idx[i] == 0 && n_timesteps > 0;
                 let col = active_coin_indices[i];
-                let close_price = hlcvs[[start_idx, col, CLOSE]];
-                let base_close = if close_price.is_finite() {
-                    close_price
+                let base_close = if available {
+                    hlcvs[[0, col, CLOSE]]
                 } else {
-                    0.0
+                    f64::NAN
                 };
-                let volume = hlcvs[[start_idx, col, VOLUME]];
+                let volume = if available {
+                    hlcvs[[0, col, VOLUME]]
+                } else {
+                    f64::NAN
+                };
                 let base_volume = if volume.is_finite() {
                     volume.max(0.0)
                 } else {
-                    0.0
+                    f64::NAN
                 };
                 // Convert base volume to quote volume using typical price
                 // This matches live bot's get_latest_ema_quote_volume() calculation
-                let high = hlcvs[[start_idx, col, HIGH]];
-                let low = hlcvs[[start_idx, col, LOW]];
-                let typical_price = if high.is_finite() && low.is_finite() && base_close > 0.0 {
-                    (high + low + base_close) / 3.0
+                let high = if available {
+                    hlcvs[[0, col, HIGH]]
                 } else {
-                    base_close.max(1.0) // Fallback to close price or 1.0
+                    f64::NAN
                 };
+                let low = if available {
+                    hlcvs[[0, col, LOW]]
+                } else {
+                    f64::NAN
+                };
+                let typical_price = (high + low + base_close) / 3.0;
                 let quote_volume = base_volume * typical_price;
+                // Unlisted range EMAs have no observations. Their first genuine
+                // minute/hour sample seeds them without synthetic zero history.
+                let initial_range_value = if available { 0.0 } else { f64::NAN };
+                let initial_range_den = if available { 1.0 } else { 0.0 };
                 EMAs {
                     unstuck_long: [base_close; 3],
                     unstuck_long_num: [base_close; 3],
@@ -2006,24 +2071,24 @@ impl<'a> Backtest<'a> {
                     vol_short: quote_volume,
                     vol_short_num: quote_volume,
                     vol_short_den: 1.0,
-                    log_range_long: 0.0,
+                    log_range_long: initial_range_value,
                     log_range_long_num: 0.0,
-                    log_range_long_den: 1.0,
-                    log_range_short: 0.0,
+                    log_range_long_den: initial_range_den,
+                    log_range_short: initial_range_value,
                     log_range_short_num: 0.0,
-                    log_range_short_den: 1.0,
-                    volatility_ema_1m_long: 0.0,
+                    log_range_short_den: initial_range_den,
+                    volatility_ema_1m_long: initial_range_value,
                     volatility_ema_1m_long_num: 0.0,
-                    volatility_ema_1m_long_den: 1.0,
-                    volatility_ema_1m_short: 0.0,
+                    volatility_ema_1m_long_den: initial_range_den,
+                    volatility_ema_1m_short: initial_range_value,
                     volatility_ema_1m_short_num: 0.0,
-                    volatility_ema_1m_short_den: 1.0,
-                    volatility_ema_1h_long: 0.0,
+                    volatility_ema_1m_short_den: initial_range_den,
+                    volatility_ema_1h_long: initial_range_value,
                     volatility_ema_1h_long_num: 0.0,
-                    volatility_ema_1h_long_den: 1.0,
-                    volatility_ema_1h_short: 0.0,
+                    volatility_ema_1h_long_den: initial_range_den,
+                    volatility_ema_1h_short: initial_range_value,
                     volatility_ema_1h_short_num: 0.0,
-                    volatility_ema_1h_short_den: 1.0,
+                    volatility_ema_1h_short_den: initial_range_den,
                 }
             })
             .collect();
@@ -2144,6 +2209,7 @@ impl<'a> Backtest<'a> {
             n_coins,
             ema_alphas,
             emas: initial_emas,
+            ema_seeded: first_valid_idx.iter().map(|&first| first == 0).collect(),
             orchestrator_ema_slots,
             needs_volume_ema_long: bot_params.iter().any(|bp| {
                 bp.long.forager_volume_drop_pct != 0.0
@@ -2170,6 +2236,8 @@ impl<'a> Backtest<'a> {
             warmup_bars,
             current_step: 0,
             open_orders: OpenOrders::new(n_coins),
+            next_order_id: 1,
+            execution_audit: None,
             trailing_prices: TrailingPrices::new(n_coins),
             pnl_cumsum_running: 0.0,
             pnl_cumsum_max: 0.0,
@@ -2213,7 +2281,6 @@ impl<'a> Backtest<'a> {
             any_trailing_long,
             any_trailing_short,
             equities: equities,
-            last_valid_timestamps: vec![None; n_coins],
             did_fill_long: vec![false; n_coins],
             did_fill_short: vec![false; n_coins],
             last_increase_fill_timestamp_long: vec![None; n_coins],
@@ -2358,15 +2425,8 @@ impl<'a> Backtest<'a> {
     pub fn run(&mut self) -> Result<(Vec<Fill>, Equities), String> {
         self.validate_candle_coverage()?;
         let n_timesteps = self.hlcvs.shape()[0];
-
-        // --- register first & last valid candle for every coin ---
-        for idx in 0..self.n_coins {
-            if let Some((_start, end)) = self.coin_valid_range(idx) {
-                if end.saturating_add(1400) < n_timesteps {
-                    // add only if delisted more than one day before last timestamp
-                    self.last_valid_timestamps[idx] = Some(end);
-                }
-            }
+        if let Some(path) = self.backtest_params.execution_audit_path.as_deref() {
+            self.execution_audit = Some(ExecutionAuditWriter::new(path)?);
         }
 
         let warmup_bars = self.warmup_bars.max(1);
@@ -2374,7 +2434,8 @@ impl<'a> Backtest<'a> {
             .backtest_params
             .requested_start_timestamp_ms
             .max(self.first_timestamp_ms);
-        for k in 1..(n_timesteps - 1) {
+        // The final stored row is the exclusive-end sentinel, not an execution candle.
+        for k in 1..n_timesteps.saturating_sub(1) {
             self.current_step = k;
             self.validate_held_position_valuation(k)?;
             for idx in 0..self.n_coins {
@@ -2417,7 +2478,6 @@ impl<'a> Backtest<'a> {
                 self.initialize_btc_collateral_if_needed(k);
                 self.update_open_orders_all(k)?;
             }
-            self.force_close_delisted_positions(k)?;
             if self.equity_tracking_active {
                 self.update_equities(k);
                 if self.check_and_apply_liquidation(k) {
@@ -2460,6 +2520,9 @@ impl<'a> Backtest<'a> {
         }
         if let Some(profile) = self.orch_profile.take() {
             profile.write_to_file();
+        }
+        if let Some(writer) = self.execution_audit.as_mut() {
+            writer.flush()?;
         }
         self.final_hard_stop_metrics = Some(self.hard_stop_metrics());
         self.final_strategy_equity_metrics = Some(self.strategy_equity_metrics_for_analysis());
@@ -3645,7 +3708,10 @@ impl<'a> Backtest<'a> {
     }
 
     fn update_hard_stop_state_pside_at_boundary(
-        &mut self, k: usize, pside: usize, at_fill_boundary: bool,
+        &mut self,
+        k: usize,
+        pside: usize,
+        at_fill_boundary: bool,
     ) -> Result<(), String> {
         if !self.hard_stop_enabled_pside(pside) || self.hard_stop_pside[pside].halted {
             return Ok(());
@@ -3660,11 +3726,14 @@ impl<'a> Backtest<'a> {
         let (realized_pnl, unrealized_pnl) = if at_fill_boundary {
             // The scope is proven flat at the fill, before a new account-equity
             // sample is recorded. Use exact realized PnL rather than stale marks.
-            (if self.hard_stop_signal_mode() == "unified" {
-                self.pnl_cumsum_running_net
-            } else {
-                self.pnl_cumsum_running_net_pside[pside]
-            }, 0.0)
+            (
+                if self.hard_stop_signal_mode() == "unified" {
+                    self.pnl_cumsum_running_net
+                } else {
+                    self.pnl_cumsum_running_net_pside[pside]
+                },
+                0.0,
+            )
         } else {
             self.hard_stop_signal_values_pside(k, pside).map_err(|e| {
                 format!(
@@ -3734,20 +3803,21 @@ impl<'a> Backtest<'a> {
             )
         })?;
         let has_open_position = self.hard_stop_scope_has_open_position(pside);
-        let has_blocking_open_orders = !at_fill_boundary && self.hard_stop_scope_has_blocking_open_orders(pside);
+        let has_blocking_open_orders =
+            !at_fill_boundary && self.hard_stop_scope_has_blocking_open_orders(pside);
         let drawdown_ema = self.hard_stop_pside[pside]
             .state
             .as_ref()
             .map(|state| state.drawdown_ema)
             .unwrap_or(step.drawdown_raw);
         if !at_fill_boundary {
-        self.strategy_equity_series_pside[pside].push(strategy_equity);
-        self.strategy_equity_timestamps_ms_pside[pside].push(timestamp_ms);
-        self.peak_strategy_equity_series_pside[pside].push(peak_strategy_equity);
-        self.hard_stop_drawdown_timestamps_ms_pside[pside].push(timestamp_ms);
-        self.hard_stop_drawdown_samples_pside[pside].push(step.drawdown_raw);
-        self.hard_stop_drawdown_ema_samples_pside[pside].push(drawdown_ema);
-        self.hard_stop_drawdown_score_samples_pside[pside].push(step.drawdown_score);
+            self.strategy_equity_series_pside[pside].push(strategy_equity);
+            self.strategy_equity_timestamps_ms_pside[pside].push(timestamp_ms);
+            self.peak_strategy_equity_series_pside[pside].push(peak_strategy_equity);
+            self.hard_stop_drawdown_timestamps_ms_pside[pside].push(timestamp_ms);
+            self.hard_stop_drawdown_samples_pside[pside].push(step.drawdown_raw);
+            self.hard_stop_drawdown_ema_samples_pside[pside].push(drawdown_ema);
+            self.hard_stop_drawdown_score_samples_pside[pside].push(step.drawdown_score);
         }
         let mut finalize_panic_close_loss_drawdown_pct = false;
         let runtime = &mut self.hard_stop_pside[pside];
@@ -3881,7 +3951,11 @@ impl<'a> Backtest<'a> {
     }
 
     fn update_hard_stop_state_coin_at_boundary(
-        &mut self, k: usize, idx: usize, pside: usize, at_fill_boundary: bool,
+        &mut self,
+        k: usize,
+        idx: usize,
+        pside: usize,
+        at_fill_boundary: bool,
     ) -> Result<(), String> {
         if !self.hard_stop_coin_should_update(pside, idx)? || self.hard_stop_coin[pside][idx].halted
         {
@@ -3951,7 +4025,8 @@ impl<'a> Backtest<'a> {
             )
         })?;
         let has_open_position = self.has_open_position_coin_pside(idx, pside);
-        let has_blocking_open_orders = !at_fill_boundary && self.has_blocking_open_orders_coin_pside(idx, pside);
+        let has_blocking_open_orders =
+            !at_fill_boundary && self.has_blocking_open_orders_coin_pside(idx, pside);
         let mut finalize_panic_close_loss_drawdown_pct = false;
         let mut reset_coin_pnl_window = false;
         let runtime = &mut self.hard_stop_coin[pside][idx];
@@ -4314,81 +4389,160 @@ impl<'a> Backtest<'a> {
     fn check_for_fills(&mut self, k: usize) -> Result<(), String> {
         self.did_fill_long.fill(false);
         self.did_fill_short.fill(false);
-        if self.trading_enabled.long {
+        let fills_before = self.fills.len();
+        // Fixed cross-symbol convention: long then short, ascending dataset symbol index.
+        for pside in [LONG, SHORT] {
             for idx in 0..self.n_coins {
-                // Process close fills long
-                if !self.open_orders.long[idx].closes.is_empty() {
-                    let mut closes_to_process = Vec::new();
-                    {
-                        for close_order in &self.open_orders.long[idx].closes {
-                            if let Some(exec) = self.order_fill_execution(k, idx, close_order) {
-                                closes_to_process.push((close_order.order, exec));
-                            }
-                        }
-                    }
-                    for (order, exec) in closes_to_process {
-                        if self.positions.long[idx].size != 0.0 {
-                            self.did_fill_long[idx] = true;
-                            self.process_close_fill_long(k, idx, &order, exec)?;
-                        }
-                    }
+                let flat = if pside == LONG {
+                    self.positions.long[idx].size == 0.0
+                } else {
+                    self.positions.short[idx].size == 0.0
+                };
+                let bundle = if pside == LONG {
+                    &mut self.open_orders.long[idx]
+                } else {
+                    &mut self.open_orders.short[idx]
+                };
+                for orders in [&mut bundle.entries, &mut bundle.closes] {
+                    orders.retain(|o| {
+                        o.lifecycle.map_or(true, |l| {
+                            l.cancel_at.map_or(true, |cancel_at| k < cancel_at)
+                        })
+                    });
                 }
-                // Process entry fills long
-                if !self.open_orders.long[idx].entries.is_empty() {
-                    let mut entries_to_process = Vec::new();
-                    {
-                        for entry_order in &self.open_orders.long[idx].entries {
-                            if let Some(exec) = self.order_fill_execution(k, idx, entry_order) {
-                                entries_to_process.push((entry_order.order, exec));
-                            }
-                        }
-                    }
-                    for (order, exec) in entries_to_process {
-                        self.did_fill_long[idx] = true;
-                        self.last_increase_fill_timestamp_long[idx] =
-                            Some(self.first_timestamp_ms + (k as u64) * self.interval_ms);
-                        self.process_entry_fill_long(k, idx, &order, exec);
-                    }
+                // An exchange rejects reduce-only orders while flat, before any same-bar entry.
+                if flat {
+                    bundle.closes.clear();
                 }
             }
         }
-        if self.trading_enabled.short {
+        for pside in [LONG, SHORT] {
+            if (pside == LONG && !self.trading_enabled.long)
+                || (pside == SHORT && !self.trading_enabled.short)
+            {
+                continue;
+            }
             for idx in 0..self.n_coins {
-                // Process close fills short
-                if !self.open_orders.short[idx].closes.is_empty() {
-                    let mut closes_to_process = Vec::new();
-                    {
-                        for close_order in &self.open_orders.short[idx].closes {
-                            if let Some(exec) = self.order_fill_execution(k, idx, close_order) {
-                                closes_to_process.push((close_order.order, exec));
-                            }
-                        }
-                    }
-                    for (order, exec) in closes_to_process {
-                        if self.positions.short[idx].size != 0.0 {
-                            self.did_fill_short[idx] = true;
-                            self.process_close_fill_short(k, idx, &order, exec)?;
-                        }
-                    }
-                }
-                // Process entry fills short
-                if !self.open_orders.short[idx].entries.is_empty() {
-                    let mut entries_to_process = Vec::new();
-                    {
-                        for entry_order in &self.open_orders.short[idx].entries {
-                            if let Some(exec) = self.order_fill_execution(k, idx, entry_order) {
-                                entries_to_process.push((entry_order.order, exec));
-                            }
-                        }
-                    }
-                    for (order, exec) in entries_to_process {
-                        self.did_fill_short[idx] = true;
-                        self.last_increase_fill_timestamp_short[idx] =
-                            Some(self.first_timestamp_ms + (k as u64) * self.interval_ms);
-                        self.process_entry_fill_short(k, idx, &order, exec);
-                    }
+                let groups = match self.backtest_params.intrabar_fill_order {
+                    IntrabarFillOrder::CloseFirst => [false, true],
+                    IntrabarFillOrder::EntryFirst => [true, false],
+                };
+                for entries in groups {
+                    self.process_resting_order_group(k, idx, pside, entries)?;
                 }
             }
+        }
+        if self.fills.len() > fills_before {
+            if let Some(writer) = self.execution_audit.as_mut() {
+                writer.flush()?;
+            }
+        }
+        Ok(())
+    }
+
+    fn process_resting_order_group(
+        &mut self,
+        k: usize,
+        idx: usize,
+        pside: usize,
+        entries: bool,
+    ) -> Result<(), String> {
+        let bundle = if pside == LONG {
+            &mut self.open_orders.long[idx]
+        } else {
+            &mut self.open_orders.short[idx]
+        };
+        let orders = std::mem::take(if entries {
+            &mut bundle.entries
+        } else {
+            &mut bundle.closes
+        });
+        let mut remaining = Vec::with_capacity(orders.len());
+        for scheduled in orders {
+            let mut order = scheduled.order;
+            let position = if pside == LONG {
+                self.positions.long[idx]
+            } else {
+                self.positions.short[idx]
+            };
+            if !entries {
+                if position.size == 0.0 || order.qty.signum() == position.size.signum() {
+                    continue;
+                }
+                if order.qty.abs() > position.size.abs() {
+                    order.qty = -position.size;
+                }
+            }
+            if !scheduled.is_active_at(k) {
+                remaining.push(scheduled);
+                continue;
+            }
+            if entries && !self.balance.usd_total_balance.is_finite() {
+                return Err(format!("non-finite balance at execution candle {k}"));
+            }
+            if entries && self.balance.usd_total_balance <= 0.0 {
+                continue;
+            }
+            let Some(exec) = self.order_fill_execution(k, idx, &scheduled) else {
+                remaining.push(scheduled);
+                continue;
+            };
+            if entries {
+                if (pside == LONG && order.qty <= 0.0) || (pside == SHORT && order.qty >= 0.0) {
+                    return Err(format!(
+                        "invalid signed entry quantity at candle {k}, coin {idx}"
+                    ));
+                }
+                let label = Some(self.first_timestamp_ms + k as u64 * self.interval_ms);
+                if pside == LONG {
+                    self.last_increase_fill_timestamp_long[idx] = label;
+                    self.process_entry_fill_long(k, idx, &order, exec);
+                } else {
+                    self.last_increase_fill_timestamp_short[idx] = label;
+                    self.process_entry_fill_short(k, idx, &order, exec);
+                }
+            } else if pside == LONG {
+                self.process_close_fill_long(k, idx, &order, exec)?;
+            } else {
+                self.process_close_fill_short(k, idx, &order, exec)?;
+            }
+            if pside == LONG {
+                self.did_fill_long[idx] = true;
+            } else {
+                self.did_fill_short[idx] = true;
+            }
+            if let Some(writer) = self.execution_audit.as_mut() {
+                let lifecycle = scheduled
+                    .lifecycle
+                    .ok_or_else(|| "filled order lacks execution audit provenance".to_string())?;
+                writer.fill(
+                    lifecycle,
+                    self.fills.last().expect("fill was recorded"),
+                    pside,
+                    self.first_timestamp_ms,
+                    self.interval_ms,
+                )?;
+            }
+            if !entries {
+                let flat = if pside == LONG {
+                    self.positions.long[idx].size == 0.0
+                } else {
+                    self.positions.short[idx].size == 0.0
+                };
+                if flat {
+                    remaining.clear();
+                }
+            }
+        }
+        let bundle = if pside == LONG {
+            &mut self.open_orders.long[idx]
+        } else {
+            &mut self.open_orders.short[idx]
+        };
+        if entries {
+            bundle.entries = remaining;
+        } else {
+            bundle.closes = remaining;
         }
         Ok(())
     }
@@ -4448,7 +4602,11 @@ impl<'a> Backtest<'a> {
             } else {
                 &mut self.hard_stop_pside[pside]
             };
-            if runtime.state.as_ref().is_some_and(|state| state.red_seen_in_episode) {
+            if runtime
+                .state
+                .as_ref()
+                .is_some_and(|state| state.red_seen_in_episode)
+            {
                 continue;
             }
             runtime.state = None;
@@ -4482,6 +4640,9 @@ impl<'a> Backtest<'a> {
         exec: OrderFillExecution,
     ) -> Result<(), String> {
         let current_position = self.positions.long[idx];
+        if current_position.size <= 0.0 || close_fill.qty >= 0.0 {
+            return Ok(());
+        }
         let mut new_psize = round_(
             current_position.size + close_fill.qty,
             self.exchange_params_list[idx].qty_step,
@@ -4573,6 +4734,7 @@ impl<'a> Backtest<'a> {
             twe_net,
         });
         if new_psize == 0.0 && current_position.size != 0.0 {
+            self.open_orders.long[idx].closes.clear();
             self.finish_hard_stop_episode_at_fill(k, idx, LONG)?;
         }
         Ok(())
@@ -4586,6 +4748,9 @@ impl<'a> Backtest<'a> {
         exec: OrderFillExecution,
     ) -> Result<(), String> {
         let current_position = self.positions.short[idx];
+        if current_position.size >= 0.0 || order.qty <= 0.0 {
+            return Ok(());
+        }
         let mut new_psize = round_(
             current_position.size + order.qty,
             self.exchange_params_list[idx].qty_step,
@@ -4676,6 +4841,7 @@ impl<'a> Backtest<'a> {
             twe_net,
         });
         if new_psize == 0.0 && current_position.size != 0.0 {
+            self.open_orders.short[idx].closes.clear();
             self.finish_hard_stop_episode_at_fill(k, idx, SHORT)?;
         }
         Ok(())
@@ -4895,64 +5061,6 @@ impl<'a> Backtest<'a> {
         } else {
             false
         }
-    }
-
-    fn force_close_delisted_positions(&mut self, k: usize) -> Result<(), String> {
-        for idx in 0..self.n_coins {
-            if self.last_valid_timestamps.get(idx).copied().flatten() != Some(k) {
-                continue;
-            }
-            if !self.coin_is_valid_at(idx, k) {
-                continue;
-            }
-
-            let mut closed_any = false;
-            let long_size = self.positions.long[idx].size;
-            if long_size > 0.0 {
-                let close_qty = -long_size;
-                if let Some(price) = self.market_fill_price_for_qty(k, idx, close_qty) {
-                    let order = Order {
-                        qty: close_qty,
-                        price,
-                        order_type: OrderType::ClosePanicLong,
-                    };
-                    let exec = OrderFillExecution {
-                        price,
-                        fee_rate: self.exchange_params_list[idx].taker_fee,
-                        liquidity: "taker",
-                    };
-                    self.did_fill_long[idx] = true;
-                    self.process_close_fill_long(k, idx, &order, exec)?;
-                    closed_any = true;
-                }
-            }
-
-            let short_size = self.positions.short[idx].size;
-            if short_size < 0.0 {
-                let close_qty = -short_size;
-                if let Some(price) = self.market_fill_price_for_qty(k, idx, close_qty) {
-                    let order = Order {
-                        qty: close_qty,
-                        price,
-                        order_type: OrderType::ClosePanicShort,
-                    };
-                    let exec = OrderFillExecution {
-                        price,
-                        fee_rate: self.exchange_params_list[idx].taker_fee,
-                        liquidity: "taker",
-                    };
-                    self.did_fill_short[idx] = true;
-                    self.process_close_fill_short(k, idx, &order, exec)?;
-                    closed_any = true;
-                }
-            }
-
-            if closed_any {
-                self.open_orders.long[idx] = OpenOrderBundle::default();
-                self.open_orders.short[idx] = OpenOrderBundle::default();
-            }
-        }
-        Ok(())
     }
 
     #[inline(always)]
@@ -5290,6 +5398,29 @@ impl<'a> Backtest<'a> {
         self.update_open_orders_all_orchestrator(k)
     }
 
+    fn position_expansion_hints(&self) -> EntryPeekHints {
+        let long: HashSet<usize> = self
+            .positions
+            .long
+            .iter()
+            .enumerate()
+            .filter_map(|(idx, p)| (p.size != 0.0).then_some(idx))
+            .collect();
+        let short: HashSet<usize> = self
+            .positions
+            .short
+            .iter()
+            .enumerate()
+            .filter_map(|(idx, p)| (p.size != 0.0).then_some(idx))
+            .collect();
+        EntryPeekHints {
+            expand_grid_long: long.clone(),
+            expand_grid_short: short.clone(),
+            expand_close_long: long,
+            expand_close_short: short,
+        }
+    }
+
     fn forager_hysteresis_state_from_open_orders(&self) -> ForagerHysteresisState {
         let mut incumbent_long: HashSet<usize> = HashSet::new();
         let mut incumbent_short: HashSet<usize> = HashSet::new();
@@ -5330,15 +5461,12 @@ impl<'a> Backtest<'a> {
 
         let t0 = Instant::now();
         let forager_hysteresis = self.forager_hysteresis_state_from_open_orders();
-        self.open_orders.clear_all();
         if let Some(p) = self.orch_profile.as_mut() {
             OrchProfile::add_ns(&mut p.clear_orders_ns, t0.elapsed());
         }
 
-        // Backtest-only peek: if next order will fill next candle, expand the full grid.
-        // The orchestrator can do this internally when provided `next_candle` in the input.
         let t0 = Instant::now();
-        let peek_hints: Option<EntryPeekHints> = None;
+        let peek_hints = Some(self.position_expansion_hints());
         if let Some(p) = self.orch_profile.as_mut() {
             OrchProfile::add_ns(&mut p.peek_hints_ns, t0.elapsed());
         }
@@ -5386,6 +5514,7 @@ impl<'a> Backtest<'a> {
         }
 
         let t0 = Instant::now();
+        let mut desired = OpenOrders::new(self.n_coins);
         for o in res.orders {
             let order = Order {
                 qty: o.qty,
@@ -5395,10 +5524,11 @@ impl<'a> Backtest<'a> {
             let bt_order = BacktestOrder {
                 order: order.clone(),
                 execution_type: o.execution_type,
+                lifecycle: None,
             };
             match o.pside {
                 orchestrator::PositionSide::Long => {
-                    let bundle = &mut self.open_orders.long[o.symbol_idx];
+                    let bundle = &mut desired.long[o.symbol_idx];
                     if orchestrator::is_close_order_type(order.order_type) {
                         bundle.closes.push(bt_order);
                     } else {
@@ -5406,7 +5536,7 @@ impl<'a> Backtest<'a> {
                     }
                 }
                 orchestrator::PositionSide::Short => {
-                    let bundle = &mut self.open_orders.short[o.symbol_idx];
+                    let bundle = &mut desired.short[o.symbol_idx];
                     if orchestrator::is_close_order_type(order.order_type) {
                         bundle.closes.push(bt_order);
                     } else {
@@ -5415,6 +5545,7 @@ impl<'a> Backtest<'a> {
                 }
             }
         }
+        self.reconcile_open_orders(k, desired)?;
         if let Some(p) = self.orch_profile.as_mut() {
             OrchProfile::add_ns(&mut p.distribute_ns, t0.elapsed());
         }
@@ -5426,6 +5557,36 @@ impl<'a> Backtest<'a> {
 
         if let Some(p) = self.orch_profile.as_mut() {
             OrchProfile::add_ns(&mut p.total_ns, total_t0.elapsed());
+        }
+        Ok(())
+    }
+
+    fn reconcile_open_orders(&mut self, k: usize, desired: OpenOrders) -> Result<(), String> {
+        let active_from = k
+            .checked_add(1)
+            .and_then(|k| k.checked_add(self.backtest_params.execution_delay_bars))
+            .ok_or_else(|| "execution_delay_bars activation index overflow".to_string())?;
+        for (existing, target) in self
+            .open_orders
+            .long
+            .iter_mut()
+            .zip(desired.long)
+            .chain(self.open_orders.short.iter_mut().zip(desired.short))
+        {
+            reconcile_order_lifecycle(
+                &mut existing.entries,
+                target.entries,
+                k,
+                active_from,
+                &mut self.next_order_id,
+            );
+            reconcile_order_lifecycle(
+                &mut existing.closes,
+                target.closes,
+                k,
+                active_from,
+                &mut self.next_order_id,
+            );
         }
         Ok(())
     }
@@ -5665,6 +5826,23 @@ impl<'a> Backtest<'a> {
             let short_alphas = &self.ema_alphas[i].short.alphas;
 
             let emas = &mut self.emas[i];
+
+            if !self.ema_seeded[i] {
+                // Seed only when this symbol's first genuine candle has closed.
+                emas.long = [close_price; 3];
+                emas.long_num = [close_price; 3];
+                emas.short = [close_price; 3];
+                emas.short_num = [close_price; 3];
+                emas.unstuck_long = [close_price; 3];
+                emas.unstuck_long_num = [close_price; 3];
+                emas.unstuck_short = [close_price; 3];
+                emas.unstuck_short_num = [close_price; 3];
+                emas.vol_long = vol;
+                emas.vol_long_num = vol;
+                emas.vol_short = vol;
+                emas.vol_short_num = vol;
+                self.ema_seeded[i] = true;
+            }
 
             // price EMAs (3 levels)
             for z in 0..3 {
@@ -6475,6 +6653,10 @@ fn calc_ema_alphas(
 }
 
 #[cfg(test)]
+#[path = "backtest_execution_tests.rs"]
+mod execution_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::strategies::{
@@ -6550,6 +6732,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -6624,6 +6809,9 @@ mod tests {
         bp_pair.short.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -6686,6 +6874,9 @@ mod tests {
         bp_pair.long.ema_span_0 = 10.0;
         bp_pair.long.ema_span_1 = 20.0;
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -6786,6 +6977,9 @@ mod tests {
         let mut hs = EquityHardStopLossConfig::default();
         hs.signal_mode = "coin".to_string();
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -6887,22 +7081,54 @@ mod tests {
         // A new episode can also flatten again within the same bar. Its
         // closing loss must be evaluated rather than inheriting the flat cache.
         let mut second_boundary = Backtest::new(
-            hlcvs.view(), btc_usd_prices.view(), bt.bot_params.clone(),
-            vec![ExchangeParams::default()], &backtest_params,
+            hlcvs.view(),
+            btc_usd_prices.view(),
+            bt.bot_params.clone(),
+            vec![ExchangeParams::default()],
+            &backtest_params,
         );
-        second_boundary.positions.long[0] = Position { size: 500.0, price: 1.0 };
+        second_boundary.positions.long[0] = Position {
+            size: 500.0,
+            price: 1.0,
+        };
         second_boundary.update_equities(0);
-        second_boundary.update_hard_stop_state_coin(0, 0, LONG).unwrap();
-        let large_close = Order { qty: -500.0, ..close };
-        second_boundary.process_close_fill_long(1, 0, &large_close, exec).unwrap();
+        second_boundary
+            .update_hard_stop_state_coin(0, 0, LONG)
+            .unwrap();
+        let large_close = Order {
+            qty: -500.0,
+            ..close
+        };
+        second_boundary
+            .process_close_fill_long(1, 0, &large_close, exec)
+            .unwrap();
         assert!(second_boundary.hard_stop_coin[LONG][0].state.is_none());
-        second_boundary.process_entry_fill_long(1, 0, &Order { qty: 500.0, ..entry }, exec);
-        second_boundary.process_close_fill_long(
-            1, 0, &large_close, OrderFillExecution { price: 0.5, ..exec },
-        ).unwrap();
+        second_boundary.process_entry_fill_long(
+            1,
+            0,
+            &Order {
+                qty: 500.0,
+                ..entry
+            },
+            exec,
+        );
+        second_boundary
+            .process_close_fill_long(
+                1,
+                0,
+                &large_close,
+                OrderFillExecution { price: 0.5, ..exec },
+            )
+            .unwrap();
         assert!(second_boundary.hard_stop_coin[LONG][0].halted);
         assert_eq!(second_boundary.hard_stop_n_triggers, 1);
-        assert_eq!(second_boundary.hard_stop_coin[LONG][0].last_stop.unwrap().timestamp_ms, 60_000);
+        assert_eq!(
+            second_boundary.hard_stop_coin[LONG][0]
+                .last_stop
+                .unwrap()
+                .timestamp_ms,
+            60_000
+        );
 
         // A closing execution can itself cross RED (e.g. adverse slippage).
         // Its PnL must be sampled before deciding that the episode may reset.
@@ -6945,15 +7171,23 @@ mod tests {
         closing_red.process_entry_fill_long(1, 0, &entry, exec);
         assert!(closing_red.positions.long[0].size > 0.0);
         assert!(closing_red.hard_stop_coin[LONG][0].halted);
-        assert_eq!(closing_red.hard_stop_coin[LONG][0].last_stop.unwrap().timestamp_ms, 60_000);
+        assert_eq!(
+            closing_red.hard_stop_coin[LONG][0]
+                .last_stop
+                .unwrap()
+                .timestamp_ms,
+            60_000
+        );
         assert_eq!(closing_red.hard_stop_n_triggers, 1);
     }
 
     #[test]
     fn ordinary_flatten_respects_pside_and_unified_scope() {
         for (mode, closing_side) in [
-            ("pside", LONG), ("pside", SHORT),
-            ("unified", LONG), ("unified", SHORT),
+            ("pside", LONG),
+            ("pside", SHORT),
+            ("unified", LONG),
+            ("unified", SHORT),
         ] {
             let hlcvs = Array3::from_shape_vec((3, 2, 4), vec![1.0; 3 * 2 * 4]).unwrap();
             let btc_usd_prices = Array1::from_vec(vec![20_000.0; 3]);
@@ -6971,6 +7205,9 @@ mod tests {
             hs.signal_mode = mode.to_string();
             bp_pair.short = bp_pair.long.clone();
             let backtest_params = BacktestParams {
+                execution_delay_bars: 0,
+                intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+                execution_audit_path: None,
                 starting_balance: 1000.0,
                 maker_fee: 0.0,
                 taker_fee: 0.00055,
@@ -7077,36 +7314,69 @@ mod tests {
 
             // A second complete episode in this bar must retain the first
             // flatten's PnL baseline, including entry and closing fees.
-            let fee_exec = OrderFillExecution { fee_rate: 0.001, ..exec };
+            let fee_exec = OrderFillExecution {
+                fee_rate: 0.001,
+                ..exec
+            };
             if closing_side == LONG {
                 let entry = Order {
-                    qty: 500.0, price: 1.0,
+                    qty: 500.0,
+                    price: 1.0,
                     order_type: OrderType::EntryInitialNormalLong,
                 };
                 bt.process_entry_fill_long(1, 0, &entry, fee_exec);
                 bt.process_close_fill_long(
-                    1, 0, &Order { qty: -500.0, ..close },
-                    OrderFillExecution { price: 0.5, ..fee_exec },
-                ).unwrap();
+                    1,
+                    0,
+                    &Order {
+                        qty: -500.0,
+                        ..close
+                    },
+                    OrderFillExecution {
+                        price: 0.5,
+                        ..fee_exec
+                    },
+                )
+                .unwrap();
             } else {
                 let entry = Order {
-                    qty: -500.0, price: 1.0,
+                    qty: -500.0,
+                    price: 1.0,
                     order_type: OrderType::EntryInitialNormalShort,
                 };
                 bt.process_entry_fill_short(1, 0, &entry, fee_exec);
                 bt.process_close_fill_short(
-                    1, 0, &Order { qty: 500.0, ..close_short },
-                    OrderFillExecution { price: 1.5, ..fee_exec },
-                ).unwrap();
+                    1,
+                    0,
+                    &Order {
+                        qty: 500.0,
+                        ..close_short
+                    },
+                    OrderFillExecution {
+                        price: 1.5,
+                        ..fee_exec
+                    },
+                )
+                .unwrap();
             }
             let runtime = &bt.hard_stop_pside[closing_side];
-            assert!(runtime.halted, "second same-bar loss must trigger RED in {mode}");
+            assert!(
+                runtime.halted,
+                "second same-bar loss must trigger RED in {mode}"
+            );
             let stop = runtime.last_stop.unwrap();
             assert_eq!(stop.timestamp_ms, 60_000);
             let episode_loss = if closing_side == LONG { 250.75 } else { 251.25 };
-            let peak_equity = if mode == "unified" || closing_side == LONG { 998.0 } else { 1000.0 };
+            let peak_equity = if mode == "unified" || closing_side == LONG {
+                998.0
+            } else {
+                1000.0
+            };
             assert!((stop.drawdown_raw - episode_loss / peak_equity).abs() < 1e-12);
-            assert_eq!(bt.hard_stop_n_triggers, if mode == "unified" { 2 } else { 1 });
+            assert_eq!(
+                bt.hard_stop_n_triggers,
+                if mode == "unified" { 2 } else { 1 }
+            );
         }
     }
 
@@ -7128,6 +7398,9 @@ mod tests {
         hs.orange_tier_mode = "graceful_stop".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -7196,6 +7469,9 @@ mod tests {
         hs.orange_tier_mode = "tp_only_with_active_entry_cancellation".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -7270,6 +7546,9 @@ mod tests {
         hs.orange_tier_mode = "tp_only_with_active_entry_cancellation".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -7339,6 +7618,9 @@ mod tests {
         hs.enabled = true;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -7433,6 +7715,9 @@ mod tests {
         hs.panic_close_order_type = "market".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0002,
             taker_fee: 0.00055,
@@ -7475,6 +7760,7 @@ mod tests {
             price: 100.0,
         };
         bt.open_orders.long[0].closes.push(BacktestOrder {
+            lifecycle: None,
             order: Order {
                 qty: -1.0,
                 price: 200.0,
@@ -7515,6 +7801,9 @@ mod tests {
         hs.panic_close_order_type = "limit".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0002,
             taker_fee: 0.00055,
@@ -7557,6 +7846,7 @@ mod tests {
             price: 100.0,
         };
         bt.open_orders.long[0].closes.push(BacktestOrder {
+            lifecycle: None,
             order: Order {
                 qty: -1.0,
                 price: 200.0,
@@ -7572,7 +7862,7 @@ mod tests {
     }
 
     #[test]
-    fn delisted_open_positions_are_realized_on_last_valid_candle() {
+    fn missing_held_valuation_fails_without_anticipatory_delist_exit() {
         let n_timesteps = 1_505;
         let mut hlcvs = Array3::<f64>::zeros((n_timesteps, 1, 4));
         for k in 0..n_timesteps {
@@ -7596,6 +7886,9 @@ mod tests {
         bp_pair.short.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.001,
@@ -7642,29 +7935,17 @@ mod tests {
             price: 100.0,
         };
 
-        let (fills, _) = bt.run().unwrap();
-
-        assert_eq!(bt.positions.long[0].size, 0.0);
-        assert_eq!(bt.positions.short[0].size, 0.0);
-        let close_long = fills
-            .iter()
-            .find(|fill| fill.order_type == OrderType::ClosePanicLong)
-            .expect("expected delisting panic close fill");
-        assert_eq!(close_long.index, 30);
-        assert_eq!(close_long.fill_qty, -1.0);
-        assert_eq!(close_long.fill_price, 90.0);
-        assert!(close_long.pnl < 0.0);
-        assert!(close_long.fee_paid < 0.0);
-
-        let close_short = fills
-            .iter()
-            .find(|fill| fill.order_type == OrderType::ClosePanicShort)
-            .expect("expected delisting panic short close fill");
-        assert_eq!(close_short.index, 30);
-        assert_eq!(close_short.fill_qty, 1.0);
-        assert_eq!(close_short.fill_price, 90.0);
-        assert!(close_short.pnl > 0.0);
-        assert!(close_short.fee_paid < 0.0);
+        let error = bt.run().err().expect("held valuation must be unavailable");
+        assert!(
+            error.contains("missing held-position valuation candle"),
+            "{error}"
+        );
+        assert!(error.contains("candle 31"), "{error}");
+        assert!(bt.positions.long[0].size != 0.0 || bt.positions.short[0].size != 0.0);
+        assert!(bt.fills.iter().all(|fill| !matches!(
+            fill.order_type,
+            OrderType::ClosePanicLong | OrderType::ClosePanicShort
+        )));
     }
 
     #[test]
@@ -7686,6 +7967,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0002,
             taker_fee: 0.00099,
@@ -7727,6 +8011,7 @@ mod tests {
             &backtest_params,
         );
         bt.open_orders.long[0].entries.push(BacktestOrder {
+            lifecycle: None,
             order: Order {
                 qty: 1.0,
                 price: 100.0,
@@ -7764,6 +8049,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.00099,
             taker_fee: 0.00055,
@@ -7805,6 +8093,7 @@ mod tests {
             &backtest_params,
         );
         bt.open_orders.long[0].entries.push(BacktestOrder {
+            lifecycle: None,
             order: Order {
                 qty: 1.0,
                 price: 100.0,
@@ -7865,6 +8154,9 @@ mod tests {
             short: serde_json::to_value(strategy).unwrap(),
         };
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1_000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -7914,6 +8206,10 @@ mod tests {
             &backtest_params,
         );
 
+        bt.positions.long[0] = Position {
+            size: 1.0,
+            price: 100.0,
+        };
         bt.bot_params[0].long.risk_entry_cooldown_minutes = 0.05;
         bt.orchestrator_input_cache = None;
         bt.update_open_orders_all(0).unwrap();
@@ -7990,6 +8286,9 @@ mod tests {
             short: serde_json::to_value(strategy).unwrap(),
         };
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1_000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8098,6 +8397,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8174,6 +8476,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8242,6 +8547,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8311,6 +8619,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8390,6 +8701,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8496,6 +8810,9 @@ mod tests {
             hs.ema_span_minutes = 1.0;
 
             let backtest_params = BacktestParams {
+                execution_delay_bars: 0,
+                intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+                execution_audit_path: None,
                 starting_balance: 100.0,
                 maker_fee: 0.0,
                 taker_fee: 0.00055,
@@ -8586,6 +8903,9 @@ mod tests {
         hs.cooldown_minutes_after_red = 5.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8702,6 +9022,9 @@ mod tests {
         hs.ema_span_minutes = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8813,6 +9136,9 @@ mod tests {
         hs.ema_span_minutes = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8909,6 +9235,9 @@ mod tests {
         hs.ema_span_minutes = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -8987,6 +9316,9 @@ mod tests {
             hs.ema_span_minutes = 1.0;
 
             let backtest_params = BacktestParams {
+                execution_delay_bars: 0,
+                intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+                execution_audit_path: None,
                 starting_balance: 100.0,
                 maker_fee: 0.0,
                 taker_fee: 0.00055,
@@ -9068,6 +9400,9 @@ mod tests {
         hs.ema_span_minutes = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -9152,6 +9487,9 @@ mod tests {
         hs.ema_span_minutes = 240.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -9242,6 +9580,9 @@ mod tests {
         hs.ema_span_minutes = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -9320,6 +9661,9 @@ mod tests {
         hs.cooldown_minutes_after_red = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -9415,6 +9759,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -9512,6 +9859,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -9607,6 +9957,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.0,
@@ -9663,6 +10016,7 @@ mod tests {
         bt.open_orders.long[0] = OpenOrderBundle {
             entries: vec![],
             closes: vec![BacktestOrder {
+                lifecycle: None,
                 order: Order {
                     qty: -1.0,
                     price: 100.0,
@@ -9786,6 +10140,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.0,
@@ -9940,6 +10297,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.0,
@@ -10032,6 +10392,9 @@ mod tests {
         bp_pair.short.hsl_tier_ratio_orange = 0.75;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.0,
@@ -10134,6 +10497,9 @@ mod tests {
         hs.ema_span_minutes = 60.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.0,
@@ -10267,6 +10633,9 @@ mod tests {
         hs.ema_span_minutes = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.0,
@@ -10358,6 +10727,9 @@ mod tests {
         hs.signal_mode = "unified".to_string();
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -10415,6 +10787,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -10473,6 +10848,9 @@ mod tests {
             bp_pair.long.ema_span_1 = 20.0;
 
             let backtest_params = BacktestParams {
+                execution_delay_bars: 0,
+                intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+                execution_audit_path: None,
                 starting_balance: 1000.0,
                 maker_fee: 0.0,
                 taker_fee: 0.00055,
@@ -10547,6 +10925,9 @@ mod tests {
         hs.ema_span_minutes = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -10618,6 +10999,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 1.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 100.0,
             maker_fee: 0.0,
             taker_fee: 0.0,
@@ -10664,6 +11048,7 @@ mod tests {
             price: 100.0,
         };
         bt.open_orders.long[0].closes.push(BacktestOrder {
+            lifecycle: None,
             order: Order {
                 qty: -2.0,
                 price: 1.0,
@@ -10694,6 +11079,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -10764,6 +11152,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -10842,6 +11233,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -10935,6 +11329,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11033,6 +11430,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11108,6 +11508,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11217,6 +11620,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11296,6 +11702,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11377,6 +11786,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11463,6 +11875,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11555,6 +11970,9 @@ mod tests {
         short_only.long.wallet_exposure_limit = 0.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11633,6 +12051,9 @@ mod tests {
         bp_pair.long.ema_span_1 = 20.0;
 
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,
@@ -11709,6 +12130,9 @@ mod tests {
         bp_pair.short.unstuck_ema_span_0 = 10.0;
         bp_pair.short.unstuck_ema_span_1 = 20.0;
         let backtest_params = BacktestParams {
+            execution_delay_bars: 0,
+            intrabar_fill_order: IntrabarFillOrder::CloseFirst,
+            execution_audit_path: None,
             starting_balance: 1000.0,
             maker_fee: 0.0,
             taker_fee: 0.00055,

@@ -1,10 +1,12 @@
 import logging
+from copy import deepcopy
 
 import numpy as np
 import pytest
 import utils
 
 import backtest as backtest_module
+from config import compile_runtime_config, prepare_config
 from config_utils import get_template_config
 from backtest import (
     build_backtest_payload,
@@ -131,6 +133,32 @@ def test_prep_backtest_args_passes_market_order_slippage_pct():
     mss = _base_mss()
     _, _, _, backtest_params = prep_backtest_args(config, mss, "binance")
     assert backtest_params["market_order_slippage_pct"] == 0.0015
+
+
+@pytest.mark.parametrize("delay", [0, 1, 3])
+@pytest.mark.parametrize("fill_order", ["close_first", "entry_first"])
+@pytest.mark.parametrize("audit_path", [None, "results/fill_audit.csv"])
+def test_simulation_settings_reach_payload_without_changing_bot_params(
+    delay, fill_order, audit_path
+):
+    config = prepare_config(_base_config(), verbose=False)
+    config["backtest"]["coins"] = {"binance": ["BTC/USDT:USDT"]}
+    baseline = prep_backtest_args(config, _base_mss(), "binance")
+    config["backtest"].update(
+        execution_delay_bars=delay,
+        intrabar_fill_order=fill_order,
+        execution_audit_path=audit_path,
+    )
+    original = deepcopy(config)
+    compiled = compile_runtime_config(config, runtime="backtest")
+
+    result = prep_backtest_args(compiled, _base_mss(), "binance", is_runtime_compiled=True)
+
+    assert config == original
+    assert result[:3] == baseline[:3]
+    assert result[3]["execution_delay_bars"] == delay
+    assert result[3]["intrabar_fill_order"] == fill_order
+    assert result[3]["execution_audit_path"] == audit_path
 
 
 def test_prep_backtest_args_passes_market_order_near_touch_threshold_from_live():
@@ -420,6 +448,9 @@ def test_log_backtest_execution_settings_emits_summary(caplog):
     assert "[backtest] effective execution settings:" in caplog.text
     assert "market_orders_allowed" in caplog.text
     assert "pnls_max_lookback_days" in caplog.text
+    assert "execution_delay_bars" in caplog.text
+    assert "intrabar_fill_order" in caplog.text
+    assert "execution_audit_path" in caplog.text
 
 
 def test_build_backtest_payload_compiles_runtime_config_once(monkeypatch):

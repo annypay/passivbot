@@ -688,6 +688,20 @@ def denormalize_exchange_name(exchange: str) -> str:
     return to_standard_exchange_name(exchange)
 
 
+_CCXT_PROXY_ENV_VARS = (
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "ALL_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "all_proxy",
+)
+
+
+def _ccxt_should_trust_environment() -> bool:
+    return any(os.environ.get(name) for name in _CCXT_PROXY_ENV_VARS)
+
+
 def load_ccxt_instance(exchange_id: str, enable_rate_limit: bool = True, timeout_ms: int = 60_000):
     """
     Return a ccxt async-support exchange instance for the given exchange id.
@@ -696,14 +710,15 @@ def load_ccxt_instance(exchange_id: str, enable_rate_limit: bool = True, timeout
     """
     ex = to_ccxt_exchange_id(exchange_id)
     client_id = to_ccxt_client_id(ex)
+    client_config = {
+        "enableRateLimit": bool(enable_rate_limit),
+        # Default ccxt timeout can be too low for long lookbacks; raise to be tolerant.
+        "timeout": int(timeout_ms),
+    }
+    if _ccxt_should_trust_environment():
+        client_config["aiohttp_trust_env"] = True
     try:
-        cc = getattr(ccxt, client_id)(
-            {
-                "enableRateLimit": bool(enable_rate_limit),
-                # Default ccxt timeout can be too low for long lookbacks; raise to be tolerant.
-                "timeout": int(timeout_ms),
-            }
-        )
+        cc = getattr(ccxt, client_id)(client_config)
     except Exception as exc:
         raise RuntimeError(
             f"ccxt exchange client {client_id!r} not available for canonical exchange {ex!r}"

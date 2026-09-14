@@ -6,6 +6,23 @@ since the latest release tag; these features may already be available when insta
 
 ## Unreleased
 
+- Make exact Rust backtests construct orders from completed history and current
+  position state instead of the next candle's range. Missing held-position prices
+  no longer trigger a perfect exit on a future-known last data candle.
+- Add CPU backtest order-update latency, alternative entry/close fill ordering,
+  and optional fill-level execution provenance for candle-boundary sensitivity
+  studies. These are simulation assumptions, not reconstructed exchange events.
+- Keep explicit final-dataset replays independent of current exchange market
+  discovery, preserve saved market identities and coverage, and avoid redundant
+  full-dataset copies.
+- Align BTC backtest benchmarks using only known past closes within the configured
+  gap tolerance; missing leading coverage and excessive gaps now fail explicitly
+  instead of borrowing future prices.
+
+- Let CCXT REST clients inherit configured standard HTTP proxy environment variables,
+  allowing WSL mirrored-network deployments to reach external exchange endpoints through
+  a local proxy.
+
 - Apply the shared 30-second request timeout to KuCoin clients and honor explicit
   timeout overrides and native CCXT credential names while preserving broker signing.
 

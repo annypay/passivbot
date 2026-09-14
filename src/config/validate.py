@@ -22,6 +22,29 @@ from .strategy import (
 _STARTUP_BUDGET_KEYS = frozenset({"elapsed_ms", "since_previous_ms"})
 
 
+def validate_backtest_execution_settings(backtest_config: dict) -> None:
+    delay = backtest_config["execution_delay_bars"]
+    if isinstance(delay, bool) or not isinstance(delay, int):
+        raise TypeError("config.backtest.execution_delay_bars must be an integer")
+    if delay < 0:
+        raise ValueError("config.backtest.execution_delay_bars must be >= 0")
+    fill_order = backtest_config["intrabar_fill_order"]
+    if not isinstance(fill_order, str) or fill_order not in (
+        "close_first",
+        "entry_first",
+    ):
+        raise ValueError(
+            "config.backtest.intrabar_fill_order must be one of: close_first, entry_first"
+        )
+    audit_path = backtest_config["execution_audit_path"]
+    if audit_path is not None and (
+        not isinstance(audit_path, str) or not audit_path.strip()
+    ):
+        raise ValueError(
+            "config.backtest.execution_audit_path must be None or a non-empty string path"
+        )
+
+
 def _validate_fixed_runtime_overrides(config: dict) -> None:
     overrides = config.get("optimize", {}).get("fixed_runtime_overrides")
     if not isinstance(overrides, dict):
@@ -84,6 +107,7 @@ def validate_config(
     from optimization.config_adapter import validate_optimize_bounds_against_bot_config
 
     require_config_dict(config, "monitor")
+    validate_backtest_execution_settings(require_config_dict(config, "backtest"))
     _validate_fixed_runtime_overrides(config)
     strategy_kind = normalize_strategy_kind(config["live"].get("strategy_kind"))
     optimize_bounds = (

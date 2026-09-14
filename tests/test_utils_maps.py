@@ -50,11 +50,32 @@ def test_load_ccxt_instance_defaults_okx_to_swap_only_markets(monkeypatch):
     monkeypatch.setattr(utils.ccxt, "exchanges", ["okx"], raising=False)
     monkeypatch.setattr(utils.ccxt, "okx", DummyOKX, raising=False)
     monkeypatch.setattr(utils, "resolve_custom_endpoint_override", lambda _exchange: None)
+    for name in utils._CCXT_PROXY_ENV_VARS:
+        monkeypatch.delenv(name, raising=False)
 
     cc = utils.load_ccxt_instance("okx")
 
     assert cc.options["defaultType"] == "swap"
     assert cc.options["fetchMarkets"] == {"types": ["swap"]}
+
+
+@pytest.mark.parametrize("proxy_var", utils._CCXT_PROXY_ENV_VARS)
+def test_load_ccxt_instance_trusts_configured_environment_proxy(monkeypatch, proxy_var):
+    class DummyBinance:
+        def __init__(self, config=None):
+            self.config = config or {}
+            self.options = {}
+
+    monkeypatch.setattr(utils.ccxt, "exchanges", ["binanceusdm"], raising=False)
+    monkeypatch.setattr(utils.ccxt, "binanceusdm", DummyBinance, raising=False)
+    monkeypatch.setattr(utils, "resolve_custom_endpoint_override", lambda _exchange: None)
+    for name in utils._CCXT_PROXY_ENV_VARS:
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv(proxy_var, "http://127.0.0.1:10808")
+
+    cc = utils.load_ccxt_instance("binanceusdm")
+
+    assert cc.config["aiohttp_trust_env"] is True
 
 
 def test_defx_exchange_qualified_identifier_is_recognized():

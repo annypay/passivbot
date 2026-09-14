@@ -124,6 +124,8 @@ def test_gateio_standalone_ccxt_loader_uses_gate_client(monkeypatch):
             None if (exchange_id, aliases) == ("gateio", ("gate",)) else "unexpected"
         ),
     )
+    for name in utils._CCXT_PROXY_ENV_VARS:
+        monkeypatch.delenv(name, raising=False)
 
     client = utils.load_ccxt_instance("gateio")
 

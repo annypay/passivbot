@@ -633,6 +633,315 @@ class TestHLCVManagerGapHandling:
         assert not df.empty
 
 
+class TestBtcBenchmarkAlignment:
+    start_ts = 1706745540000  # 2024-01-31 23:59 UTC candle-open label.
+
+    def align(self, source_minutes, prices, destination_minutes, tolerance=0.0, **columns):
+        return hp._align_btc_benchmark_prices(
+            pd.DataFrame(
+                {
+                    "timestamp": self.start_ts + np.asarray(source_minutes) * 60_000,
+                    "close": prices,
+                    **columns,
+                }
+            ),
+            self.start_ts + np.asarray(destination_minutes) * 60_000,
+            gap_tolerance_ohlcvs_minutes=tolerance,
+            source_exchange="binanceusdm",
+        )
+
+    @pytest.mark.parametrize("dtype", [np.float32, np.float64])
+    def test_exact_completed_candle_labels_preserve_prices_across_midnight(self, dtype, caplog):
+        prices = np.array([50000.5, 50001.25, 50002.0], dtype=dtype)
+
+        result = self.align([0, 1, 2], prices, [0, 1, 2], volume=[0.0, 0.0, 0.0])
+
+        np.testing.assert_array_equal(result, prices)
+        assert result.dtype == prices.dtype
+        assert not caplog.records
+
+    def test_single_exact_boundary_uses_same_label_not_future_close(self):
+        result = self.align([-1, 0, 1], [10.0, 20.0, 900.0], [0])
+
+        np.testing.assert_array_equal(result, [20.0])
+
+    @pytest.mark.parametrize(
+        "source_minutes,prices,valid",
+        [
+            ([1, 2], [20.0, 30.0], [True, True]),
+            ([0, 1, 2], [900.0, 20.0, 30.0], [False, True, True]),
+            ([0, 1, 2], [np.nan, 20.0, 30.0], [False, True, True]),
+            ([0, 1, 2], [900.0, 20.0, 30.0], [False, False, False]),
+        ],
+    )
+    def test_missing_leading_basis_never_uses_later_close(
+        self, source_minutes, prices, valid, caplog
+    ):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="no valid close at or before") as exc:
+            self.align(source_minutes, prices, [0, 1, 2], tolerance=120.0, valid=valid)
+
+        assert "BTC/USD benchmark source=binanceusdm" in str(exc.value)
+        assert f"required_start_ts={self.start_ts}" in str(exc.value)
+        assert "repair BTC 1m coverage" in str(exc.value)
+        assert not caplog.records
+
+    def test_prior_basis_before_destination_is_retained(self, caplog):
+        result = self.align([-1, 1], [10.0, 900.0], [0, 1, 2], tolerance=1.0)
+
+        np.testing.assert_array_equal(result, [10.0, 900.0, 900.0])
+        assert len(caplog.records) == 1
+        assert "rows=2" in caplog.text
+        assert "max_age_minutes=1" in caplog.text
+
+    def test_bounded_internal_and_tail_fills_are_observable_and_recover(self, caplog):
+        result = self.align([0, 3], [10.0, 40.0], range(6), tolerance=2.0)
+
+        np.testing.assert_array_equal(result, [10.0, 10.0, 10.0, 40.0, 40.0, 40.0])
+        assert len(caplog.records) == 1
+        assert caplog.records[0].levelname == "WARNING"
+        assert len(caplog.records[0].getMessage()) <= 240
+        assert "BTC/USD benchmark past-only fill source=binanceusdm" in caplog.text
+        assert "rows=4" in caplog.text
+        assert "max_age_minutes=2 max_gap_minutes=2 tolerance_minutes=2" in caplog.text
+
+        caplog.clear()
+        prices = [10.0, 11.0, 12.0, 40.0, 41.0, 42.0]
+        recovered = self.align(range(6), prices, range(6), tolerance=2.0)
+        np.testing.assert_array_equal(recovered, prices)
+        assert not caplog.records
+
+    @pytest.mark.parametrize("placeholder", [900.0, np.nan, np.inf, -np.inf, 0.0])
+    def test_masked_placeholders_do_not_reset_past_fill_age(self, caplog, placeholder):
+        result = self.align(
+            range(5),
+            [10.0, placeholder, placeholder, 40.0, placeholder],
+            range(5),
+            tolerance=2.0,
+            valid=[True, False, False, True, False],
+        )
+
+        np.testing.assert_array_equal(result, [10.0, 10.0, 10.0, 40.0, 40.0])
+        assert "rows=3" in caplog.text
+        assert "max_age_minutes=2" in caplog.text
+
+    def test_masked_nan_placeholders_use_bounded_past_close(self, caplog):
+        result = self.align(
+            range(4),
+            [100.0, np.nan, np.nan, 105.0],
+            range(4),
+            tolerance=2.0,
+            valid=[True, False, False, True],
+        )
+
+        np.testing.assert_array_equal(result, [100.0, 100.0, 100.0, 105.0])
+        assert "rows=2" in caplog.text
+        assert "max_age_minutes=2" in caplog.text
+
+    @pytest.mark.parametrize("invalid_price", [np.nan, np.inf, -np.inf, 0.0, -1.0])
+    def test_invalid_real_prices_still_raise_after_masking_placeholders(self, invalid_price):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="positive and finite") as exc:
+            self.align(
+                range(4),
+                [100.0, np.nan, invalid_price, 105.0],
+                range(4),
+                tolerance=2.0,
+                valid=[True, False, True, True],
+            )
+
+        assert f"first_invalid_ts={self.start_ts + 2 * 60_000}" in str(exc.value)
+
+    @pytest.mark.parametrize("source_minutes", [[0, 0, 2], [0, 0.5, 2]])
+    def test_masked_placeholder_timestamps_still_require_ordered_minute_labels(
+        self, source_minutes
+    ):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="source timestamps"):
+            self.align(
+                source_minutes,
+                [100.0, np.nan, 105.0],
+                range(3),
+                tolerance=2.0,
+                valid=[True, False, True],
+            )
+
+    @pytest.mark.parametrize(
+        "source_minutes,destination_minutes,tolerance",
+        [
+            ([0, 4], range(5), 2.0),
+            ([0, 1], range(5), 2.0),
+            ([-3], range(3), 2.0),
+            ([-2, 2], range(3), 2.0),
+            ([0, 5], [1, 2], 2.0),
+            ([0, 2], range(3), 0.0),
+            ([0, 2], range(3), 0.5),
+        ],
+    )
+    def test_excessive_gaps_fail_without_shortening_dates(
+        self, source_minutes, destination_minutes, tolerance, caplog
+    ):
+        with pytest.raises(
+            hp.HlcvsDataIntegrityError, match="exceeding backtest.gap_tolerance_ohlcvs_minutes"
+        ) as exc:
+            self.align(
+                source_minutes,
+                [10.0] * len(source_minutes),
+                destination_minutes,
+                tolerance=tolerance,
+            )
+
+        assert "last_valid_ts=" in str(exc.value)
+        assert "repair BTC 1m coverage without shortening the requested window" in str(exc.value)
+        assert not caplog.records
+
+    @pytest.mark.parametrize("placeholder", [10.0, np.nan])
+    def test_masked_internal_gap_cannot_bypass_tolerance(self, placeholder):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="requires a 3-minute past fill"):
+            self.align(
+                range(5),
+                [10.0, placeholder, placeholder, placeholder, 10.0],
+                range(5),
+                tolerance=2.0,
+                valid=[True, False, False, False, True],
+            )
+
+    @pytest.mark.parametrize("invalid_price", [np.nan, np.inf, -np.inf, 0.0, -1.0])
+    @pytest.mark.parametrize("invalid_index", [0, 1, 2])
+    def test_invalid_prices_raise_instead_of_filling(self, invalid_price, invalid_index):
+        prices = [10.0, 20.0, 30.0]
+        prices[invalid_index] = invalid_price
+
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="positive and finite") as exc:
+            self.align(range(3), prices, range(3), tolerance=120.0)
+
+        assert f"first_invalid_ts={self.start_ts + invalid_index * 60_000}" in str(exc.value)
+
+    @pytest.mark.parametrize("label", ["source", "destination"])
+    @pytest.mark.parametrize(
+        "minutes",
+        [
+            [1, 0],
+            [0, 0],
+            [0, 0.5],
+            [0, np.nan],
+            [0, np.inf],
+            [],
+        ],
+    )
+    def test_timestamps_are_validated_not_sorted_or_rounded(self, label, minutes):
+        source = minutes if label == "source" else [0, 1]
+        destination = minutes if label == "destination" else [0, 1]
+
+        with pytest.raises(hp.HlcvsDataIntegrityError, match=f"{label} timestamps"):
+            self.align(source, [10.0] * len(source), destination)
+
+    def test_destination_must_not_silently_omit_required_minutes(self):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="cover every required minute"):
+            self.align([0, 1, 2], [10.0, 20.0, 30.0], [0, 2])
+
+    @pytest.mark.parametrize(
+        "timestamp",
+        [-60_000, 2**63, "invalid-private-input", True],
+    )
+    def test_malformed_source_timestamp_errors_do_not_echo_raw_input(self, timestamp):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="source timestamps") as exc:
+            hp._align_btc_benchmark_prices(
+                pd.DataFrame({"timestamp": [timestamp], "close": [10.0]}),
+                np.array([self.start_ts]),
+                gap_tolerance_ohlcvs_minutes=0.0,
+                source_exchange="binanceusdm",
+            )
+
+        assert "invalid-private-input" not in str(exc.value)
+
+    @pytest.mark.parametrize("tolerance", [np.nan, np.inf, -np.inf, -1.0, "invalid-private-input"])
+    def test_invalid_gap_policy_fails_explicitly(self, tolerance):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="must be finite and nonnegative") as exc:
+            self.align([0], [10.0], [0], tolerance=tolerance)
+
+        assert "invalid-private-input" not in str(exc.value)
+
+    def test_invalid_price_type_is_not_echoed(self):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="must be numeric prices") as exc:
+            self.align([0], ["invalid-private-input"], [0])
+
+        assert "invalid-private-input" not in str(exc.value)
+
+    def test_source_columns_are_required(self):
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="requires timestamp and close"):
+            hp._align_btc_benchmark_prices(
+                pd.DataFrame({"close": [10.0]}),
+                np.array([self.start_ts]),
+                gap_tolerance_ohlcvs_minutes=0.0,
+                source_exchange="binanceusdm",
+            )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("combined", [False, True], ids=["single", "combined"])
+@pytest.mark.parametrize("first_source_minute", [-1, 0, 1])
+async def test_preparation_paths_use_shared_causal_btc_alignment(
+    sample_config, monkeypatch, combined, first_source_minute
+):
+    timestamps = 1704067200000 + np.arange(3, dtype=np.int64) * 60_000
+    source_timestamps = timestamps[0] + np.array([first_source_minute, 2]) * 60_000
+    btc_df = pd.DataFrame({"timestamp": source_timestamps, "close": [10.0, 30.0]})
+    hlcvs = np.ones((3, 1, 4), dtype=np.float32)
+    sample_config["backtest"]["gap_tolerance_ohlcvs_minutes"] = 2.0
+    manager = MagicMock()
+    manager.cc = None
+    manager.get_ohlcvs = AsyncMock(return_value=btc_df)
+    manager.aclose = AsyncMock()
+    monkeypatch.setattr(hp, "HLCVManager", MagicMock(return_value=manager))
+    monkeypatch.setattr(
+        hp, "prepare_hlcvs_internal", AsyncMock(return_value=({"ETH": {}}, timestamps, hlcvs))
+    )
+    monkeypatch.setattr(
+        hp, "_prepare_hlcvs_combined_impl", AsyncMock(return_value=({"ETH": {}}, timestamps, {}))
+    )
+    monkeypatch.setattr(
+        hp, "_load_and_reconcile_combined_sources", AsyncMock(return_value=({}, {}))
+    )
+    monkeypatch.setattr(
+        hp, "_load_combined_btc_prices", AsyncMock(return_value=(btc_df, "binanceusdm"))
+    )
+    monkeypatch.setattr(hp, "OhlcvCatalog", MagicMock())
+    monkeypatch.setattr(hp, "OhlcvStore", MagicMock())
+
+    def materialize(**kwargs):
+        handle = MagicMock()
+        handle.mss = kwargs["mss"]
+        handle.open_timestamps.return_value = kwargs["timestamps"]
+        handle.open_hlcvs.return_value = hlcvs
+        handle.open_btc_usd_prices.return_value = kwargs["btc_usd_prices"]
+        return handle
+
+    materializer = MagicMock(side_effect=materialize)
+    monkeypatch.setattr(hp, "materialize_frames", materializer)
+    align = MagicMock(wraps=hp._align_btc_benchmark_prices)
+    monkeypatch.setattr(hp, "_align_btc_benchmark_prices", align)
+
+    async def prepare():
+        if combined:
+            return await prepare_hlcvs_combined(sample_config)
+        return await prepare_hlcvs(sample_config, "binanceusdm", skip_v2_local=True)
+
+    if first_source_minute > 0:
+        with pytest.raises(hp.HlcvsDataIntegrityError, match="no valid close at or before"):
+            await prepare()
+        materializer.assert_not_called()
+    else:
+        _mss, actual_timestamps, _hlcvs, prices = await prepare()
+        np.testing.assert_array_equal(actual_timestamps, timestamps)
+        np.testing.assert_array_equal(prices, [10.0, 10.0, 30.0])
+    align.assert_called_once()
+    assert align.call_args.args[0] is btc_df
+    assert align.call_args.args[1] is timestamps
+    assert align.call_args.kwargs == {
+        "gap_tolerance_ohlcvs_minutes": 2.0,
+        "source_exchange": "binanceusdm",
+    }
+    manager.aclose.assert_awaited()
+
+
 class TestPrepareHLCVSBtcFallback:
     """Regression tests for BTC benchmark fallback behavior."""
 
@@ -648,6 +957,8 @@ class TestPrepareHLCVSBtcFallback:
         async def mock_get_ohlcvs(self, coin, *args, **kwargs):
             if coin != "BTC":
                 return pd.DataFrame(columns=["timestamp", "close"])
+            assert self.ohlcv_source_dir is None
+            assert kwargs.get("source_dir_only", False) is False
             calls.append(self.exchange)
             if self.exchange == "hyperliquid":
                 return pd.DataFrame(columns=["timestamp", "close"])
@@ -672,6 +983,70 @@ class TestPrepareHLCVSBtcFallback:
         assert calls[-1] == "binanceusdm"
         assert len(btc_usd_prices) == len(timestamps)
         assert float(btc_usd_prices[0]) == 50000.0
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("has_btc_data", [False, True])
+    async def test_prepare_hlcvs_btc_fallback_stays_within_explicit_source_dir(
+        self, sample_config, monkeypatch, has_btc_data
+    ):
+        source_dir = "source/candles"
+        sample_config["backtest"]["ohlcv_source_dir"] = source_dir
+        sample_config["backtest"]["exchanges"] = ["hyperliquid"]
+        timestamps = np.array([1704067200000, 1704067260000], dtype=np.int64)
+        hlcvs = np.ones((2, 1, 4), dtype=np.float32)
+        calls = []
+        closed = []
+        empty_df = pd.DataFrame(columns=["timestamp", "close"])
+
+        class FakeManager:
+            def __init__(self, exchange, start_date, end_date, **kwargs):
+                self.exchange = exchange
+                self.ohlcv_source_dir = kwargs.get("ohlcv_source_dir")
+                self.cc = None
+
+            def update_date_range(self, start_ts, end_ts):
+                assert (start_ts, end_ts) == (timestamps[0], timestamps[-1])
+
+            async def get_ohlcvs(self, coin, *, source_dir_only=False):
+                assert coin == "BTC"
+                assert self.ohlcv_source_dir == source_dir
+                assert source_dir_only, "explicit-source BTC reads must not consult cache/network"
+                calls.append(self.exchange)
+                if self.exchange == "hyperliquid" or not has_btc_data:
+                    return empty_df
+                return pd.DataFrame(
+                    {
+                        "timestamp": timestamps,
+                        "close": [50000.0, 50010.0],
+                        "valid": [True, True],
+                    }
+                )
+
+            async def aclose(self):
+                closed.append(self.exchange)
+
+        monkeypatch.setattr(hp, "HLCVManager", FakeManager)
+        monkeypatch.setattr(
+            hp, "prepare_hlcvs_internal", AsyncMock(return_value=({"BTC": {}}, timestamps, hlcvs))
+        )
+        local_v2 = AsyncMock(side_effect=AssertionError("explicit source must bypass v2 data"))
+        monkeypatch.setattr(hp, "try_prepare_hlcvs_v2_local", local_v2)
+
+        if has_btc_data:
+            mss, out_timestamps, out_hlcvs, prices = await prepare_hlcvs(
+                sample_config, "hyperliquid"
+            )
+            np.testing.assert_array_equal(out_timestamps, timestamps)
+            assert out_hlcvs is hlcvs
+            np.testing.assert_array_equal(prices, [50000.0, 50010.0])
+            assert mss["__meta__"]["btc_source_exchange"] == "binanceusdm"
+        else:
+            with pytest.raises(ValueError, match="Failed to fetch BTC/USD prices"):
+                await prepare_hlcvs(sample_config, "hyperliquid")
+
+        local_v2.assert_not_awaited()
+        assert calls == ["hyperliquid", "binanceusdm"]
+        assert closed == ["binanceusdm", "hyperliquid"]
 
     @pytest.mark.asyncio
     async def test_prepare_hlcvs_legacy_fallback_returns_shared_materialized_payload(
@@ -3237,9 +3612,21 @@ async def test_combined_force_refetch_btc_prices_use_v2_resolver(monkeypatch, tm
 
 
 @pytest.mark.asyncio
-async def test_combined_btc_source_dir_uses_source_dir_only(monkeypatch, tmp_path):
+@pytest.mark.parametrize("has_data", [False, True])
+async def test_combined_btc_source_dir_uses_source_dir_only(monkeypatch, tmp_path, has_data):
     start_ts = month_start_ts(2026, 4)
     calls = []
+    source_df = (
+        pd.DataFrame(
+            {
+                "timestamp": [start_ts, start_ts + 60_000],
+                "close": [50000.0, 50000.0],
+                "valid": [False, True],
+            }
+        )
+        if has_data
+        else pd.DataFrame()
+    )
 
     class FakeBtcManager:
         def __init__(self, exchange, start_date, end_date, **kwargs):
@@ -3258,7 +3645,7 @@ async def test_combined_btc_source_dir_uses_source_dir_only(monkeypatch, tmp_pat
 
         async def get_ohlcvs(self, coin, *args, **kwargs):
             calls.append(kwargs.get("source_dir_only"))
-            return pd.DataFrame()
+            return source_df
 
         async def aclose(self):
             return None
@@ -3280,8 +3667,8 @@ async def test_combined_btc_source_dir_uses_source_dir_only(monkeypatch, tmp_pat
         use_v2_local=False,
     )
 
-    assert btc_df.empty
-    assert source_exchange is None
+    pd.testing.assert_frame_equal(btc_df, source_df)
+    assert source_exchange == ("binanceusdm" if has_data else None)
     assert calls == [True]
 
 

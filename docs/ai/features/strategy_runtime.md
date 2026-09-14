@@ -190,6 +190,13 @@ pins. This is optimizer configuration finalization, not a live/backtest coupling
 
 ## Live/Backtest Market Slippage Boundary
 
+Exact Rust backtest order construction must not consume a future candle range.
+Expansion hints are derived from current position state and preserve the shared
+sequential-entry and close-recursion contracts. Candle-k fills concern already
+active orders; candle-k features generate later intent. Simulation-only order
+latency and fill-order sensitivity are documented in `../../backtesting.md` and
+must not enter the live policy surface.
+
 `backtest.market_order_slippage_pct` is a backtest simulation knob only. Live orchestrator input
 must not read or forward it; live callers intentionally omit `market_order_slippage_pct` and rely
 on Rust's `0.0` serde default for live loss projections. Live market-order execution uses the

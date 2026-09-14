@@ -126,6 +126,26 @@ venv\Scripts\activate
 python3 -m pip install -e .
 ```
 
+### WSL 镜像网络的代理配置
+
+当配置了标准代理环境变量时，Passivbot 的 CCXT REST 客户端会自动继承它们。此配置适用于 WSL 使用[镜像网络模式](https://learn.microsoft.com/windows/wsl/networking#mirrored-mode-networking)，且 Windows 运行 v2rayN 的场景。
+
+如果 v2rayN 的 **HTTP 或混合代理**监听在 `10808` 端口，请将下列内容加入 WSL 的 shell 配置文件（例如 `~/.bashrc` 或 `~/.zshrc`）：
+
+```sh
+export HTTP_PROXY=http://127.0.0.1:10808
+export HTTPS_PROXY=http://127.0.0.1:10808
+export NO_PROXY=localhost,127.0.0.1,::1
+```
+
+保存后请新开一个 WSL shell。镜像网络模式下，WSL 可以通过 `127.0.0.1` 访问 Windows 回环地址，因此该地址会指向 Windows 上的代理。若 v2rayN 的 HTTP/混合代理端口不是 `10808`，请替换为实际端口。不要将仅提供 SOCKS 的监听端口写入这些 HTTP 代理变量。任何代理凭据都应保留在仓库和 Passivbot 配置文件之外。
+
+此设置会应用于公开数据下载和交易所 REST 请求。在启动机器人前，先验证公开端点：
+
+```sh
+curl -I https://fapi.binance.com/fapi/v1/exchangeInfo
+```
+
 ### 第 5 步（可选）：构建 Rust 扩展
 
 Passivbot 会尝试自动构建所需的 Rust 扩展；也可进入 `passivbot-rust` 目录并使用 `maturin` 手动构建：

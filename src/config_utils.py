@@ -1364,6 +1364,43 @@ RESERVED_CLI_ARGS = {
             "effective coins and timestamp window for exact artifact replay."
         ),
     },
+    "backtest.execution_delay_bars": {
+        "visible": ["--execution-delay-bars"],
+        "hidden": ["--backtest.execution_delay_bars", "--backtest_execution_delay_bars"],
+        "type": int,
+        "metavar": "INT",
+        "commands": {"backtest", "optimize"},
+        "group": {"backtest": "Backtest Runtime", "optimize": "Backtest Runtime"},
+        "help": (
+            "Extra full-bar simulation latency for order create/cancel/replace: "
+            "0 means T+1, 1 means T+2. Must be >= 0; exact CPU only when nonzero."
+        ),
+    },
+    "backtest.intrabar_fill_order": {
+        "visible": ["--intrabar-fill-order"],
+        "hidden": ["--backtest.intrabar_fill_order", "--backtest_intrabar_fill_order"],
+        "type": str,
+        "metavar": "MODE",
+        "choices": ("close_first", "entry_first"),
+        "commands": {"backtest", "optimize"},
+        "group": {"backtest": "Backtest Runtime", "optimize": "Backtest Runtime"},
+        "help": (
+            "HLC fill-order sensitivity convention, not a reconstructed OHLC path. "
+            "Default: close_first; entry_first requires exact CPU execution."
+        ),
+    },
+    "backtest.execution_audit_path": {
+        "visible": ["--execution-audit-path"],
+        "hidden": ["--backtest.execution_audit_path", "--backtest_execution_audit_path"],
+        "type": str,
+        "metavar": "PATH",
+        "commands": {"backtest", "optimize"},
+        "group": {"backtest": "Backtest Runtime", "optimize": "Backtest Runtime"},
+        "help": (
+            "Stream fill-only causal execution provenance to a simulation CSV. "
+            "Disabled when unset; exact CPU only, never live."
+        ),
+    },
     "backtest.maker_fee_override": {
         "visible": ["--maker-fee-override"],
         "hidden": ["--backtest.maker_fee_override", "--backtest_maker_fee_override"],

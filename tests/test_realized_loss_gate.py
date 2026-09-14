@@ -11,6 +11,7 @@ import pytest
 
 from passivbot import Passivbot
 from backtest import prep_backtest_args
+from config.schema import get_template_config
 from fill_events_manager import FillEventsManager
 from live.event_bus import EventTypes, ListEventSink, LiveEventPipeline
 
@@ -1082,6 +1083,7 @@ class TestPrepBacktestArgsMaxRealizedLossPct:
         hsl_short = deepcopy(hsl_long)
         config = {
             "backtest": {
+                **get_template_config()["backtest"],
                 "coins": {"binance": ["BTC"]},
                 "starting_balance": 10000,
                 "btc_collateral_cap": 0.5,
@@ -1164,6 +1166,7 @@ class TestPrepBacktestArgsEquityHardStopLoss:
         hsl_short = deepcopy(hsl_long)
         config = {
             "backtest": {
+                **get_template_config()["backtest"],
                 "coins": {"binance": ["BTC"]},
                 "starting_balance": 10000,
                 "btc_collateral_cap": 0.5,

@@ -1865,6 +1865,26 @@ def _candidate_parameter_matrix(
     return matrix
 
 
+def validate_gpu_execution_settings(config: dict) -> None:
+    from config.validate import validate_backtest_execution_settings
+
+    backtest_config = config["backtest"]
+    validate_backtest_execution_settings(backtest_config)
+    unsupported = []
+    if backtest_config["execution_delay_bars"] != 0:
+        unsupported.append("backtest.execution_delay_bars")
+    if backtest_config["intrabar_fill_order"] != "close_first":
+        unsupported.append("backtest.intrabar_fill_order")
+    if backtest_config["execution_audit_path"] is not None:
+        unsupported.append("backtest.execution_audit_path")
+    if unsupported:
+        raise ValueError(
+            "GPU screening proxies do not support "
+            + ", ".join(unsupported)
+            + "; use exact CPU execution with optimize.backend='pymoo' or 'deap'."
+        )
+
+
 class MpsSingleCoinProxy:
     """Batched directional screening proxy for supported single-coin strategies."""
 
@@ -1882,6 +1902,7 @@ class MpsSingleCoinProxy:
         interrupt_check=None,
         max_dispatch_candidate_bars: int = MPS_MAX_DISPATCH_CANDIDATE_BARS,
     ):
+        validate_gpu_execution_settings(config)
         try:
             import torch
         except (
@@ -2996,6 +3017,7 @@ class MpsMulticoinProxy:
         max_dispatch_candidate_bars: int = MPS_MAX_DISPATCH_CANDIDATE_BARS,
         prepared_data_cache: dict | None = None,
     ):
+        validate_gpu_execution_settings(config)
         try:
             import torch
         except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency

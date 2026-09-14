@@ -136,6 +136,8 @@ def get_template_config():
                 "compress_cache": True,
                 "dynamic_wel_by_tradability": True,
                 "end_date": "now",
+                "execution_audit_path": None,
+                "execution_delay_bars": 0,
                 "exchanges": [
                     "binance",
                     "bybit"
@@ -144,6 +146,7 @@ def get_template_config():
                 "gap_tolerance_ohlcvs_minutes": 120,
                 "hlcvs_data_dir": None,
                 "hlcvs_data_override_mode": "intersection",
+                "intrabar_fill_order": "close_first",
                 "liquidation_threshold": 0.05,
                 "maker_fee_override": 0.0004,
                 "market_order_slippage_pct": 0.0005,
