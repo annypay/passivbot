@@ -26,11 +26,15 @@ sys.path.insert(0, str(REPO / "src"))
 
 STUDY = REPO / "backtests/binance/dd_tail_research_2026-09-15"
 LOCK = STUDY / "holdout_candidate_lock.json"
-CONTRACT = STUDY / "research_contract.json"
+CONTRACT = STUDY / "research_contract_v4.json"
+DEFAULT_CANDIDATE_CONFIG = None  # resolved in resolve_paths()
+sys.path.insert(0, str(STUDY / "report_tools"))
+import run_tail_drawdown_study as study  # noqa: E402  (single source for the reported contract)
 BASELINE_CONFIG = REPO / "backtests/binance/2026-09-14T03_40_41/config.json"
 BASELINE_DATASET = REPO / "backtests/binance/2026-09-14T03_40_41/dataset.json"
 ARTIFACTS = STUDY / "artifacts"
 RESULTS_BASE = ARTIFACTS / "backtest_results"
+DEFAULT_ARTIFACTS_SUBDIR = "binance_actual_candidate"
 # Files that must exist before a run counts as usable. The plotting tail of the CLI can be
 # OOM-killed on a small host; the analytical artifacts are already complete at that point.
 REQUIRED_ARTIFACTS = (
@@ -43,12 +47,17 @@ REQUIRED_ARTIFACTS = (
     "total_wallet_exposure.png",
     "pnl_cumsum.png",
 )
+CANDIDATE_ID = "combo_twel100_ddf060_ddthr0030"
+# Runtime paths; `resolve_paths()` fills these from the CLI so one tool can produce artifacts
+# for the locked candidate and for any published profile without duplicating the contract.
+ARTIFACTS = STUDY / "artifacts" / DEFAULT_ARTIFACTS_SUBDIR
+RESULTS_BASE = ARTIFACTS / "backtest_results"
 CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
 RUN_RECORD = ARTIFACTS / "run_record.json"
 AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
 RUN_LOG = ARTIFACTS / "backtest_run.log"
-CANDIDATE_ID = "combo_twel100_ddf060_ddthr0030"
-STUDY_CELL = STUDY / "cells/full/C3_conservative" / CANDIDATE_ID
+CONFIG_SOURCE = BASELINE_CONFIG
+STUDY_CELL = STUDY / "cells" / "full" / study.PRIMARY_SCENARIO / CANDIDATE_ID
 
 
 def sha256_file(path: Path) -> str:
@@ -88,50 +97,51 @@ def set_path(cfg: dict, dotted: str, value: Any) -> None:
     node[parts[-1]] = value
 
 
-def build_candidate_config() -> tuple[dict, list[dict]]:
+def build_candidate_config(apply_locked_ops: bool) -> tuple[dict, list[dict]]:
     from config_utils import load_config
 
-    lock = load_json(LOCK)
-    candidates = {c["cell_id"]: c for c in lock["candidates"]}
-    if CANDIDATE_ID not in candidates:
-        raise SystemExit(f"candidate {CANDIDATE_ID!r} is not present in the lock")
-    entry = candidates[CANDIDATE_ID]
-
-    cfg = load_config(str(BASELINE_CONFIG), verbose=False)
-    applied = []
-    for op in entry["ops"]:
-        current = get_path(cfg, op["path"])
-        if current != op["baseline"]:
-            raise SystemExit(
-                f"baseline drift on {op['path']}: config has {current!r}, lock recorded {op['baseline']!r}"
-            )
-        set_path(cfg, op["path"], op["value"])
-        applied.append({"path": op["path"], "from": current, "to": op["value"]})
+    cfg = load_config(str(CONFIG_SOURCE), verbose=False)
+    applied: list[dict] = []
+    if apply_locked_ops:
+        lock = load_json(LOCK)
+        candidates = {c["cell_id"]: c for c in lock["candidates"]}
+        if CANDIDATE_ID not in candidates:
+            raise SystemExit(f"candidate {CANDIDATE_ID!r} is not present in the lock")
+        entry = candidates[CANDIDATE_ID]
+        for op in entry["ops"]:
+            current = get_path(cfg, op["path"])
+            if current != op["baseline"]:
+                raise SystemExit(
+                    f"baseline drift on {op['path']}: config has {current!r}, lock recorded {op['baseline']!r}"
+                )
+            set_path(cfg, op["path"], op["value"])
+            applied.append({"path": op["path"], "from": current, "to": op["value"]})
 
     ARTIFACTS.mkdir(parents=True, exist_ok=True)
     RESULTS_BASE.mkdir(parents=True, exist_ok=True)
     AUDIT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     cfg["backtest"]["exchanges"] = ["binance"]
-    cfg["backtest"]["execution_delay_bars"] = 1
-    cfg["backtest"]["intrabar_fill_order"] = "close_first"
-    cfg["backtest"]["maker_fee_override"] = 0.0006
-    cfg["backtest"]["taker_fee_override"] = 0.0008
+    # The reported contract comes from the study tool so config and evidence cannot drift.
+    cfg["backtest"]["execution_delay_bars"] = study.PRIMARY_EXECUTION["execution_delay_bars"]
+    cfg["backtest"]["intrabar_fill_order"] = study.PRIMARY_EXECUTION["intrabar_fill_order"]
+    cfg["backtest"]["maker_fee_override"] = study.PRIMARY_COSTS["maker_fee_override"]
+    cfg["backtest"]["taker_fee_override"] = study.PRIMARY_COSTS["taker_fee_override"]
     # Minute-resolution balance/equity series: drawdowns must be computed on the same
     # resolution as `analysis.json` (the reference report runs at minute resolution too).
     cfg["backtest"]["balance_sample_divider"] = 1
     cfg["backtest"]["base_dir"] = str(RESULTS_BASE)
     cfg["backtest"]["execution_audit_path"] = str(AUDIT_PATH)
-    # The archived baseline config predates `backtest.coins`; pin the frozen basket explicitly so
-    # the run cannot depend on market-discovery ordering.
+    # The archived baseline config predates `backtest.coins`; pin the frozen dataset basket
+    # explicitly so the run cannot depend on market-discovery ordering.
     basket = sorted(set(load_json(BASELINE_DATASET)["coins"]))
-    study_coins = sorted(set(load_json(STUDY_CELL / "result.json")["coins"]))
-    if basket != study_coins:
-        raise SystemExit(
-            "frozen basket mismatch between baseline dataset and study cell: "
-            f"dataset-only={sorted(set(basket) - set(study_coins))} "
-            f"cell-only={sorted(set(study_coins) - set(basket))}"
-        )
+    configured = sorted(set(cfg["backtest"].get("coins", {}).get("binance") or basket))
+    dropped = sorted(set(configured) - set(basket))
+    if dropped:
+        print(f"warning: configured coins without frozen data are dropped: {dropped}")
+    missing = sorted(set(basket) - set(configured))
+    if missing:
+        print(f"warning: frozen dataset coins not configured in the profile: {missing}")
     cfg["backtest"]["coins"] = {"binance": basket}
     cfg.setdefault("live", {})["approved_coins"] = {"long": list(basket), "short": []}
 
@@ -141,9 +151,17 @@ def build_candidate_config() -> tuple[dict, list[dict]]:
     os.replace(tmp, CANDIDATE_CONFIG)
 
     reloaded = load_config(str(CANDIDATE_CONFIG), verbose=False)
-    for op in entry["ops"]:
-        if get_path(reloaded, op["path"]) != op["value"]:
-            raise SystemExit(f"round-trip validation failed for {op['path']}")
+    if apply_locked_ops:
+        for op in entry["ops"]:
+            if get_path(reloaded, op["path"]) != op["value"]:
+                raise SystemExit(f"round-trip validation failed for {op['path']}")
+    for key, expected in (
+        ("maker_fee_override", study.PRIMARY_COSTS["maker_fee_override"]),
+        ("taker_fee_override", study.PRIMARY_COSTS["taker_fee_override"]),
+        ("execution_delay_bars", study.PRIMARY_EXECUTION["execution_delay_bars"]),
+    ):
+        if reloaded["backtest"].get(key) != expected:
+            raise SystemExit(f"reported contract drift on backtest.{key}: {reloaded['backtest'].get(key)!r}")
     return cfg, applied
 
 
@@ -181,11 +199,35 @@ def find_result_dir() -> Path:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--skip-run", action="store_true")
+    parser.add_argument(
+        "--candidate-config",
+        default=None,
+        help=(
+            "config to run; defaults to the frozen baseline config with the locked candidate ops "
+            "applied. Pass a published profile to produce its own artifact bundle."
+        ),
+    )
+    parser.add_argument(
+        "--artifacts-subdir",
+        default=DEFAULT_ARTIFACTS_SUBDIR,
+        help=f"artifact directory under <study>/artifacts (default {DEFAULT_ARTIFACTS_SUBDIR})",
+    )
     args = parser.parse_args()
+
+    global ARTIFACTS, RESULTS_BASE, CANDIDATE_CONFIG, RUN_RECORD, AUDIT_PATH, RUN_LOG, CONFIG_SOURCE
+    ARTIFACTS = STUDY / "artifacts" / args.artifacts_subdir
+    RESULTS_BASE = ARTIFACTS / "backtest_results"
+    CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
+    RUN_RECORD = ARTIFACTS / "run_record.json"
+    AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
+    RUN_LOG = ARTIFACTS / "backtest_run.log"
+    if args.candidate_config:
+        CONFIG_SOURCE = (REPO / args.candidate_config).resolve()
 
     started = time.time()
     contract = load_json(CONTRACT)
-    cfg, applied = build_candidate_config()
+    use_locked_ops = CONFIG_SOURCE.resolve() == BASELINE_CONFIG.resolve()
+    cfg, applied = build_candidate_config(use_locked_ops)
     config_sha = sha256_file(CANDIDATE_CONFIG)
     print(f"candidate config written: {CANDIDATE_CONFIG}")
     print(f"  sha256={config_sha}")
@@ -218,12 +260,13 @@ def main() -> None:
             audit_rows = sum(1 for _ in handle) - 1
 
     record = {
-        "candidate_id": CANDIDATE_ID,
+        "candidate_id": CANDIDATE_ID if use_locked_ops else CONFIG_SOURCE.stem,
+        "locked_ops_applied": use_locked_ops,
         "candidate_ops": applied,
         "candidate_config": str(CANDIDATE_CONFIG.relative_to(REPO)),
         "candidate_config_sha256": config_sha,
-        "source_config": str(BASELINE_CONFIG.relative_to(REPO)),
-        "source_config_sha256": sha256_file(BASELINE_CONFIG),
+        "source_config": str(CONFIG_SOURCE.relative_to(REPO)),
+        "source_config_sha256": sha256_file(CONFIG_SOURCE),
         "lock_sha256": sha256_file(LOCK),
         "contract_sha256": sha256_file(CONTRACT),
         "contract_cell_matrix_sha256": contract["cell_matrix_sha256"],

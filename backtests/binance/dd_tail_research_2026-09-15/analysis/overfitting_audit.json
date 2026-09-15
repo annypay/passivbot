@@ -1,0 +1,235 @@
+{
+  "cscv": {
+    "S10": {
+      "is_best_sharpe_mean": 7.751061213168784,
+      "is_oos_intercept": 6.564148684375497,
+      "is_oos_slope": -0.26165672540241675,
+      "logit_mean": 0.9319864645612989,
+      "logit_median": 1.0986122886681098,
+      "logit_q05": -1.9459101490553135,
+      "logit_q95": 3.6635616461296454,
+      "most_frequent_is_best": [
+        [
+          "combo_twel080_ddthr0060",
+          69
+        ],
+        [
+          "cd_360",
+          60
+        ],
+        [
+          "ddthr_0030",
+          48
+        ],
+        [
+          "combo_twel080_ddthr0030",
+          20
+        ],
+        [
+          "cd_120",
+          13
+        ]
+      ],
+      "n_blocks": 10,
+      "oos_selected_sharpe_mean": 4.53603138894407,
+      "pbo": 0.17063492063492064,
+      "splits": 252
+    },
+    "S12": {
+      "is_best_sharpe_mean": 7.232971007712664,
+      "is_oos_intercept": 6.729014189233603,
+      "is_oos_slope": -0.303682942595581,
+      "logit_mean": 1.008526406895771,
+      "logit_median": 1.0986122886681098,
+      "logit_q05": -1.7346010553881064,
+      "logit_q95": 2.9444389791664394,
+      "most_frequent_is_best": [
+        [
+          "combo_twel080_ddthr0060",
+          260
+        ],
+        [
+          "cd_360",
+          205
+        ],
+        [
+          "ddthr_0030",
+          160
+        ],
+        [
+          "combo_twel080_ddthr0030",
+          82
+        ],
+        [
+          "combo_twel100_ddthr0060",
+          57
+        ]
+      ],
+      "n_blocks": 12,
+      "oos_selected_sharpe_mean": 4.532484269902895,
+      "pbo": 0.14935064935064934,
+      "splits": 924
+    },
+    "S16": {
+      "is_best_sharpe_mean": 7.185001196715277,
+      "is_oos_intercept": 7.4682661438263755,
+      "is_oos_slope": -0.40683935937767834,
+      "logit_mean": 1.1066035189987404,
+      "logit_median": 1.0986122886681098,
+      "logit_q05": -1.2367626271489267,
+      "logit_q95": 2.9444389791664394,
+      "most_frequent_is_best": [
+        [
+          "combo_twel080_ddthr0060",
+          3716
+        ],
+        [
+          "cd_360",
+          3098
+        ],
+        [
+          "ddthr_0030",
+          1875
+        ],
+        [
+          "combo_twel120_we_weight_twel100",
+          1201
+        ],
+        [
+          "combo_twel080_ddthr0030",
+          1050
+        ]
+      ],
+      "n_blocks": 16,
+      "oos_selected_sharpe_mean": 4.545124859826876,
+      "pbo": 0.11647241647241648,
+      "splits": 12870
+    },
+    "S8": {
+      "is_best_sharpe_mean": 7.249087876744714,
+      "is_oos_intercept": 7.915821835435835,
+      "is_oos_slope": -0.5124726307701046,
+      "logit_mean": 0.6810559686210791,
+      "logit_median": 0.8472978603872034,
+      "logit_q05": -2.8906184724461963,
+      "logit_q95": 2.9444389791664394,
+      "most_frequent_is_best": [
+        [
+          "cd_360",
+          19
+        ],
+        [
+          "combo_twel080_ddthr0060",
+          18
+        ],
+        [
+          "ddthr_0030",
+          15
+        ],
+        [
+          "cd_120",
+          4
+        ],
+        [
+          "forager_vol",
+          3
+        ]
+      ],
+      "n_blocks": 8,
+      "oos_selected_sharpe_mean": 4.200862700556802,
+      "pbo": 0.22857142857142856,
+      "splits": 70
+    }
+  },
+  "interpretation": "PBO estimates how often the configuration that looks best on half of this history lands below the median of the same screen on the other half. It measures selection fragility of THIS screen on THIS history; it is not a probability of future loss and not evidence that any configuration is deployable.",
+  "months": [
+    "2023-09-01",
+    "2023-10-01",
+    "2023-11-01",
+    "2023-12-01",
+    "2024-01-01",
+    "2024-02-01",
+    "2024-03-01",
+    "2024-04-01",
+    "2024-05-01",
+    "2024-06-01",
+    "2024-07-01",
+    "2024-08-01",
+    "2024-09-01",
+    "2024-10-01",
+    "2024-11-01",
+    "2024-12-01",
+    "2025-01-01",
+    "2025-02-01",
+    "2025-03-01",
+    "2025-04-01"
+  ],
+  "n_configurations": 39,
+  "n_months": 20,
+  "panel": {
+    "common_first_month": "2023-09-01",
+    "common_last_month": "2025-04-01",
+    "n_months_common": 20,
+    "n_months_union": 37,
+    "panel_note": "The panel is the intersection of the months every curve covers, because CSCV needs a rectangular matrix. `truncated_cells` lists curves that end before the widest one; a cell that liquidates stops producing returns, and the intersection is what survives.",
+    "truncated_cells": {
+      "unstuck_off": {
+        "first_month": "2023-09-01",
+        "last_month": "2025-04-01"
+      }
+    },
+    "union_first_month": "2023-09-01",
+    "union_last_month": "2026-09-01"
+  },
+  "scenario": "C1_binance_actual",
+  "screen_selection": {
+    "best_by_cagr": {
+      "cagr": 1.3501341772213151,
+      "cell_id": "brake_graded_010_050",
+      "group": "G6_brake",
+      "mdd": 0.6022599327877117
+    },
+    "best_by_drawdown": {
+      "cagr": 0.1139306225088621,
+      "cell_id": "combo_twel080_ddthr0060",
+      "group": "G5_combo",
+      "mdd": 0.16528643968871393
+    },
+    "n_configs": 38
+  },
+  "walk_forward": {
+    "baseline": {
+      "holdout": {
+        "cagr": -0.2754627767240281,
+        "gain": 0.7246979248362025,
+        "mdd": 0.8092721765220052,
+        "scenario": "C3_conservative",
+        "underwater_days": 304.8833333333333
+      },
+      "selection": {
+        "cagr": 1.2857493928975168,
+        "gain": 5.230549835769479,
+        "mdd": 0.731593627737864,
+        "scenario": "C1_binance_actual",
+        "underwater_days": 171.93194444444444
+      }
+    },
+    "candidate": {
+      "holdout": {
+        "cagr": 0.33548776625384846,
+        "gain": 1.3352218800209228,
+        "mdd": 0.139031972121199,
+        "scenario": "C3_conservative",
+        "underwater_days": 10.256944444444445
+      },
+      "selection": {
+        "cagr": 0.41400585561091363,
+        "gain": 2.000358335523706,
+        "mdd": 0.3291567354383398,
+        "scenario": "C1_binance_actual",
+        "underwater_days": 25.618055555555557
+      }
+    }
+  },
+  "window": "full"
+}

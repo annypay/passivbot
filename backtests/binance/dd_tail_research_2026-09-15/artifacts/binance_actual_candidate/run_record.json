@@ -1,0 +1,101 @@
+{
+  "artifact_status": "partial_exit_code_-9: all required analytical artifacts were written before the process was killed (matplotlib plotting tail only)",
+  "backtest_exit_code": -9,
+  "candidate_config": "backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_candidate/candidate.config.json",
+  "candidate_config_sha256": "ea52fa01fd8d4d3a419b1d1bb99e91cd8942fa83f8e4d23e976f102f078677cc",
+  "candidate_id": "combo_twel100_ddf060_ddthr0030",
+  "candidate_ops": [
+    {
+      "from": 1.5,
+      "path": "bot.long.risk.total_wallet_exposure_limit",
+      "to": 1.0
+    },
+    {
+      "from": 0.94,
+      "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+      "to": 0.6
+    },
+    {
+      "from": 0.019,
+      "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+      "to": 0.03
+    }
+  ],
+  "contract_cell_matrix_sha256": "7c4844c9b44eebcb060b4744ad6f112209605207b30baa2c0443ab3aea8ad834",
+  "contract_sha256": "0b8259085a264d6030c7e9193014213549a24955a6ab087e64137304afb78478",
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "elapsed_s": 104.38960933685303,
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "execution_audit_rows": 47857,
+  "lock_sha256": "eebad2be530fd1faf98567a55a17a03367ee86a2dc78c199670efb7185918864",
+  "locked_ops_applied": true,
+  "results_dir": "backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_candidate/backtest_results/binance/2026-09-15T10_01_03",
+  "rust_identity": {
+    "compiled_path": "/home/mrseven2204/passivbot/venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "expected_source_fingerprint": "65c4152c67e908ad5ce228eb92db3150cf50cd6558862907a2b3becedfee65a3"
+  },
+  "safety": {
+    "bot_start": false,
+    "credentials": false,
+    "exchange_account_or_orders": false,
+    "network_downloads": false
+  },
+  "source_config": "backtests/binance/2026-09-14T03_40_41/config.json",
+  "source_config_sha256": "9c186ff09427298123d94d78d4135cd4983a098118e2a1dacdf6a14bf19a7ac9",
+  "universe": {
+    "coin_count": 40,
+    "coins": [
+      "AAVE",
+      "ADA",
+      "ALGO",
+      "APT",
+      "ARB",
+      "ASTER",
+      "ATOM",
+      "AVAX",
+      "BCH",
+      "BNB",
+      "BTC",
+      "CC",
+      "DOGE",
+      "DOT",
+      "ENA",
+      "ETH",
+      "FIL",
+      "GRAM",
+      "HBAR",
+      "HYPE",
+      "INJ",
+      "KAS",
+      "LINK",
+      "LTC",
+      "MORPHO",
+      "NEAR",
+      "ONDO",
+      "POL",
+      "RENDER",
+      "SOL",
+      "SUI",
+      "TAO",
+      "TON",
+      "TRX",
+      "UNI",
+      "WLD",
+      "XLM",
+      "XMR",
+      "XRP",
+      "ZEC"
+    ],
+    "exchange": "binance"
+  },
+  "window": {
+    "end_date": "2026-09-12",
+    "start_date": "2023-09-12"
+  }
+}

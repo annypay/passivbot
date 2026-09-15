@@ -31,7 +31,9 @@ AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
 CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
 LOCK = STUDY / "holdout_candidate_lock.json"
 BASELINE_CONFIG = REPO / "backtests/binance/2026-09-14T03_40_41/config.json"
-STUDY_CELL = STUDY / "cells/full/C3_conservative/combo_twel100_ddf060_ddthr0030/result.json"
+# The comparison cell must be the one produced under the reported contract; the v3
+# conservative cells are a different regime and are compared elsewhere.
+STUDY_CELL = STUDY / "cells/full/C1_binance_actual/combo_twel100_ddf060_ddthr0030/result.json"
 COIN_COLUMNS = [
     "coin",
     "fills_count",
@@ -169,7 +171,28 @@ def compare_frames(left: pd.DataFrame, right: pd.DataFrame, columns: list[str], 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--result-dir", default=None)
+    parser.add_argument(
+        "--artifacts-subdir",
+        default=None,
+        help="artifact directory under <study>/artifacts; omit to auto-detect a single run",
+    )
+    parser.add_argument(
+        "--expect-locked-ops",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "require the artifact to carry the locked candidate ops (default: follow the run "
+            "record's locked_ops_applied flag)"
+        ),
+    )
     args = parser.parse_args()
+    if args.artifacts_subdir:
+        global ARTIFACTS, RESULTS_BASE, RUN_RECORD, AUDIT_PATH, CANDIDATE_CONFIG
+        ARTIFACTS = STUDY / "artifacts" / args.artifacts_subdir
+        RESULTS_BASE = ARTIFACTS / "backtest_results"
+        RUN_RECORD = ARTIFACTS / "run_record.json"
+        AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
+        CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
     result_dir = Path(args.result_dir) if args.result_dir else find_result_dir()
 
     # ---------- artifacts present ----------
@@ -211,22 +234,47 @@ def main() -> None:
     # ---------- config identity ----------
     expected_ops = {op["path"]: op["value"] for op in lock["candidates"][0]["ops"]}
     baseline = load_json(BASELINE_CONFIG)
-    mismatched = [p for p, v in expected_ops.items() if get_path(cfg, p) != v]
-    check("candidate ops applied", not mismatched, f"mismatched={mismatched}")
-    baseline_consistent = all(
-        get_path(baseline, op["path"]) == op["baseline"] for op in lock["candidates"][0]["ops"]
+    expect_locked = (
+        run_record.get("locked_ops_applied", True)
+        if args.expect_locked_ops is None
+        else bool(args.expect_locked_ops)
     )
-    check("baseline values match lock record", baseline_consistent)
+    if expect_locked:
+        mismatched = [p for p, v in expected_ops.items() if get_path(cfg, p) != v]
+        check("candidate ops applied", not mismatched, f"mismatched={mismatched}")
+        baseline_consistent = all(
+            get_path(baseline, op["path"]) == op["baseline"] for op in lock["candidates"][0]["ops"]
+        )
+        check("baseline values match lock record", baseline_consistent)
+    elif args.expect_locked_ops is None:
+        mismatch = [p for p, v in expected_ops.items() if get_path(cfg, p) != v]
+        check(
+            "profile-sourced artifact reproduces the locked candidate geometry",
+            not mismatch,
+            f"profile differs from locked ops on {mismatch}",
+        )
+    else:
+        check(
+            "artifact is not required to carry the locked ops",
+            True,
+            "explicitly disabled for a reference-profile artifact",
+        )
     check(
         "candidate config sha matches run record",
         run_record["candidate_config_sha256"] == sha256_file(CANDIDATE_CONFIG),
     )
+    sys.path.insert(0, str(STUDY / "report_tools"))
+    import run_tail_drawdown_study as study  # noqa: E402
+
     check(
-        "execution/cost contract",
-        cfg["backtest"]["execution_delay_bars"] == 1
-        and cfg["backtest"]["intrabar_fill_order"] == "close_first"
-        and float(cfg["backtest"]["maker_fee_override"]) == 0.0006
-        and float(cfg["backtest"]["taker_fee_override"]) == 0.0008,
+        f"execution/cost contract matches {study.PRIMARY_SCENARIO}",
+        int(cfg["backtest"]["execution_delay_bars"])
+        == int(study.PRIMARY_EXECUTION["execution_delay_bars"])
+        and cfg["backtest"]["intrabar_fill_order"] == study.PRIMARY_EXECUTION["intrabar_fill_order"]
+        and float(cfg["backtest"]["maker_fee_override"]) == study.PRIMARY_COSTS["maker_fee_override"]
+        and float(cfg["backtest"]["taker_fee_override"]) == study.PRIMARY_COSTS["taker_fee_override"],
+        f"cfg={cfg['backtest'].get('maker_fee_override')}/{cfg['backtest'].get('taker_fee_override')}"
+        f" @ delay={cfg['backtest'].get('execution_delay_bars')}",
     )
     check(
         "universe is the frozen 40-coin basket",

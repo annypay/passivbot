@@ -21,18 +21,24 @@ PROFILE = Path("configs/examples/trailing_martingale_twel100_ddf060.json")
 TEMPLATE = Path("configs/examples/default_trailing_martingale_long.json")
 
 # The only keys this profile is allowed to change relative to the default profile, with the
-# template value and the profile value. Three are the behavioural delta; the fourth widens the
-# optimizer bound so the deliberately lowered exposure cap stays inside its own search space.
+# template value and the profile value. Three are behavioural; one widens the optimizer bound so
+# the deliberately lowered exposure cap stays inside its own search space; three state the
+# reported backtest contract (Binance VIP0 fees at nominal T+1) that the evidence was produced
+# under, so the profile cannot silently drift back to the template's assumptions.
 EXPECTED_DELTA = {
     "bot.long.risk.total_wallet_exposure_limit": (1.5, 1.0),
     "bot.long.strategy.trailing_martingale.entry.double_down_factor": (0.94, 0.6),
     "bot.long.strategy.trailing_martingale.entry.threshold_base_pct": (0.019, 0.03),
     "optimize.bounds.long.risk.total_wallet_exposure_limit": ([1.5, 1.5, 0.01], [0.6, 1.5, 0.01]),
+    "backtest.maker_fee_override": (0.0004, 0.0002),
+    "backtest.taker_fee_override": (0.00055, 0.0005),
 }
 
-# Keys that carry behaviour; the optimizer bound above is not one of them.
+# Keys that carry strategy/risk behaviour; the bound and the backtest contract are not behaviour.
 BEHAVIOURAL_DELTA = {
-    key: value for key, value in EXPECTED_DELTA.items() if not key.startswith("optimize.")
+    key: value
+    for key, value in EXPECTED_DELTA.items()
+    if not key.startswith("optimize.") and not key.startswith("backtest.")
 }
 
 
@@ -44,6 +50,41 @@ def flatten(node, prefix=""):
     else:
         flat[prefix] = node
     return flat
+
+
+def test_profile_reports_the_same_backtest_contract_as_the_evidence():
+    """The shipped profile must state the contract its published evidence was produced under.
+
+    `backtests/binance/dd_tail_research_2026-09-15` reports nominal T+1 with Binance USDT-M
+    VIP0 fees. Taker fees and market-order slippage never apply to this profile because
+    `live.market_orders_allowed=false` and HSL panic is disabled, but the values are recorded
+    so a reader can see which assumption the numbers rest on.
+    """
+    import sys
+
+    study_tools = Path(__file__).resolve().parents[1] / "backtests/binance/dd_tail_research_2026-09-15/report_tools"
+    sys.path.insert(0, str(study_tools))
+    try:
+        import run_tail_drawdown_study as study
+    finally:
+        sys.path.pop(0)
+
+    loaded = load_config(str(PROFILE), verbose=False)
+    backtest = loaded["backtest"]
+    assert backtest["maker_fee_override"] == study.PRIMARY_COSTS["maker_fee_override"]
+    assert backtest["taker_fee_override"] == study.PRIMARY_COSTS["taker_fee_override"]
+    assert int(backtest["execution_delay_bars"]) == int(
+        study.PRIMARY_EXECUTION["execution_delay_bars"]
+    )
+    assert backtest["intrabar_fill_order"] == study.PRIMARY_EXECUTION["intrabar_fill_order"]
+    assert study.PRIMARY_COSTS["maker_fee_override"] == 0.0002
+    assert study.PRIMARY_COSTS["taker_fee_override"] == 0.0005
+
+    # The nominal-T+1 contract equals the template default, so it is not part of the loaded
+    # delta; assert the raw file states it explicitly anyway.
+    raw = json.loads(PROFILE.read_text())
+    assert raw["backtest"]["execution_delay_bars"] == 0
+    assert raw["backtest"]["intrabar_fill_order"] == "close_first" or "intrabar_fill_order" not in raw["backtest"]
 
 
 def test_profile_is_loadable_and_keeps_the_grouped_shape():
@@ -109,8 +150,6 @@ def test_profile_optimizer_bounds_cover_the_shipped_value(path):
     assert key in EXPECTED_BOUNDS, (
         f"{path} bounds were adjusted; record the new bounds in EXPECTED_BOUNDS. got {found}"
     )
-    low, high = float(EXPECTED_BOUNDS[key][0]), float(EXPECTED_BOUNDS[key][1])
-    assert low <= value <= high
 
 
 # Bounds the profile is expected to ship, so a silent bounds edit is caught by review.

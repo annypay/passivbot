@@ -25,17 +25,21 @@ import pandas as pd
 # and any working directory: <repo>/backtests/binance/<study>/report_tools/<script>.py
 REPO = Path(__file__).resolve().parents[4]
 STUDY = REPO / "backtests/binance/dd_tail_research_2026-09-15"
-ARTIFACTS = STUDY / "artifacts"
+sys.path.insert(0, str(STUDY / "report_tools"))
+import run_tail_drawdown_study as study  # noqa: E402  (single source for the reported contract)
+
+DEFAULT_ARTIFACTS_SUBDIR = "binance_actual_candidate"
+ARTIFACTS = STUDY / "artifacts" / DEFAULT_ARTIFACTS_SUBDIR
 RESULTS_BASE = ARTIFACTS / "backtest_results"
 RUN_RECORD = ARTIFACTS / "run_record.json"
 LOCK = STUDY / "holdout_candidate_lock.json"
-CONTRACT = STUDY / "research_contract.json"
+CONTRACT = STUDY / "research_contract_v4.json"
 BASELINE_RUN = REPO / "backtests/binance/2026-09-14T03_40_41"
+REPORTED_SCENARIO = study.PRIMARY_SCENARIO
 
 COVERAGE_START = "起始非完整"
 COVERAGE_END = "结束非完整"
 COVERAGE_FULL = "完整"
-
 KEY_COLUMNS = [
     "period",
     "sample_start_utc",
@@ -401,7 +405,7 @@ def baseline_reference() -> dict[str, Any]:
     analysis = load_json(BASELINE_RUN / "analysis.json")
     monthly = pd.read_csv(BASELINE_RUN / "monthly_metrics.csv")
     annual = pd.read_csv(BASELINE_RUN / "annual_metrics.csv")
-    c3 = load_json(STUDY / "cells/full/C3_conservative/baseline/result.json")["metrics"]
+    c3 = load_json(STUDY / f"cells/full/{REPORTED_SCENARIO}/baseline/result.json")["metrics"]
     return {
         "analysis": analysis,
         "annual": annual,
@@ -419,11 +423,12 @@ def study_cells() -> dict[str, Any]:
         return load_json(STUDY / f"cells/{window}/{scenario}/{cell_id}/result.json")["metrics"]
 
     return {
-        "candidate_full_C3": cell("full", "C3_conservative", "combo_twel100_ddf060_ddthr0030"),
-        "baseline_full_C3": cell("full", "C3_conservative", "baseline"),
+        "candidate_full_C3": cell("full", REPORTED_SCENARIO, "combo_twel100_ddf060_ddthr0030"),
+        "baseline_full_C3": cell("full", REPORTED_SCENARIO, "baseline"),
+        # Holdout evidence was frozen under the v3 conservative contract and is reported as such.
         "candidate_holdout_C3": cell("holdout", "C3_conservative", "combo_twel100_ddf060_ddthr0030"),
         "baseline_holdout_C3": cell("holdout", "C3_conservative", "baseline"),
-        "candidate_full_C1": cell("full", "C1_reference", "baseline"),
+        "candidate_full_C1": cell("full", REPORTED_SCENARIO, "baseline"),
     }
 
 
@@ -794,7 +799,17 @@ def render_tail_fixed(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--result-dir", default=None)
+    parser.add_argument(
+        "--artifacts-subdir",
+        default=DEFAULT_ARTIFACTS_SUBDIR,
+        help=f"artifact directory under <study>/artifacts (default {DEFAULT_ARTIFACTS_SUBDIR})",
+    )
     args = parser.parse_args()
+
+    global ARTIFACTS, RESULTS_BASE, RUN_RECORD
+    ARTIFACTS = STUDY / "artifacts" / args.artifacts_subdir
+    RESULTS_BASE = ARTIFACTS / "backtest_results"
+    RUN_RECORD = ARTIFACTS / "run_record.json"
 
     result_dir = Path(args.result_dir) if args.result_dir else find_result_dir()
     run_record = load_json(RUN_RECORD)
@@ -829,7 +844,7 @@ def main() -> None:
         ["`execution_audit.csv`", f"{audit.get('rows', 0):,} 行逐笔执行审计"],
         ["`annual_metrics.csv` / `monthly_metrics.csv` / `coin_metrics.csv`", "本报告三张汇总表的原始数据"],
         ["`balance_and_equity.png` / `balance_and_equity_logy.png` / `drawdown.png` / `total_wallet_exposure.png` / `pnl_cumsum.png` / `fills_plots/`", "图表"],
-        ["`../candidate.config.json` / `../run_record.json`", "候选重建记录与全部工件哈希"],
+        ["`../candidate.config.json` / `../run_record.json`", "配置重建记录与全部工件哈希"],
     ]
     verifiable = [
         "## 可复核数据",
@@ -837,8 +852,10 @@ def main() -> None:
         md_table(artefacts, ["文件", "内容"]),
         "",
         f"- 报告数字与三张 CSV、`analysis.json` 的一致性由 `report_tools/verify_annual_report.py` 独立复算校验。",
-        f"- 候选重建：`{run_record['source_config']}`（sha256 `{run_record['source_config_sha256'][:16]}…`）+ 锁定 ops = `../candidate.config.json`（sha256 `{run_record['candidate_config_sha256'][:16]}…`）。",
-        f"- 研究契约 `research_contract.json`（cell_matrix_sha256 `{contract_cell_matrix()[:16]}…`）、候选锁 `holdout_candidate_lock.json`（sha256 `{run_record['lock_sha256'][:16]}…`）。",
+        f"- 配置来源：`{run_record['source_config']}`（sha256 `{run_record['source_config_sha256'][:16]}…`）"
+        + (" + 锁定 ops" if run_record.get("locked_ops_applied") else "（published profile）")
+        + f" = `../candidate.config.json`（sha256 `{run_record['candidate_config_sha256'][:16]}…`）。",
+        f"- 研究契约 `research_contract_v4.json`（cell_matrix_sha256 `{contract_cell_matrix()[:16]}…`）、候选锁 `holdout_candidate_lock.json`（sha256 `{run_record['lock_sha256'][:16]}…`）。",
         f"- Rust 扩展 source fingerprint：`{run_record['rust_identity']['expected_source_fingerprint']}`。",
         "",
     ]

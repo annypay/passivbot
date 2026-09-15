@@ -47,9 +47,10 @@ records of the generating host; they do not affect reproduction.
 ## Reproducing the published profile
 
 The published profile is `configs/examples/trailing_martingale_twel100_ddf060.json`, which
-differs from `configs/examples/default_trailing_martingale_long.json` in exactly three
-parameters. See `docs/strategy_profiles.md` for the parameter table, the evidence summary,
-and the reproducibility boundaries.
+differs from `configs/examples/default_trailing_martingale_long.json` in three behavioural
+parameters, one optimizer bound, and the three `backtest` keys that state the reported
+execution/cost contract. See `docs/strategy_profiles.md` for the parameter table, the evidence
+summary, and the reproducibility boundaries.
 
 ```bash
 # Rebuild the candidate artifact bundle, render its report, and verify the numbers.
@@ -59,6 +60,21 @@ bash backtests/binance/dd_tail_research_2026-09-15/run.sh
 passivbot backtest configs/examples/trailing_martingale_twel100_ddf060.json
 ```
 
+## Execution and cost contracts
+
+Numbers in this tree are only comparable inside one contract. The contract in force for published
+evidence is recorded in the study's `research_contract_v4.json`:
+
+| Contract | Regime | Latency | Maker / taker per side | Status |
+| --- | --- | --- | --- | --- |
+| v4 | `v4_binance_actual` | T+1 (`execution_delay_bars = 0`) | `0.0002` / `0.0005` | **Current.** Binance USDT-M VIP0. |
+| v3 | `v3_conservative` | T+2 (`execution_delay_bars = 1`) | `0.0006` / `0.0008` | Frozen stress reference. Retained, never mixed into a v4 table. |
+
+Both profiles are maker-only (`live.market_orders_allowed = false`, HSL panic closing disabled), so
+the taker fee and `market_order_slippage_pct` never bind in either contract. A market-order fill
+would need both a code path that emits one and a slippage assumption alongside it; neither the
+default profile nor the lower-tail profile has one.
+
 ## Evidence boundaries
 
 Results in this tree are 1-minute OHLC simulations under documented execution assumptions.
@@ -66,3 +82,9 @@ They are not live-trading performance and not a return forecast. Before quoting 
 read the study's own scope section; the audits under
 `binance/2026-09-14T03_40_41/` state the fill model, the candle-boundary contract, and the
 parameter-time-travel caveat that applies to every historical replay in this tree.
+
+`binance/dd_tail_research_2026-09-15/analysis/` additionally carries the overfitting review:
+`anti_pattern_audit.md` maps known backtest anti-patterns (look-ahead, survivorship, cost and
+latency optimism, selection bias) onto this evidence, and `overfitting_audit.json` holds the
+combinatorially symmetric cross-validation that estimates probability of backtest overfitting
+(PBO) for the lever screen behind the published profile.
