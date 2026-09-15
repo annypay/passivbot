@@ -1,0 +1,51 @@
+{
+  "primary_screen_contract_sha256": "1f3b6ebc72414246c9e06ef0eafd8325d1e0d5fbb3c130e63b245d1b31bc881b",
+  "scenarios": [
+    [
+      "C1",
+      "conservative"
+    ],
+    [
+      "C2",
+      "conservative"
+    ],
+    [
+      "C4",
+      "conservative"
+    ],
+    [
+      "C3",
+      "severe"
+    ]
+  ],
+  "selected_names": [
+    "ema_public",
+    "tm_public_adaptive",
+    "tm_without_unstuck",
+    "tm_reference",
+    "tm_slow_combination",
+    "ema_inventory"
+  ],
+  "selection_type": "prespecified_retrospective_stress_shortlist_not_unseen_selection",
+  "source_completion_hashes": {
+    "ema_inventory": "0a1646aaa6ca937d9b17b511bf0c7344d4fa01c4cb047e14b02c115c7bf4064b",
+    "ema_public": "8b391cbff4a1d9c66011cc63e82f68d58ac24cb96745cd8dce52db2599deb978",
+    "tm_cooldown90": "e7662d4f01272c6f72e1a56b24843e717e6337d47ce0d3b87024ee38defc5453",
+    "tm_early_unstuck": "4d4a3a5b03196d14849eed8f2a1d5d1132c60588e1109223544976e5f7d05cd5",
+    "tm_ema_all": "f98c9c52ce4545939921c30afa2f311feb9324bacd7eb94578f92348fbccb8aa",
+    "tm_enforcer85": "a1165b3e5289b362c076dabd9497d32dd57df6c2dcb43aba595e42034e541eb5",
+    "tm_exposure_exit": "cbd62676c119ab5111a41f2895482aa117430b5e7ecb59f3baa611e15d060d5b",
+    "tm_liquidity": "b96aa98b933bb66bb3f269b079f38d47f73e61533ecc9a12b0757abed6c7d781",
+    "tm_public_adaptive": "73cc51d03ead42d0bb7b741b733613daa3c8bf0176ea34a42db660d79b26e6f5",
+    "tm_public_core": "71e9d0ea141622b035872082f0cc53e3492787e02c43b07f86d0d1854e45f4c7",
+    "tm_reference": "441ac61fe4f564d3839711020b8d732ecb2a24e9faf8298dfb1481c2b419ee47",
+    "tm_short_diagnostic": "f90e5af94bb3482f46bd0856d869923122d275ca360438677675c8a38d5c90f7",
+    "tm_slots3": "b1578fd44b4a603a7a7ed30ef370199a712353936bcac88c9babd245ef6ee7c6",
+    "tm_slots5": "73635d700b6592d322e08e3e68d25e7e9681a269b56a4e81739193e02e9f8893",
+    "tm_slow_combination": "575088bb9697dea702d1e039bb40c4490461bf4ee29ea976a575244244275eea",
+    "tm_smaller_reentry": "bb7caed93107b7223d118ff5fae390d116b1b0d74f9e5bbdb9908350b5057f6f",
+    "tm_ungated_unstuck": "babe050874b2812badb284f7083affe41dd324d2a6ed21915e296fd344491ca7",
+    "tm_wider_profit": "f613e146641c3ab643228c0397625b2dc1d2f190a396d240d0e8eb5d4a0cf138",
+    "tm_without_unstuck": "0c03254075b2c9e512644e5684e29d9b41dae60abc7dfa3755d47a933c4a4b2b"
+  }
+}

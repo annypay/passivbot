@@ -1,0 +1,48 @@
+{
+  "stage": "full",
+  "candidate": "ema_anchor",
+  "candidate_label": "SOL EMA-anchor long/short",
+  "candidate_source": "configs/examples/ema_anchor.json",
+  "candidate_source_sha256": "176c31faddfa1cd89f15f11677c0f3ff77dfd63abb7eb236f890679a383974e1",
+  "window": {
+    "start": "2023-09-12",
+    "end": "2026-09-12"
+  },
+  "execution_contract": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first",
+    "description": "Causal nominal T+1, close-first"
+  },
+  "scenario": "C1",
+  "effective_coins": [
+    "SOL"
+  ],
+  "effective_coin_count": 1,
+  "requested_coins": {
+    "long": [
+      "SOL"
+    ],
+    "short": [
+      "SOL"
+    ]
+  },
+  "unavailable_requested_coins": [],
+  "effective_hlcv_shape": [
+    1590337,
+    1,
+    4
+  ],
+  "result_dir": "backtests/binance/low_drawdown_strategy_study_2026-09-14/full/ema_anchor/C1/binance/2026-09-14T08_24_06",
+  "execution_audit_path": "backtests/binance/low_drawdown_strategy_study_2026-09-14/full/ema_anchor/C1/execution_boundary_audit.csv",
+  "runtime": {
+    "expected_source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28",
+    "runtime_compiled_sha256": "15431c03d3eb891e970fefed914d3a152cc4fa5de770fcbe7b4ba89bb13bd0d9",
+    "runtime_build_info": {
+      "crate_version": "0.1.0",
+      "source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+    }
+  },
+  "dataset_manifest_sha256": "840c449a70636d47d599c579ee52081dd971ba9538a4a67b2613c6bc7333c6f1",
+  "network_disabled": true,
+  "elapsed_seconds": 33.419856931999675
+}

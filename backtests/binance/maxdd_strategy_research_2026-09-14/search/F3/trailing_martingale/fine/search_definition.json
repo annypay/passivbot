@@ -1,0 +1,189 @@
+{
+  "fold": "F3",
+  "strategy": "trailing_martingale",
+  "stage": "fine",
+  "seed": 3203,
+  "budget": 64,
+  "population_size": 16,
+  "parameter_specs": [
+    {
+      "name": "twe",
+      "low": 0.27,
+      "high": 0.37,
+      "step": 0.01
+    },
+    {
+      "name": "entry_cooldown_minutes",
+      "low": 104.4,
+      "high": 120.0,
+      "step": 1.0
+    },
+    {
+      "name": "n_positions",
+      "low": 1.0,
+      "high": 3.0,
+      "step": 1.0
+    },
+    {
+      "name": "enforcer_threshold",
+      "low": 0.9,
+      "high": 1.0,
+      "step": 0.01
+    },
+    {
+      "name": "close_qty_pct",
+      "low": 0.34199999999999997,
+      "high": 0.41800000000000004,
+      "step": 0.01
+    },
+    {
+      "name": "close_threshold_base_pct",
+      "low": 0.01215,
+      "high": 0.01485,
+      "step": 0.0005
+    },
+    {
+      "name": "close_threshold_volatility_1h_weight",
+      "low": 1.5,
+      "high": 2.5,
+      "step": 0.25
+    },
+    {
+      "name": "close_threshold_we_weight",
+      "low": -0.03,
+      "high": -0.026000000000000002,
+      "step": 0.001
+    },
+    {
+      "name": "entry_double_down_factor",
+      "low": 0.125,
+      "high": 0.21500000000000002,
+      "step": 0.01
+    },
+    {
+      "name": "entry_ema_span_0",
+      "low": 60.0,
+      "high": 189.0,
+      "step": 10.0
+    },
+    {
+      "name": "entry_ema_span_1",
+      "low": 151.0,
+      "high": 289.0,
+      "step": 10.0
+    },
+    {
+      "name": "entry_initial_ema_dist",
+      "low": 0.01395,
+      "high": 0.01705,
+      "step": 0.0005
+    },
+    {
+      "name": "entry_initial_qty_pct",
+      "low": 0.0096,
+      "high": 0.0124,
+      "step": 0.0005
+    },
+    {
+      "name": "entry_retracement_base_pct",
+      "low": 0.0,
+      "high": 0.00125,
+      "step": 0.0005
+    },
+    {
+      "name": "entry_retracement_we_weight",
+      "low": 0.72,
+      "high": 0.8800000000000001,
+      "step": 0.025
+    },
+    {
+      "name": "entry_threshold_base_pct",
+      "low": 0.0216,
+      "high": 0.0264,
+      "step": 0.001
+    },
+    {
+      "name": "entry_threshold_volatility_1h_weight",
+      "low": 7.425,
+      "high": 9.075,
+      "step": 0.25
+    },
+    {
+      "name": "entry_threshold_we_weight",
+      "low": 0.0,
+      "high": 0.035,
+      "step": 0.01
+    },
+    {
+      "name": "volatility_ema_span_1h",
+      "low": 1728.0,
+      "high": 2016.0,
+      "step": 24.0
+    },
+    {
+      "name": "volatility_ema_span_1m",
+      "low": 174.5,
+      "high": 245.5,
+      "step": 10.0
+    },
+    {
+      "name": "unstuck_close_pct",
+      "low": 0.043000000000000003,
+      "high": 0.057,
+      "step": 0.005
+    },
+    {
+      "name": "unstuck_loss_allowance_pct",
+      "low": 0.00615,
+      "high": 0.013850000000000001,
+      "step": 0.001
+    },
+    {
+      "name": "unstuck_threshold",
+      "low": 0.45,
+      "high": 0.55,
+      "step": 0.01
+    },
+    {
+      "name": "unstuck_ema_dist",
+      "low": -0.061000000000000006,
+      "high": -0.039,
+      "step": 0.005
+    }
+  ],
+  "base_params": {
+    "twe": 0.32,
+    "entry_cooldown_minutes": 116.0,
+    "n_positions": 1,
+    "enforcer_threshold": 1.0,
+    "hsl_enabled": false,
+    "unstuck_enabled": true,
+    "hsl_red_threshold": 0.15,
+    "hsl_cooldown_minutes": 2160.0,
+    "hsl_ema_span_minutes": 240.0,
+    "unstuck_close_pct": 0.05,
+    "unstuck_loss_allowance_pct": 0.01,
+    "unstuck_threshold": 0.5,
+    "unstuck_ema_dist": -0.05,
+    "close_qty_pct": 0.38,
+    "close_retracement_base_pct": 0.0,
+    "close_threshold_base_pct": 0.0135,
+    "close_threshold_volatility_1h_weight": 2.0,
+    "close_threshold_volatility_1m_weight": 0.0,
+    "close_threshold_we_weight": -0.029,
+    "entry_double_down_factor": 0.17,
+    "entry_ema_span_0": 120.0,
+    "entry_ema_span_1": 220.0,
+    "entry_initial_ema_dist": 0.0155,
+    "entry_initial_qty_pct": 0.011,
+    "entry_retracement_base_pct": 0.0005,
+    "entry_retracement_we_weight": 0.8,
+    "entry_threshold_base_pct": 0.024,
+    "entry_threshold_volatility_1h_weight": 8.25,
+    "entry_threshold_volatility_1m_weight": 0.0,
+    "entry_threshold_we_weight": 0.01,
+    "volatility_ema_span_1h": 1920.0,
+    "volatility_ema_span_1m": 210.0
+  },
+  "selected_params_hash": "7b68fb0445a803377e0b6417e4d406b1dd586845d041072f6e154a07702f6c36"
+}

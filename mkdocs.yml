@@ -9,6 +9,7 @@ nav:
   - Installation: installation.md
   - Configuration: configuration.md
   - Strategy Parameters: config.bot.md
+  - Strategy Profiles: strategy_profiles.md
   - Config Workflow: config_workflow.md
   - Running live: live.md
   - Monitor: monitor.md

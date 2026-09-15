@@ -1,0 +1,30 @@
+{
+  "candidate_name": "ema_inventory",
+  "capital_usdt": 50000,
+  "config_hash": "5d849436285e33cdcec4a656950d9d5f0493fa0ea38aba280d9b20decc45d982",
+  "costs": "conservative",
+  "dataset_manifest_sha256": "840c449a70636d47d599c579ee52081dd971ba9538a4a67b2613c6bc7333c6f1",
+  "diagnostics_tool_sha256": "bcd889eb9a7dadaee3a2e3765723541adf9fe3e45bb80c3eb4f5475707533e4a",
+  "evidence_integrity_source_sha256": "1201ffd5844b2b773d1baa483974bdb4c3a24f74354d76391c71f6703089e0cf",
+  "evidence_schema_version": 2,
+  "execution": "C3",
+  "prepared_coins": [
+    "BNB",
+    "BTC",
+    "ETH",
+    "SOL",
+    "XRP"
+  ],
+  "research_contract_sha256": "1f3b6ebc72414246c9e06ef0eafd8325d1e0d5fbb3c130e63b245d1b31bc881b",
+  "runtime": {
+    "expected_source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28",
+    "runtime_build_info": {
+      "crate_version": "0.1.0",
+      "source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+    },
+    "runtime_compiled_path": "/home/mrseven2204/passivbot/venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "runtime_compiled_sha256": "15431c03d3eb891e970fefed914d3a152cc4fa5de770fcbe7b4ba89bb13bd0d9",
+    "runtime_compiled_source_stamp": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+  },
+  "sidecar_tool_sha256": "9beed2313e49d84ce95841b3494ef1ef6b51259192ece0b6b49846bc1f03f468"
+}

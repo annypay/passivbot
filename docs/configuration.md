@@ -3,7 +3,7 @@
 This document explains the canonical config schema used by Passivbot.
 
 - The source of truth for defaults is `src/config/schema.py`.
-- The example config `configs/examples/default_trailing_martingale_long.json` provides the maintained default strategy profile.
+- The example config `configs/examples/default_trailing_martingale_long.json` provides the maintained default strategy profile. Maintained trade-off variants and their evidence are listed in [Strategy profiles and variants](strategy_profiles.md).
 - If you omit `config_path`, Passivbot loads those in-code defaults.
 
 For the recommended user workflow, examples, and best practices, see [Config Workflow](config_workflow.md).

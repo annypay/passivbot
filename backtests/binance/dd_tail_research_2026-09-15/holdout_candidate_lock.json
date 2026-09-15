@@ -1,0 +1,160 @@
+{
+  "amendment_addendum": {
+    "amended_contract": {
+      "cell_count": 38,
+      "cell_matrix_sha256": "7c4844c9b44eebcb060b4744ad6f112209605207b30baa2c0443ab3aea8ad834",
+      "mtime_utc": "2026-09-15T03:51:59Z",
+      "path": "research_contract.json",
+      "sha256": "840c9678211ec5e2d8176d5db44c7c03fc00b7a21b57bd1101c46ceaab8c9f14",
+      "version": 3
+    },
+    "holdout_first_opened_utc": "2026-09-15T03:09:47Z",
+    "integrity_note": "The lock-time contract file was overwritten when the G6_brake cells were appended, so its bytes can no longer be re-verified. What remains verifiable: the locked candidate ops recorded in `candidates[].ops` are the authoritative locked geometry, they are identical to the ops declared for those cell ids in the current contract, the holdout artifacts listed below all post-date the lock, and the holdout runs used the locked cell ids only. Gate, window, scenario, cost and universe fields were not edited at any point in this study's history.",
+    "lock_written_utc": "2026-09-15T03:09:18Z",
+    "locked_against_cell_count": 26,
+    "locked_against_contract_version": 2,
+    "locked_candidates_unchanged_by_amendment": true,
+    "reason": "the G6_brake cells were appended to the lever matrix after this lock was written, for the separately approved Phase B brake evaluation; they are exploratory cells only",
+    "recorded_hashes_at_lock_time": {
+      "baseline_config_sha256": "9c186ff09427298123d94d78d4135cd4983a098118e2a1dacdf6a14bf19a7ac9",
+      "cell_matrix_sha256": "36d07b3bd6272f7a6f17b4679f3d0a78550eea7eddd394f0bfefdcd0d9fab2c8",
+      "research_contract_sha256": "8beea6220552f0f458b1f362f8b33297747697e461be923508598b482e7d4215",
+      "tool_sha256": "6a14f3d15125279ef329ef502cdb75bc818715d6fec1cf3449ef95e739a6a9f8"
+    },
+    "tool": {
+      "mtime_utc": "2026-09-15T03:28:16Z",
+      "sha256": "4257e55609d60078b1694025e43ff66fe5beb4350735dcaa96e4be3e1928f878"
+    }
+  },
+  "baseline_reference": {
+    "cell_id": "baseline",
+    "full": {
+      "cagr": 0.822490603116752,
+      "gain_strategy_eq": 6.05582501656689,
+      "minute_close_mdd": 0.8063901266427473,
+      "total_underwater_days": 179.00972222222222,
+      "worst_halfyear_return": -0.0569025858970279
+    },
+    "selection": {
+      "cagr": 1.1631030395395645,
+      "gain_strategy_eq": 4.6839455376671175,
+      "minute_close_mdd": 0.8063901266427473,
+      "total_underwater_days": 179.00972222222222,
+      "worst_halfyear_return": -0.0569025858970279
+    }
+  },
+  "candidates": [
+    {
+      "cell_id": "combo_twel100_ddf060_ddthr0030",
+      "full": {
+        "cagr": 0.4213663551408011,
+        "gain_strategy_eq": 2.872248652179725,
+        "minute_close_mdd": 0.3101345942271867,
+        "total_underwater_days": 1.8666666666666667,
+        "worst_halfyear_return": 0.06452810247469798
+      },
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "selection": {
+        "cagr": 0.45808654871832477,
+        "gain_strategy_eq": 2.1271111852119278,
+        "minute_close_mdd": 0.3101345942271867,
+        "total_underwater_days": 1.8666666666666667,
+        "worst_halfyear_return": 0.06452810247469798
+      }
+    },
+    {
+      "cell_id": "combo_twel080_ddthr0030",
+      "full": {
+        "cagr": 0.30564562908729975,
+        "gain_strategy_eq": 2.2261519023128553,
+        "minute_close_mdd": 0.28012377543541456,
+        "total_underwater_days": 123.5201388888889,
+        "worst_halfyear_return": 0.07720626598373914
+      },
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "selection": {
+        "cagr": 0.33130827143726416,
+        "gain_strategy_eq": 1.7730742234640156,
+        "minute_close_mdd": 0.28012377543541456,
+        "total_underwater_days": 123.5201388888889,
+        "worst_halfyear_return": 0.07720626598373914
+      }
+    },
+    {
+      "cell_id": "twel_080",
+      "full": {
+        "cagr": 0.3749445807026195,
+        "gain_strategy_eq": 2.5998584660482895,
+        "minute_close_mdd": 0.3997586872974721,
+        "total_underwater_days": 175.67569444444445,
+        "worst_halfyear_return": -0.13718953619704433
+      },
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        }
+      ],
+      "selection": {
+        "cagr": 0.5257993757631565,
+        "gain_strategy_eq": 2.3294069253245757,
+        "minute_close_mdd": 0.3997586872974721,
+        "total_underwater_days": 175.67569444444445,
+        "worst_halfyear_return": 0.07943990856274641
+      }
+    }
+  ],
+  "frozen_artifacts": {
+    "baseline_config_sha256": "9c186ff09427298123d94d78d4135cd4983a098118e2a1dacdf6a14bf19a7ac9",
+    "cell_matrix_sha256": "36d07b3bd6272f7a6f17b4679f3d0a78550eea7eddd394f0bfefdcd0d9fab2c8",
+    "research_contract_sha256": "8beea6220552f0f458b1f362f8b33297747697e461be923508598b482e7d4215",
+    "tool_sha256": "6a14f3d15125279ef329ef502cdb75bc818715d6fec1cf3449ef95e739a6a9f8"
+  },
+  "gate_policy_note": "deployment gates in the contract are unchanged; this lock records the candidate shortlist that the holdout window will be evaluated on",
+  "holdout_scenario": "C3_conservative",
+  "holdout_window": [
+    "2025-09-12",
+    "2026-09-12"
+  ],
+  "locked_at_utc": "2026-09-15T03:09:18Z",
+  "note_worst_drawdown_inside_selection": "the baseline worst equity drawdown is the same 2025-02-01..2025-04-07 event in both windows, so selection-window and full-window MDD coincide for the baseline",
+  "selection_screen_basis": "selection window 2023-09-12..2025-09-12 and full window 2023-09-12..2026-09-12, scenario C3_conservative only; holdout never evaluated before this lock",
+  "selection_window": [
+    "2023-09-12",
+    "2025-09-12"
+  ]
+}

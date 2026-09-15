@@ -1,0 +1,423 @@
+{
+  "fold": "F2",
+  "strategy": "trailing_martingale",
+  "train_window": [
+    "2024-03-12",
+    "2025-03-12"
+  ],
+  "selection_opened_validation": false,
+  "selected_params": {
+    "twe": 0.869,
+    "entry_cooldown_minutes": 15.0,
+    "n_positions": 2,
+    "enforcer_threshold": 0.77,
+    "hsl_enabled": true,
+    "unstuck_enabled": true,
+    "hsl_red_threshold": 0.15,
+    "hsl_cooldown_minutes": 2244.0,
+    "hsl_ema_span_minutes": 229.5,
+    "unstuck_close_pct": 0.043,
+    "unstuck_loss_allowance_pct": 0.01015,
+    "unstuck_threshold": 0.55,
+    "unstuck_ema_dist": -0.061,
+    "close_qty_pct": 0.1875,
+    "close_retracement_base_pct": 0.0,
+    "close_threshold_base_pct": 0.01805,
+    "close_threshold_volatility_1h_weight": 0.75,
+    "close_threshold_volatility_1m_weight": 0.0,
+    "close_threshold_we_weight": 0.004,
+    "entry_double_down_factor": 0.05,
+    "entry_ema_span_0": 80.0,
+    "entry_ema_span_1": 641.0,
+    "entry_initial_ema_dist": 0.0195,
+    "entry_initial_qty_pct": 0.0101,
+    "entry_retracement_base_pct": 0.01225,
+    "entry_retracement_we_weight": 0.45,
+    "entry_threshold_base_pct": 0.0384,
+    "entry_threshold_volatility_1h_weight": 6.125,
+    "entry_threshold_volatility_1m_weight": 0.0,
+    "entry_threshold_we_weight": 0.245,
+    "volatility_ema_span_1h": 1646.4,
+    "volatility_ema_span_1m": 720.0
+  },
+  "selected_params_hash": "eb51c16e6be84ff5b18a096a30c4b681e9ca066dcbc0d6736cc6d03f00b3059a",
+  "selected_config_hash": "c22bce020b381edb8a7a432ba40d3f0ff97531bce4264dd2abf8c951ab0b323c",
+  "selected_training_summary": {
+    "objectives": [
+      0.02162944965602242,
+      0.01723138641169895,
+      0.0409118564149365,
+      -0.00010575413677749168
+    ],
+    "constraints": [
+      -0.22837055034397757,
+      -0.0010000000000000009,
+      -5.575413677749168e-05,
+      -0.03935280753628212,
+      -0.8082260586988534,
+      -1.0
+    ],
+    "constraint_violation": 0.0,
+    "feasible": true,
+    "max_mdd": 0.02162944965602242,
+    "max_mdd_1pct": 0.01723138641169895,
+    "max_recovery_days": 14.943055555555556,
+    "min_adg": 0.00010575413677749168,
+    "min_gain": 1.0393528075372822,
+    "min_completion": 1.0,
+    "liquidated": false
+  },
+  "selected_training_tracks": {
+    "E-L": {
+      "drawdown_worst_strategy_eq": 0.018376749761130313,
+      "drawdown_worst_mean_1pct_strategy_eq": 0.015468004069143232,
+      "strategy_eq_recovery_days_max": 14.943055555555556,
+      "strategy_eq_underwater_pct_mean": 0.000617850765191927,
+      "adg_strategy_eq": 0.00010575413677749168,
+      "positive_gain_participation_strategy_eq": 0.05357581029298794,
+      "gain_strategy_eq": 1.0393528075372822,
+      "fills_count": 263.0,
+      "fills_count_close": 80.0,
+      "fills_per_day": 0.7205506870269673,
+      "fills_per_day_close": 0.21917891620592161,
+      "fills_active_days_ratio": 0.3780821917808219,
+      "fills_analysis_duration_days": 364.99861111111113,
+      "total_wallet_exposure_max": 0.16676753743762965,
+      "total_wallet_exposure_mean": 0.007785802005426199,
+      "equity_balance_diff_neg_max_usd": 0.017118225119905437,
+      "hard_stop_triggers": 0,
+      "hard_stop_restarts": 0,
+      "unstuck_close_fills": null,
+      "position_held_days_max": 12.522916666666667,
+      "backtest_completion_ratio": 1.0,
+      "liquidated": null
+    },
+    "B-L": {
+      "drawdown_worst_strategy_eq": 0.02162944965602242,
+      "drawdown_worst_mean_1pct_strategy_eq": 0.01723138641169895,
+      "strategy_eq_recovery_days_max": 14.04513888888889,
+      "strategy_eq_underwater_pct_mean": 0.0006984773709010106,
+      "adg_strategy_eq": 0.0001442778105920084,
+      "positive_gain_participation_strategy_eq": 0.0755693492255297,
+      "gain_strategy_eq": 1.0540686726310944,
+      "fills_count": 604.0,
+      "fills_count_close": 165.0,
+      "fills_per_day": 1.6548008173547082,
+      "fills_per_day_close": 0.45205651467471336,
+      "fills_active_days_ratio": 0.4602739726027397,
+      "fills_analysis_duration_days": 364.99861111111113,
+      "total_wallet_exposure_max": 0.22134460701271125,
+      "total_wallet_exposure_mean": 0.008324114154631794,
+      "equity_balance_diff_neg_max_usd": 0.02154282683803087,
+      "hard_stop_triggers": 0,
+      "hard_stop_restarts": 0,
+      "unstuck_close_fills": null,
+      "position_held_days_max": 27.34652777777778,
+      "backtest_completion_ratio": 1.0,
+      "liquidated": null
+    }
+  },
+  "shortlist": [
+    {
+      "rank": 1,
+      "params_hash": "eb51c16e6be84ff5b18a096a30c4b681e9ca066dcbc0d6736cc6d03f00b3059a",
+      "summary": {
+        "objectives": [
+          0.02162944965602242,
+          0.01723138641169895,
+          0.0409118564149365,
+          -0.00010575413677749168
+        ],
+        "constraints": [
+          -0.22837055034397757,
+          -0.0010000000000000009,
+          -5.575413677749168e-05,
+          -0.03935280753628212,
+          -0.8082260586988534,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.02162944965602242,
+        "max_mdd_1pct": 0.01723138641169895,
+        "max_recovery_days": 14.943055555555556,
+        "min_adg": 0.00010575413677749168,
+        "min_gain": 1.0393528075372822,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 2,
+      "params_hash": "4c70a73e34aa34eb2ef131e0e3993c1929ad64f48f6e053906389f0754dd9993",
+      "summary": {
+        "objectives": [
+          0.021716267541984108,
+          0.017359996214037207,
+          0.04091565898547418,
+          -0.0001296021542973591
+        ],
+        "constraints": [
+          -0.2282837324580159,
+          -0.0010000000000000009,
+          -7.960215429735911e-05,
+          -0.0484382974034705,
+          -1.0000076103790347,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.021716267541984108,
+        "max_mdd_1pct": 0.017359996214037207,
+        "max_recovery_days": 14.944444444444445,
+        "min_adg": 0.0001296021542973591,
+        "min_gain": 1.0484382974044706,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 3,
+      "params_hash": "1c5b92d60fd8b2abef89428d83d1b645c076caa678fab261ca1a1ad6c65653c5",
+      "summary": {
+        "objectives": [
+          0.02205024372281637,
+          0.016861675049347994,
+          0.04075404973762263,
+          -0.00011125227390218484
+        ],
+        "constraints": [
+          -0.22794975627718364,
+          -0.0010000000000000009,
+          -6.125227390218484e-05,
+          -0.041440469152086434,
+          -0.8630207877503338,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.02205024372281637,
+        "max_mdd_1pct": 0.016861675049347994,
+        "max_recovery_days": 14.885416666666666,
+        "min_adg": 0.00011125227390218484,
+        "min_gain": 1.0414404691530865,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 4,
+      "params_hash": "9a60f87dbcc161ef5222c91fb2ffc007df672445957edb766461a8a93c1a5eb4",
+      "summary": {
+        "objectives": [
+          0.02205159744735053,
+          0.016662570363745664,
+          0.040750247167084946,
+          -0.00010825946910153483
+        ],
+        "constraints": [
+          -0.22794840255264948,
+          -0.0010000000000000009,
+          -5.825946910153483e-05,
+          -0.04030357277104746,
+          -0.8520618419400376,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.02205159744735053,
+        "max_mdd_1pct": 0.016662570363745664,
+        "max_recovery_days": 14.884027777777778,
+        "min_adg": 0.00010825946910153483,
+        "min_gain": 1.0403035727720475,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 5,
+      "params_hash": "67f87f844984924661fcb42f975c235959ba44c85f1411919b6af0eab97671d8",
+      "summary": {
+        "objectives": [
+          0.022125859037958797,
+          0.01805882256469168,
+          0.04075404973762263,
+          -0.00012184869952602817
+        ],
+        "constraints": [
+          -0.2278741409620412,
+          -0.0010000000000000009,
+          -7.184869952602817e-05,
+          -0.04547577192943675,
+          -1.191789162059216,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.022125859037958797,
+        "max_mdd_1pct": 0.01805882256469168,
+        "max_recovery_days": 14.885416666666666,
+        "min_adg": 0.00012184869952602817,
+        "min_gain": 1.0454757719304368,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 6,
+      "params_hash": "fd42a0d524e56ec1208414e3dba8697f3428088a6d34523e2ff2d08e165282e2",
+      "summary": {
+        "objectives": [
+          0.02214683050043528,
+          0.018607084996830694,
+          0.0409118564149365,
+          -0.0001053099625856202
+        ],
+        "constraints": [
+          -0.22785316949956472,
+          -0.0010000000000000009,
+          -5.5309962585620196e-05,
+          -0.03918433537450361,
+          -0.5452113592517474,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.02214683050043528,
+        "max_mdd_1pct": 0.018607084996830694,
+        "max_recovery_days": 14.943055555555556,
+        "min_adg": 0.0001053099625856202,
+        "min_gain": 1.0391843353755037,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 7,
+      "params_hash": "43ea28a44edc3601586a15aa4a5aef7c487646f050582c5a25a460dfcc4b191e",
+      "summary": {
+        "objectives": [
+          0.022237299633446467,
+          0.015434154010226414,
+          0.04091565898547418,
+          -0.00010347375159902583
+        ],
+        "constraints": [
+          -0.22776270036655352,
+          -0.0010000000000000009,
+          -5.347375159902583e-05,
+          -0.038488162350625466,
+          -1.191789162059216,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.022237299633446467,
+        "max_mdd_1pct": 0.015434154010226414,
+        "max_recovery_days": 14.944444444444445,
+        "min_adg": 0.00010347375159902583,
+        "min_gain": 1.0384881623516256,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 8,
+      "params_hash": "9c60fc395fb527864500a2410e81e89f7ae53cadeba8ee1fe402ac306ecae31d",
+      "summary": {
+        "objectives": [
+          0.022412500916052302,
+          0.017440809920509476,
+          0.03824625446802039,
+          -0.00011353329979080229
+        ],
+        "constraints": [
+          -0.2275874990839477,
+          -0.0010000000000000009,
+          -6.35332997908023e-05,
+          -0.04230780940703083,
+          -0.9178155168018143,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.022412500916052302,
+        "max_mdd_1pct": 0.017440809920509476,
+        "max_recovery_days": 13.969444444444445,
+        "min_adg": 0.00011353329979080229,
+        "min_gain": 1.042307809408031,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 9,
+      "params_hash": "6a15604e854255d8ac6af9dc3290830decbdbe58903ecf16a228c1612b3e76ef",
+      "summary": {
+        "objectives": [
+          0.02279505989144751,
+          0.01659054121995147,
+          0.04091565898547418,
+          -0.00011760493505241776
+        ],
+        "constraints": [
+          -0.2272049401085525,
+          -0.0010000000000000009,
+          -6.760493505241776e-05,
+          -0.04385780423926988,
+          -0.9452128813275542,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.02279505989144751,
+        "max_mdd_1pct": 0.01659054121995147,
+        "max_recovery_days": 14.944444444444445,
+        "min_adg": 0.00011760493505241776,
+        "min_gain": 1.04385780424027,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    },
+    {
+      "rank": 10,
+      "params_hash": "11b4ee28450c3c11945ed345d098618ee2856fe12c9ed9b487b77a94c5feaa9e",
+      "summary": {
+        "objectives": [
+          0.022986227012115897,
+          0.01970755661615949,
+          0.057654574492356836,
+          -0.00010771176437684993
+        ],
+        "constraints": [
+          -0.2270137729878841,
+          -0.0010000000000000009,
+          -5.7711764376849925e-05,
+          -0.040095646606880475,
+          -0.49041663020026705,
+          -1.0
+        ],
+        "constraint_violation": 0.0,
+        "feasible": true,
+        "max_mdd": 0.022986227012115897,
+        "max_mdd_1pct": 0.01970755661615949,
+        "max_recovery_days": 21.058333333333334,
+        "min_adg": 0.00010771176437684993,
+        "min_gain": 1.0400956466078806,
+        "min_completion": 1.0,
+        "liquidated": false
+      }
+    }
+  ],
+  "runtime": {
+    "runtime_compiled_path": "/home/mrseven2204/passivbot/venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "runtime_compiled_sha256": "15431c03d3eb891e970fefed914d3a152cc4fa5de770fcbe7b4ba89bb13bd0d9",
+    "runtime_compiled_source_stamp": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28",
+    "expected_source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28",
+    "runtime_build_info": {
+      "crate_version": "0.1.0",
+      "source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+    }
+  },
+  "dataset_manifest_sha256": "840c449a70636d47d599c579ee52081dd971ba9538a4a67b2613c6bc7333c6f1"
+}

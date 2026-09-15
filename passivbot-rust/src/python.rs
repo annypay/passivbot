@@ -31,7 +31,8 @@ use crate::types::{
     BacktestParams, BotParams, BotParamsPair, CoinMeta, EMABands, Equities,
     EquityHardStopLossConfig, EquityHardStopLossTierRatios, ExchangeParams, ForagerScoreWeights,
     HlcvsBundle, HlcvsMeta, OrderBook, Position, RuntimeOrderContext, StateParams,
-    StrategyParamsPairValue, TrailingPriceBundle, TwelEnforcerPolicy, WeExcessAllowanceMode,
+    StrategyParamsPairValue, TrailingPriceBundle, TwelEnforcerPolicy, WalletExposureBrakeConfig,
+    WeExcessAllowanceMode,
 };
 use ndarray::Array2;
 use numpy::{IntoPyArray, PyArray1, PyArray3, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray3};
@@ -2154,6 +2155,38 @@ fn backtest_params_from_dict(dict: &PyDict) -> PyResult<BacktestParams> {
             .transpose()?
             .unwrap_or(false),
         dynamic_wel_by_tradability: extract_value(dict, "dynamic_wel_by_tradability")?,
+        wallet_exposure_brake: match dict.get_item("wallet_exposure_brake")? {
+            Some(item) if !item.is_none() => {
+                let sub = item.downcast::<PyDict>().map_err(|_| {
+                    PyValueError::new_err("wallet_exposure_brake must be a dict")
+                })?;
+                let config = WalletExposureBrakeConfig {
+                    enabled: sub
+                        .get_item("enabled")?
+                        .map(|value| value.extract::<bool>())
+                        .transpose()?
+                        .unwrap_or(false),
+                    start_drawdown: sub
+                        .get_item("start_drawdown")?
+                        .map(|value| value.extract::<f64>())
+                        .transpose()?
+                        .unwrap_or(0.15),
+                    full_drawdown: sub
+                        .get_item("full_drawdown")?
+                        .map(|value| value.extract::<f64>())
+                        .transpose()?
+                        .unwrap_or(0.45),
+                    min_scale: sub
+                        .get_item("min_scale")?
+                        .map(|value| value.extract::<f64>())
+                        .transpose()?
+                        .unwrap_or(0.25),
+                };
+                config.validate().map_err(PyValueError::new_err)?;
+                config
+            }
+            _ => WalletExposureBrakeConfig::default(),
+        },
         hedge_mode: dict
             .get_item("hedge_mode")?
             .map(|item| item.extract::<bool>())
@@ -3021,6 +3054,7 @@ fn make_trailing_martingale_close_params(
 fn make_runtime_order_context(wallet_exposure_limit: f64) -> RuntimeOrderContext {
     RuntimeOrderContext {
         effective_wallet_exposure_limit: wallet_exposure_limit,
+        wallet_exposure_limit_scale: 1.0,
     }
 }
 
@@ -3123,6 +3157,11 @@ pub fn calc_trailing_grid_v7_diagnostic_py(input_json: &str) -> PyResult<String>
             .and_then(|runtime| runtime.get("effective_wallet_exposure_limit"))
             .and_then(Value::as_f64)
             .unwrap_or(bot.wallet_exposure_limit),
+        wallet_exposure_limit_scale: input
+            .get("runtime")
+            .and_then(|runtime| runtime.get("wallet_exposure_limit_scale"))
+            .and_then(Value::as_f64)
+            .unwrap_or(1.0),
     };
     let out = calc_trailing_grid_v7_diagnostics(
         side, &exchange, &state, &bot, &runtime, &params, &position, &trailing,
@@ -3193,6 +3232,11 @@ pub fn calc_trailing_martingale_close_diagnostic_py(input_json: &str) -> PyResul
             .and_then(|runtime| runtime.get("effective_wallet_exposure_limit"))
             .and_then(Value::as_f64)
             .unwrap_or(bot.wallet_exposure_limit),
+        wallet_exposure_limit_scale: input
+            .get("runtime")
+            .and_then(|runtime| runtime.get("wallet_exposure_limit_scale"))
+            .and_then(Value::as_f64)
+            .unwrap_or(1.0),
     };
     let out = calc_trailing_martingale_close_diagnostic(
         side,

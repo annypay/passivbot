@@ -1,0 +1,3381 @@
+{
+  "_coins_sources": {
+    "approved_coins": {
+      "long": [
+        "SOL"
+      ],
+      "short": [
+        "SOL"
+      ]
+    },
+    "ignored_coins": {
+      "long": [],
+      "short": []
+    }
+  },
+  "_raw": {
+    "backtest": {
+      "balance_sample_divider": 60,
+      "base_dir": "backtests",
+      "btc_collateral_cap": 0,
+      "btc_collateral_ltv_cap": null,
+      "candle_interval_minutes": 1,
+      "coin_sources": {},
+      "compress_cache": true,
+      "dynamic_wel_by_tradability": true,
+      "end_date": "now",
+      "exchanges": [
+        "binance",
+        "bybit"
+      ],
+      "filter_by_min_effective_cost": false,
+      "gap_tolerance_ohlcvs_minutes": 120,
+      "liquidation_threshold": 0.05,
+      "maker_fee_override": 0.0004,
+      "market_order_slippage_pct": 0.0005,
+      "market_settings_sources": {},
+      "max_warmup_minutes": 0,
+      "ohlcv_source_dir": null,
+      "reducer": {
+        "default": "mean"
+      },
+      "scenarios": [],
+      "start_date": "2021-01-01",
+      "starting_balance": 100000,
+      "suite_enabled": false,
+      "taker_fee_override": null,
+      "visible_metrics": [
+        "adg_strategy_eq",
+        "adg_strategy_eq_w",
+        "mdg_strategy_eq",
+        "strategy_eq_recovery_days_max",
+        "position_held_days_max",
+        "drawdown_worst_strategy_eq",
+        "volume_pct_per_day_avg",
+        "sortino_ratio_strategy_eq",
+        "sharpe_ratio_strategy_eq",
+        "loss_profit_ratio",
+        "strategy_eq_underwater_pct_mean",
+        "hard_stop_restarts_per_year",
+        "hard_stop_panic_close_loss_drawdown_pct_mean"
+      ],
+      "volume_normalization": true
+    },
+    "bot": {
+      "long": {
+        "forager": {
+          "score_weights": {
+            "ema_readiness": 0.28,
+            "volatility": 0.35,
+            "volume": 0.19
+          },
+          "volatility_ema_span_1m": 59,
+          "volume_drop_pct": 0.08,
+          "volume_ema_span_1m": 2764
+        },
+        "hsl": {
+          "cooldown_minutes_after_red": 3270,
+          "ema_span_minutes": 427,
+          "enabled": false,
+          "no_restart_drawdown_threshold": 1,
+          "orange_tier_mode": "graceful_stop",
+          "panic_close_order_type": "limit",
+          "red_threshold": 0.05,
+          "restart_after_red_policy": "threshold",
+          "tier_ratios": {
+            "orange": 0.75,
+            "yellow": 0.5
+          }
+        },
+        "risk": {
+          "entry_cooldown_minutes": 0,
+          "n_positions": 1,
+          "position_exposure_enforcer_enabled": false,
+          "position_exposure_enforcer_threshold": 1,
+          "total_exposure_enforcer_enabled": true,
+          "total_exposure_enforcer_policy": "reduce_overweight",
+          "total_exposure_enforcer_threshold": 1,
+          "total_exposure_entry_gate_enabled": true,
+          "total_wallet_exposure_limit": 2.5,
+          "we_excess_allowance_mode": "bounded",
+          "we_excess_allowance_pct": 0
+        },
+        "strategy": {
+          "ema_anchor": {
+            "base_qty_pct": 0.06,
+            "ema_span_0": 415,
+            "ema_span_1": 793,
+            "entry_double_down_factor": 1.96,
+            "offset": 0.0193,
+            "offset_psize_weight": 0.3576,
+            "offset_volatility_1h_weight": 13,
+            "offset_volatility_1m_weight": 0.4,
+            "offset_volatility_ema_span_1h": 448,
+            "offset_volatility_ema_span_1m": 664
+          }
+        },
+        "unstuck": {
+          "close_pct": 0.099,
+          "ema_dist": -0.1046,
+          "ema_gating_enabled": true,
+          "ema_span_0": 415,
+          "ema_span_1": 793,
+          "enabled": false,
+          "loss_allowance_pct": 0.0396,
+          "threshold": 0.47
+        }
+      },
+      "short": {
+        "forager": {
+          "score_weights": {
+            "ema_readiness": 0.28,
+            "volatility": 0.35,
+            "volume": 0.19
+          },
+          "volatility_ema_span_1m": 59,
+          "volume_drop_pct": 0.08,
+          "volume_ema_span_1m": 2764
+        },
+        "hsl": {
+          "cooldown_minutes_after_red": 3270,
+          "ema_span_minutes": 427,
+          "enabled": false,
+          "no_restart_drawdown_threshold": 1,
+          "orange_tier_mode": "graceful_stop",
+          "panic_close_order_type": "limit",
+          "red_threshold": 0.05,
+          "restart_after_red_policy": "threshold",
+          "tier_ratios": {
+            "orange": 0.75,
+            "yellow": 0.5
+          }
+        },
+        "risk": {
+          "entry_cooldown_minutes": 0,
+          "n_positions": 1,
+          "position_exposure_enforcer_enabled": false,
+          "position_exposure_enforcer_threshold": 1,
+          "total_exposure_enforcer_enabled": true,
+          "total_exposure_enforcer_policy": "reduce_overweight",
+          "total_exposure_enforcer_threshold": 1,
+          "total_exposure_entry_gate_enabled": true,
+          "total_wallet_exposure_limit": 2.5,
+          "we_excess_allowance_mode": "bounded",
+          "we_excess_allowance_pct": 0
+        },
+        "strategy": {
+          "ema_anchor": {
+            "base_qty_pct": 0.06,
+            "ema_span_0": 415,
+            "ema_span_1": 793,
+            "entry_double_down_factor": 1.96,
+            "offset": 0.0193,
+            "offset_psize_weight": 0.3576,
+            "offset_volatility_1h_weight": 13,
+            "offset_volatility_1m_weight": 0.4,
+            "offset_volatility_ema_span_1h": 448,
+            "offset_volatility_ema_span_1m": 664
+          }
+        },
+        "unstuck": {
+          "close_pct": 0.099,
+          "ema_dist": -0.1046,
+          "ema_gating_enabled": true,
+          "ema_span_0": 415,
+          "ema_span_1": 793,
+          "enabled": false,
+          "loss_allowance_pct": 0.0396,
+          "threshold": 0.47
+        }
+      }
+    },
+    "coin_overrides": {},
+    "config_version": "v8.4.0",
+    "live": {
+      "approved_coins": {
+        "long": [
+          "SOL"
+        ],
+        "short": [
+          "SOL"
+        ]
+      },
+      "auto_gs": true,
+      "balance_hysteresis_snap_pct": 0.01,
+      "balance_override": null,
+      "candle_lock_timeout_seconds": 10,
+      "enable_archive_candle_fetch": false,
+      "execution_delay_seconds": 2,
+      "filter_by_min_effective_cost": true,
+      "forced_mode_long": "",
+      "forced_mode_short": "",
+      "hedge_mode": false,
+      "hsl_position_during_cooldown_policy": "panic",
+      "hsl_signal_mode": "coin",
+      "ignored_coins": {
+        "long": [],
+        "short": []
+      },
+      "inactive_coin_candle_ttl_minutes": 10,
+      "leverage": 10,
+      "margin_mode_preference": "cross",
+      "market_order_near_touch_threshold": 0.001,
+      "market_orders_allowed": false,
+      "max_concurrent_api_requests": null,
+      "max_disk_candles_per_symbol_per_tf": 2000000,
+      "max_memory_candles_per_symbol": 200000,
+      "max_n_cancellations_per_batch": 5,
+      "max_n_creations_per_batch": 3,
+      "max_n_restarts_per_day": 10,
+      "max_ohlcv_fetches_per_minute": 30,
+      "max_realized_loss_pct": 1,
+      "max_warmup_minutes": 0,
+      "minimum_coin_age_days": 365,
+      "order_match_tolerance_pct": 0.0002,
+      "pnls_max_lookback_days": 30,
+      "recv_window_ms": 5000,
+      "strategy_kind": "ema_anchor",
+      "time_in_force": "good_till_cancelled",
+      "user": "bybit_01",
+      "warmup_concurrency": 0,
+      "warmup_jitter_seconds": 30,
+      "warmup_ratio": 0.3
+    },
+    "logging": {
+      "backup_count": 5,
+      "dir": "logs",
+      "level": 1,
+      "max_bytes_mb": 10,
+      "memory_snapshot_interval_minutes": 30,
+      "persist_to_file": true,
+      "rotation": false,
+      "volume_refresh_info_threshold_seconds": 30
+    },
+    "monitor": {
+      "checkpoint_interval_minutes": 10,
+      "compress_rotated_segments": true,
+      "emit_completed_candles": true,
+      "enabled": true,
+      "event_rotation_mb": 128,
+      "event_rotation_minutes": 60,
+      "include_raw_fill_payloads": false,
+      "max_total_bytes": 1073741824,
+      "price_tick_min_interval_ms": 500,
+      "retain_candles": true,
+      "retain_days": 7,
+      "retain_fills": true,
+      "retain_price_ticks": true,
+      "root_dir": "monitor",
+      "snapshot_interval_seconds": 1
+    },
+    "optimize": {
+      "backend": "pymoo",
+      "bounds": {
+        "long": {
+          "forager": {
+            "score_weights_ema_readiness": [
+              0,
+              1,
+              0.01
+            ],
+            "score_weights_volatility": [
+              0,
+              1,
+              0.01
+            ],
+            "score_weights_volume": [
+              0,
+              1,
+              0.01
+            ],
+            "volatility_ema_span_1m": [
+              10,
+              1440,
+              1
+            ],
+            "volume_drop_pct": [
+              0.02,
+              1,
+              0.01
+            ],
+            "volume_ema_span_1m": [
+              180,
+              2880,
+              1
+            ]
+          },
+          "hsl": {
+            "cooldown_minutes_after_red": [
+              2160,
+              4320,
+              10
+            ],
+            "ema_span_minutes": [
+              1,
+              720,
+              1
+            ],
+            "red_threshold": [
+              0.01,
+              0.15,
+              0.001
+            ]
+          },
+          "risk": {
+            "entry_cooldown_minutes": [
+              0,
+              60,
+              0.1
+            ],
+            "n_positions": [
+              1,
+              1,
+              1
+            ],
+            "position_exposure_enforcer_threshold": [
+              1,
+              1,
+              0.001
+            ],
+            "total_exposure_enforcer_threshold": [
+              1,
+              1,
+              0.001
+            ],
+            "total_wallet_exposure_limit": [
+              0.5,
+              3,
+              0.01
+            ],
+            "we_excess_allowance_pct": [
+              0,
+              0,
+              0.01
+            ]
+          },
+          "strategy": {
+            "ema_anchor": {
+              "base_qty_pct": [
+                0.001,
+                0.2,
+                0.0001
+              ],
+              "ema_span_0": [
+                30,
+                2880,
+                1
+              ],
+              "ema_span_1": [
+                30,
+                2880,
+                1
+              ],
+              "entry_double_down_factor": [
+                0,
+                2,
+                0.01
+              ],
+              "offset": [
+                0.0001,
+                0.02,
+                0.0001
+              ],
+              "offset_psize_weight": [
+                0,
+                5,
+                0.0001
+              ],
+              "offset_volatility_1h_weight": [
+                0,
+                20,
+                0.1
+              ],
+              "offset_volatility_1m_weight": [
+                0,
+                20,
+                0.1
+              ],
+              "offset_volatility_ema_span_1h": [
+                1,
+                672,
+                1
+              ],
+              "offset_volatility_ema_span_1m": [
+                5,
+                720,
+                1
+              ]
+            }
+          },
+          "unstuck": {
+            "close_pct": [
+              0.01,
+              0.12,
+              0.001
+            ],
+            "ema_dist": [
+              -0.2,
+              0.01,
+              0.0001
+            ],
+            "ema_span_0": [
+              415,
+              415
+            ],
+            "ema_span_1": [
+              793,
+              793
+            ],
+            "loss_allowance_pct": [
+              0.005,
+              0.2,
+              0.0001
+            ],
+            "threshold": [
+              0.4,
+              0.9,
+              0.001
+            ]
+          }
+        },
+        "short": {
+          "forager": {
+            "score_weights_ema_readiness": [
+              0,
+              1,
+              0.01
+            ],
+            "score_weights_volatility": [
+              0,
+              1,
+              0.01
+            ],
+            "score_weights_volume": [
+              0,
+              1,
+              0.01
+            ],
+            "volatility_ema_span_1m": [
+              10,
+              1440,
+              1
+            ],
+            "volume_drop_pct": [
+              0.02,
+              1,
+              0.01
+            ],
+            "volume_ema_span_1m": [
+              180,
+              2880,
+              1
+            ]
+          },
+          "hsl": {
+            "cooldown_minutes_after_red": [
+              2160,
+              4320,
+              10
+            ],
+            "ema_span_minutes": [
+              1,
+              720,
+              1
+            ],
+            "red_threshold": [
+              0.01,
+              0.15,
+              0.001
+            ]
+          },
+          "risk": {
+            "entry_cooldown_minutes": [
+              0,
+              60,
+              0.1
+            ],
+            "n_positions": [
+              1,
+              1,
+              1
+            ],
+            "position_exposure_enforcer_threshold": [
+              1,
+              1,
+              0.001
+            ],
+            "total_exposure_enforcer_threshold": [
+              1,
+              1,
+              0.001
+            ],
+            "total_wallet_exposure_limit": [
+              0.5,
+              3,
+              0.01
+            ],
+            "we_excess_allowance_pct": [
+              0,
+              0,
+              0.01
+            ]
+          },
+          "strategy": {
+            "ema_anchor": {
+              "base_qty_pct": [
+                0.001,
+                0.2,
+                0.0001
+              ],
+              "ema_span_0": [
+                30,
+                2880,
+                1
+              ],
+              "ema_span_1": [
+                30,
+                2880,
+                1
+              ],
+              "entry_double_down_factor": [
+                0,
+                2,
+                0.01
+              ],
+              "offset": [
+                0.0001,
+                0.02,
+                0.0001
+              ],
+              "offset_psize_weight": [
+                0,
+                5,
+                0.0001
+              ],
+              "offset_volatility_1h_weight": [
+                0,
+                20,
+                0.1
+              ],
+              "offset_volatility_1m_weight": [
+                0,
+                20,
+                0.1
+              ],
+              "offset_volatility_ema_span_1h": [
+                1,
+                672,
+                1
+              ],
+              "offset_volatility_ema_span_1m": [
+                5,
+                720,
+                1
+              ]
+            }
+          },
+          "unstuck": {
+            "close_pct": [
+              0.01,
+              0.12,
+              0.001
+            ],
+            "ema_dist": [
+              -0.2,
+              0.01,
+              0.0001
+            ],
+            "ema_span_0": [
+              415,
+              415
+            ],
+            "ema_span_1": [
+              793,
+              793
+            ],
+            "loss_allowance_pct": [
+              0.005,
+              0.2,
+              0.0001
+            ],
+            "threshold": [
+              0.4,
+              0.9,
+              0.001
+            ]
+          }
+        }
+      },
+      "compress_results_file": true,
+      "crossover_eta": 20,
+      "crossover_probability": 0.64,
+      "enable_overrides": [
+        "mirror_short_from_long"
+      ],
+      "fixed_params": [],
+      "fixed_runtime_overrides": {},
+      "iters": 500000,
+      "limits": [
+        {
+          "enabled": false,
+          "metric": "drawdown_worst_strategy_eq",
+          "penalize_if": "greater_than",
+          "value": 0.6
+        },
+        {
+          "enabled": true,
+          "metric": "backtest_completion_ratio",
+          "penalize_if": "less_than",
+          "value": 0.99
+        }
+      ],
+      "mutation_eta": 20,
+      "mutation_indpb": 0.0135135135,
+      "mutation_probability": 0.34,
+      "n_cpus": 6,
+      "offspring_multiplier": 1,
+      "pareto_max_size": 1000,
+      "population_size": null,
+      "pymoo": {
+        "algorithm": "auto",
+        "algorithms": {
+          "nsga2": {},
+          "nsga3": {
+            "ref_dirs": {
+              "method": "das_dennis",
+              "n_partitions": "auto"
+            }
+          }
+        },
+        "shared": {
+          "crossover_eta": 20,
+          "crossover_prob_var": 0.5,
+          "eliminate_duplicates": true,
+          "mutation_eta": 20,
+          "mutation_prob": "auto",
+          "mutation_prob_per_variable": "auto"
+        }
+      },
+      "round_to_n_significant_digits": 3,
+      "scoring": [
+        {
+          "goal": "max",
+          "metric": "volume_pct_per_day_avg"
+        },
+        {
+          "goal": "max",
+          "metric": "sharpe_ratio_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "strategy_eq_recovery_days_max"
+        },
+        {
+          "goal": "min",
+          "metric": "position_held_days_max"
+        },
+        {
+          "goal": "min",
+          "metric": "strategy_eq_underwater_pct_mean"
+        },
+        {
+          "goal": "max",
+          "metric": "adg_strategy_eq"
+        },
+        {
+          "goal": "max",
+          "metric": "adg_strategy_eq_w"
+        },
+        {
+          "goal": "max",
+          "metric": "mdg_strategy_eq"
+        },
+        {
+          "goal": "max",
+          "metric": "sortino_ratio_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "drawdown_worst_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "drawdown_worst_mean_1pct_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "fills_gap_time_weighted_mean_hours"
+        }
+      ],
+      "write_all_results": true
+    }
+  },
+  "_raw_effective": {
+    "backtest": {
+      "balance_sample_divider": 60,
+      "base_dir": "backtests",
+      "btc_collateral_cap": 0,
+      "btc_collateral_ltv_cap": null,
+      "candle_interval_minutes": 1,
+      "coin_sources": {},
+      "compress_cache": true,
+      "dynamic_wel_by_tradability": true,
+      "end_date": "now",
+      "exchanges": [
+        "binance",
+        "bybit"
+      ],
+      "filter_by_min_effective_cost": false,
+      "gap_tolerance_ohlcvs_minutes": 120,
+      "liquidation_threshold": 0.05,
+      "maker_fee_override": 0.0004,
+      "market_order_slippage_pct": 0.0005,
+      "market_settings_sources": {},
+      "max_warmup_minutes": 0,
+      "ohlcv_source_dir": null,
+      "reducer": {
+        "default": "mean"
+      },
+      "scenarios": [],
+      "start_date": "2021-01-01",
+      "starting_balance": 100000,
+      "suite_enabled": false,
+      "taker_fee_override": null,
+      "visible_metrics": [
+        "adg_strategy_eq",
+        "adg_strategy_eq_w",
+        "mdg_strategy_eq",
+        "strategy_eq_recovery_days_max",
+        "position_held_days_max",
+        "drawdown_worst_strategy_eq",
+        "volume_pct_per_day_avg",
+        "sortino_ratio_strategy_eq",
+        "sharpe_ratio_strategy_eq",
+        "loss_profit_ratio",
+        "strategy_eq_underwater_pct_mean",
+        "hard_stop_restarts_per_year",
+        "hard_stop_panic_close_loss_drawdown_pct_mean"
+      ],
+      "volume_normalization": true
+    },
+    "bot": {
+      "long": {
+        "forager": {
+          "score_weights": {
+            "ema_readiness": 0.28,
+            "volatility": 0.35,
+            "volume": 0.19
+          },
+          "volatility_ema_span_1m": 59,
+          "volume_drop_pct": 0.08,
+          "volume_ema_span_1m": 2764
+        },
+        "hsl": {
+          "cooldown_minutes_after_red": 3270,
+          "ema_span_minutes": 427,
+          "enabled": false,
+          "no_restart_drawdown_threshold": 1,
+          "orange_tier_mode": "graceful_stop",
+          "panic_close_order_type": "limit",
+          "red_threshold": 0.05,
+          "restart_after_red_policy": "threshold",
+          "tier_ratios": {
+            "orange": 0.75,
+            "yellow": 0.5
+          }
+        },
+        "risk": {
+          "entry_cooldown_minutes": 0,
+          "n_positions": 1,
+          "position_exposure_enforcer_enabled": false,
+          "position_exposure_enforcer_threshold": 1,
+          "total_exposure_enforcer_enabled": true,
+          "total_exposure_enforcer_policy": "reduce_overweight",
+          "total_exposure_enforcer_threshold": 1,
+          "total_exposure_entry_gate_enabled": true,
+          "total_wallet_exposure_limit": 2.5,
+          "we_excess_allowance_mode": "bounded",
+          "we_excess_allowance_pct": 0
+        },
+        "strategy": {
+          "ema_anchor": {
+            "base_qty_pct": 0.06,
+            "ema_span_0": 415,
+            "ema_span_1": 793,
+            "entry_double_down_factor": 1.96,
+            "offset": 0.0193,
+            "offset_psize_weight": 0.3576,
+            "offset_volatility_1h_weight": 13,
+            "offset_volatility_1m_weight": 0.4,
+            "offset_volatility_ema_span_1h": 448,
+            "offset_volatility_ema_span_1m": 664
+          }
+        },
+        "unstuck": {
+          "close_pct": 0.099,
+          "ema_dist": -0.1046,
+          "ema_gating_enabled": true,
+          "ema_span_0": 415,
+          "ema_span_1": 793,
+          "enabled": false,
+          "loss_allowance_pct": 0.0396,
+          "threshold": 0.47
+        }
+      },
+      "short": {
+        "forager": {
+          "score_weights": {
+            "ema_readiness": 0.28,
+            "volatility": 0.35,
+            "volume": 0.19
+          },
+          "volatility_ema_span_1m": 59,
+          "volume_drop_pct": 0.08,
+          "volume_ema_span_1m": 2764
+        },
+        "hsl": {
+          "cooldown_minutes_after_red": 3270,
+          "ema_span_minutes": 427,
+          "enabled": false,
+          "no_restart_drawdown_threshold": 1,
+          "orange_tier_mode": "graceful_stop",
+          "panic_close_order_type": "limit",
+          "red_threshold": 0.05,
+          "restart_after_red_policy": "threshold",
+          "tier_ratios": {
+            "orange": 0.75,
+            "yellow": 0.5
+          }
+        },
+        "risk": {
+          "entry_cooldown_minutes": 0,
+          "n_positions": 1,
+          "position_exposure_enforcer_enabled": false,
+          "position_exposure_enforcer_threshold": 1,
+          "total_exposure_enforcer_enabled": true,
+          "total_exposure_enforcer_policy": "reduce_overweight",
+          "total_exposure_enforcer_threshold": 1,
+          "total_exposure_entry_gate_enabled": true,
+          "total_wallet_exposure_limit": 2.5,
+          "we_excess_allowance_mode": "bounded",
+          "we_excess_allowance_pct": 0
+        },
+        "strategy": {
+          "ema_anchor": {
+            "base_qty_pct": 0.06,
+            "ema_span_0": 415,
+            "ema_span_1": 793,
+            "entry_double_down_factor": 1.96,
+            "offset": 0.0193,
+            "offset_psize_weight": 0.3576,
+            "offset_volatility_1h_weight": 13,
+            "offset_volatility_1m_weight": 0.4,
+            "offset_volatility_ema_span_1h": 448,
+            "offset_volatility_ema_span_1m": 664
+          }
+        },
+        "unstuck": {
+          "close_pct": 0.099,
+          "ema_dist": -0.1046,
+          "ema_gating_enabled": true,
+          "ema_span_0": 415,
+          "ema_span_1": 793,
+          "enabled": false,
+          "loss_allowance_pct": 0.0396,
+          "threshold": 0.47
+        }
+      }
+    },
+    "coin_overrides": {},
+    "config_version": "v8.4.0",
+    "live": {
+      "approved_coins": {
+        "long": [
+          "SOL"
+        ],
+        "short": [
+          "SOL"
+        ]
+      },
+      "auto_gs": true,
+      "balance_hysteresis_snap_pct": 0.01,
+      "balance_override": null,
+      "candle_lock_timeout_seconds": 10,
+      "enable_archive_candle_fetch": false,
+      "execution_delay_seconds": 2,
+      "filter_by_min_effective_cost": true,
+      "forced_mode_long": "",
+      "forced_mode_short": "",
+      "hedge_mode": false,
+      "hsl_position_during_cooldown_policy": "panic",
+      "hsl_signal_mode": "coin",
+      "ignored_coins": {
+        "long": [],
+        "short": []
+      },
+      "inactive_coin_candle_ttl_minutes": 10,
+      "leverage": 10,
+      "margin_mode_preference": "cross",
+      "market_order_near_touch_threshold": 0.001,
+      "market_orders_allowed": false,
+      "max_concurrent_api_requests": null,
+      "max_disk_candles_per_symbol_per_tf": 2000000,
+      "max_memory_candles_per_symbol": 200000,
+      "max_n_cancellations_per_batch": 5,
+      "max_n_creations_per_batch": 3,
+      "max_n_restarts_per_day": 10,
+      "max_ohlcv_fetches_per_minute": 30,
+      "max_realized_loss_pct": 1,
+      "max_warmup_minutes": 0,
+      "minimum_coin_age_days": 365,
+      "order_match_tolerance_pct": 0.0002,
+      "pnls_max_lookback_days": 30,
+      "recv_window_ms": 5000,
+      "strategy_kind": "ema_anchor",
+      "time_in_force": "good_till_cancelled",
+      "user": "bybit_01",
+      "warmup_concurrency": 0,
+      "warmup_jitter_seconds": 30,
+      "warmup_ratio": 0.3
+    },
+    "logging": {
+      "backup_count": 5,
+      "dir": "logs",
+      "level": 1,
+      "max_bytes_mb": 10,
+      "memory_snapshot_interval_minutes": 30,
+      "persist_to_file": true,
+      "rotation": false,
+      "volume_refresh_info_threshold_seconds": 30
+    },
+    "monitor": {
+      "checkpoint_interval_minutes": 10,
+      "compress_rotated_segments": true,
+      "emit_completed_candles": true,
+      "enabled": true,
+      "event_rotation_mb": 128,
+      "event_rotation_minutes": 60,
+      "include_raw_fill_payloads": false,
+      "max_total_bytes": 1073741824,
+      "price_tick_min_interval_ms": 500,
+      "retain_candles": true,
+      "retain_days": 7,
+      "retain_fills": true,
+      "retain_price_ticks": true,
+      "root_dir": "monitor",
+      "snapshot_interval_seconds": 1
+    },
+    "optimize": {
+      "backend": "pymoo",
+      "bounds": {
+        "long": {
+          "forager": {
+            "score_weights_ema_readiness": [
+              0,
+              1,
+              0.01
+            ],
+            "score_weights_volatility": [
+              0,
+              1,
+              0.01
+            ],
+            "score_weights_volume": [
+              0,
+              1,
+              0.01
+            ],
+            "volatility_ema_span_1m": [
+              10,
+              1440,
+              1
+            ],
+            "volume_drop_pct": [
+              0.02,
+              1,
+              0.01
+            ],
+            "volume_ema_span_1m": [
+              180,
+              2880,
+              1
+            ]
+          },
+          "hsl": {
+            "cooldown_minutes_after_red": [
+              2160,
+              4320,
+              10
+            ],
+            "ema_span_minutes": [
+              1,
+              720,
+              1
+            ],
+            "red_threshold": [
+              0.01,
+              0.15,
+              0.001
+            ]
+          },
+          "risk": {
+            "entry_cooldown_minutes": [
+              0,
+              60,
+              0.1
+            ],
+            "n_positions": [
+              1,
+              1,
+              1
+            ],
+            "position_exposure_enforcer_threshold": [
+              1,
+              1,
+              0.001
+            ],
+            "total_exposure_enforcer_threshold": [
+              1,
+              1,
+              0.001
+            ],
+            "total_wallet_exposure_limit": [
+              0.5,
+              3,
+              0.01
+            ],
+            "we_excess_allowance_pct": [
+              0,
+              0,
+              0.01
+            ]
+          },
+          "strategy": {
+            "ema_anchor": {
+              "base_qty_pct": [
+                0.001,
+                0.2,
+                0.0001
+              ],
+              "ema_span_0": [
+                30,
+                2880,
+                1
+              ],
+              "ema_span_1": [
+                30,
+                2880,
+                1
+              ],
+              "entry_double_down_factor": [
+                0,
+                2,
+                0.01
+              ],
+              "offset": [
+                0.0001,
+                0.02,
+                0.0001
+              ],
+              "offset_psize_weight": [
+                0,
+                5,
+                0.0001
+              ],
+              "offset_volatility_1h_weight": [
+                0,
+                20,
+                0.1
+              ],
+              "offset_volatility_1m_weight": [
+                0,
+                20,
+                0.1
+              ],
+              "offset_volatility_ema_span_1h": [
+                1,
+                672,
+                1
+              ],
+              "offset_volatility_ema_span_1m": [
+                5,
+                720,
+                1
+              ]
+            }
+          },
+          "unstuck": {
+            "close_pct": [
+              0.01,
+              0.12,
+              0.001
+            ],
+            "ema_dist": [
+              -0.2,
+              0.01,
+              0.0001
+            ],
+            "ema_span_0": [
+              415,
+              415
+            ],
+            "ema_span_1": [
+              793,
+              793
+            ],
+            "loss_allowance_pct": [
+              0.005,
+              0.2,
+              0.0001
+            ],
+            "threshold": [
+              0.4,
+              0.9,
+              0.001
+            ]
+          }
+        },
+        "short": {
+          "forager": {
+            "score_weights_ema_readiness": [
+              0,
+              1,
+              0.01
+            ],
+            "score_weights_volatility": [
+              0,
+              1,
+              0.01
+            ],
+            "score_weights_volume": [
+              0,
+              1,
+              0.01
+            ],
+            "volatility_ema_span_1m": [
+              10,
+              1440,
+              1
+            ],
+            "volume_drop_pct": [
+              0.02,
+              1,
+              0.01
+            ],
+            "volume_ema_span_1m": [
+              180,
+              2880,
+              1
+            ]
+          },
+          "hsl": {
+            "cooldown_minutes_after_red": [
+              2160,
+              4320,
+              10
+            ],
+            "ema_span_minutes": [
+              1,
+              720,
+              1
+            ],
+            "red_threshold": [
+              0.01,
+              0.15,
+              0.001
+            ]
+          },
+          "risk": {
+            "entry_cooldown_minutes": [
+              0,
+              60,
+              0.1
+            ],
+            "n_positions": [
+              1,
+              1,
+              1
+            ],
+            "position_exposure_enforcer_threshold": [
+              1,
+              1,
+              0.001
+            ],
+            "total_exposure_enforcer_threshold": [
+              1,
+              1,
+              0.001
+            ],
+            "total_wallet_exposure_limit": [
+              0.5,
+              3,
+              0.01
+            ],
+            "we_excess_allowance_pct": [
+              0,
+              0,
+              0.01
+            ]
+          },
+          "strategy": {
+            "ema_anchor": {
+              "base_qty_pct": [
+                0.001,
+                0.2,
+                0.0001
+              ],
+              "ema_span_0": [
+                30,
+                2880,
+                1
+              ],
+              "ema_span_1": [
+                30,
+                2880,
+                1
+              ],
+              "entry_double_down_factor": [
+                0,
+                2,
+                0.01
+              ],
+              "offset": [
+                0.0001,
+                0.02,
+                0.0001
+              ],
+              "offset_psize_weight": [
+                0,
+                5,
+                0.0001
+              ],
+              "offset_volatility_1h_weight": [
+                0,
+                20,
+                0.1
+              ],
+              "offset_volatility_1m_weight": [
+                0,
+                20,
+                0.1
+              ],
+              "offset_volatility_ema_span_1h": [
+                1,
+                672,
+                1
+              ],
+              "offset_volatility_ema_span_1m": [
+                5,
+                720,
+                1
+              ]
+            }
+          },
+          "unstuck": {
+            "close_pct": [
+              0.01,
+              0.12,
+              0.001
+            ],
+            "ema_dist": [
+              -0.2,
+              0.01,
+              0.0001
+            ],
+            "ema_span_0": [
+              415,
+              415
+            ],
+            "ema_span_1": [
+              793,
+              793
+            ],
+            "loss_allowance_pct": [
+              0.005,
+              0.2,
+              0.0001
+            ],
+            "threshold": [
+              0.4,
+              0.9,
+              0.001
+            ]
+          }
+        }
+      },
+      "compress_results_file": true,
+      "crossover_eta": 20,
+      "crossover_probability": 0.64,
+      "enable_overrides": [
+        "mirror_short_from_long"
+      ],
+      "fixed_params": [],
+      "fixed_runtime_overrides": {},
+      "iters": 500000,
+      "limits": [
+        {
+          "enabled": false,
+          "metric": "drawdown_worst_strategy_eq",
+          "penalize_if": "greater_than",
+          "value": 0.6
+        },
+        {
+          "enabled": true,
+          "metric": "backtest_completion_ratio",
+          "penalize_if": "less_than",
+          "value": 0.99
+        }
+      ],
+      "mutation_eta": 20,
+      "mutation_indpb": 0.0135135135,
+      "mutation_probability": 0.34,
+      "n_cpus": 6,
+      "offspring_multiplier": 1,
+      "pareto_max_size": 1000,
+      "population_size": null,
+      "pymoo": {
+        "algorithm": "auto",
+        "algorithms": {
+          "nsga2": {},
+          "nsga3": {
+            "ref_dirs": {
+              "method": "das_dennis",
+              "n_partitions": "auto"
+            }
+          }
+        },
+        "shared": {
+          "crossover_eta": 20,
+          "crossover_prob_var": 0.5,
+          "eliminate_duplicates": true,
+          "mutation_eta": 20,
+          "mutation_prob": "auto",
+          "mutation_prob_per_variable": "auto"
+        }
+      },
+      "round_to_n_significant_digits": 3,
+      "scoring": [
+        {
+          "goal": "max",
+          "metric": "volume_pct_per_day_avg"
+        },
+        {
+          "goal": "max",
+          "metric": "sharpe_ratio_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "strategy_eq_recovery_days_max"
+        },
+        {
+          "goal": "min",
+          "metric": "position_held_days_max"
+        },
+        {
+          "goal": "min",
+          "metric": "strategy_eq_underwater_pct_mean"
+        },
+        {
+          "goal": "max",
+          "metric": "adg_strategy_eq"
+        },
+        {
+          "goal": "max",
+          "metric": "adg_strategy_eq_w"
+        },
+        {
+          "goal": "max",
+          "metric": "mdg_strategy_eq"
+        },
+        {
+          "goal": "max",
+          "metric": "sortino_ratio_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "drawdown_worst_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "drawdown_worst_mean_1pct_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "fills_gap_time_weighted_mean_hours"
+        }
+      ],
+      "write_all_results": true
+    }
+  },
+  "_transform_log": [
+    {
+      "details": {
+        "base_config_path": "/home/mrseven2204/passivbot/configs/examples/ema_anchor.json",
+        "changes": [
+          {
+            "action": "add",
+            "path": "bot.long.strategy.trailing_martingale",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "2 more keys",
+                    "qty_pct": 0.84,
+                    "retracement_base_pct": 0.0005,
+                    "threshold_base_pct": -0.0027,
+                    "threshold_volatility_1h_weight": 0.48,
+                    "threshold_volatility_1m_weight": 3.22,
+                    "threshold_we_weight": -0.0001
+                  }
+                },
+                "entry": {
+                  "__dict__": {
+                    "...": "8 more keys",
+                    "double_down_factor": 0.94,
+                    "ema_span_0": 790.0,
+                    "ema_span_1": 1080.0,
+                    "initial_ema_dist": 0.0028,
+                    "initial_qty_pct": 0.0081,
+                    "threshold_base_pct": 0.019
+                  }
+                },
+                "volatility_ema_span_1h": 683.0,
+                "volatility_ema_span_1m": 604.0
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "bot.long.strategy.trailing_grid_v7",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "1 more keys",
+                    "grid_markup_end": 0.00241,
+                    "grid_markup_start": 0.01041,
+                    "grid_qty_pct": 0.88,
+                    "trailing_grid_ratio": -0.07,
+                    "trailing_qty_pct": 0.89,
+                    "trailing_retracement_pct": 0.00413
+                  }
+                },
+                "ema_span_0": 385.0,
+                "ema_span_1": 620.0,
+                "entry": {
+                  "__dict__": {
+                    "...": "9 more keys",
+                    "grid_double_down_factor": 1.39,
+                    "grid_spacing_pct": 0.02312,
+                    "grid_spacing_volatility_weight": 17.8,
+                    "grid_spacing_we_weight": 0.6766,
+                    "initial_ema_dist": 0.0078,
+                    "initial_qty_pct": 0.0122
+                  }
+                }
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "bot.short.strategy.trailing_martingale",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "2 more keys",
+                    "qty_pct": 0.05,
+                    "retracement_base_pct": 0.0,
+                    "threshold_base_pct": -0.02,
+                    "threshold_volatility_1h_weight": 0.01,
+                    "threshold_volatility_1m_weight": 0.01,
+                    "threshold_we_weight": -0.1
+                  }
+                },
+                "entry": {
+                  "__dict__": {
+                    "...": "8 more keys",
+                    "double_down_factor": 0.2,
+                    "ema_span_0": 60.0,
+                    "ema_span_1": 60.0,
+                    "initial_ema_dist": -0.1,
+                    "initial_qty_pct": 0.005,
+                    "threshold_base_pct": 0.001
+                  }
+                },
+                "volatility_ema_span_1h": 672.0,
+                "volatility_ema_span_1m": 5.0
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "bot.short.strategy.trailing_grid_v7",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "1 more keys",
+                    "grid_markup_end": 0.00223,
+                    "grid_markup_start": 0.00402,
+                    "grid_qty_pct": 0.5,
+                    "trailing_grid_ratio": -0.03,
+                    "trailing_qty_pct": 0.5,
+                    "trailing_retracement_pct": 0.005
+                  }
+                },
+                "ema_span_0": 300.0,
+                "ema_span_1": 700.0,
+                "entry": {
+                  "__dict__": {
+                    "...": "9 more keys",
+                    "grid_double_down_factor": 1.0,
+                    "grid_spacing_pct": 0.02,
+                    "grid_spacing_volatility_weight": 10.0,
+                    "grid_spacing_we_weight": 1.0,
+                    "initial_ema_dist": 0.01,
+                    "initial_qty_pct": 0.01
+                  }
+                }
+              }
+            }
+          },
+          {
+            "action": "update",
+            "new": {
+              "__dict__": {
+                "ema_readiness": 0.34146341463414637,
+                "volatility": 0.42682926829268286,
+                "volume": 0.23170731707317072
+              }
+            },
+            "old": {
+              "__dict__": {
+                "ema_readiness": 0.28,
+                "volatility": 0.35,
+                "volume": 0.19
+              }
+            },
+            "path": "bot.long.forager.score_weights"
+          },
+          {
+            "action": "update",
+            "new": {
+              "__dict__": {
+                "ema_readiness": 0.34146341463414637,
+                "volatility": 0.42682926829268286,
+                "volume": 0.23170731707317072
+              }
+            },
+            "old": {
+              "__dict__": {
+                "ema_readiness": 0.28,
+                "volatility": 0.35,
+                "volume": 0.19
+              }
+            },
+            "path": "bot.short.forager.score_weights"
+          },
+          {
+            "action": "add",
+            "path": "optimize.bounds.long.strategy.trailing_martingale",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "2 more keys",
+                    "qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "retracement_base_pct": [
+                      0.0001,
+                      0.01,
+                      0.0001
+                    ],
+                    "threshold_base_pct": [
+                      -0.005,
+                      0.01,
+                      0.0001
+                    ],
+                    "threshold_volatility_1h_weight": [
+                      0.01,
+                      80.0,
+                      0.01
+                    ],
+                    "threshold_volatility_1m_weight": [
+                      0.01,
+                      80.0,
+                      0.01
+                    ],
+                    "threshold_we_weight": [
+                      -0.05,
+                      0.05,
+                      0.0001
+                    ]
+                  }
+                },
+                "entry": {
+                  "__dict__": {
+                    "...": "7 more keys",
+                    "double_down_factor": [
+                      0.2,
+                      1.2,
+                      0.01
+                    ],
+                    "ema_span_0": [
+                      100.0,
+                      2880.0,
+                      10.0
+                    ],
+                    "ema_span_1": [
+                      100.0,
+                      2880.0,
+                      10.0
+                    ],
+                    "initial_ema_dist": [
+                      -0.05,
+                      0.005,
+                      0.0001
+                    ],
+                    "initial_qty_pct": [
+                      0.005,
+                      0.1,
+                      0.0001
+                    ],
+                    "threshold_base_pct": [
+                      0.001,
+                      0.035,
+                      0.0001
+                    ]
+                  }
+                },
+                "volatility_ema_span_1h": [
+                  168.0,
+                  2016.0,
+                  1.0
+                ],
+                "volatility_ema_span_1m": [
+                  5.0,
+                  2880.0,
+                  1.0
+                ]
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "optimize.bounds.long.strategy.trailing_grid_v7",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "1 more keys",
+                    "grid_markup_end": [
+                      -0.1,
+                      0.012,
+                      1e-05
+                    ],
+                    "grid_markup_start": [
+                      0.0015,
+                      0.012,
+                      1e-05
+                    ],
+                    "grid_qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_grid_ratio": [
+                      -1.0,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_retracement_pct": [
+                      0.0,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                },
+                "ema_span_0": [
+                  200.0,
+                  1440.0,
+                  1.0
+                ],
+                "ema_span_1": [
+                  200.0,
+                  1440.0,
+                  1.0
+                ],
+                "entry": {
+                  "__dict__": {
+                    "...": "9 more keys",
+                    "grid_double_down_factor": [
+                      0.0,
+                      2.0,
+                      0.01
+                    ],
+                    "grid_spacing_pct": [
+                      0.001,
+                      0.03,
+                      0.0001
+                    ],
+                    "grid_spacing_volatility_weight": [
+                      0.0,
+                      50.0,
+                      0.01
+                    ],
+                    "grid_spacing_we_weight": [
+                      0.0,
+                      10.0,
+                      0.001
+                    ],
+                    "initial_ema_dist": [
+                      -0.1,
+                      0.02,
+                      0.0001
+                    ],
+                    "initial_qty_pct": [
+                      0.005,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "optimize.bounds.short.strategy.trailing_martingale",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "2 more keys",
+                    "qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "retracement_base_pct": [
+                      0.0001,
+                      0.01,
+                      0.0001
+                    ],
+                    "threshold_base_pct": [
+                      -0.05,
+                      0.02,
+                      0.0001
+                    ],
+                    "threshold_volatility_1h_weight": [
+                      0.01,
+                      70.0,
+                      0.01
+                    ],
+                    "threshold_volatility_1m_weight": [
+                      0.01,
+                      70.0,
+                      0.01
+                    ],
+                    "threshold_we_weight": [
+                      -0.1,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                },
+                "entry": {
+                  "__dict__": {
+                    "...": "7 more keys",
+                    "double_down_factor": [
+                      0.2,
+                      2.0,
+                      0.01
+                    ],
+                    "ema_span_0": [
+                      100.0,
+                      1440.0,
+                      10.0
+                    ],
+                    "ema_span_1": [
+                      100.0,
+                      1440.0,
+                      10.0
+                    ],
+                    "initial_ema_dist": [
+                      -0.1,
+                      0.02,
+                      0.0001
+                    ],
+                    "initial_qty_pct": [
+                      0.005,
+                      0.1,
+                      0.0001
+                    ],
+                    "threshold_base_pct": [
+                      0.0,
+                      0.04,
+                      0.0001
+                    ]
+                  }
+                },
+                "volatility_ema_span_1h": [
+                  672.0,
+                  2016.0,
+                  1.0
+                ],
+                "volatility_ema_span_1m": [
+                  5.0,
+                  720.0,
+                  1.0
+                ]
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "optimize.bounds.short.strategy.trailing_grid_v7",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "1 more keys",
+                    "grid_markup_end": [
+                      -0.1,
+                      0.012,
+                      1e-05
+                    ],
+                    "grid_markup_start": [
+                      0.0015,
+                      0.012,
+                      1e-05
+                    ],
+                    "grid_qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_grid_ratio": [
+                      -1.0,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_retracement_pct": [
+                      0.0,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                },
+                "ema_span_0": [
+                  200.0,
+                  1440.0,
+                  1.0
+                ],
+                "ema_span_1": [
+                  200.0,
+                  1440.0,
+                  1.0
+                ],
+                "entry": {
+                  "__dict__": {
+                    "...": "9 more keys",
+                    "grid_double_down_factor": [
+                      0.0,
+                      2.0,
+                      0.01
+                    ],
+                    "grid_spacing_pct": [
+                      0.001,
+                      0.03,
+                      0.0001
+                    ],
+                    "grid_spacing_volatility_weight": [
+                      0.0,
+                      50.0,
+                      0.01
+                    ],
+                    "grid_spacing_we_weight": [
+                      0.0,
+                      10.0,
+                      0.001
+                    ],
+                    "initial_ema_dist": [
+                      -0.1,
+                      0.02,
+                      0.0001
+                    ],
+                    "initial_qty_pct": [
+                      0.005,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "backtest.execution_audit_path",
+            "value": null
+          },
+          {
+            "action": "add",
+            "path": "backtest.execution_delay_bars",
+            "value": 0
+          },
+          {
+            "action": "add",
+            "path": "backtest.hlcvs_data_dir",
+            "value": null
+          },
+          {
+            "action": "add",
+            "path": "backtest.hlcvs_data_override_mode",
+            "value": "intersection"
+          },
+          {
+            "action": "add",
+            "path": "backtest.intrabar_fill_order",
+            "value": "close_first"
+          },
+          {
+            "action": "add",
+            "path": "backtest.market_settings",
+            "value": {
+              "__dict__": {
+                "overrides": {
+                  "__dict__": {}
+                },
+                "overrides_by_exchange": {
+                  "__dict__": {}
+                }
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "live.custom_endpoints_path",
+            "value": null
+          },
+          {
+            "action": "add",
+            "path": "live.defer_broad_candle_warmup",
+            "value": true
+          },
+          {
+            "action": "add",
+            "path": "live.enable_forager_ws_candles",
+            "value": true
+          },
+          {
+            "action": "add",
+            "path": "live.exchange_symbol_unavailable_cooldown_hours",
+            "value": 6.0
+          },
+          {
+            "action": "add",
+            "path": "live.fee_conversion_max_age_ms",
+            "value": 86400000
+          },
+          {
+            "action": "add",
+            "path": "live.fee_pct_fallback",
+            "value": 0.0002
+          },
+          {
+            "action": "add",
+            "path": "live.fee_pct_sanity_abs_max",
+            "value": 0.001
+          },
+          {
+            "action": "add",
+            "path": "live.fills_confirmation_overlap_minutes",
+            "value": 60
+          },
+          {
+            "action": "add",
+            "path": "live.fills_recent_overlap_minutes",
+            "value": 10
+          },
+          {
+            "action": "add",
+            "path": "live.forager_score_hysteresis_pct",
+            "value": 0.02
+          },
+          {
+            "action": "add",
+            "path": "live.forager_ws_candle_rest_audit_minutes",
+            "value": 30
+          },
+          {
+            "action": "add",
+            "path": "live.force_cold_startup",
+            "value": false
+          },
+          {
+            "action": "add",
+            "path": "live.hsl_accept_incomplete_history",
+            "value": false
+          },
+          {
+            "action": "add",
+            "path": "live.limit_order_create_max_market_dist_pct",
+            "value": 0.8
+          },
+          {
+            "action": "add",
+            "path": "live.market_snapshot_ticker_strategy",
+            "value": "auto"
+          },
+          {
+            "action": "add",
+            "path": "live.max_active_candle_tail_gap_minutes",
+            "value": 10
+          },
+          {
+            "action": "add",
+            "path": "live.max_forager_candle_refresh_seconds",
+            "value": 45
+          },
+          {
+            "action": "add",
+            "path": "live.max_forager_candle_staleness_minutes",
+            "value": null
+          },
+          {
+            "action": "add",
+            "path": "live.order_replacement_churn_gate_activation_count",
+            "value": 10
+          },
+          {
+            "action": "add",
+            "path": "live.order_replacement_churn_gate_market_dist_pct",
+            "value": 0.005
+          },
+          {
+            "action": "add",
+            "path": "live.order_replacement_churn_gate_stability_minutes",
+            "value": 2.0
+          },
+          {
+            "action": "add",
+            "path": "live.order_replacement_churn_gate_window_minutes",
+            "value": 10.0
+          },
+          {
+            "action": "add",
+            "path": "live.risk_input_max_attempts",
+            "value": 10
+          },
+          {
+            "action": "add",
+            "path": "live.startup_phase_budgets",
+            "value": {
+              "__dict__": {}
+            }
+          },
+          {
+            "action": "add",
+            "path": "logging.live_event_debug_profiles",
+            "value": []
+          },
+          {
+            "action": "add",
+            "path": "optimize.objective_scenario",
+            "value": null
+          },
+          {
+            "action": "add",
+            "path": "optimize.seed",
+            "value": null
+          },
+          {
+            "action": "add",
+            "path": "optimize.gpu",
+            "value": {
+              "__dict__": {
+                "...": "8 more keys",
+                "auto_lean_parallelism": true,
+                "batch_size": null,
+                "checkpoint_interval_seconds": 5.0,
+                "drift_halt": 0.6,
+                "drift_min_samples": 32,
+                "max_dispatch_candidate_bars": null
+              }
+            }
+          },
+          {
+            "action": "add",
+            "path": "live.base_config_path",
+            "value": "/home/mrseven2204/passivbot/configs/examples/ema_anchor.json"
+          },
+          {
+            "action": "remove",
+            "path": "backtest.max_warmup_minutes",
+            "value": 0
+          },
+          {
+            "action": "remove",
+            "path": "bot.long.strategy.trailing_grid_v7",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "1 more keys",
+                    "grid_markup_end": 0.00241,
+                    "grid_markup_start": 0.01041,
+                    "grid_qty_pct": 0.88,
+                    "trailing_grid_ratio": -0.07,
+                    "trailing_qty_pct": 0.89,
+                    "trailing_retracement_pct": 0.00413
+                  }
+                },
+                "ema_span_0": 385.0,
+                "ema_span_1": 620.0,
+                "entry": {
+                  "__dict__": {
+                    "...": "9 more keys",
+                    "grid_double_down_factor": 1.39,
+                    "grid_spacing_pct": 0.02312,
+                    "grid_spacing_volatility_weight": 17.8,
+                    "grid_spacing_we_weight": 0.6766,
+                    "initial_ema_dist": 0.0078,
+                    "initial_qty_pct": 0.0122
+                  }
+                }
+              }
+            }
+          },
+          {
+            "action": "remove",
+            "path": "bot.long.strategy.trailing_martingale",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "2 more keys",
+                    "qty_pct": 0.84,
+                    "retracement_base_pct": 0.0005,
+                    "retracement_volatility_1h_weight": 22.95,
+                    "retracement_volatility_1m_weight": 52.34,
+                    "threshold_base_pct": -0.0027,
+                    "threshold_volatility_1h_weight": 0.48
+                  }
+                },
+                "entry": {
+                  "__dict__": {
+                    "...": "8 more keys",
+                    "double_down_factor": 0.94,
+                    "ema_gate_mode": "all",
+                    "ema_span_0": 790.0,
+                    "ema_span_1": 1080.0,
+                    "initial_ema_dist": 0.0028,
+                    "initial_qty_pct": 0.0081
+                  }
+                },
+                "volatility_ema_span_1h": 683.0,
+                "volatility_ema_span_1m": 604.0
+              }
+            }
+          },
+          {
+            "action": "remove",
+            "path": "bot.short.strategy.trailing_grid_v7",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "1 more keys",
+                    "grid_markup_end": 0.00223,
+                    "grid_markup_start": 0.00402,
+                    "grid_qty_pct": 0.5,
+                    "trailing_grid_ratio": -0.03,
+                    "trailing_qty_pct": 0.5,
+                    "trailing_retracement_pct": 0.005
+                  }
+                },
+                "ema_span_0": 300.0,
+                "ema_span_1": 700.0,
+                "entry": {
+                  "__dict__": {
+                    "...": "9 more keys",
+                    "grid_double_down_factor": 1.0,
+                    "grid_spacing_pct": 0.02,
+                    "grid_spacing_volatility_weight": 10.0,
+                    "grid_spacing_we_weight": 1.0,
+                    "initial_ema_dist": 0.01,
+                    "initial_qty_pct": 0.01
+                  }
+                }
+              }
+            }
+          },
+          {
+            "action": "remove",
+            "path": "bot.short.strategy.trailing_martingale",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "2 more keys",
+                    "qty_pct": 0.05,
+                    "retracement_base_pct": 0.0,
+                    "retracement_volatility_1h_weight": 0.01,
+                    "retracement_volatility_1m_weight": 0.01,
+                    "threshold_base_pct": -0.02,
+                    "threshold_volatility_1h_weight": 0.01
+                  }
+                },
+                "entry": {
+                  "__dict__": {
+                    "...": "8 more keys",
+                    "double_down_factor": 0.2,
+                    "ema_gate_mode": "all",
+                    "ema_span_0": 60.0,
+                    "ema_span_1": 60.0,
+                    "initial_ema_dist": -0.1,
+                    "initial_qty_pct": 0.005
+                  }
+                },
+                "volatility_ema_span_1h": 672.0,
+                "volatility_ema_span_1m": 5.0
+              }
+            }
+          },
+          {
+            "action": "remove",
+            "path": "optimize.bounds.long.strategy.trailing_martingale",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "2 more keys",
+                    "qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "retracement_base_pct": [
+                      0.0001,
+                      0.01,
+                      0.0001
+                    ],
+                    "threshold_base_pct": [
+                      -0.005,
+                      0.01,
+                      0.0001
+                    ],
+                    "threshold_volatility_1h_weight": [
+                      0.01,
+                      80.0,
+                      0.01
+                    ],
+                    "threshold_volatility_1m_weight": [
+                      0.01,
+                      80.0,
+                      0.01
+                    ],
+                    "threshold_we_weight": [
+                      -0.05,
+                      0.05,
+                      0.0001
+                    ]
+                  }
+                },
+                "entry": {
+                  "__dict__": {
+                    "...": "7 more keys",
+                    "double_down_factor": [
+                      0.2,
+                      1.2,
+                      0.01
+                    ],
+                    "ema_span_0": [
+                      100.0,
+                      2880.0,
+                      10.0
+                    ],
+                    "ema_span_1": [
+                      100.0,
+                      2880.0,
+                      10.0
+                    ],
+                    "initial_ema_dist": [
+                      -0.05,
+                      0.005,
+                      0.0001
+                    ],
+                    "initial_qty_pct": [
+                      0.005,
+                      0.1,
+                      0.0001
+                    ],
+                    "threshold_base_pct": [
+                      0.001,
+                      0.035,
+                      0.0001
+                    ]
+                  }
+                },
+                "volatility_ema_span_1h": [
+                  168.0,
+                  2016.0,
+                  1.0
+                ],
+                "volatility_ema_span_1m": [
+                  5.0,
+                  2880.0,
+                  1.0
+                ]
+              }
+            }
+          },
+          {
+            "action": "remove",
+            "path": "optimize.bounds.long.strategy.trailing_grid_v7",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "1 more keys",
+                    "grid_markup_end": [
+                      -0.1,
+                      0.012,
+                      1e-05
+                    ],
+                    "grid_markup_start": [
+                      0.0015,
+                      0.012,
+                      1e-05
+                    ],
+                    "grid_qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_grid_ratio": [
+                      -1.0,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_retracement_pct": [
+                      0.0,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                },
+                "ema_span_0": [
+                  200.0,
+                  1440.0,
+                  1.0
+                ],
+                "ema_span_1": [
+                  200.0,
+                  1440.0,
+                  1.0
+                ],
+                "entry": {
+                  "__dict__": {
+                    "...": "9 more keys",
+                    "grid_double_down_factor": [
+                      0.0,
+                      2.0,
+                      0.01
+                    ],
+                    "grid_spacing_pct": [
+                      0.001,
+                      0.03,
+                      0.0001
+                    ],
+                    "grid_spacing_volatility_weight": [
+                      0.0,
+                      50.0,
+                      0.01
+                    ],
+                    "grid_spacing_we_weight": [
+                      0.0,
+                      10.0,
+                      0.001
+                    ],
+                    "initial_ema_dist": [
+                      -0.1,
+                      0.02,
+                      0.0001
+                    ],
+                    "initial_qty_pct": [
+                      0.005,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "action": "remove",
+            "path": "optimize.bounds.short.strategy.trailing_martingale",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "2 more keys",
+                    "qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "retracement_base_pct": [
+                      0.0001,
+                      0.01,
+                      0.0001
+                    ],
+                    "threshold_base_pct": [
+                      -0.05,
+                      0.02,
+                      0.0001
+                    ],
+                    "threshold_volatility_1h_weight": [
+                      0.01,
+                      70.0,
+                      0.01
+                    ],
+                    "threshold_volatility_1m_weight": [
+                      0.01,
+                      70.0,
+                      0.01
+                    ],
+                    "threshold_we_weight": [
+                      -0.1,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                },
+                "entry": {
+                  "__dict__": {
+                    "...": "7 more keys",
+                    "double_down_factor": [
+                      0.2,
+                      2.0,
+                      0.01
+                    ],
+                    "ema_span_0": [
+                      100.0,
+                      1440.0,
+                      10.0
+                    ],
+                    "ema_span_1": [
+                      100.0,
+                      1440.0,
+                      10.0
+                    ],
+                    "initial_ema_dist": [
+                      -0.1,
+                      0.02,
+                      0.0001
+                    ],
+                    "initial_qty_pct": [
+                      0.005,
+                      0.1,
+                      0.0001
+                    ],
+                    "threshold_base_pct": [
+                      0.0,
+                      0.04,
+                      0.0001
+                    ]
+                  }
+                },
+                "volatility_ema_span_1h": [
+                  672.0,
+                  2016.0,
+                  1.0
+                ],
+                "volatility_ema_span_1m": [
+                  5.0,
+                  720.0,
+                  1.0
+                ]
+              }
+            }
+          },
+          {
+            "action": "remove",
+            "path": "optimize.bounds.short.strategy.trailing_grid_v7",
+            "value": {
+              "__dict__": {
+                "close": {
+                  "__dict__": {
+                    "...": "1 more keys",
+                    "grid_markup_end": [
+                      -0.1,
+                      0.012,
+                      1e-05
+                    ],
+                    "grid_markup_start": [
+                      0.0015,
+                      0.012,
+                      1e-05
+                    ],
+                    "grid_qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_grid_ratio": [
+                      -1.0,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_qty_pct": [
+                      0.05,
+                      1.0,
+                      0.01
+                    ],
+                    "trailing_retracement_pct": [
+                      0.0,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                },
+                "ema_span_0": [
+                  200.0,
+                  1440.0,
+                  1.0
+                ],
+                "ema_span_1": [
+                  200.0,
+                  1440.0,
+                  1.0
+                ],
+                "entry": {
+                  "__dict__": {
+                    "...": "9 more keys",
+                    "grid_double_down_factor": [
+                      0.0,
+                      2.0,
+                      0.01
+                    ],
+                    "grid_spacing_pct": [
+                      0.001,
+                      0.03,
+                      0.0001
+                    ],
+                    "grid_spacing_volatility_weight": [
+                      0.0,
+                      50.0,
+                      0.01
+                    ],
+                    "grid_spacing_we_weight": [
+                      0.0,
+                      10.0,
+                      0.001
+                    ],
+                    "initial_ema_dist": [
+                      -0.1,
+                      0.02,
+                      0.0001
+                    ],
+                    "initial_qty_pct": [
+                      0.005,
+                      0.1,
+                      0.0001
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "flavor": "current",
+        "live_only": false
+      },
+      "step": "normalize_config",
+      "ts_ms": 1789432517301
+    }
+  ],
+  "backtest": {
+    "balance_sample_divider": 1,
+    "base_dir": "/home/mrseven2204/passivbot/backtests/binance/deployability_research_2026-09-15/_engine",
+    "btc_collateral_cap": 0.0,
+    "btc_collateral_ltv_cap": null,
+    "candle_interval_minutes": 1,
+    "coin_sources": {},
+    "compress_cache": true,
+    "dynamic_wel_by_tradability": true,
+    "end_date": "2026-09-12",
+    "exchanges": [
+      "binance"
+    ],
+    "execution_audit_path": null,
+    "execution_delay_bars": 1,
+    "filter_by_min_effective_cost": false,
+    "gap_tolerance_ohlcvs_minutes": 120,
+    "hlcvs_data_dir": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__2c11e36fd7fc3806",
+    "hlcvs_data_override_mode": "intersection",
+    "intrabar_fill_order": "close_first",
+    "liquidation_threshold": 0.05,
+    "maker_fee_override": 0.0006,
+    "market_order_slippage_pct": 0.001,
+    "market_settings": {
+      "overrides": {},
+      "overrides_by_exchange": {}
+    },
+    "market_settings_sources": {},
+    "ohlcv_source_dir": null,
+    "reducer": {
+      "default": "mean"
+    },
+    "scenarios": [],
+    "start_date": "2023-09-12",
+    "starting_balance": 100000.0,
+    "suite_enabled": false,
+    "taker_fee_override": 0.0008,
+    "visible_metrics": [
+      "adg_strategy_eq",
+      "adg_strategy_eq_w",
+      "mdg_strategy_eq",
+      "strategy_eq_recovery_days_max",
+      "position_held_days_max",
+      "drawdown_worst_strategy_eq",
+      "volume_pct_per_day_avg",
+      "sortino_ratio_strategy_eq",
+      "sharpe_ratio_strategy_eq",
+      "loss_profit_ratio",
+      "strategy_eq_underwater_pct_mean",
+      "hard_stop_restarts_per_year",
+      "hard_stop_panic_close_loss_drawdown_pct_mean"
+    ],
+    "volume_normalization": true
+  },
+  "bot": {
+    "long": {
+      "forager": {
+        "score_weights": {
+          "ema_readiness": 0.1,
+          "volatility": 0.3,
+          "volume": 0.6
+        },
+        "volatility_ema_span_1m": 59,
+        "volume_drop_pct": 0.2,
+        "volume_ema_span_1m": 2764
+      },
+      "hsl": {
+        "cooldown_minutes_after_red": 2160.0,
+        "ema_span_minutes": 240.0,
+        "enabled": true,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+        "panic_close_order_type": "market",
+        "red_threshold": 0.15,
+        "restart_after_red_policy": "threshold",
+        "tier_ratios": {
+          "orange": 0.75,
+          "yellow": 0.5
+        }
+      },
+      "risk": {
+        "entry_cooldown_minutes": 90.0,
+        "n_positions": 3.0,
+        "position_exposure_enforcer_enabled": true,
+        "position_exposure_enforcer_threshold": 0.9,
+        "total_exposure_enforcer_enabled": true,
+        "total_exposure_enforcer_policy": "reduce_overweight",
+        "total_exposure_enforcer_threshold": 0.9,
+        "total_exposure_entry_gate_enabled": true,
+        "total_wallet_exposure_limit": 0.75,
+        "we_excess_allowance_mode": "bounded",
+        "we_excess_allowance_pct": 0.0
+      },
+      "strategy": {
+        "ema_anchor": {
+          "base_qty_pct": 0.02,
+          "ema_span_0": 415,
+          "ema_span_1": 793,
+          "entry_double_down_factor": 0.5,
+          "offset": 0.012,
+          "offset_psize_weight": 1.0,
+          "offset_volatility_1h_weight": 13,
+          "offset_volatility_1m_weight": 0.4,
+          "offset_volatility_ema_span_1h": 448,
+          "offset_volatility_ema_span_1m": 664
+        }
+      },
+      "unstuck": {
+        "close_pct": 0.05,
+        "ema_dist": -0.05,
+        "ema_gating_enabled": true,
+        "ema_span_0": 415.0,
+        "ema_span_1": 793.0,
+        "enabled": true,
+        "loss_allowance_pct": 0.01,
+        "threshold": 0.5
+      }
+    },
+    "short": {
+      "forager": {
+        "score_weights": {
+          "ema_readiness": 0.34146341463414637,
+          "volatility": 0.42682926829268286,
+          "volume": 0.23170731707317072
+        },
+        "volatility_ema_span_1m": 59,
+        "volume_drop_pct": 0.08,
+        "volume_ema_span_1m": 2764
+      },
+      "hsl": {
+        "cooldown_minutes_after_red": 2160.0,
+        "ema_span_minutes": 240.0,
+        "enabled": false,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+        "panic_close_order_type": "market",
+        "red_threshold": 0.15,
+        "restart_after_red_policy": "threshold",
+        "tier_ratios": {
+          "orange": 0.75,
+          "yellow": 0.5
+        }
+      },
+      "risk": {
+        "entry_cooldown_minutes": 30.0,
+        "n_positions": 0.0,
+        "position_exposure_enforcer_enabled": true,
+        "position_exposure_enforcer_threshold": 0.9,
+        "total_exposure_enforcer_enabled": true,
+        "total_exposure_enforcer_policy": "reduce_overweight",
+        "total_exposure_enforcer_threshold": 0.9,
+        "total_exposure_entry_gate_enabled": true,
+        "total_wallet_exposure_limit": 0.0,
+        "we_excess_allowance_mode": "bounded",
+        "we_excess_allowance_pct": 0.0
+      },
+      "strategy": {
+        "ema_anchor": {
+          "base_qty_pct": 0.06,
+          "ema_span_0": 415,
+          "ema_span_1": 793,
+          "entry_double_down_factor": 1.96,
+          "offset": 0.0193,
+          "offset_psize_weight": 0.3576,
+          "offset_volatility_1h_weight": 13,
+          "offset_volatility_1m_weight": 0.4,
+          "offset_volatility_ema_span_1h": 448,
+          "offset_volatility_ema_span_1m": 664
+        }
+      },
+      "unstuck": {
+        "close_pct": 0.05,
+        "ema_dist": -0.05,
+        "ema_gating_enabled": true,
+        "ema_span_0": 415.0,
+        "ema_span_1": 793.0,
+        "enabled": false,
+        "loss_allowance_pct": 0.01,
+        "threshold": 0.5
+      }
+    }
+  },
+  "coin_overrides": {},
+  "config_version": "v8.4.0",
+  "disable_plotting": "all",
+  "live": {
+    "approved_coins": {
+      "long": [
+        "BTC",
+        "ETH",
+        "BNB",
+        "XRP",
+        "SOL"
+      ],
+      "short": []
+    },
+    "auto_gs": true,
+    "balance_hysteresis_snap_pct": 0.01,
+    "balance_override": null,
+    "base_config_path": "/home/mrseven2204/passivbot/configs/examples/ema_anchor.json",
+    "candle_lock_timeout_seconds": 10,
+    "custom_endpoints_path": null,
+    "defer_broad_candle_warmup": true,
+    "enable_archive_candle_fetch": false,
+    "enable_forager_ws_candles": true,
+    "exchange_symbol_unavailable_cooldown_hours": 6.0,
+    "execution_delay_seconds": 2,
+    "fee_conversion_max_age_ms": 86400000,
+    "fee_pct_fallback": 0.0002,
+    "fee_pct_sanity_abs_max": 0.001,
+    "fills_confirmation_overlap_minutes": 60,
+    "fills_recent_overlap_minutes": 10,
+    "filter_by_min_effective_cost": true,
+    "forager_score_hysteresis_pct": 0.02,
+    "forager_ws_candle_rest_audit_minutes": 30,
+    "force_cold_startup": false,
+    "forced_mode_long": "",
+    "forced_mode_short": "",
+    "hedge_mode": false,
+    "hsl_accept_incomplete_history": false,
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "unified",
+    "ignored_coins": {
+      "long": [],
+      "short": []
+    },
+    "inactive_coin_candle_ttl_minutes": 10,
+    "leverage": 10,
+    "limit_order_create_max_market_dist_pct": 0.8,
+    "margin_mode_preference": "cross",
+    "market_order_near_touch_threshold": 0.001,
+    "market_orders_allowed": false,
+    "market_snapshot_ticker_strategy": "auto",
+    "max_active_candle_tail_gap_minutes": 10,
+    "max_concurrent_api_requests": null,
+    "max_disk_candles_per_symbol_per_tf": 2000000,
+    "max_forager_candle_refresh_seconds": 45,
+    "max_forager_candle_staleness_minutes": null,
+    "max_memory_candles_per_symbol": 200000,
+    "max_n_cancellations_per_batch": 5,
+    "max_n_creations_per_batch": 3,
+    "max_n_restarts_per_day": 10,
+    "max_ohlcv_fetches_per_minute": 30,
+    "max_realized_loss_pct": 1,
+    "max_warmup_minutes": 0,
+    "minimum_coin_age_days": 365,
+    "order_match_tolerance_pct": 0.0002,
+    "order_replacement_churn_gate_activation_count": 10,
+    "order_replacement_churn_gate_market_dist_pct": 0.005,
+    "order_replacement_churn_gate_stability_minutes": 2.0,
+    "order_replacement_churn_gate_window_minutes": 10.0,
+    "pnls_max_lookback_days": 30.0,
+    "recv_window_ms": 5000,
+    "risk_input_max_attempts": 10,
+    "startup_phase_budgets": {},
+    "strategy_kind": "ema_anchor",
+    "time_in_force": "good_till_cancelled",
+    "user": "bybit_01",
+    "warmup_concurrency": 0,
+    "warmup_jitter_seconds": 30,
+    "warmup_ratio": 0.3
+  },
+  "logging": {
+    "backup_count": 5,
+    "dir": "logs",
+    "level": 1,
+    "live_event_debug_profiles": [],
+    "max_bytes_mb": 10.0,
+    "memory_snapshot_interval_minutes": 30,
+    "persist_to_file": true,
+    "rotation": false,
+    "volume_refresh_info_threshold_seconds": 30
+  },
+  "monitor": {
+    "checkpoint_interval_minutes": 10.0,
+    "compress_rotated_segments": true,
+    "emit_completed_candles": true,
+    "enabled": true,
+    "event_rotation_mb": 128.0,
+    "event_rotation_minutes": 60.0,
+    "include_raw_fill_payloads": false,
+    "max_total_bytes": 1073741824,
+    "price_tick_min_interval_ms": 500,
+    "retain_candles": true,
+    "retain_days": 7.0,
+    "retain_fills": true,
+    "retain_price_ticks": true,
+    "root_dir": "monitor",
+    "snapshot_interval_seconds": 1.0
+  },
+  "optimize": {
+    "backend": "pymoo",
+    "bounds": {
+      "long": {
+        "forager": {
+          "score_weights_ema_readiness": [
+            0,
+            1,
+            0.01
+          ],
+          "score_weights_volatility": [
+            0,
+            1,
+            0.01
+          ],
+          "score_weights_volume": [
+            0,
+            1,
+            0.01
+          ],
+          "volatility_ema_span_1m": [
+            10,
+            1440,
+            1
+          ],
+          "volume_drop_pct": [
+            0.02,
+            1,
+            0.01
+          ],
+          "volume_ema_span_1m": [
+            180,
+            2880,
+            1
+          ]
+        },
+        "hsl": {
+          "cooldown_minutes_after_red": [
+            2160,
+            4320,
+            10
+          ],
+          "ema_span_minutes": [
+            1,
+            720,
+            1
+          ],
+          "red_threshold": [
+            0.01,
+            0.15,
+            0.001
+          ]
+        },
+        "risk": {
+          "entry_cooldown_minutes": [
+            0,
+            60,
+            0.1
+          ],
+          "n_positions": [
+            1,
+            1,
+            1
+          ],
+          "position_exposure_enforcer_threshold": [
+            1,
+            1,
+            0.001
+          ],
+          "total_exposure_enforcer_threshold": [
+            1,
+            1,
+            0.001
+          ],
+          "total_wallet_exposure_limit": [
+            0.5,
+            3,
+            0.01
+          ],
+          "we_excess_allowance_pct": [
+            0,
+            0,
+            0.01
+          ]
+        },
+        "strategy": {
+          "ema_anchor": {
+            "base_qty_pct": [
+              0.001,
+              0.2,
+              0.0001
+            ],
+            "ema_span_0": [
+              30,
+              2880,
+              1
+            ],
+            "ema_span_1": [
+              30,
+              2880,
+              1
+            ],
+            "entry_double_down_factor": [
+              0,
+              2,
+              0.01
+            ],
+            "offset": [
+              0.0001,
+              0.02,
+              0.0001
+            ],
+            "offset_psize_weight": [
+              0,
+              5,
+              0.0001
+            ],
+            "offset_volatility_1h_weight": [
+              0,
+              20,
+              0.1
+            ],
+            "offset_volatility_1m_weight": [
+              0,
+              20,
+              0.1
+            ],
+            "offset_volatility_ema_span_1h": [
+              1,
+              672,
+              1
+            ],
+            "offset_volatility_ema_span_1m": [
+              5,
+              720,
+              1
+            ]
+          }
+        },
+        "unstuck": {
+          "close_pct": [
+            0.01,
+            0.12,
+            0.001
+          ],
+          "ema_dist": [
+            -0.2,
+            0.01,
+            0.0001
+          ],
+          "ema_span_0": [
+            415,
+            415
+          ],
+          "ema_span_1": [
+            793,
+            793
+          ],
+          "loss_allowance_pct": [
+            0.005,
+            0.2,
+            0.0001
+          ],
+          "threshold": [
+            0.4,
+            0.9,
+            0.001
+          ]
+        }
+      },
+      "short": {
+        "forager": {
+          "score_weights_ema_readiness": [
+            0,
+            1,
+            0.01
+          ],
+          "score_weights_volatility": [
+            0,
+            1,
+            0.01
+          ],
+          "score_weights_volume": [
+            0,
+            1,
+            0.01
+          ],
+          "volatility_ema_span_1m": [
+            10,
+            1440,
+            1
+          ],
+          "volume_drop_pct": [
+            0.02,
+            1,
+            0.01
+          ],
+          "volume_ema_span_1m": [
+            180,
+            2880,
+            1
+          ]
+        },
+        "hsl": {
+          "cooldown_minutes_after_red": [
+            2160,
+            4320,
+            10
+          ],
+          "ema_span_minutes": [
+            1,
+            720,
+            1
+          ],
+          "red_threshold": [
+            0.01,
+            0.15,
+            0.001
+          ]
+        },
+        "risk": {
+          "entry_cooldown_minutes": [
+            0,
+            60,
+            0.1
+          ],
+          "n_positions": [
+            1,
+            1,
+            1
+          ],
+          "position_exposure_enforcer_threshold": [
+            1,
+            1,
+            0.001
+          ],
+          "total_exposure_enforcer_threshold": [
+            1,
+            1,
+            0.001
+          ],
+          "total_wallet_exposure_limit": [
+            0.5,
+            3,
+            0.01
+          ],
+          "we_excess_allowance_pct": [
+            0,
+            0,
+            0.01
+          ]
+        },
+        "strategy": {
+          "ema_anchor": {
+            "base_qty_pct": [
+              0.001,
+              0.2,
+              0.0001
+            ],
+            "ema_span_0": [
+              30,
+              2880,
+              1
+            ],
+            "ema_span_1": [
+              30,
+              2880,
+              1
+            ],
+            "entry_double_down_factor": [
+              0,
+              2,
+              0.01
+            ],
+            "offset": [
+              0.0001,
+              0.02,
+              0.0001
+            ],
+            "offset_psize_weight": [
+              0,
+              5,
+              0.0001
+            ],
+            "offset_volatility_1h_weight": [
+              0,
+              20,
+              0.1
+            ],
+            "offset_volatility_1m_weight": [
+              0,
+              20,
+              0.1
+            ],
+            "offset_volatility_ema_span_1h": [
+              1,
+              672,
+              1
+            ],
+            "offset_volatility_ema_span_1m": [
+              5,
+              720,
+              1
+            ]
+          }
+        },
+        "unstuck": {
+          "close_pct": [
+            0.01,
+            0.12,
+            0.001
+          ],
+          "ema_dist": [
+            -0.2,
+            0.01,
+            0.0001
+          ],
+          "ema_span_0": [
+            415,
+            415
+          ],
+          "ema_span_1": [
+            793,
+            793
+          ],
+          "loss_allowance_pct": [
+            0.005,
+            0.2,
+            0.0001
+          ],
+          "threshold": [
+            0.4,
+            0.9,
+            0.001
+          ]
+        }
+      }
+    },
+    "compress_results_file": true,
+    "crossover_eta": 20,
+    "crossover_probability": 0.64,
+    "enable_overrides": [
+      "mirror_short_from_long"
+    ],
+    "fixed_params": [],
+    "fixed_runtime_overrides": {},
+    "gpu": {
+      "auto_lean_parallelism": true,
+      "batch_size": null,
+      "checkpoint_interval_seconds": 5.0,
+      "drift_halt": 0.6,
+      "drift_min_samples": 32,
+      "drift_probes": 4,
+      "drift_window": 128,
+      "exact_workers": 0,
+      "max_dispatch_candidate_bars": null,
+      "max_pending_exact": 0,
+      "population_size": null,
+      "seed_bootstrap": {
+        "max_exact": 128,
+        "mode": "auto"
+      },
+      "successive_halving": {
+        "enabled": false,
+        "history_fractions": [
+          0.25,
+          0.5,
+          1.0
+        ],
+        "min_survivors": 64,
+        "survival_fraction": 0.5
+      },
+      "validate_per_generation": 8
+    },
+    "iters": 500000,
+    "limits": [
+      {
+        "enabled": false,
+        "metric": "drawdown_worst_strategy_eq",
+        "penalize_if": "greater_than",
+        "value": 0.6
+      },
+      {
+        "enabled": true,
+        "metric": "backtest_completion_ratio",
+        "penalize_if": "less_than",
+        "value": 0.99
+      }
+    ],
+    "mutation_eta": 20,
+    "mutation_indpb": 0.0135135135,
+    "mutation_probability": 0.34,
+    "n_cpus": 6,
+    "objective_scenario": null,
+    "offspring_multiplier": 1,
+    "pareto_max_size": 1000,
+    "population_size": null,
+    "pymoo": {
+      "algorithm": "auto",
+      "algorithms": {
+        "nsga2": {},
+        "nsga3": {
+          "ref_dirs": {
+            "method": "das_dennis",
+            "n_partitions": "auto"
+          }
+        }
+      },
+      "shared": {
+        "crossover_eta": 20.0,
+        "crossover_prob_var": 0.5,
+        "eliminate_duplicates": true,
+        "mutation_eta": 20.0,
+        "mutation_prob": "auto",
+        "mutation_prob_per_variable": "auto"
+      }
+    },
+    "round_to_n_significant_digits": 3,
+    "scoring": [
+      {
+        "goal": "max",
+        "metric": "volume_pct_per_day_avg"
+      },
+      {
+        "goal": "max",
+        "metric": "sharpe_ratio_strategy_eq"
+      },
+      {
+        "goal": "min",
+        "metric": "strategy_eq_recovery_days_max"
+      },
+      {
+        "goal": "min",
+        "metric": "position_held_days_max"
+      },
+      {
+        "goal": "min",
+        "metric": "strategy_eq_underwater_pct_mean"
+      },
+      {
+        "goal": "max",
+        "metric": "adg_strategy_eq"
+      },
+      {
+        "goal": "max",
+        "metric": "adg_strategy_eq_w"
+      },
+      {
+        "goal": "max",
+        "metric": "mdg_strategy_eq"
+      },
+      {
+        "goal": "max",
+        "metric": "sortino_ratio_strategy_eq"
+      },
+      {
+        "goal": "min",
+        "metric": "drawdown_worst_strategy_eq"
+      },
+      {
+        "goal": "min",
+        "metric": "drawdown_worst_mean_1pct_strategy_eq"
+      },
+      {
+        "goal": "min",
+        "metric": "fills_gap_time_weighted_mean_hours"
+      }
+    ],
+    "seed": null,
+    "write_all_results": true
+  }
+}

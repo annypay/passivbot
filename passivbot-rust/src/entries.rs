@@ -10,7 +10,24 @@ use crate::utils::{
     round_dn, round_up, RoundingMode,
 };
 
+/// Entry-side exposure budget with the allowance applied and the account drawdown
+/// brake folded into the base limit.
+///
+/// Every entry sizing, entry capping and entry admission check goes through this
+/// function, so the brake reaches all entry paths without touching exit semantics.
 pub fn wallet_exposure_limit_with_allowance(
+    bot_params: &BotParams,
+    runtime_context: &RuntimeOrderContext,
+) -> f64 {
+    wallet_exposure_limit_with_allowance_from_base(
+        bot_params,
+        runtime_context.braked_wallet_exposure_limit(),
+    )
+}
+
+/// Unbraked exposure budget. Reserved for close sizing and protective reducers,
+/// which must keep their existing semantics regardless of the brake.
+pub fn raw_wallet_exposure_limit_with_allowance(
     bot_params: &BotParams,
     runtime_context: &RuntimeOrderContext,
 ) -> f64 {
@@ -1250,6 +1267,7 @@ mod tests {
     fn make_runtime_context() -> RuntimeOrderContext {
         RuntimeOrderContext {
             effective_wallet_exposure_limit: 1.0,
+            wallet_exposure_limit_scale: 1.0,
         }
     }
 

@@ -18,7 +18,7 @@ Common workflows:
 
 Reference guides:
 
-- [Strategy parameters](config.bot.md) and [Forager selection](forager.md)
+- [Strategy profiles and variants](strategy_profiles.md), [strategy parameters](config.bot.md), and [Forager selection](forager.md)
 - [Risk management](risk_management.md) and [Equity Hard Stop Loss](equity_hard_stop_loss.md)
 - [Coin overrides](coin_overrides.md) and [suite examples](suite_examples.md)
 - [Metrics](metrics.md) and [monitor output](monitor.md)
@@ -28,3 +28,9 @@ Reference guides:
 Contributors: [Contributing](CONTRIBUTING.md), [engineering contracts](ai/README.md), and
 [release procedure](ai/runbooks/release.md). Files under `plans/`, case studies, and dated session
 summaries are historical/design material; use the maintained guides for current runtime behavior.
+
+Backtest research evidence (study reports, study scripts, research contracts, candidate locks,
+and per-configuration metric summaries) is version-controlled under
+[`backtests/`](https://github.com/enarjord/passivbot/tree/master/backtests) so a fresh checkout can
+trace how a published profile was chosen. Bulky regenerable outputs — fills, balance series,
+execution audits, arrays, and plots — stay local; see `backtests/readme.md`.

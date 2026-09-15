@@ -1,0 +1,106 @@
+{
+  "stage": "smoke",
+  "candidate": "hsl_npos1",
+  "candidate_label": "HSL-enabled trailing martingale",
+  "candidate_source": "configs/examples/hsl_npos1.json",
+  "candidate_source_sha256": "9b3075f258fcb4f38680d5e0120f6383d03a2062f623884963820e6429893901",
+  "window": {
+    "start": "2023-09-12",
+    "end": "2023-09-14"
+  },
+  "execution_contract": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first",
+    "description": "Causal nominal T+1, close-first"
+  },
+  "scenario": "C1",
+  "effective_coins": [
+    "ADA",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "DOT",
+    "ETH",
+    "HBAR",
+    "HYPE",
+    "LINK",
+    "LTC",
+    "SOL",
+    "SUI",
+    "TON",
+    "TRX",
+    "UNI",
+    "XLM",
+    "XMR",
+    "XRP"
+  ],
+  "effective_coin_count": 19,
+  "requested_coins": {
+    "long": [
+      "ADA",
+      "AVAX",
+      "BCH",
+      "BNB",
+      "BTC",
+      "DOT",
+      "ETH",
+      "HBAR",
+      "HYPE",
+      "LINK",
+      "LTC",
+      "SOL",
+      "SUI",
+      "TON",
+      "TRX",
+      "UNI",
+      "XAUT",
+      "XLM",
+      "XMR",
+      "XRP"
+    ],
+    "short": [
+      "ADA",
+      "AVAX",
+      "BCH",
+      "BNB",
+      "BTC",
+      "DOT",
+      "ETH",
+      "HBAR",
+      "HYPE",
+      "LINK",
+      "LTC",
+      "SOL",
+      "SUI",
+      "TON",
+      "TRX",
+      "UNI",
+      "XAUT",
+      "XLM",
+      "XMR",
+      "XRP"
+    ]
+  },
+  "unavailable_requested_coins": [
+    "XAUT"
+  ],
+  "effective_hlcv_shape": [
+    39169,
+    19,
+    4
+  ],
+  "result_dir": "backtests/binance/low_drawdown_strategy_study_2026-09-14/smoke/hsl_npos1/C1/binance/2026-09-14T08_15_30",
+  "execution_audit_path": "backtests/binance/low_drawdown_strategy_study_2026-09-14/smoke/hsl_npos1/C1/execution_boundary_audit.csv",
+  "runtime": {
+    "expected_source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28",
+    "runtime_compiled_sha256": "15431c03d3eb891e970fefed914d3a152cc4fa5de770fcbe7b4ba89bb13bd0d9",
+    "runtime_build_info": {
+      "crate_version": "0.1.0",
+      "source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+    }
+  },
+  "dataset_manifest_sha256": "840c449a70636d47d599c579ee52081dd971ba9538a4a67b2613c6bc7333c6f1",
+  "network_disabled": true,
+  "elapsed_seconds": 12.51196700699802
+}

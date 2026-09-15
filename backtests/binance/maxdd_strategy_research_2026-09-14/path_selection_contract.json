@@ -1,0 +1,65 @@
+{
+  "frozen_before_results": [
+    "F2",
+    "F3"
+  ],
+  "strategies": [
+    "ema_anchor",
+    "trailing_martingale"
+  ],
+  "primary_oos_tracks": [
+    "E-L",
+    "B-L"
+  ],
+  "diagnostic_oos_tracks": [
+    "E-S"
+  ],
+  "eligibility": {
+    "required_folds": [
+      "F1",
+      "F2",
+      "F3"
+    ],
+    "backtest_completion_ratio_min": 0.999,
+    "drawdown_worst_strategy_eq_max": 0.25,
+    "adg_strategy_eq_min": 0.00005,
+    "gain_strategy_eq_strictly_greater_than": 1.0,
+    "activity_passed": true,
+    "liquidated": false
+  },
+  "ranking": [
+    {
+      "metric": "eligible_primary_rows",
+      "direction": "maximize"
+    },
+    {
+      "metric": "worst_primary_oos_drawdown_worst_strategy_eq",
+      "direction": "minimize"
+    },
+    {
+      "metric": "worst_primary_oos_drawdown_worst_mean_1pct_strategy_eq",
+      "direction": "minimize"
+    },
+    {
+      "metric": "worst_primary_oos_strategy_eq_recovery_days_max",
+      "direction": "minimize"
+    },
+    {
+      "metric": "minimum_primary_oos_adg_strategy_eq",
+      "direction": "maximize"
+    },
+    {
+      "metric": "geometric_compounded_primary_oos_gain_strategy_eq",
+      "direction": "maximize"
+    },
+    {
+      "metric": "strategy_name",
+      "direction": "ascending_deterministic_tiebreak"
+    }
+  ],
+  "interpretation": {
+    "E-S": "Direction diagnostic only; it does not override the long-only primary path decision.",
+    "failure": "If neither strategy satisfies every primary OOS eligibility row, retain the lexicographic leader only as the next research path and mark the parameter-only stage failed.",
+    "holdout": "The final holdout remains an unseen pass/fail test and cannot be used to switch paths or revise this ranking."
+  }
+}

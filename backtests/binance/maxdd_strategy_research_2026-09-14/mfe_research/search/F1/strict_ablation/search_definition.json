@@ -1,0 +1,34 @@
+{
+  "fold": "F1",
+  "strategy": "trailing_martingale",
+  "stage": "strict_ablation",
+  "candidate_count": 6,
+  "primary_tracks": [
+    "E-L",
+    "B-L"
+  ],
+  "strict_giveback_fractions": [
+    0.0,
+    0.1,
+    0.2,
+    0.35,
+    0.5,
+    0.7
+  ],
+  "fine_threshold_multipliers": [
+    0.9,
+    1.0,
+    1.1
+  ],
+  "fine_giveback_multipliers": [
+    0.75,
+    1.0,
+    1.25
+  ],
+  "fine_qty_multipliers": [
+    0.75,
+    1.0,
+    1.25
+  ],
+  "selected_params_hash": "ee1fd645028fcdbe461f3b2cd070e4aef10a5bb5f914ff2ef94b6c4f8ad1d243"
+}

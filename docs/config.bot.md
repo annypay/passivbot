@@ -127,8 +127,8 @@ close_retracement =
 
 ```text
 if close.retracement_base_pct <= 0:
-    close_price(long)  = max(best_bid, pos.price * (1 + close_threshold))
-    close_price(short) = min(best_ask, pos.price * (1 - close_threshold))
+    close_price(long)  = max(best_ask, round_up(pos.price * (1 + close_threshold), price_step))
+    close_price(short) = min(best_bid, round_down(pos.price * (1 - close_threshold), price_step))
 else:
     triggered_when(long):
         high_since_open >= pos.price * (1 + close_threshold)
@@ -182,9 +182,10 @@ Apple MPS screening supports independent unstuck horizons and bounds for both su
 including per-coin overrides and candle-interval scaling. Start a fresh GPU run after upgrading;
 older screening checkpoints use a different parameter layout.
 
-When aggregated realised PnL falls below the peak by more than
-`unstuck_loss_allowance_pct * total_wallet_exposure_limit`, one position at a time is
-selected for loss realization:
+Auto-unstuck can reduce an eligible position while a positive realized-loss allowance
+remains. It does not wait for account equity to cross a loss threshold. The allowance
+uses current balance and the peak and latest cumulative realized PnL supplied by the
+runtime:
 
 If `coin_overrides.<coin>.bot.<side>.unstuck.loss_allowance_pct` is set, that
 coin+side uses the override percentage in the same account-wide allowance formula
@@ -192,16 +193,29 @@ when it is selected for unstucking. The override does not switch unstuck to a
 per-slot budget and does not create separate per-coin realized-PnL tracking.
 
 ```text
-unstuck_allowed = peak_balance * (1 - unstuck_loss_allowance_pct *
-                                  total_wallet_exposure_limit)
-if equity < unstuck_allowed:
-    close_qty   = full_pos_size * unstuck_close_pct
-    close_price = EMA_band_opposite *
-                    (1 + sign(pside) * unstuck_ema_dist)
+balance_peak = balance + (pnl_cumsum_max - pnl_cumsum_last)
+allowance = max(0,
+    balance - balance_peak * (1 - loss_allowance_pct * total_wallet_exposure_limit))
+
+target_close_notional = balance * effective_wel * close_pct
+target_close_qty = target_close_notional / (current_price * c_mult)
 ```
 
-Positions become eligible when
-`wallet_exposure / wel_allowed > unstuck_threshold`.
+At a fresh start with no realized drawdown, the allowance is already
+`balance * loss_allowance_pct * total_wallet_exposure_limit`; prior profits are not
+required. Realized losses consume this allowance. It is a budget for the unstucker,
+not a hard bound on unrealized loss, account MAXDD, fees, or liquidation risk.
+
+Positions become eligible when `wallet_exposure / effective_wel > threshold`,
+the allowance is positive, and the configured EMA gate passes (if enabled).
+Here `effective_wel` is the per-position limit including its effective excess
+allowance. The close size is based on that exposure budget, not a fixed fraction
+of the remaining position. Rust rounds the quantity, applies exchange minimums,
+caps it to the position, and scales a loss-taking close against the available
+allowance. Its limit price is the current market reference, rounded up for a long
+close or down for a short close; the EMA band is an eligibility gate, not its
+order price. These orders are still subject to reducer arbitration and final
+realized-loss checks.
 
 When multiple positions are eligible, auto-unstuck chooses the least stuck
 position first, defined as the lowest pside-aware relative distance between
@@ -322,6 +336,50 @@ the final reducer quantities largest-first across the batch before ordinary
 closes in the resulting mixed close set. Live reconciliation preserves the same
 reducer-first reservation if the position shrinks between planning and order
 submission.
+
+## Wallet Exposure Brake
+
+The wallet exposure brake scales **new-entry** exposure down as the account's
+strategy equity falls away from its running peak. It is disabled by default and
+is configured per side:
+
+```text
+bot.<pside>.risk.wallet_exposure_brake_enabled
+bot.<pside>.risk.wallet_exposure_brake_start_drawdown
+bot.<pside>.risk.wallet_exposure_brake_full_drawdown
+bot.<pside>.risk.wallet_exposure_brake_min_scale
+```
+
+```text
+drawdown = max(0, 1 - strategy_equity / running_peak_strategy_equity)
+if not enabled or drawdown <= start_drawdown:      scale = 1.0
+elif drawdown >= full_drawdown:                    scale = min_scale
+else:                                              scale = 1 + progress * (min_scale - 1)
+                                                   progress = (drawdown - start_drawdown)
+                                                              / (full_drawdown - start_drawdown)
+entry_budget = effective_wallet_exposure_limit * scale
+close_budget = effective_wallet_exposure_limit
+```
+
+Rules and boundaries:
+
+1. The brake is an **entry-side** control. Entry sizing, entry capping, and entry
+   admission use the braked budget. Close sizing, close thresholds, protective
+   reducers, and HSL panic handling keep the unbraked budget, so enabling the
+   brake never changes exit behaviour.
+2. The running peak only ever absorbs equity samples that have already been
+   recorded. The brake cannot react to a future candle in backtests.
+3. The measured equity is the strategy equity (realized balance plus unrealized
+   PnL), so a drawdown caused purely by the collateral asset's price does not
+   tighten entries by itself.
+4. Configuration requires `0 <= start_drawdown < full_drawdown` and
+   `0 < min_scale <= 1`. `min_scale = 1.0` makes the brake a no-op.
+5. It is account-level. When both sides enable it, the backtest payload takes the
+   stricter (earlier-triggering, deeper) geometry; a side that leaves it disabled
+   never loosens the other side.
+6. The brake gates new entries; it does not liquidate existing inventory. A
+   strategy whose returns depend on adding during a decline can lose more from
+   the brake than from a permanently lower `total_wallet_exposure_limit`.
 
 ## Risk-Control Stack
 

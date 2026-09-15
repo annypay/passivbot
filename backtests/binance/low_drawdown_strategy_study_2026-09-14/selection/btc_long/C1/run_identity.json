@@ -1,0 +1,48 @@
+{
+  "stage": "selection",
+  "candidate": "btc_long",
+  "candidate_label": "BTC-only trailing martingale long",
+  "candidate_source": "configs/examples/btc_long.json",
+  "candidate_source_sha256": "f7172e9cf87e26c1e488ed2fe588a049d67c951cb13a22fee12a7c9bed0477a9",
+  "window": {
+    "start": "2023-09-12",
+    "end": "2025-09-12"
+  },
+  "execution_contract": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first",
+    "description": "Causal nominal T+1, close-first"
+  },
+  "scenario": "C1",
+  "effective_coins": [
+    "BTC"
+  ],
+  "effective_coin_count": 1,
+  "requested_coins": {
+    "long": [
+      "BTC"
+    ],
+    "short": [
+      "BTC"
+    ]
+  },
+  "unavailable_requested_coins": [],
+  "effective_hlcv_shape": [
+    1076833,
+    1,
+    4
+  ],
+  "result_dir": "backtests/binance/low_drawdown_strategy_study_2026-09-14/selection/btc_long/C1/binance/2026-09-14T08_20_58",
+  "execution_audit_path": "backtests/binance/low_drawdown_strategy_study_2026-09-14/selection/btc_long/C1/execution_boundary_audit.csv",
+  "runtime": {
+    "expected_source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28",
+    "runtime_compiled_sha256": "15431c03d3eb891e970fefed914d3a152cc4fa5de770fcbe7b4ba89bb13bd0d9",
+    "runtime_build_info": {
+      "crate_version": "0.1.0",
+      "source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+    }
+  },
+  "dataset_manifest_sha256": "840c449a70636d47d599c579ee52081dd971ba9538a4a67b2613c6bc7333c6f1",
+  "network_disabled": true,
+  "elapsed_seconds": 28.303596068999468
+}

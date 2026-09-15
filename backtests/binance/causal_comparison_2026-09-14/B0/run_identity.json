@@ -1,0 +1,27 @@
+{
+  "scenario": "B0",
+  "contract": {
+    "engine": "original",
+    "delay": 0,
+    "ordering": "close_first"
+  },
+  "result_dir": "backtests/binance/causal_comparison_2026-09-14/B0/binance/2026-09-14T05_34_55",
+  "smoke_bars": 0,
+  "runtime_source_fingerprint": "d50e924b0a1304433d670c69994fe632de4dbb34d6ae7a73e53652bfa360cd76",
+  "runtime_artifact_sha256": "f43a87d6bf596483b13eb52d29d1ef0351327fa7f9c0634f4b6dd475d3008c18",
+  "source_manifest_sha256": "840c449a70636d47d599c579ee52081dd971ba9538a4a67b2613c6bc7333c6f1",
+  "dataset_logical_hashes": {
+    "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+    "coins": "bcbd42124f92377b44ffccea47d16c7c933dd680624101e6b42660ca3498217b",
+    "hlcvs": "4b1ece45d4484a6fa81387b144dfc4282719345d1505a1aeb1def1feec3b93a4",
+    "market_specific_settings": "9fcaa3ea682f829eafb682d42d9709d8a09ad2d1c189e08c2b2460fd8e3278d7",
+    "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+  },
+  "effective_shape": [
+    1614529,
+    40,
+    4
+  ],
+  "elapsed_seconds": 80.58207706999929,
+  "network_disabled": true
+}

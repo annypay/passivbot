@@ -340,7 +340,10 @@ $RECYCLE.BIN/
 *.lnk
 
 # Backtest files
-backtests/
+# Research evidence under backtests/ (reports, study scripts, contracts, locks and metric
+# summaries) is tracked so any checkout can trace how a strategy profile was chosen. Bulky
+# regenerable outputs stay local: fills.csv, execution_audit.csv, balance series, *.npy,
+# *.npz, plots and caches. See the /backtests rules further down for the exact allowlist.
 !config/optimize/default.hjson
 !config/backtest/default.hjson
 config/
@@ -378,6 +381,27 @@ Cargo.lock
 *.pdb
 
 /backtests
+!/backtests/
+/backtests/**
+!/backtests/**/
+# Keep the text evidence that cannot be regenerated cheaply: reports, study scripts,
+# contracts, locks, manifests and per-configuration metric summaries.
+!/backtests/**/*.md
+!/backtests/**/*.py
+!/backtests/**/*.sh
+!/backtests/**/*.json
+# Per-run bookkeeping trees hold one compiled runtime config plus a copy of the same
+# metadata for every individual run; the study-level manifests already index them.
+/backtests/**/runs/
+# Compiled runtime configs are large, carry host paths, and are reproducible from the
+# study input plus the study script.
+/backtests/**/config.json
+/backtests/**/config.original.json
+/backtests/**/dataset.json
+/backtests/**/study_input_config.json
+/backtests/**/candidate.config.json
+# Global catch-alls from this file apply here too (results*, historical_data, caches).
+/backtests/**/[Rr]esults*
 /historical_data
 /results*
 /configs/private/

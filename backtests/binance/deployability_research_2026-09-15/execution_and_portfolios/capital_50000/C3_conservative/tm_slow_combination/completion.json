@@ -1,0 +1,46 @@
+{
+  "artifact_hashes": {
+    "account_path.npz": "86e3f6a9b3c99330cd30413a81e68475101de2987bdad14cd4cefee9602c1754",
+    "closed_inventory_ages.csv": "4e106ebbd8d4f37de8c9dbcb136a8130c909bac7607fc0659dda0b350bbe24f5",
+    "coin_concentration.csv": "986fe6fb5d58fdc2cd28fa2247d0e94a75ad40292b26e824d8b98645edeb1711",
+    "config.json": "2af6da10a4a68098bbf7a8928b7a113376721719a7aafb0585ef502698a2acb1",
+    "execution_audit.csv": "ac2a61cccdf339af2ce7118780ce5ed738363057011cc8d84692a2a2ea320962",
+    "execution_identity.json": "3c76eaf7c7e2aea25215c64d2f58203d6bbda4a83ad98063765656c8a7639aef",
+    "fills.csv": "55640ce801e616e5ac4a13f1aab9b0f98b69d1c728ecc9de65c53f9a616ebfdd",
+    "minute_equity.npy": "5fa2d60c091988cfd23f69f0a7436f795c365f3254e3281705d5208384098993",
+    "native_analysis.json": "4e10b34364781ddc2d0fdbaf0da7e4ec741aa18755ba7f2ed90540f96e9d23a6",
+    "native_complete.json": "2cf68c249047272684d20417ffebaa0bc644a32c41361f86554329b960faeed4",
+    "position_episodes.csv": "afedb22570e4b92e3749647b8b8fca36c89c0689bbbb1c2a65af16153f7bb20e",
+    "summary.json": "7def42ec4b53635c2bcbbf72fb0cf787c8f87df9c78350348e25c2d237b7c979"
+  },
+  "identity": {
+    "candidate_name": "tm_slow_combination",
+    "capital_usdt": 50000,
+    "config_hash": "da05d16f26bbe3334f545ccda0c00c9106a907ca09261155f3755edaa3c041ea",
+    "costs": "conservative",
+    "dataset_manifest_sha256": "840c449a70636d47d599c579ee52081dd971ba9538a4a67b2613c6bc7333c6f1",
+    "diagnostics_tool_sha256": "bcd889eb9a7dadaee3a2e3765723541adf9fe3e45bb80c3eb4f5475707533e4a",
+    "evidence_integrity_source_sha256": "1201ffd5844b2b773d1baa483974bdb4c3a24f74354d76391c71f6703089e0cf",
+    "evidence_schema_version": 2,
+    "execution": "C3",
+    "prepared_coins": [
+      "BNB",
+      "BTC",
+      "ETH",
+      "SOL",
+      "XRP"
+    ],
+    "research_contract_sha256": "1f3b6ebc72414246c9e06ef0eafd8325d1e0d5fbb3c130e63b245d1b31bc881b",
+    "runtime": {
+      "expected_source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28",
+      "runtime_build_info": {
+        "crate_version": "0.1.0",
+        "source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+      },
+      "runtime_compiled_path": "/home/mrseven2204/passivbot/venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+      "runtime_compiled_sha256": "15431c03d3eb891e970fefed914d3a152cc4fa5de770fcbe7b4ba89bb13bd0d9",
+      "runtime_compiled_source_stamp": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+    },
+    "sidecar_tool_sha256": "9beed2313e49d84ce95841b3494ef1ef6b51259192ece0b6b49846bc1f03f468"
+  }
+}

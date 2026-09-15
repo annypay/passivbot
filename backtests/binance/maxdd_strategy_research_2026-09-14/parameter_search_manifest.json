@@ -1,0 +1,75 @@
+{
+  "study_manifest_sha256": "1c6b8507438e762ed3191897a42db7b38e8463dd010a6071a1726ce20bb2af97",
+  "strategies": [
+    "ema_anchor",
+    "trailing_martingale"
+  ],
+  "baseline_risk_layers": {
+    "gates_only": [
+      false,
+      false
+    ],
+    "gates_unstuck": [
+      false,
+      true
+    ],
+    "gates_hsl": [
+      true,
+      false
+    ],
+    "gates_unstuck_hsl": [
+      true,
+      true
+    ]
+  },
+  "conservative_strategy_params": {
+    "ema_anchor": {
+      "base_qty_pct": 0.01,
+      "ema_span_0": 415.0,
+      "ema_span_1": 793.0,
+      "entry_double_down_factor": 0.25,
+      "offset": 0.01,
+      "offset_psize_weight": 1.0,
+      "offset_volatility_1h_weight": 13.0,
+      "offset_volatility_1m_weight": 0.4,
+      "offset_volatility_ema_span_1h": 448.0,
+      "offset_volatility_ema_span_1m": 664.0
+    },
+    "trailing_martingale": {
+      "close_qty_pct": 0.1,
+      "close_retracement_base_pct": 0.0,
+      "close_threshold_base_pct": 0.006,
+      "close_threshold_volatility_1h_weight": 1.0,
+      "close_threshold_volatility_1m_weight": 0.0,
+      "close_threshold_we_weight": -0.004,
+      "entry_double_down_factor": 0.5,
+      "entry_ema_span_0": 770.0,
+      "entry_ema_span_1": 210.0,
+      "entry_initial_ema_dist": 0.008,
+      "entry_initial_qty_pct": 0.01,
+      "entry_retracement_base_pct": 0.0,
+      "entry_retracement_we_weight": 0.0,
+      "entry_threshold_base_pct": 0.02,
+      "entry_threshold_volatility_1h_weight": 2.4,
+      "entry_threshold_volatility_1m_weight": 0.0,
+      "entry_threshold_we_weight": 0.1,
+      "volatility_ema_span_1h": 1690.0,
+      "volatility_ema_span_1m": 60.0
+    }
+  },
+  "conservative_risk_params": {
+    "twe": 0.75,
+    "entry_cooldown_minutes": 30.0,
+    "n_positions": 2,
+    "enforcer_threshold": 0.9,
+    "hsl_enabled": false,
+    "unstuck_enabled": false,
+    "hsl_red_threshold": 0.15,
+    "hsl_cooldown_minutes": 2160.0,
+    "hsl_ema_span_minutes": 240.0,
+    "unstuck_close_pct": 0.05,
+    "unstuck_loss_allowance_pct": 0.01,
+    "unstuck_threshold": 0.5,
+    "unstuck_ema_dist": -0.05
+  }
+}

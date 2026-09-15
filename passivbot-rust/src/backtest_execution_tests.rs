@@ -23,6 +23,7 @@ fn params(rows: usize, coins: usize) -> BacktestParams {
         skip_btc_analysis: true,
         filter_by_min_effective_cost: true,
         dynamic_wel_by_tradability: true,
+        wallet_exposure_brake: Default::default(),
         hedge_mode: true,
         max_realized_loss_pct: 1.0,
         pnls_max_lookback_days: 30.0,

@@ -1,0 +1,96 @@
+{
+  "fold": "F3",
+  "strategy": "ema_anchor",
+  "stage": "strategy",
+  "seed": 3102,
+  "budget": 96,
+  "population_size": 16,
+  "parameter_specs": [
+    {
+      "name": "base_qty_pct",
+      "low": 0.002,
+      "high": 0.03,
+      "step": 0.0005
+    },
+    {
+      "name": "ema_span_0",
+      "low": 60.0,
+      "high": 1440.0,
+      "step": 10.0
+    },
+    {
+      "name": "ema_span_1",
+      "low": 60.0,
+      "high": 1440.0,
+      "step": 10.0
+    },
+    {
+      "name": "entry_double_down_factor",
+      "low": 0.0,
+      "high": 0.75,
+      "step": 0.01
+    },
+    {
+      "name": "offset",
+      "low": 0.002,
+      "high": 0.03,
+      "step": 0.0005
+    },
+    {
+      "name": "offset_psize_weight",
+      "low": 0.25,
+      "high": 4.0,
+      "step": 0.05
+    },
+    {
+      "name": "offset_volatility_1h_weight",
+      "low": 0.0,
+      "high": 20.0,
+      "step": 0.25
+    },
+    {
+      "name": "offset_volatility_1m_weight",
+      "low": 0.0,
+      "high": 5.0,
+      "step": 0.1
+    },
+    {
+      "name": "offset_volatility_ema_span_1h",
+      "low": 24.0,
+      "high": 672.0,
+      "step": 6.0
+    },
+    {
+      "name": "offset_volatility_ema_span_1m",
+      "low": 10.0,
+      "high": 720.0,
+      "step": 10.0
+    }
+  ],
+  "base_params": {
+    "twe": 0.39,
+    "entry_cooldown_minutes": 22.0,
+    "n_positions": 3,
+    "enforcer_threshold": 0.85,
+    "hsl_enabled": true,
+    "unstuck_enabled": false,
+    "hsl_red_threshold": 0.15,
+    "hsl_cooldown_minutes": 2160.0,
+    "hsl_ema_span_minutes": 240.0,
+    "unstuck_close_pct": 0.05,
+    "unstuck_loss_allowance_pct": 0.01,
+    "unstuck_threshold": 0.5,
+    "unstuck_ema_dist": -0.05,
+    "base_qty_pct": 0.01,
+    "ema_span_0": 415.0,
+    "ema_span_1": 793.0,
+    "entry_double_down_factor": 0.25,
+    "offset": 0.01,
+    "offset_psize_weight": 1.0,
+    "offset_volatility_1h_weight": 13.0,
+    "offset_volatility_1m_weight": 0.4,
+    "offset_volatility_ema_span_1h": 448.0,
+    "offset_volatility_ema_span_1m": 664.0
+  },
+  "selected_params_hash": "91d2e2c4654a236eaf75d28e8d54ceaa0849a1d54f205db046789139fe84e811"
+}

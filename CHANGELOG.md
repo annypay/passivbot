@@ -18,7 +18,27 @@ since the latest release tag; these features may already be available when insta
 - Align BTC backtest benchmarks using only known past closes within the configured
   gap tolerance; missing leading coverage and excessive gaps now fail explicitly
   instead of borrowing future prices.
-
+- Keep post-processed balance series causal by seeding from the configured
+  initial balance and aligning fill states to their true timestamps before
+  downsampling, rather than backfilling from a future fill or assigning a
+  bucket's later fill to its start. This changes exported balance
+  visualization/accounting only; Rust order and equity calculations are
+  unchanged.
+- Add an opt-in account-level wallet-exposure brake,
+  `bot.{long,short}.risk.wallet_exposure_brake_*`, that scales new-entry exposure
+  linearly from the strategy-equity drawdown against its running peak. The brake is
+  disabled by default, only affects entry sizing and entry admission, and leaves
+  close sizing and protective reducers unchanged. Feeds only use already-recorded
+  equity samples, so the brake never reacts to a future candle.
+- Add the `trailing_martingale_twel100_ddf060` example profile: the default long
+  trailing-martingale profile with a lower `total_wallet_exposure_limit` and a
+  slower, wider re-entry ladder. Its evidence, trade-off table, and
+  reproducibility boundaries are documented in `docs/strategy_profiles.md`.
+- Version-control backtest research evidence: study reports, study scripts,
+  research contracts, candidate locks, manifests, and per-configuration metric
+  summaries now live under `backtests/`. Large regenerable outputs (fills,
+  execution audits, balance series, arrays, plots, per-run bookkeeping) stay
+  local; see `backtests/readme.md` and the `/backtests` rules in `.gitignore`.
 - Let CCXT REST clients inherit configured standard HTTP proxy environment variables,
   allowing WSL mirrored-network deployments to reach external exchange endpoints through
   a local proxy.

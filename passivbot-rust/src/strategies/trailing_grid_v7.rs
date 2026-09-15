@@ -2182,6 +2182,7 @@ pub fn generate_orders(side: StrategySide, request: StrategyRequest<'_>) -> Gene
     };
     let runtime_context = RuntimeOrderContext {
         effective_wallet_exposure_limit: request.runtime_budget.effective_wallet_exposure_limit,
+        wallet_exposure_limit_scale: request.runtime_budget.wallet_exposure_limit_scale,
     };
     let TrailingGridV7Params { entry, close, .. } = *params;
     match side {
@@ -2538,6 +2539,7 @@ mod tests {
     fn runtime() -> RuntimeOrderContext {
         RuntimeOrderContext {
             effective_wallet_exposure_limit: 1.0,
+            wallet_exposure_limit_scale: 1.0,
         }
     }
 

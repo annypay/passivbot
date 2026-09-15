@@ -329,6 +329,7 @@ pub struct BacktestParams {
     pub skip_btc_analysis: bool,
     pub filter_by_min_effective_cost: bool,
     pub dynamic_wel_by_tradability: bool,
+    pub wallet_exposure_brake: WalletExposureBrakeConfig,
     pub hedge_mode: bool,
     pub max_realized_loss_pct: f64,
     pub pnls_max_lookback_days: f64,
@@ -407,6 +408,82 @@ pub struct RuntimeBudgetState {
     pub effective_wallet_exposure_limit: f64,
     pub configured_n_positions: usize,
     pub effective_n_positions: usize,
+    /// Entry-side account drawdown brake multiplier in `[min_scale, 1.0]`.
+    /// `1.0` keeps the brake inactive; close sizing ignores this field.
+    #[serde(default = "default_wallet_exposure_limit_scale")]
+    pub wallet_exposure_limit_scale: f64,
+}
+
+fn default_wallet_exposure_limit_scale() -> f64 {
+    1.0
+}
+
+/// Account-level mark-to-market drawdown brake, applied to entry-side exposure only.
+///
+/// `scale` is a multiplier in `[min_scale, 1.0]` derived from the current strategy
+/// equity drawdown against its running peak. It deliberately does not modify close
+/// sizing: exit semantics stay identical whether or not the brake is active.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct WalletExposureBrakeConfig {
+    pub enabled: bool,
+    pub start_drawdown: f64,
+    pub full_drawdown: f64,
+    pub min_scale: f64,
+}
+
+fn default_brake_min_scale() -> f64 {
+    0.25
+}
+
+impl Default for WalletExposureBrakeConfig {
+    fn default() -> Self {
+        Self {
+            enabled: false,
+            start_drawdown: 0.15,
+            full_drawdown: 0.45,
+            min_scale: default_brake_min_scale(),
+        }
+    }
+}
+
+impl WalletExposureBrakeConfig {
+    /// Validate configuration invariants; returns a human-readable reason on failure.
+    pub fn validate(&self) -> Result<(), String> {
+        if !(self.start_drawdown.is_finite() && self.full_drawdown.is_finite()) {
+            return Err("wallet exposure brake drawdowns must be finite".to_string());
+        }
+        if !(self.start_drawdown >= 0.0) {
+            return Err("wallet exposure brake start_drawdown must be >= 0".to_string());
+        }
+        if !(self.full_drawdown > self.start_drawdown) {
+            return Err(
+                "wallet exposure brake full_drawdown must be greater than start_drawdown"
+                    .to_string(),
+            );
+        }
+        if !(self.min_scale.is_finite() && self.min_scale > 0.0 && self.min_scale <= 1.0) {
+            return Err("wallet exposure brake min_scale must be in (0, 1]".to_string());
+        }
+        Ok(())
+    }
+
+    /// Interpolate the entry-side exposure scale for a given drawdown.
+    ///
+    /// Non-finite drawdown is treated as "no evidence of deterioration" and returns
+    /// `1.0`; callers that require fail-closed behaviour must reject the input before
+    /// calling this helper.
+    pub fn scale_for_drawdown(&self, drawdown: f64) -> f64 {
+        if !self.enabled || !drawdown.is_finite() || drawdown <= self.start_drawdown {
+            return 1.0;
+        }
+        if drawdown >= self.full_drawdown {
+            return self.min_scale;
+        }
+        let span = self.full_drawdown - self.start_drawdown;
+        let progress = (drawdown - self.start_drawdown) / span;
+        1.0 + progress * (self.min_scale - 1.0)
+    }
 }
 
 #[derive(Clone, Copy, Default, Debug, Serialize, Deserialize, PartialEq)]
@@ -709,6 +786,25 @@ impl Default for BotParams {
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RuntimeOrderContext {
     pub effective_wallet_exposure_limit: f64,
+    /// Entry-side account drawdown brake multiplier in `[min_scale, 1.0]`.
+    /// `1.0` means the brake is inactive. Close sizing ignores this field.
+    pub wallet_exposure_limit_scale: f64,
+}
+
+impl RuntimeOrderContext {
+    /// Base per-position exposure budget available to *new entries*.
+    ///
+    /// Wallet-exposure limits are per-position budgets, so the portfolio-level
+    /// brake is applied per position rather than divided by the configured slot
+    /// count again.
+    pub fn braked_wallet_exposure_limit(&self) -> f64 {
+        let scale = if self.wallet_exposure_limit_scale.is_finite() {
+            self.wallet_exposure_limit_scale
+        } else {
+            1.0
+        };
+        (self.effective_wallet_exposure_limit * scale.clamp(0.0, 1.0)).max(0.0)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

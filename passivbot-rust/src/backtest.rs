@@ -718,6 +718,8 @@ pub struct Backtest<'a> {
     effective_n_positions: EffectiveNPositions,
     exchange_params_list: Vec<ExchangeParams>,
     backtest_params: BacktestParams,
+    /// Running peak of recorded USD total equity; only past samples feed the brake.
+    equity_peak_usd: f64,
     pub balance: Balance,
     n_coins: usize,
     ema_alphas: Vec<EmaAlphas>,
@@ -1049,6 +1051,7 @@ fn make_runtime_budget_state(
         effective_wallet_exposure_limit: configured_wallet_exposure_limit,
         configured_n_positions: params.n_positions,
         effective_n_positions,
+        wallet_exposure_limit_scale: 1.0,
     }
 }
 
@@ -2205,6 +2208,7 @@ impl<'a> Backtest<'a> {
             effective_n_positions,
             exchange_params_list,
             backtest_params: backtest_params.clone(),
+            equity_peak_usd: f64::NEG_INFINITY,
             balance,
             n_coins,
             ema_alphas,
@@ -2664,7 +2668,34 @@ impl<'a> Backtest<'a> {
                     .effective_wallet_exposure_limit = dyn_wel_short_base;
             }
         }
+        self.update_wallet_exposure_brake_scale();
         true
+    }
+
+    /// Fold the account-level mark-to-market drawdown brake into the runtime budget.
+    ///
+    /// The drawdown is measured against equity samples that are already recorded, so the
+    /// brake can never react to a candle that has not happened yet. Entry-side sizing reads
+    /// the resulting `wallet_exposure_limit_scale`; close sizing ignores it.
+    #[inline(always)]
+    fn update_wallet_exposure_brake_scale(&mut self) {
+        let brake = self.backtest_params.wallet_exposure_brake;
+        let scale = if !brake.enabled {
+            1.0
+        } else {
+            let peak = self.equity_peak_usd;
+            let equity = self.equities.usd_total_equity.last().copied().unwrap_or(peak);
+            if !peak.is_finite() || !equity.is_finite() || peak <= 0.0 {
+                1.0
+            } else {
+                let drawdown = ((peak - equity) / peak).max(0.0);
+                brake.scale_for_drawdown(drawdown)
+            }
+        };
+        for runtime_budget in self.runtime_budget.iter_mut() {
+            runtime_budget.long.wallet_exposure_limit_scale = scale;
+            runtime_budget.short.wallet_exposure_limit_scale = scale;
+        }
     }
 
     #[inline(always)]
@@ -4351,6 +4382,9 @@ impl<'a> Backtest<'a> {
         self.equities.usd_total_equity.push(equity_usd);
         self.equities.btc_total_equity.push(equity_btc);
         self.equities.timestamps_ms.push(timestamp_ms);
+        if equity_usd.is_finite() && equity_usd > self.equity_peak_usd {
+            self.equity_peak_usd = equity_usd;
+        }
     }
 
     fn record_total_wallet_exposure(&mut self) {
@@ -6753,6 +6787,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             forager_score_hysteresis_pct: 0.0,
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
@@ -6830,6 +6865,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             forager_score_hysteresis_pct: 0.0,
             max_realized_loss_pct: 1.0,
@@ -6895,6 +6931,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             forager_score_hysteresis_pct: 0.0,
             max_realized_loss_pct: 1.0,
@@ -6998,6 +7035,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: false,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             forager_score_hysteresis_pct: 0.0,
             max_realized_loss_pct: 1.0,
@@ -7226,6 +7264,7 @@ mod tests {
                 skip_btc_analysis: false,
                 filter_by_min_effective_cost: false,
                 dynamic_wel_by_tradability: false,
+                wallet_exposure_brake: Default::default(),
                 hedge_mode: true,
                 forager_score_hysteresis_pct: 0.0,
                 max_realized_loss_pct: 1.0,
@@ -7419,6 +7458,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             forager_score_hysteresis_pct: 0.0,
             max_realized_loss_pct: 1.0,
@@ -7490,6 +7530,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             forager_score_hysteresis_pct: 0.0,
             max_realized_loss_pct: 1.0,
@@ -7567,6 +7608,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             forager_score_hysteresis_pct: 0.0,
             max_realized_loss_pct: 1.0,
@@ -7639,6 +7681,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             forager_score_hysteresis_pct: 0.0,
             max_realized_loss_pct: 1.0,
@@ -7736,6 +7779,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -7822,6 +7866,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -7907,6 +7952,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -7988,6 +8034,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -8070,6 +8117,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -8175,6 +8223,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: false,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -8307,6 +8356,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: false,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -8418,6 +8468,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 1.0,
@@ -8497,6 +8548,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 0.0,
@@ -8568,6 +8620,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: -1.0,
@@ -8640,6 +8693,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -8722,6 +8776,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -8831,6 +8886,7 @@ mod tests {
                 skip_btc_analysis: false,
                 filter_by_min_effective_cost: false,
                 dynamic_wel_by_tradability: true,
+                wallet_exposure_brake: Default::default(),
                 hedge_mode: true,
                 max_realized_loss_pct: 1.0,
                 pnls_max_lookback_days: 30.0,
@@ -8924,6 +8980,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: false,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9043,6 +9100,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: false,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9157,6 +9215,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9256,6 +9315,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9337,6 +9397,7 @@ mod tests {
                 skip_btc_analysis: false,
                 filter_by_min_effective_cost: false,
                 dynamic_wel_by_tradability: true,
+                wallet_exposure_brake: Default::default(),
                 hedge_mode: true,
                 max_realized_loss_pct: 1.0,
                 pnls_max_lookback_days: 30.0,
@@ -9421,6 +9482,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9508,6 +9570,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9601,6 +9664,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: false,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9682,6 +9746,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9780,6 +9845,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9880,6 +9946,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -9978,6 +10045,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 365.0,
@@ -10161,6 +10229,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 365.0,
@@ -10318,6 +10387,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 365.0,
@@ -10413,6 +10483,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 365.0,
@@ -10518,6 +10589,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 365.0,
@@ -10654,6 +10726,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 365.0,
@@ -10748,6 +10821,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -10808,6 +10882,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -10869,6 +10944,7 @@ mod tests {
                 skip_btc_analysis: false,
                 filter_by_min_effective_cost: false,
                 dynamic_wel_by_tradability: true,
+                wallet_exposure_brake: Default::default(),
                 hedge_mode: true,
                 max_realized_loss_pct: 1.0,
                 pnls_max_lookback_days: 30.0,
@@ -10946,6 +11022,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -11020,6 +11097,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -11100,6 +11178,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -11173,6 +11252,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -11254,6 +11334,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: -1.0,
@@ -11350,6 +11431,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 0.0,
@@ -11451,6 +11533,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 1.0,
@@ -11529,6 +11612,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 1.0,
@@ -11641,6 +11725,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 2.0,
@@ -11723,6 +11808,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 2.0,
@@ -11807,6 +11893,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 2.0,
@@ -11896,6 +11983,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -11996,6 +12084,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             forager_score_hysteresis_pct: 0.0,
             max_realized_loss_pct: 1.0,
@@ -12072,6 +12161,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: false,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -12151,6 +12241,7 @@ mod tests {
             skip_btc_analysis: false,
             filter_by_min_effective_cost: false,
             dynamic_wel_by_tradability: true,
+            wallet_exposure_brake: Default::default(),
             hedge_mode: true,
             max_realized_loss_pct: 1.0,
             pnls_max_lookback_days: 30.0,
@@ -12431,6 +12522,86 @@ mod tests {
         assert_eq!(alphas.volatility_ema_1h_alpha_long, 1.0);
         assert_eq!(alphas.volatility_ema_1h_alpha_short, 1.0);
     }
+
+    fn brake_config(start: f64, full: f64, min_scale: f64) -> crate::types::WalletExposureBrakeConfig {
+        crate::types::WalletExposureBrakeConfig {
+            enabled: true,
+            start_drawdown: start,
+            full_drawdown: full,
+            min_scale,
+        }
+    }
+
+    #[test]
+    fn wallet_exposure_brake_is_inactive_before_start_drawdown() {
+        let brake = brake_config(0.15, 0.45, 0.25);
+        assert_eq!(brake.scale_for_drawdown(0.0), 1.0);
+        assert_eq!(brake.scale_for_drawdown(0.10), 1.0);
+        assert_eq!(brake.scale_for_drawdown(0.15), 1.0);
+    }
+
+    #[test]
+    fn wallet_exposure_brake_interpolates_and_saturates() {
+        let brake = brake_config(0.10, 0.50, 0.20);
+        let mid = brake.scale_for_drawdown(0.30);
+        assert!((mid - 0.60).abs() < 1e-12, "mid={mid}");
+        assert!((brake.scale_for_drawdown(0.50) - 0.20).abs() < 1e-12);
+        assert!((brake.scale_for_drawdown(0.95) - 0.20).abs() < 1e-12);
+    }
+
+    #[test]
+    fn wallet_exposure_brake_treats_non_finite_drawdown_as_intact() {
+        let brake = brake_config(0.10, 0.50, 0.20);
+        assert_eq!(brake.scale_for_drawdown(f64::NAN), 1.0);
+        // A non-finite drawdown is "no usable evidence of deterioration"; the backtest
+        // caller already refuses to derive a drawdown from a non-finite equity sample.
+        assert_eq!(brake.scale_for_drawdown(f64::INFINITY), 1.0);
+    }
+
+    #[test]
+    fn disabled_wallet_exposure_brake_never_scales() {
+        let mut brake = brake_config(0.10, 0.50, 0.20);
+        brake.enabled = false;
+        assert_eq!(brake.scale_for_drawdown(0.90), 1.0);
+    }
+
+    #[test]
+    fn wallet_exposure_brake_config_rejects_invalid_geometry() {
+        assert!(crate::types::WalletExposureBrakeConfig::default().validate().is_ok());
+        let mut brake = brake_config(0.50, 0.10, 0.20);
+        assert!(brake.validate().is_err());
+        brake = brake_config(0.10, 0.50, 0.0);
+        assert!(brake.validate().is_err());
+        brake = brake_config(0.10, 0.50, 1.5);
+        assert!(brake.validate().is_err());
+        brake = brake_config(-0.1, 0.50, 0.20);
+        assert!(brake.validate().is_err());
+    }
+
+    #[test]
+    fn braked_wallet_exposure_limit_scales_the_entry_budget_only() {
+        let context = crate::types::RuntimeOrderContext {
+            effective_wallet_exposure_limit: 0.4,
+            wallet_exposure_limit_scale: 0.25,
+        };
+        assert!((context.braked_wallet_exposure_limit() - 0.10).abs() < 1e-12);
+        let intact = crate::types::RuntimeOrderContext {
+            effective_wallet_exposure_limit: 0.4,
+            wallet_exposure_limit_scale: 1.0,
+        };
+        assert!((intact.braked_wallet_exposure_limit() - 0.4).abs() < 1e-12);
+        let out_of_range = crate::types::RuntimeOrderContext {
+            effective_wallet_exposure_limit: 0.4,
+            wallet_exposure_limit_scale: 7.0,
+        };
+        assert!((out_of_range.braked_wallet_exposure_limit() - 0.4).abs() < 1e-12);
+        let non_finite = crate::types::RuntimeOrderContext {
+            effective_wallet_exposure_limit: 0.4,
+            wallet_exposure_limit_scale: f64::NAN,
+        };
+        assert!((non_finite.braked_wallet_exposure_limit() - 0.4).abs() < 1e-12);
+    }
+
 }
 
 fn calc_warmup_bars(bot_params: &[BotParamsPair], strategy_params: &[StrategyParamsPair]) -> usize {
