@@ -2,8 +2,11 @@
 """Materialise a full backtest artifact set for the locked best candidate.
 
 Offline only: no network downloads, no credentials, no exchange account, no bot start.
-The candidate is reconstructed from `holdout_candidate_lock.json` ops applied to the
-frozen baseline config that produced the reference `annual_analysis.md`.
+The candidate is reconstructed from `holdout_candidate_lock.json` ops applied to a maintained
+baseline config -- by default `configs/examples/default_trailing_martingale_long.json`, which the
+lock was recorded against. Applying the ops is requested explicitly with `--apply-locked-ops`
+rather than inferred from the path, because the archived config that produced the reference
+`annual_analysis.md` and the published default profile carry identical strategy parameters.
 """
 
 from __future__ import annotations
@@ -97,7 +100,9 @@ def set_path(cfg: dict, dotted: str, value: Any) -> None:
     node[parts[-1]] = value
 
 
-def build_candidate_config(apply_locked_ops: bool) -> tuple[dict, list[dict]]:
+def build_candidate_config(
+    apply_locked_ops: bool, study_window: str | None = None
+) -> tuple[dict, list[dict]]:
     from config_utils import load_config
 
     cfg = load_config(str(CONFIG_SOURCE), verbose=False)
@@ -122,6 +127,13 @@ def build_candidate_config(apply_locked_ops: bool) -> tuple[dict, list[dict]]:
     AUDIT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     cfg["backtest"]["exchanges"] = ["binance"]
+    if study_window:
+        # A published profile carries its own window (usually `end_date: now`). Pinning the study
+        # window makes the artifact directly comparable with the study's own cells instead of
+        # merely similar; the window is recorded in the run record either way.
+        start, end = study.WINDOWS[study_window]
+        cfg["backtest"]["start_date"] = start
+        cfg["backtest"]["end_date"] = end
     # The reported contract comes from the study tool so config and evidence cannot drift.
     cfg["backtest"]["execution_delay_bars"] = study.PRIMARY_EXECUTION["execution_delay_bars"]
     cfg["backtest"]["intrabar_fill_order"] = study.PRIMARY_EXECUTION["intrabar_fill_order"]
@@ -200,6 +212,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--skip-run", action="store_true")
     parser.add_argument(
+        "--apply-locked-ops",
+        action="store_true",
+        help=(
+            "apply the locked candidate ops to the given config. Off by default: without it the "
+            "profile is run as-is, which is what a baseline or reference bundle wants."
+        ),
+    )
+    parser.add_argument(
         "--candidate-config",
         default=None,
         help=(
@@ -211,6 +231,16 @@ def main() -> None:
         "--artifacts-subdir",
         default=DEFAULT_ARTIFACTS_SUBDIR,
         help=f"artifact directory under <study>/artifacts (default {DEFAULT_ARTIFACTS_SUBDIR})",
+    )
+    parser.add_argument(
+        "--study-window",
+        default=None,
+        choices=sorted(study.WINDOWS),
+        help=(
+            "pin the artifact to a frozen study window; omit to run the config's own window. "
+            "Pinning is what makes the artifact comparable with the study's own cells, whose "
+            "metrics the verifier checks against."
+        ),
     )
     args = parser.parse_args()
 
@@ -226,8 +256,19 @@ def main() -> None:
 
     started = time.time()
     contract = load_json(CONTRACT)
-    use_locked_ops = CONFIG_SOURCE.resolve() == BASELINE_CONFIG.resolve()
-    cfg, applied = build_candidate_config(use_locked_ops)
+    use_locked_ops = bool(args.apply_locked_ops)
+    if use_locked_ops:
+        # Every locked op carries its expected baseline value, and `build_candidate_config`
+        # refuses on drift, so a wrong source config fails loudly instead of silently
+        # producing a profile that is not the candidate.
+        source_state = load_json(CONFIG_SOURCE)
+        missing = [op["path"] for op in load_json(LOCK)["candidates"][0]["ops"] if get_path(source_state, op["path"]) != op["baseline"]]
+        if missing:
+            raise SystemExit(
+                f"{CONFIG_SOURCE} does not carry the baseline values the lock was recorded "
+                f"against; refusing to apply ops: {missing}"
+            )
+    cfg, applied = build_candidate_config(use_locked_ops, args.study_window)
     config_sha = sha256_file(CANDIDATE_CONFIG)
     print(f"candidate config written: {CANDIDATE_CONFIG}")
     print(f"  sha256={config_sha}")
@@ -254,6 +295,14 @@ def main() -> None:
             print(f"warning: {artifact_status}")
 
     result_dir = find_result_dir()
+    matched_study_window = next(
+        (
+            name
+            for name, (start, end) in sorted(study.WINDOWS.items())
+            if str(cfg["backtest"]["start_date"]) == start and str(cfg["backtest"]["end_date"]) == end
+        ),
+        None,
+    )
     audit_rows = None
     if AUDIT_PATH.exists():
         with AUDIT_PATH.open() as handle:
@@ -279,6 +328,9 @@ def main() -> None:
             "taker_fee_override": cfg["backtest"]["taker_fee_override"],
         },
         "window": {
+            # Name the frozen window whose dates these are, so a bundle states its own
+            # comparability instead of leaving the reader to match date strings.
+            "study_window": args.study_window or matched_study_window,
             "start_date": cfg["backtest"]["start_date"],
             "end_date": cfg["backtest"]["end_date"],
         },

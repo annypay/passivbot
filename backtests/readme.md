@@ -11,7 +11,8 @@ Tracked (small, hard to regenerate, human-readable):
 - `*.md` — study reports, audits, and deep analyses.
 - `*.py` and `*.sh` — the exact study scripts, plus the run entry point that reproduces a study.
 - `*.json` — research contracts, candidate locks, manifests, per-configuration result and
-  metric summaries.
+  metric summaries, plus each artifact bundle's run record and `analysis.json`.
+- `annual_analysis.md` — the rendered deep-analysis report for each tracked artifact bundle.
 
 Not tracked (large, regenerable from the tracked inputs plus the local HLCV cache):
 
@@ -53,12 +54,29 @@ execution/cost contract. See `docs/strategy_profiles.md` for the parameter table
 summary, and the reproducibility boundaries.
 
 ```bash
-# Rebuild the candidate artifact bundle, render its report, and verify the numbers.
+# Rebuild the locked candidate's artifact bundle, render its report, and verify the numbers.
 bash backtests/binance/dd_tail_research_2026-09-15/run.sh
 
-# Or run just the backtest for the profile itself.
+# Same for the baseline the candidate is compared against, and for any other profile.
+bash backtests/binance/dd_tail_research_2026-09-15/run.sh --baseline
+bash backtests/binance/dd_tail_research_2026-09-15/run.sh --profile configs/examples/<name>.json
+
+# Or run just the backtest for the profile itself, with its own window and fees.
 passivbot backtest configs/examples/trailing_martingale_twel100_ddf060.json
 ```
+
+Every `run.sh` mode runs the frozen study window and the reported contract, so the bundles are
+directly comparable with the study's own cells, and each writes to its own directory:
+
+| Bundle | Directory | Study cell it must reproduce |
+| --- | --- | --- |
+| Locked candidate | `artifacts/binance_actual_candidate/` | `cells/full/C1_binance_actual/combo_twel100_ddf060_ddthr0030` |
+| Baseline profile | `artifacts/binance_actual_baseline/` | `cells/full/C1_binance_actual/baseline` |
+
+The verifier compares the artifact's window against the cell's window before claiming agreement, so
+a bundle run over a different window reports that difference instead of failing three metric checks.
+`passivbot backtest` on the same profile is a different exercise: it uses the profile's own window
+(`end_date: now`) and its own fee overrides, so its numbers will not equal these.
 
 ## Execution and cost contracts
 

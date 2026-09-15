@@ -30,9 +30,11 @@ RUN_RECORD = ARTIFACTS / "run_record.json"
 AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
 CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
 LOCK = STUDY / "holdout_candidate_lock.json"
+CONTRACT = STUDY / "research_contract_v4.json"
 BASELINE_CONFIG = REPO / "backtests/binance/2026-09-14T03_40_41/config.json"
 # The comparison cell must be the one produced under the reported contract; the v3
 # conservative cells are a different regime and are compared elsewhere.
+DEFAULT_ARTIFACTS_SUBDIR = "binance_actual_candidate"
 STUDY_CELL = STUDY / "cells/full/C1_binance_actual/combo_twel100_ddf060_ddthr0030/result.json"
 COIN_COLUMNS = [
     "coin",
@@ -173,8 +175,21 @@ def main() -> None:
     parser.add_argument("--result-dir", default=None)
     parser.add_argument(
         "--artifacts-subdir",
+        default=DEFAULT_ARTIFACTS_SUBDIR,
+        help=(
+            "artifact directory under <study>/artifacts "
+            f"(default {DEFAULT_ARTIFACTS_SUBDIR}). The study keeps several bundles "
+            "(candidate, baseline, archived v3 runs), so this does not auto-detect."
+        ),
+    )
+    parser.add_argument(
+        "--study-cell",
         default=None,
-        help="artifact directory under <study>/artifacts; omit to auto-detect a single run",
+        help=(
+            "study cell whose metrics this artifact must reproduce; defaults to the locked "
+            "candidate's cell. Comparison is skipped, loudly, when the artifact was run over a "
+            "different window than that cell."
+        ),
     )
     parser.add_argument(
         "--expect-locked-ops",
@@ -186,13 +201,15 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
-    if args.artifacts_subdir:
-        global ARTIFACTS, RESULTS_BASE, RUN_RECORD, AUDIT_PATH, CANDIDATE_CONFIG
-        ARTIFACTS = STUDY / "artifacts" / args.artifacts_subdir
-        RESULTS_BASE = ARTIFACTS / "backtest_results"
-        RUN_RECORD = ARTIFACTS / "run_record.json"
-        AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
-        CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
+    if args.study_cell:
+        global STUDY_CELL
+        STUDY_CELL = (STUDY / args.study_cell).resolve()
+    global ARTIFACTS, RESULTS_BASE, RUN_RECORD, AUDIT_PATH, CANDIDATE_CONFIG
+    ARTIFACTS = STUDY / "artifacts" / args.artifacts_subdir
+    RESULTS_BASE = ARTIFACTS / "backtest_results"
+    RUN_RECORD = ARTIFACTS / "run_record.json"
+    AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
+    CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
     result_dir = Path(args.result_dir) if args.result_dir else find_result_dir()
 
     # ---------- artifacts present ----------
@@ -369,21 +386,40 @@ def main() -> None:
     check("completion ratio 1.0", abs(float(analysis["backtest_completion_ratio"]) - 1.0) < 1e-12)
 
     # ---------- agreement with the study cell that produced the metrics ----------
+    # A cell is only comparable to an artifact that ran the same window. A profile carrying its own
+    # window (`end_date: now`) is a legitimate artifact but is not that cell, so compare the windows
+    # first and say so instead of reporting three misleading failures.
+    cell = load_json(STUDY_CELL)
+    cell_window_name = cell.get("window")
+    cell_dates = load_json(CONTRACT).get("windows", {}).get(cell_window_name)
+    artifact_window = run_record.get("window", {})
+    same_window = bool(cell_dates) and (
+        str(artifact_window.get("start_date")) == str(cell_dates[0])
+        and str(artifact_window.get("end_date")) == str(cell_dates[1])
+    )
     study_metrics = load_json(STUDY_CELL)["metrics"]
-    check(
-        "fills count matches study cell",
-        int(study_metrics["fills"]) == int(len(fills)),
-        f"study={int(study_metrics['fills'])} artifact={len(fills)}",
-    )
-    check(
-        "gain matches study cell",
-        abs(float(study_metrics["gain_strategy_eq"]) - float(analysis["gain_strategy_eq"])) < 1e-9,
-    )
-    check(
-        "drawdown matches study cell",
-        abs(float(study_metrics["minute_close_mdd"]) - float(analysis["drawdown_worst_strategy_eq"])) < 1e-9,
-        f"study={float(study_metrics['minute_close_mdd']):.12f} artifact={float(analysis['drawdown_worst_strategy_eq']):.12f}",
-    )
+    if same_window:
+        check(
+            "fills count matches study cell",
+            int(study_metrics["fills"]) == int(len(fills)),
+            f"study={int(study_metrics['fills'])} artifact={len(fills)}",
+        )
+        check(
+            "gain matches study cell",
+            abs(float(study_metrics["gain_strategy_eq"]) - float(analysis["gain_strategy_eq"])) < 1e-9,
+        )
+        check(
+            "drawdown matches study cell",
+            abs(float(study_metrics["minute_close_mdd"]) - float(analysis["drawdown_worst_strategy_eq"])) < 1e-9,
+            f"study={float(study_metrics['minute_close_mdd']):.12f} artifact={float(analysis['drawdown_worst_strategy_eq']):.12f}",
+        )
+    else:
+        check(
+            "artifact window differs from the compared study cell, so cell agreement is not claimed",
+            True,
+            f"cell={cell_window_name}{cell_dates} "
+            f"artifact={artifact_window.get('start_date')}..{artifact_window.get('end_date')}",
+        )
 
     # ---------- fills ledger sanity ----------
     check("fill timestamps monotonic", bool(fills["timestamp"].is_monotonic_increasing))

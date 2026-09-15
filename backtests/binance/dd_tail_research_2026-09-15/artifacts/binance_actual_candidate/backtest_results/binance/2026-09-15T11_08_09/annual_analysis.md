@@ -2,7 +2,7 @@
 
 ## 口径与范围
 
-- 策略来源：锁定候选 `combo_twel100_ddf060_ddthr0030`，由 `holdout_candidate_lock.json` 的 ops 施加于冻结基线配置 `backtests/binance/2026-09-14T03_40_41/config.json`（sha256 `9c186ff094272981…`）。
+- 策略来源：锁定候选 `combo_twel100_ddf060_ddthr0030`，由 `holdout_candidate_lock.json` 的 ops 施加于冻结基线配置 `configs/examples/default_trailing_martingale_long.json`（sha256 `f94b5e5257bbbdf9…`）。
 - 三处改动（唯一差异，其余策略与风险参数与基线逐字段一致）：
   - `bot.long.risk.total_wallet_exposure_limit`：`1.5` → **`1.0`**
   - `bot.long.strategy.trailing_martingale.entry.double_down_factor`：`0.94` → **`0.6`**
@@ -31,7 +31,7 @@
 
 | 项目 | 数值 |
 | --- | --- |
-| 结果目录 | backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_candidate/backtest_results/binance/2026-09-15T10_01_03 |
+| 结果目录 | backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_candidate/backtest_results/binance/2026-09-15T11_08_09 |
 | 数据源 / K 线粒度 | binance / 1 分钟 |
 | 候选币种 / 有效数据集 / 实际产生交易币种 | 41 / 40 / 39 |
 | 有效区间（UTC） | 2023-09-12T00:01:00Z 至 2026-09-11T23:59:00Z |
@@ -287,6 +287,6 @@
 | `../candidate.config.json` / `../run_record.json` | 配置重建记录与全部工件哈希 |
 
 - 报告数字与三张 CSV、`analysis.json` 的一致性由 `report_tools/verify_annual_report.py` 独立复算校验。
-- 配置来源：`backtests/binance/2026-09-14T03_40_41/config.json`（sha256 `9c186ff094272981…`） + 锁定 ops = `../candidate.config.json`（sha256 `ea52fa01fd8d4d3a…`）。
+- 配置来源：`configs/examples/default_trailing_martingale_long.json`（sha256 `f94b5e5257bbbdf9…`） + 锁定 ops = `../candidate.config.json`（sha256 `cca58023c63ae767…`）。
 - 研究契约 `research_contract_v4.json`（cell_matrix_sha256 `7c4844c9b44eebcb…`）、候选锁 `holdout_candidate_lock.json`（sha256 `eebad2be530fd1fa…`）。
 - Rust 扩展 source fingerprint：`65c4152c67e908ad5ce228eb92db3150cf50cd6558862907a2b3becedfee65a3`。

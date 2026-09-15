@@ -59,10 +59,31 @@ overfitting (PBO) numbers.
 
 Both rows below use the same frozen dataset (40 coins with usable history out of the config's 41),
 the same window (2023-09-12 → 2026-09-12) and the same execution/cost contract: nominal **T+1**
-order latency with **Binance USDT-M VIP0** fees (maker `0.0002` / taker `0.0005` per side). This is
-contract **v4** in `research_contract_v4.json`; the shipped profile sets exactly this contract, so
-`bash backtests/binance/dd_tail_research_2026-09-15/run.sh` reproduces the table below without any
-override.
+order latency with **Binance USDT-M VIP0** fees (maker `0.0002` / taker `0.0005` per side). That is
+contract **v4** in `research_contract_v4.json`.
+
+The two rows are not produced the same way, and the difference matters when reproducing them:
+
+- **This profile** states contract v4 in its own `backtest` block, so
+  `bash backtests/binance/dd_tail_research_2026-09-15/run.sh` reproduces its column with no
+  override. Its artifact bundle, run record and verification live under
+  `artifacts/binance_actual_candidate/`.
+- **The default profile** is the study's baseline. Its column is the frozen baseline config
+  evaluated under the same v4 contract, which the study applies explicitly; its own artifact
+  bundle lives under `artifacts/binance_actual_baseline/`. The template file itself is unchanged:
+  it still keeps its historical `maker_fee_override = 0.0004` and `taker_fee_override = 0.00055`
+  at the same nominal T+1 latency. Those are the settings its own optimizer and parity tests were
+  built around, and the study records the reported contract rather than editing the maintained
+  default. The residual difference is small and one-directional: `0.0002` is the lower maker
+  assumption, so the baseline column is marginally optimistic about the *baseline*, which makes
+  the comparison below slightly conservative for this profile.
+
+Both columns are reproducible from the tracked evidence:
+
+```bash
+bash backtests/binance/dd_tail_research_2026-09-15/run.sh              # this profile's column
+bash backtests/binance/dd_tail_research_2026-09-15/run.sh --baseline   # the default's column
+```
 
 | Metric | Default profile | This profile |
 | --- | ---: | ---: |

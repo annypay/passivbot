@@ -39,6 +39,15 @@ since the latest release tag; these features may already be available when insta
   summaries now live under `backtests/`. Large regenerable outputs (fills,
   execution audits, balance series, arrays, plots, per-run bookkeeping) stay
   local; see `backtests/readme.md` and the `/backtests` rules in `.gitignore`.
+- Record the execution and cost contract of published backtest evidence explicitly.
+  The tail-drawdown study now reports nominal T+1 order latency with Binance USDT-M
+  VIP0 fees (maker 0.0002 / taker 0.0005 per side) as contract v4, and keeps the
+  previous T+2 / 0.0006-0.0008 contract frozen as a stress reference. The shipped
+  profile states the same contract, so it reproduces its published numbers without
+  an override. Both profiles are maker-only, so the taker fee and slippage settings
+  never bind. `run.sh --baseline` produces a matching artifact bundle for the
+  default profile, and the report verifier now compares windows before claiming
+  agreement with a study cell.
 - Let CCXT REST clients inherit configured standard HTTP proxy environment variables,
   allowing WSL mirrored-network deployments to reach external exchange endpoints through
   a local proxy.
