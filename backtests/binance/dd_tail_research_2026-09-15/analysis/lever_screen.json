@@ -1,0 +1,2032 @@
+{
+  "rows": [
+    {
+      "cagr": 0.18283893972910525,
+      "cagr_ratio": 0.22229912297630394,
+      "cell_id": "combo_twel100_ddthr0060",
+      "fills": 28352.0,
+      "gain": 1.6551085321476002,
+      "gate": {
+        "cagr_floor": 0.4934943618700512,
+        "cagr_slack": -0.31065542214094594,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.18306681627915727,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.26693318372084274,
+      "mdd_delta": -0.5394569429219046,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.06
+        }
+      ],
+      "peak_to_trough_days": 2.4368055555555554,
+      "positive_halfyears": 6,
+      "recovery_days": 0.5541666666666667,
+      "scenario": "C3_conservative",
+      "sortino": 0.028880920498350074,
+      "traded_coin_count": 39.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 2.990972222222222,
+      "window": "full",
+      "worst_halfyear": 0.03407625377723189
+    },
+    {
+      "cagr": 0.30564562908729975,
+      "cagr_ratio": 0.37160987363148457,
+      "cell_id": "combo_twel080_ddthr0030",
+      "fills": 52036.0,
+      "gain": 2.2261519023128553,
+      "gate": {
+        "cagr_floor": 0.4934943618700512,
+        "cagr_slack": -0.18784873278275144,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.16987622456458545,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.28012377543541456,
+      "mdd_delta": -0.5262663512073328,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 6,
+      "recovery_days": 96.79861111111111,
+      "scenario": "C3_conservative",
+      "sortino": 0.03572791644027772,
+      "traded_coin_count": 39.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 123.5201388888889,
+      "window": "full",
+      "worst_halfyear": 0.07720626598373914
+    },
+    {
+      "cagr": 0.4213663551408011,
+      "cagr_ratio": 0.5123053729052616,
+      "cell_id": "combo_twel100_ddf060_ddthr0030",
+      "fills": 52797.0,
+      "gain": 2.872248652179725,
+      "gate": {
+        "cagr_floor": 0.4934943618700512,
+        "cagr_slack": -0.07212800672925007,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.1398654057728133,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.3101345942271867,
+      "mdd_delta": -0.49625553241556064,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 1.0326388888888889,
+      "positive_halfyears": 6,
+      "recovery_days": 0.8340277777777778,
+      "scenario": "C3_conservative",
+      "sortino": 0.04406132482495467,
+      "traded_coin_count": 39.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 1.8666666666666667,
+      "window": "full",
+      "worst_halfyear": 0.06452810247469798
+    },
+    {
+      "cagr": 0.20673570081114612,
+      "cagr_ratio": 0.2513532677792796,
+      "cell_id": "combo_twel120_we_weight_twel100",
+      "fills": 36686.0,
+      "gain": 1.757486647762857,
+      "gate": {
+        "cagr_floor": 0.4934943618700512,
+        "cagr_slack": -0.2867586610589051,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.10104012225466824,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.34895987774533177,
+      "mdd_delta": -0.45743024889741557,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.2
+        },
+        {
+          "baseline": -0.0001,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_we_weight",
+          "value": -0.015
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.045
+        }
+      ],
+      "peak_to_trough_days": 1.0402777777777779,
+      "positive_halfyears": 6,
+      "recovery_days": 0.8430555555555556,
+      "scenario": "C3_conservative",
+      "sortino": 0.027746651187257016,
+      "traded_coin_count": 39.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 1.8833333333333333,
+      "window": "full",
+      "worst_halfyear": 0.00608612657844998
+    },
+    {
+      "cagr": 0.3749445807026195,
+      "cagr_ratio": 0.4558648807436847,
+      "cell_id": "twel_080",
+      "fills": 65337.0,
+      "gain": 2.5998584660482895,
+      "gate": {
+        "cagr_floor": 0.4934943618700512,
+        "cagr_slack": -0.1185497811674317,
+        "failures": [
+          "cagr",
+          "worst_halfyear"
+        ],
+        "mdd_slack": 0.05024131270252791,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.3997586872974721,
+      "mdd_delta": -0.40663143934527524,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        }
+      ],
+      "peak_to_trough_days": 70.51458333333333,
+      "positive_halfyears": 5,
+      "recovery_days": 105.16111111111111,
+      "scenario": "C3_conservative",
+      "sortino": 0.028304350000091537,
+      "traded_coin_count": 39.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 175.67569444444445,
+      "window": "full",
+      "worst_halfyear": -0.13718953619704433
+    },
+    {
+      "cagr": 0.26783398450190554,
+      "cagr_ratio": 0.21314389113647095,
+      "cell_id": "combo_twel080_ddthr0030",
+      "fills": 15531.0,
+      "gain": 1.2676269233290023,
+      "gate": {
+        "cagr_floor": 0.753952599083643,
+        "cagr_slack": -0.48611861458173744,
+        "failures": [
+          "cagr",
+          "positive_halfyears"
+        ],
+        "mdd_slack": 0.3606888054000195,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.08931119459998049,
+      "mdd_delta": -0.12053535389326697,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 0.6013888888888889,
+      "positive_halfyears": 2,
+      "recovery_days": 2.3069444444444445,
+      "scenario": "C1_reference",
+      "sortino": 0.06477294219155057,
+      "traded_coin_count": 38.0,
+      "trough_time": "2026-06-05T07:14:00.000",
+      "underwater_days": 2.908333333333333,
+      "window": "holdout",
+      "worst_halfyear": 0.09083036795245558
+    },
+    {
+      "cagr": 0.29788670735029066,
+      "cagr_ratio": 0.23706002821318742,
+      "cell_id": "combo_twel100_ddf060_ddthr0030",
+      "fills": 15502.0,
+      "gain": 1.2976538141076466,
+      "gate": {
+        "cagr_floor": 0.753952599083643,
+        "cagr_slack": -0.4560658917333523,
+        "failures": [
+          "cagr",
+          "positive_halfyears"
+        ],
+        "mdd_slack": 0.3430715471069989,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.10692845289300112,
+      "mdd_delta": -0.10291809560024634,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 0.6013888888888889,
+      "positive_halfyears": 2,
+      "recovery_days": 2.3069444444444445,
+      "scenario": "C1_reference",
+      "sortino": 0.06405249353889846,
+      "traded_coin_count": 38.0,
+      "trough_time": "2026-06-05T07:14:00.000",
+      "underwater_days": 2.908333333333333,
+      "window": "holdout",
+      "worst_halfyear": 0.11430430291988403
+    },
+    {
+      "cagr": 0.24160616778859345,
+      "cagr_ratio": -0.8770918911873389,
+      "cell_id": "combo_twel080_ddthr0030",
+      "fills": 17294.0,
+      "gain": 1.2414212509988145,
+      "gate": {
+        "cagr_floor": -0.16527766603441685,
+        "cagr_slack": 0.4068838338230103,
+        "failures": [
+          "positive_halfyears"
+        ],
+        "mdd_slack": 0.3259538675075158,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.1240461324924842,
+      "mdd_delta": -0.685226044029521,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 0.6083333333333333,
+      "positive_halfyears": 2,
+      "recovery_days": 3.9965277777777777,
+      "scenario": "C3_conservative",
+      "sortino": 0.04020191750842919,
+      "traded_coin_count": 38.0,
+      "trough_time": "2026-06-05T07:14:00.000",
+      "underwater_days": 4.604861111111111,
+      "window": "holdout",
+      "worst_halfyear": 0.08709361265073468
+    },
+    {
+      "cagr": 0.33548776625384846,
+      "cagr_ratio": -1.217905991668545,
+      "cell_id": "combo_twel100_ddf060_ddthr0030",
+      "fills": 17105.0,
+      "gain": 1.3352218800209228,
+      "gate": {
+        "cagr_floor": -0.16527766603441685,
+        "cagr_slack": 0.5007654322882653,
+        "failures": [
+          "positive_halfyears"
+        ],
+        "mdd_slack": 0.310968027878801,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.139031972121199,
+      "mdd_delta": -0.6702402044008062,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 0.6173611111111111,
+      "positive_halfyears": 2,
+      "recovery_days": 9.639583333333333,
+      "scenario": "C3_conservative",
+      "sortino": 0.053469783202252756,
+      "traded_coin_count": 38.0,
+      "trough_time": "2026-06-05T07:14:00.000",
+      "underwater_days": 10.256944444444445,
+      "window": "holdout",
+      "worst_halfyear": 0.08718910666812851
+    },
+    {
+      "cagr": 0.07163436305430348,
+      "cagr_ratio": -0.260050972789221,
+      "cell_id": "twel_080",
+      "fills": 18457.0,
+      "gain": 1.0715833356330688,
+      "gate": {
+        "cagr_floor": -0.16527766603441685,
+        "cagr_slack": 0.23691202908872033,
+        "failures": [
+          "underwater",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": 0.050751996591996085,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.3992480034080039,
+      "mdd_delta": -0.4100241731140013,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        }
+      ],
+      "peak_to_trough_days": 77.47638888888889,
+      "positive_halfyears": 1,
+      "recovery_days": 115.68611111111112,
+      "scenario": "C3_conservative",
+      "sortino": 0.005439516440795633,
+      "traded_coin_count": 38.0,
+      "trough_time": "2026-02-06T00:19:00.000",
+      "underwater_days": 193.1625,
+      "window": "holdout",
+      "worst_halfyear": -0.20599374677989224
+    },
+    {
+      "cagr": 0.2928177881483336,
+      "cagr_ratio": 1.6824290195491212,
+      "cell_id": "combo_twel080_ddthr0030",
+      "fills": 17252.0,
+      "gain": 1.292589285793638,
+      "gate": {
+        "cagr_floor": 0.10442679652309135,
+        "cagr_slack": 0.18839099162524225,
+        "failures": [
+          "positive_halfyears"
+        ],
+        "mdd_slack": 0.3389958372571162,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.11100416274288383,
+      "mdd_delta": -0.6289842222678563,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 0.6298611111111111,
+      "positive_halfyears": 2,
+      "recovery_days": 3.354861111111111,
+      "scenario": "C3_severe",
+      "sortino": 0.0506912709331775,
+      "traded_coin_count": 38.0,
+      "trough_time": "2026-06-05T07:14:00.000",
+      "underwater_days": 3.984722222222222,
+      "window": "holdout",
+      "worst_halfyear": 0.09238753969871327
+    },
+    {
+      "cagr": 0.2902899483183716,
+      "cagr_ratio": 1.6679049323562156,
+      "cell_id": "combo_twel100_ddf060_ddthr0030",
+      "fills": 16979.0,
+      "gain": 1.2900636305694035,
+      "gate": {
+        "cagr_floor": 0.10442679652309135,
+        "cagr_slack": 0.1858631517952803,
+        "failures": [
+          "positive_halfyears"
+        ],
+        "mdd_slack": 0.3105747248374487,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.13942527516255132,
+      "mdd_delta": -0.6005631098481888,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 0.6173611111111111,
+      "positive_halfyears": 2,
+      "recovery_days": 9.639583333333333,
+      "scenario": "C3_severe",
+      "sortino": 0.04497447656030667,
+      "traded_coin_count": 38.0,
+      "trough_time": "2026-06-05T07:14:00.000",
+      "underwater_days": 10.256944444444445,
+      "window": "holdout",
+      "worst_halfyear": 0.07070466283323551
+    },
+    {
+      "cagr": 0.1535955311478776,
+      "cagr_ratio": 0.13205668451238953,
+      "cell_id": "combo_twel080_ddthr0060",
+      "fills": 19323.0,
+      "gain": 1.3310422488573097,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.5442662925758611,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.24267337985322052,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.2073266201467795,
+      "mdd_delta": -0.5990635064959678,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.06
+        }
+      ],
+      "peak_to_trough_days": 2.4368055555555554,
+      "positive_halfyears": 4,
+      "recovery_days": 0.5520833333333334,
+      "scenario": "C3_conservative",
+      "sortino": 0.02764490864445078,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 2.988888888888889,
+      "window": "selection",
+      "worst_halfyear": 0.031414223900818605
+    },
+    {
+      "cagr": 0.20726831104888488,
+      "cagr_ratio": 0.17820287971299242,
+      "cell_id": "combo_twel100_ddthr0060",
+      "fills": 19473.0,
+      "gain": 1.4578715962302131,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.49059351267485385,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.18306681627915727,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.26693318372084274,
+      "mdd_delta": -0.5394569429219046,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.06
+        }
+      ],
+      "peak_to_trough_days": 2.4368055555555554,
+      "positive_halfyears": 4,
+      "recovery_days": 0.5541666666666667,
+      "scenario": "C3_conservative",
+      "sortino": 0.028887108276046368,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 2.990972222222222,
+      "window": "selection",
+      "worst_halfyear": 0.05890970433285436
+    },
+    {
+      "cagr": 0.33130827143726416,
+      "cagr_ratio": 0.2848485991132983,
+      "cell_id": "combo_twel080_ddthr0030",
+      "fills": 34731.0,
+      "gain": 1.7730742234640156,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.36655355228647457,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.16987622456458545,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.28012377543541456,
+      "mdd_delta": -0.5262663512073328,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 4,
+      "recovery_days": 96.79861111111111,
+      "scenario": "C3_conservative",
+      "sortino": 0.033944258063350545,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 123.5201388888889,
+      "window": "selection",
+      "worst_halfyear": 0.07720626598373914
+    },
+    {
+      "cagr": 0.35690000927366117,
+      "cagr_ratio": 0.3068515833429053,
+      "cell_id": "twel_060",
+      "fills": 44607.0,
+      "gain": 1.8419449016991742,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.34096181445007756,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.1469704513054772,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.3030295486945228,
+      "mdd_delta": -0.5033605779482245,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.6
+        }
+      ],
+      "peak_to_trough_days": 70.51458333333333,
+      "positive_halfyears": 4,
+      "recovery_days": 107.35208333333334,
+      "scenario": "C3_conservative",
+      "sortino": 0.03775452665726651,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 177.86666666666667,
+      "window": "selection",
+      "worst_halfyear": 0.05680519661029715
+    },
+    {
+      "cagr": 0.45808654871832477,
+      "cagr_ratio": 0.3938486386379548,
+      "cell_id": "combo_twel100_ddf060_ddthr0030",
+      "fills": 35802.0,
+      "gain": 2.1271111852119278,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.23977527500541396,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.1398654057728133,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.3101345942271867,
+      "mdd_delta": -0.49625553241556064,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 1.0326388888888889,
+      "positive_halfyears": 4,
+      "recovery_days": 0.8340277777777778,
+      "scenario": "C3_conservative",
+      "sortino": 0.041351999420615244,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 1.8666666666666667,
+      "window": "selection",
+      "worst_halfyear": 0.06452810247469798
+    },
+    {
+      "cagr": 0.25298557816268574,
+      "cagr_ratio": 0.21750917121051863,
+      "cell_id": "combo_twel120_we_weight_twel100",
+      "fills": 24993.0,
+      "gain": 1.5704562889103078,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.444876245561053,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.10104012225466824,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.34895987774533177,
+      "mdd_delta": -0.45743024889741557,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.2
+        },
+        {
+          "baseline": -0.0001,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_we_weight",
+          "value": -0.015
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.045
+        }
+      ],
+      "peak_to_trough_days": 1.0402777777777779,
+      "positive_halfyears": 4,
+      "recovery_days": 0.8430555555555556,
+      "scenario": "C3_conservative",
+      "sortino": 0.03000502947412475,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 1.8833333333333333,
+      "window": "selection",
+      "worst_halfyear": 0.00608612657844998
+    },
+    {
+      "cagr": 0.3089887701915368,
+      "cagr_ratio": 0.2656589826416889,
+      "cell_id": "ddthr_0060",
+      "fills": 19467.0,
+      "gain": 1.714081522834878,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.3888730535322019,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.05457042767645187,
+        "passed": false
+      },
+      "group": "G2_geometry",
+      "mdd": 0.39542957232354814,
+      "mdd_delta": -0.4109605543191992,
+      "ops": [
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.06
+        }
+      ],
+      "peak_to_trough_days": 2.4368055555555554,
+      "positive_halfyears": 4,
+      "recovery_days": 0.5354166666666667,
+      "scenario": "C3_conservative",
+      "sortino": 0.025941171700945915,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 2.9722222222222223,
+      "window": "selection",
+      "worst_halfyear": 0.07885686846680229
+    },
+    {
+      "cagr": 0.5257993757631565,
+      "cagr_ratio": 0.45206603188940486,
+      "cell_id": "twel_080",
+      "fills": 44218.0,
+      "gain": 2.3294069253245757,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.17206244796058223,
+        "failures": [
+          "cagr"
+        ],
+        "mdd_slack": 0.05024131270252791,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.3997586872974721,
+      "mdd_delta": -0.40663143934527524,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        }
+      ],
+      "peak_to_trough_days": 70.51458333333333,
+      "positive_halfyears": 4,
+      "recovery_days": 105.16111111111111,
+      "scenario": "C3_conservative",
+      "sortino": 0.03794874325450405,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 175.67569444444445,
+      "window": "selection",
+      "worst_halfyear": 0.07943990856274641
+    },
+    {
+      "cagr": 0.3811710690045562,
+      "cagr_ratio": 0.32771908940711714,
+      "cell_id": "close_we_weight",
+      "fills": 55472.0,
+      "gain": 1.9084746712498342,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.3166907547191825,
+        "failures": [
+          "cagr",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": 0.03673275379615876,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.41326724620384125,
+      "mdd_delta": -0.3931228804389061,
+      "ops": [
+        {
+          "baseline": -0.0001,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_we_weight",
+          "value": -0.015
+        }
+      ],
+      "peak_to_trough_days": 13.135416666666666,
+      "positive_halfyears": 3,
+      "recovery_days": 4.903472222222222,
+      "scenario": "C3_conservative",
+      "sortino": 0.02618414193779519,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 18.038888888888888,
+      "window": "selection",
+      "worst_halfyear": -0.13372838229306827
+    },
+    {
+      "cagr": 0.5451758301301444,
+      "cagr_ratio": 0.4687253077302267,
+      "cell_id": "hsl_on_025_twel100",
+      "fills": 52379.0,
+      "gain": 2.3889870221336267,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.15268599359359436,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater"
+        ],
+        "mdd_slack": -0.016937623708504213,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.4669376237085042,
+      "mdd_delta": -0.3394525029342431,
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.25
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        },
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 4,
+      "recovery_days": 197.29166666666666,
+      "scenario": "C3_conservative",
+      "sortino": 0.03322366690056825,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 224.01319444444445,
+      "window": "selection",
+      "worst_halfyear": 0.06997024989598066
+    },
+    {
+      "cagr": 0.40220709005533384,
+      "cagr_ratio": 0.34580520932569725,
+      "cell_id": "combo_twel100_forager_liq",
+      "fills": 40906.0,
+      "gain": 1.9670922805259876,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.2956547336684049,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.06568704231910377,
+        "passed": false
+      },
+      "group": "G5_combo",
+      "mdd": 0.5156870423191038,
+      "mdd_delta": -0.29070308432364356,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": {
+            "ema_readiness": 0.21,
+            "volatility": 0.61,
+            "volume": 0.18
+          },
+          "op": "set",
+          "path": "bot.long.forager.score_weights",
+          "value": {
+            "ema_readiness": 0.1,
+            "volatility": 0.3,
+            "volume": 0.6
+          }
+        },
+        {
+          "baseline": 0.04,
+          "op": "set",
+          "path": "bot.long.forager.volume_drop_pct",
+          "value": 0.2
+        }
+      ],
+      "peak_to_trough_days": 89.92083333333333,
+      "positive_halfyears": 3,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": 0.026685355075892602,
+      "traded_coin_count": 36.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 247.6326388888889,
+      "window": "selection",
+      "worst_halfyear": -0.08975905795982675
+    },
+    {
+      "cagr": 0.3133685862948894,
+      "cagr_ratio": 0.26942461298952675,
+      "cell_id": "hsl_on_010",
+      "fills": 52882.0,
+      "gain": 1.7255790568939573,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.38449323742884933,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.07892227594068507,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.5289222759406851,
+      "mdd_delta": -0.27746785070206226,
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.1
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        }
+      ],
+      "peak_to_trough_days": 7.238888888888889,
+      "positive_halfyears": 3,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": 0.01575411246735375,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 228.15,
+      "window": "selection",
+      "worst_halfyear": -0.13068156702689993
+    },
+    {
+      "cagr": 0.6744996686660698,
+      "cagr_ratio": 0.5799139420468566,
+      "cell_id": "twel_100",
+      "fills": 44590.0,
+      "gain": 2.8059230874078414,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.02336215505766892,
+        "failures": [
+          "mdd",
+          "cagr"
+        ],
+        "mdd_slack": -0.08434892157322643,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.5343489215732264,
+      "mdd_delta": -0.2720412050695209,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        }
+      ],
+      "peak_to_trough_days": 70.43819444444445,
+      "positive_halfyears": 4,
+      "recovery_days": 107.375,
+      "scenario": "C3_conservative",
+      "sortino": 0.03597456488323952,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 177.81319444444443,
+      "window": "selection",
+      "worst_halfyear": 0.06768567200442077
+    },
+    {
+      "cagr": 0.664721523754862,
+      "cagr_ratio": 0.5715069956467521,
+      "cell_id": "npos_14",
+      "fills": 91585.0,
+      "gain": 2.7732265406868812,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.033140299968876685,
+        "failures": [
+          "mdd",
+          "cagr"
+        ],
+        "mdd_slack": -0.10150596099307913,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.5515059609930791,
+      "mdd_delta": -0.2548841656496682,
+      "ops": [
+        {
+          "baseline": 7,
+          "op": "set",
+          "path": "bot.long.risk.n_positions",
+          "value": 14.0
+        }
+      ],
+      "peak_to_trough_days": 65.22013888888888,
+      "positive_halfyears": 4,
+      "recovery_days": 98.92430555555555,
+      "scenario": "C3_conservative",
+      "sortino": 0.02480752134292196,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 164.14444444444445,
+      "window": "selection",
+      "worst_halfyear": 0.03655646173686811
+    },
+    {
+      "cagr": 0.4228816622634344,
+      "cagr_ratio": 0.3635805667147425,
+      "cell_id": "hsl_on_015",
+      "fills": 52345.0,
+      "gain": 2.025567213976293,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.27498016146030435,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.10509023992825478,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.5550902399282548,
+      "mdd_delta": -0.25129988671449255,
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.15
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 3,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": 0.020121041194653383,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 247.6326388888889,
+      "window": "selection",
+      "worst_halfyear": -0.09493981485303504
+    },
+    {
+      "cagr": 0.3216841651347251,
+      "cagr_ratio": 0.2765740903420471,
+      "cell_id": "unstuck_wide",
+      "fills": 57249.0,
+      "gain": 1.7475142578748504,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.37617765858901364,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater"
+        ],
+        "mdd_slack": -0.10813191758149981,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.5581319175814998,
+      "mdd_delta": -0.24825820906124751,
+      "ops": [
+        {
+          "baseline": -0.0269,
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "value": -0.1
+        },
+        {
+          "baseline": 0.0052,
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "value": 0.02
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 4,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": 0.014640372669567381,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 247.6326388888889,
+      "window": "selection",
+      "worst_halfyear": 0.06675448440692633
+    },
+    {
+      "cagr": 0.7921889011397396,
+      "cagr_ratio": 0.681099502115773,
+      "cell_id": "twel_120",
+      "fills": 44018.0,
+      "gain": 3.214500272301681,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.09432707741600088,
+        "failures": [
+          "mdd"
+        ],
+        "mdd_slack": -0.15399492517362007,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.6039949251736201,
+      "mdd_delta": -0.20239520146912726,
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.2
+        }
+      ],
+      "peak_to_trough_days": 66.47569444444444,
+      "positive_halfyears": 4,
+      "recovery_days": 105.97708333333334,
+      "scenario": "C3_conservative",
+      "sortino": 0.03178108669512752,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 172.45277777777778,
+      "window": "selection",
+      "worst_halfyear": 0.03842249472737547
+    },
+    {
+      "cagr": -0.16500249902633668,
+      "cagr_ratio": -0.14186404249416795,
+      "cell_id": "enforcer_085",
+      "fills": 53793.0,
+      "gain": 0.697049214379654,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.8628643227500754,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.16569537987816813,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.6156953798781681,
+      "mdd_delta": -0.1906947467645792,
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.risk.position_exposure_enforcer_enabled",
+          "value": true
+        },
+        {
+          "baseline": 1.0,
+          "op": "set",
+          "path": "bot.long.risk.position_exposure_enforcer_threshold",
+          "value": 0.85
+        },
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.risk.total_exposure_enforcer_enabled",
+          "value": true
+        },
+        {
+          "baseline": 1.0,
+          "op": "set",
+          "path": "bot.long.risk.total_exposure_enforcer_threshold",
+          "value": 0.85
+        }
+      ],
+      "peak_to_trough_days": 370.3027777777778,
+      "positive_halfyears": 2,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": -0.011733648277203503,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 528.0145833333333,
+      "window": "selection",
+      "worst_halfyear": -0.30079322685108356
+    },
+    {
+      "cagr": 0.6373343977929311,
+      "cagr_ratio": 0.5479603922669065,
+      "cell_id": "cd_120",
+      "fills": 42180.0,
+      "gain": 2.682669028483709,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.06052742593080762,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater",
+          "positive_halfyears"
+        ],
+        "mdd_slack": -0.17052177811427488,
+        "passed": false
+      },
+      "group": "G2_geometry",
+      "mdd": 0.6205217781142749,
+      "mdd_delta": -0.18586834852847245,
+      "ops": [
+        {
+          "baseline": 24.1,
+          "op": "set",
+          "path": "bot.long.risk.entry_cooldown_minutes",
+          "value": 120.0
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 3,
+      "recovery_days": 170.94791666666666,
+      "scenario": "C3_conservative",
+      "sortino": 0.02558536774161853,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 197.66944444444445,
+      "window": "selection",
+      "worst_halfyear": -0.01584346650110957
+    },
+    {
+      "cagr": 0.794233260597357,
+      "cagr_ratio": 0.682857179112668,
+      "cell_id": "forager_liq",
+      "fills": 44156.0,
+      "gain": 3.2218430645175533,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.09637143687361827,
+        "failures": [
+          "mdd",
+          "underwater"
+        ],
+        "mdd_slack": -0.17777804327561514,
+        "passed": false
+      },
+      "group": "G4_selection",
+      "mdd": 0.6277780432756151,
+      "mdd_delta": -0.1786120833671322,
+      "ops": [
+        {
+          "baseline": {
+            "ema_readiness": 0.21,
+            "volatility": 0.61,
+            "volume": 0.18
+          },
+          "op": "set",
+          "path": "bot.long.forager.score_weights",
+          "value": {
+            "ema_readiness": 0.1,
+            "volatility": 0.3,
+            "volume": 0.6
+          }
+        },
+        {
+          "baseline": 0.04,
+          "op": "set",
+          "path": "bot.long.forager.volume_drop_pct",
+          "value": 0.2
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 4,
+      "recovery_days": 172.1125,
+      "scenario": "C3_conservative",
+      "sortino": 0.029980386863348873,
+      "traded_coin_count": 36.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 198.83402777777778,
+      "window": "selection",
+      "worst_halfyear": 0.031065516770564905
+    },
+    {
+      "cagr": 0.75302080618652,
+      "cagr_ratio": 0.6474239861711796,
+      "cell_id": "hsl_on_035",
+      "fills": 52376.0,
+      "gain": 3.0754377481124964,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.05515898246278128,
+        "failures": [
+          "mdd",
+          "underwater"
+        ],
+        "mdd_slack": -0.17982940584601165,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.6298294058460117,
+      "mdd_delta": -0.17656072079673568,
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.35
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 4,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": 0.02903099474782872,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 247.6326388888889,
+      "window": "selection",
+      "worst_halfyear": 0.13353171625940208
+    },
+    {
+      "cagr": 0.2753619077172278,
+      "cagr_ratio": 0.23674764690343755,
+      "cell_id": "hsl_on_025",
+      "fills": 50813.0,
+      "gain": 1.6270881623856734,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.42249991600651093,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater",
+          "positive_halfyears"
+        ],
+        "mdd_slack": -0.19358590981711404,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.643585909817114,
+      "mdd_delta": -0.16280421682563329,
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.25
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        }
+      ],
+      "peak_to_trough_days": 89.92083333333333,
+      "positive_halfyears": 2,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": 0.012473302235974136,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 247.6326388888889,
+      "window": "selection",
+      "worst_halfyear": -0.07527374910494333
+    },
+    {
+      "cagr": 0.7547332424234212,
+      "cagr_ratio": 0.6488962858546016,
+      "cell_id": "allow_000",
+      "fills": 47569.0,
+      "gain": 3.081453265193181,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.056871418699682486,
+        "failures": [
+          "mdd",
+          "underwater"
+        ],
+        "mdd_slack": -0.20901157983034374,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.6590115798303438,
+      "mdd_delta": -0.1473785468124036,
+      "ops": [
+        {
+          "baseline": 0.37,
+          "op": "set",
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "value": 0.0
+        }
+      ],
+      "peak_to_trough_days": 26.721527777777776,
+      "positive_halfyears": 4,
+      "recovery_days": 176.97708333333333,
+      "scenario": "C3_conservative",
+      "sortino": 0.02711776747244263,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-02-03T02:07:00.000",
+      "underwater_days": 203.69861111111112,
+      "window": "selection",
+      "worst_halfyear": 0.0925276685371843
+    },
+    {
+      "cagr": 0.9692808270107423,
+      "cagr_ratio": 0.8333576596914833,
+      "cell_id": "allow_015",
+      "fills": 46791.0,
+      "gain": 3.8816562377460153,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.2714190032870035,
+        "failures": [
+          "mdd",
+          "underwater"
+        ],
+        "mdd_slack": -0.23123462101896036,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.6812346210189604,
+      "mdd_delta": -0.12515550562378697,
+      "ops": [
+        {
+          "baseline": 0.37,
+          "op": "set",
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "value": 0.15
+        }
+      ],
+      "peak_to_trough_days": 89.92083333333333,
+      "positive_halfyears": 4,
+      "recovery_days": 106.11736111111111,
+      "scenario": "C3_conservative",
+      "sortino": 0.030730914541922547,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 196.03819444444446,
+      "window": "selection",
+      "worst_halfyear": 0.14036598123312416
+    },
+    {
+      "cagr": 1.0360103743887814,
+      "cagr_ratio": 0.8907296595140057,
+      "cell_id": "ddf_060",
+      "fills": 48269.0,
+      "gain": 4.14936362857947,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.3381485506650427,
+        "failures": [
+          "mdd"
+        ],
+        "mdd_slack": -0.23353992617261804,
+        "passed": false
+      },
+      "group": "G2_geometry",
+      "mdd": 0.683539926172618,
+      "mdd_delta": -0.12285020047012929,
+      "ops": [
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        }
+      ],
+      "peak_to_trough_days": 69.09513888888888,
+      "positive_halfyears": 4,
+      "recovery_days": 107.64583333333333,
+      "scenario": "C3_conservative",
+      "sortino": 0.0336462091663307,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 176.7409722222222,
+      "window": "selection",
+      "worst_halfyear": 0.18447057100476472
+    },
+    {
+      "cagr": 0.6582530574701697,
+      "cagr_ratio": 0.5659456085083838,
+      "cell_id": "ddthr_0030",
+      "fills": 32694.0,
+      "gain": 2.75170240726435,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.03960876625356902,
+        "failures": [
+          "mdd",
+          "cagr",
+          "underwater",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.23521133435601987,
+        "passed": false
+      },
+      "group": "G2_geometry",
+      "mdd": 0.6852113343560199,
+      "mdd_delta": -0.12117879228672745,
+      "ops": [
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ],
+      "peak_to_trough_days": 89.92083333333333,
+      "positive_halfyears": 3,
+      "recovery_days": 105.30069444444445,
+      "scenario": "C3_conservative",
+      "sortino": 0.024884986819711147,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 195.22152777777777,
+      "window": "selection",
+      "worst_halfyear": -0.1166764214194741
+    },
+    {
+      "cagr": 0.2622264394614977,
+      "cagr_ratio": 0.22545417778746826,
+      "cell_id": "cd_360",
+      "fills": 27970.0,
+      "gain": 1.5937221577056646,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -0.435635384262241,
+        "failures": [
+          "mdd",
+          "cagr",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.26480870744081225,
+        "passed": false
+      },
+      "group": "G2_geometry",
+      "mdd": 0.7148087074408123,
+      "mdd_delta": -0.09158141920193508,
+      "ops": [
+        {
+          "baseline": 24.1,
+          "op": "set",
+          "path": "bot.long.risk.entry_cooldown_minutes",
+          "value": 360.0
+        }
+      ],
+      "peak_to_trough_days": 65.22013888888888,
+      "positive_halfyears": 2,
+      "recovery_days": 114.55416666666666,
+      "scenario": "C3_conservative",
+      "sortino": 0.012048964263643422,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 179.77430555555554,
+      "window": "selection",
+      "worst_halfyear": -0.2143525128821394
+    },
+    {
+      "cagr": 0.83429144425147,
+      "cagr_ratio": 0.7172979657775973,
+      "cell_id": "ddf_030",
+      "fills": 48209.0,
+      "gain": 3.3674127147949204,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.13642962052773122,
+        "failures": [
+          "mdd"
+        ],
+        "mdd_slack": -0.29091007918114425,
+        "passed": false
+      },
+      "group": "G2_geometry",
+      "mdd": 0.7409100791811443,
+      "mdd_delta": -0.06548004746160307,
+      "ops": [
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.3
+        }
+      ],
+      "peak_to_trough_days": 65.22013888888888,
+      "positive_halfyears": 4,
+      "recovery_days": 107.67916666666666,
+      "scenario": "C3_conservative",
+      "sortino": 0.029778772489224448,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 172.89930555555554,
+      "window": "selection",
+      "worst_halfyear": 0.03422204516486205
+    },
+    {
+      "cagr": 0.7587005621799467,
+      "cagr_ratio": 0.6523072646085528,
+      "cell_id": "npos_10",
+      "fills": 63003.0,
+      "gain": 3.09541242760448,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.06083873845620802,
+        "failures": [
+          "mdd",
+          "underwater",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.33746266032834843,
+        "passed": false
+      },
+      "group": "G1_ceiling",
+      "mdd": 0.7874626603283484,
+      "mdd_delta": -0.0189274663143989,
+      "ops": [
+        {
+          "baseline": 7,
+          "op": "set",
+          "path": "bot.long.risk.n_positions",
+          "value": 10.0
+        }
+      ],
+      "peak_to_trough_days": 89.92083333333333,
+      "positive_halfyears": 3,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": 0.02318408474102663,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 247.6326388888889,
+      "window": "selection",
+      "worst_halfyear": -0.1819995786539218
+    },
+    {
+      "cagr": 1.1631030395395645,
+      "cagr_ratio": 1.0,
+      "cell_id": "dynwel_off",
+      "fills": 44014.0,
+      "gain": 4.6839455376671175,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.4652412158158258,
+        "failures": [
+          "mdd",
+          "positive_halfyears"
+        ],
+        "mdd_slack": -0.35639012664274733,
+        "passed": false
+      },
+      "group": "G4_selection",
+      "mdd": 0.8063901266427473,
+      "mdd_delta": 0.0,
+      "ops": [
+        {
+          "baseline": true,
+          "op": "set",
+          "path": "backtest.dynamic_wel_by_tradability",
+          "value": false
+        }
+      ],
+      "peak_to_trough_days": 72.68541666666667,
+      "positive_halfyears": 3,
+      "recovery_days": 106.32430555555555,
+      "scenario": "C3_conservative",
+      "sortino": 0.03077748825206535,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 179.00972222222222,
+      "window": "selection",
+      "worst_halfyear": -0.0569025858970279
+    },
+    {
+      "cagr": 0.8735433929094392,
+      "cagr_ratio": 0.751045576542597,
+      "cell_id": "forager_vol",
+      "fills": 40260.0,
+      "gain": 3.5131745815435873,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.17568156918570044,
+        "failures": [
+          "mdd",
+          "underwater",
+          "positive_halfyears"
+        ],
+        "mdd_slack": -0.3576282429295649,
+        "passed": false
+      },
+      "group": "G4_selection",
+      "mdd": 0.8076282429295649,
+      "mdd_delta": 0.001238116286817581,
+      "ops": [
+        {
+          "baseline": {
+            "ema_readiness": 0.21,
+            "volatility": 0.61,
+            "volume": 0.18
+          },
+          "op": "set",
+          "path": "bot.long.forager.score_weights",
+          "value": {
+            "ema_readiness": 0.1,
+            "volatility": 0.6,
+            "volume": 0.3
+          }
+        }
+      ],
+      "peak_to_trough_days": 75.16875,
+      "positive_halfyears": 2,
+      "recovery_days": 107.36736111111111,
+      "scenario": "C3_conservative",
+      "sortino": 0.024731479340148913,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 182.5361111111111,
+      "window": "selection",
+      "worst_halfyear": -0.0207310208373801
+    },
+    {
+      "cagr": 1.03658336466302,
+      "cagr_ratio": 0.8912222988200343,
+      "cell_id": "ema_initial",
+      "fills": 41996.0,
+      "gain": 4.151701046004365,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.3387215409392813,
+        "failures": [
+          "mdd",
+          "underwater",
+          "positive_halfyears"
+        ],
+        "mdd_slack": -0.36089181632104833,
+        "passed": false
+      },
+      "group": "G2_geometry",
+      "mdd": 0.8108918163210483,
+      "mdd_delta": 0.004501689678301002,
+      "ops": [
+        {
+          "baseline": "all",
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.ema_gate_mode",
+          "value": "initial"
+        }
+      ],
+      "peak_to_trough_days": 70.43819444444445,
+      "positive_halfyears": 3,
+      "recovery_days": 115.75,
+      "scenario": "C3_conservative",
+      "sortino": 0.028400585948766956,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 186.18819444444443,
+      "window": "selection",
+      "worst_halfyear": -0.023652970859754707
+    },
+    {
+      "cagr": 0.7084485329468264,
+      "cagr_ratio": 0.6091021249736212,
+      "cell_id": "unstuck_ungated",
+      "fills": 47826.0,
+      "gain": 2.920931219494843,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": 0.010586709223087687,
+        "failures": [
+          "mdd",
+          "underwater",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.3873816783766299,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.8373816783766299,
+      "mdd_delta": 0.030991551733882572,
+      "ops": [
+        {
+          "baseline": true,
+          "op": "set",
+          "path": "bot.long.unstuck.ema_gating_enabled",
+          "value": false
+        }
+      ],
+      "peak_to_trough_days": 89.92083333333333,
+      "positive_halfyears": 3,
+      "recovery_days": 113.51458333333333,
+      "scenario": "C3_conservative",
+      "sortino": 0.021703481282800537,
+      "traded_coin_count": 37.0,
+      "trough_time": "2025-04-07T06:54:00.000",
+      "underwater_days": 203.43541666666667,
+      "window": "selection",
+      "worst_halfyear": -0.23662116822167456
+    },
+    {
+      "cagr": -0.6581790042827157,
+      "cagr_ratio": -0.5658819398694614,
+      "cell_id": "unstuck_off",
+      "fills": 18311.0,
+      "gain": 0.1857911525079758,
+      "gate": {
+        "cagr_floor": 0.6978618237237387,
+        "cagr_slack": -1.3560408280064544,
+        "failures": [
+          "completion",
+          "liquidated",
+          "mdd",
+          "cagr",
+          "positive_halfyears",
+          "worst_halfyear"
+        ],
+        "mdd_slack": -0.538520177171671,
+        "passed": false
+      },
+      "group": "G3_exit",
+      "mdd": 0.9885201771716711,
+      "mdd_delta": 0.18213005052892373,
+      "ops": [
+        {
+          "baseline": true,
+          "op": "set",
+          "path": "bot.long.unstuck.enabled",
+          "value": false
+        }
+      ],
+      "peak_to_trough_days": 90.00625,
+      "positive_halfyears": 1,
+      "recovery_days": NaN,
+      "scenario": "C3_conservative",
+      "sortino": -0.022446243016418142,
+      "traded_coin_count": 34.0,
+      "trough_time": "2025-04-06T16:34:00.000",
+      "underwater_days": 90.00625,
+      "window": "selection",
+      "worst_halfyear": -0.9111674409546828
+    }
+  ]
+}

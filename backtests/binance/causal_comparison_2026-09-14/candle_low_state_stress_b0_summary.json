@@ -1,0 +1,10 @@
+{
+  "global_proxy_mdd_pct": 0.7426925009122605,
+  "global_proxy_mdd_time": "2025-04-07T06:54:00+00:00",
+  "global_proxy_equity": 111043.78383695427,
+  "global_proxy_hwm_before_candle": 431560.6199999999,
+  "lowest_envelope_time": "2023-10-04T00:40:00+00:00",
+  "lowest_envelope_equity": 98368.45706864554,
+  "lowest_envelope_state": "after_fill_2",
+  "close_reconstruction_max_abs_residual_usdt": 0.11254917550832033
+}

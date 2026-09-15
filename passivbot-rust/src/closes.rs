@@ -1,5 +1,7 @@
 use crate::dynamic::{calc_dynamic_distance_multiplier, DynamicDistanceInputs};
-use crate::entries::{calc_min_entry_qty, wallet_exposure_limit_with_allowance};
+use crate::entries::{
+    calc_min_entry_qty, raw_wallet_exposure_limit_with_allowance as wallet_exposure_limit_with_allowance,
+};
 use crate::strategies::{StrategySide, TrailingMartingaleCloseParams};
 use crate::types::{
     BotParams, ExchangeParams, Order, OrderType, Position, RuntimeOrderContext, StateParams,
@@ -870,6 +872,7 @@ mod tests {
     fn make_runtime_context() -> RuntimeOrderContext {
         RuntimeOrderContext {
             effective_wallet_exposure_limit: 1.0,
+            wallet_exposure_limit_scale: 1.0,
         }
     }
 

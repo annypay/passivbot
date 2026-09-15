@@ -1,0 +1,63 @@
+{
+  "contract_sha256": "ab51fd69efb500d3ededab3aca6bca1170b7adb643c23b5594dcf533a54d336e",
+  "selected_strategy": "trailing_martingale",
+  "parameter_only_status": "failed_research_path_only",
+  "summaries": [
+    {
+      "strategy": "ema_anchor",
+      "eligible_primary_rows": 2,
+      "expected_primary_rows": 6,
+      "all_primary_rows_eligible": false,
+      "worst_primary_oos_drawdown_worst_strategy_eq": 0.026012538157442734,
+      "worst_primary_oos_drawdown_worst_mean_1pct_strategy_eq": 0.026012538157442734,
+      "worst_primary_oos_strategy_eq_recovery_days_max": 167.82777777777778,
+      "minimum_primary_oos_adg_strategy_eq": -5.936133552375544e-06,
+      "geometric_compounded_primary_oos_gain_strategy_eq": 1.0702328961761538,
+      "evidence": {
+        "F1_candidate_lock_sha256": "687aab993b9bbb65ec5387da390fb5843c56c7707601d9734801841f2c8d519a",
+        "F1_validation_sha256": "28c234975f445b985bdf4730cef81a0eaadce8dc7d57aa51be5f3945781cadd9",
+        "F2_candidate_lock_sha256": "a44e2b58dce7311d1a5ccbf8a9e319fc27ccf537f0ee7e31a1ab11917c33e4f1",
+        "F2_validation_sha256": "8fb364bf42eb35e1575773bdfc1d0cdff6b6bd006d4d36163379618923643a2c",
+        "F3_candidate_lock_sha256": "4bdfa9c61c5d9cff8a9d0609057018793566e0dee9ab4b217754bea156c8f890",
+        "F3_validation_sha256": "fffc9d0bc16399bd3f952c225eb293d3803511cb62805843ca7bd6e1c9ef7d5f"
+      },
+      "ranking_tuple": [
+        -2,
+        0.026012538157442734,
+        0.026012538157442734,
+        167.82777777777778,
+        5.936133552375544e-06,
+        -1.0702328961761538,
+        "ema_anchor"
+      ]
+    },
+    {
+      "strategy": "trailing_martingale",
+      "eligible_primary_rows": 3,
+      "expected_primary_rows": 6,
+      "all_primary_rows_eligible": false,
+      "worst_primary_oos_drawdown_worst_strategy_eq": 0.06547905359281059,
+      "worst_primary_oos_drawdown_worst_mean_1pct_strategy_eq": 0.06547905359281059,
+      "worst_primary_oos_strategy_eq_recovery_days_max": 49.16875,
+      "minimum_primary_oos_adg_strategy_eq": -0.00011302940292579056,
+      "geometric_compounded_primary_oos_gain_strategy_eq": 1.0440300007093437,
+      "evidence": {
+        "F1_candidate_lock_sha256": "0e0e328d07faf54bb7c8432e5cce4a9d600aacabad8e064ee93c1f6bd00db03b",
+        "F1_validation_sha256": "bbe82b2bf787b712b0507c63ae894855568bdb5e29d432fed3c741d9f8200771",
+        "F2_candidate_lock_sha256": "8f5b51750e956aa22a5a68c6ca5ea52bed9f8a52023325adaff6437e1980f4c8",
+        "F2_validation_sha256": "732e87d2c59c385cff2820c139234f3dd7b62311f2242825cfb3115de462eda8",
+        "F3_candidate_lock_sha256": "c2f68b130401b8ded18ae55c5d2fbda37bc2160f288d6a2229cfaf22a6f32ec8",
+        "F3_validation_sha256": "3e502a4bf096a88a0453e92899bf1e82efda566125dde228e92848b1973c1809"
+      },
+      "ranking_tuple": [
+        -3,
+        0.06547905359281059,
+        0.06547905359281059,
+        49.16875,
+        0.00011302940292579056,
+        -1.0440300007093437,
+        "trailing_martingale"
+      ]
+    }
+  ]
+}

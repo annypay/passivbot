@@ -1,0 +1,7 @@
+{
+  "strategy_path_decision_lock_sha256": "9baf737a1692ac1983180176f95ae6dca51fe8ae3c4e47edb73f08ca0f2ccb74",
+  "selected_strategy": "trailing_martingale",
+  "parameter_only_status": "failed_research_path_only",
+  "parameter_tool_sha256": "265679ed22485a07223fbec95af37044b1abcaafc64b8a73140a1ba222c5a825",
+  "final_holdout_unopened": true
+}

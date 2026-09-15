@@ -52,6 +52,10 @@ def _get_shared_bot_defaults():
                 "total_exposure_enforcer_threshold": 1.0,
                 "total_exposure_entry_gate_enabled": True,
                 "total_wallet_exposure_limit": 1.5,
+                "wallet_exposure_brake_enabled": False,
+                "wallet_exposure_brake_start_drawdown": 0.15,
+                "wallet_exposure_brake_full_drawdown": 0.45,
+                "wallet_exposure_brake_min_scale": 0.25,
                 "we_excess_allowance_mode": "bounded",
                 "we_excess_allowance_pct": 0.37
             },
@@ -101,6 +105,10 @@ def _get_shared_bot_defaults():
                 "total_exposure_enforcer_threshold": 0.8,
                 "total_exposure_entry_gate_enabled": True,
                 "total_wallet_exposure_limit": 0.0,
+                "wallet_exposure_brake_enabled": False,
+                "wallet_exposure_brake_start_drawdown": 0.15,
+                "wallet_exposure_brake_full_drawdown": 0.45,
+                "wallet_exposure_brake_min_scale": 0.25,
                 "we_excess_allowance_mode": "bounded",
                 "we_excess_allowance_pct": 0.0
             },

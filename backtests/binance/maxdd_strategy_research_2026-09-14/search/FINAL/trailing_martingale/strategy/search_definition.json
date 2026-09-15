@@ -1,0 +1,141 @@
+{
+  "fold": "FINAL",
+  "strategy": "trailing_martingale",
+  "stage": "strategy",
+  "seed": 4202,
+  "budget": 96,
+  "population_size": 16,
+  "parameter_specs": [
+    {
+      "name": "close_qty_pct",
+      "low": 0.05,
+      "high": 0.5,
+      "step": 0.01
+    },
+    {
+      "name": "close_threshold_base_pct",
+      "low": 0.002,
+      "high": 0.02,
+      "step": 0.0005
+    },
+    {
+      "name": "close_threshold_volatility_1h_weight",
+      "low": 0.0,
+      "high": 10.0,
+      "step": 0.25
+    },
+    {
+      "name": "close_threshold_we_weight",
+      "low": -0.03,
+      "high": 0.03,
+      "step": 0.001
+    },
+    {
+      "name": "entry_double_down_factor",
+      "low": 0.0,
+      "high": 0.9,
+      "step": 0.01
+    },
+    {
+      "name": "entry_ema_span_0",
+      "low": 60.0,
+      "high": 1440.0,
+      "step": 10.0
+    },
+    {
+      "name": "entry_ema_span_1",
+      "low": 60.0,
+      "high": 1440.0,
+      "step": 10.0
+    },
+    {
+      "name": "entry_initial_ema_dist",
+      "low": 0.002,
+      "high": 0.02,
+      "step": 0.0005
+    },
+    {
+      "name": "entry_initial_qty_pct",
+      "low": 0.002,
+      "high": 0.03,
+      "step": 0.0005
+    },
+    {
+      "name": "entry_retracement_base_pct",
+      "low": 0.0,
+      "high": 0.015,
+      "step": 0.0005
+    },
+    {
+      "name": "entry_retracement_we_weight",
+      "low": 0.0,
+      "high": 1.0,
+      "step": 0.025
+    },
+    {
+      "name": "entry_threshold_base_pct",
+      "low": 0.005,
+      "high": 0.05,
+      "step": 0.001
+    },
+    {
+      "name": "entry_threshold_volatility_1h_weight",
+      "low": 0.0,
+      "high": 10.0,
+      "step": 0.25
+    },
+    {
+      "name": "entry_threshold_we_weight",
+      "low": 0.0,
+      "high": 0.5,
+      "step": 0.01
+    },
+    {
+      "name": "volatility_ema_span_1h",
+      "low": 240.0,
+      "high": 2016.0,
+      "step": 24.0
+    },
+    {
+      "name": "volatility_ema_span_1m",
+      "low": 10.0,
+      "high": 720.0,
+      "step": 10.0
+    }
+  ],
+  "base_params": {
+    "twe": 0.27,
+    "entry_cooldown_minutes": 78.0,
+    "n_positions": 2,
+    "enforcer_threshold": 0.92,
+    "hsl_enabled": true,
+    "unstuck_enabled": true,
+    "hsl_red_threshold": 0.15,
+    "hsl_cooldown_minutes": 2160.0,
+    "hsl_ema_span_minutes": 240.0,
+    "unstuck_close_pct": 0.05,
+    "unstuck_loss_allowance_pct": 0.01,
+    "unstuck_threshold": 0.5,
+    "unstuck_ema_dist": -0.05,
+    "close_qty_pct": 0.1,
+    "close_retracement_base_pct": 0.0,
+    "close_threshold_base_pct": 0.006,
+    "close_threshold_volatility_1h_weight": 1.0,
+    "close_threshold_volatility_1m_weight": 0.0,
+    "close_threshold_we_weight": -0.004,
+    "entry_double_down_factor": 0.5,
+    "entry_ema_span_0": 770.0,
+    "entry_ema_span_1": 210.0,
+    "entry_initial_ema_dist": 0.008,
+    "entry_initial_qty_pct": 0.01,
+    "entry_retracement_base_pct": 0.0,
+    "entry_retracement_we_weight": 0.0,
+    "entry_threshold_base_pct": 0.02,
+    "entry_threshold_volatility_1h_weight": 2.4,
+    "entry_threshold_volatility_1m_weight": 0.0,
+    "entry_threshold_we_weight": 0.1,
+    "volatility_ema_span_1h": 1690.0,
+    "volatility_ema_span_1m": 60.0
+  },
+  "selected_params_hash": "02f861bb8ba0adb700e36d5cfffda6eac58022e738d20f5b88b2a7280df2049f"
+}

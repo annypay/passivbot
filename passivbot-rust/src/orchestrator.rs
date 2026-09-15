@@ -1139,6 +1139,7 @@ mod core {
             effective_wallet_exposure_limit: configured_wallet_exposure_limit,
             configured_n_positions: side.bot_params.n_positions,
             effective_n_positions,
+            wallet_exposure_limit_scale: 1.0,
         }
     }
 
@@ -2581,6 +2582,8 @@ mod core {
                         let runtime_context = RuntimeOrderContext {
                             effective_wallet_exposure_limit: runtime_budget
                                 .effective_wallet_exposure_limit,
+                            wallet_exposure_limit_scale: runtime_budget
+                                .wallet_exposure_limit_scale,
                         };
                         let initial_qty = calc_initial_entry_qty(
                             exchange,
@@ -2657,6 +2660,7 @@ mod core {
         };
         let runtime_context = RuntimeOrderContext {
             effective_wallet_exposure_limit: runtime_budget.effective_wallet_exposure_limit,
+            wallet_exposure_limit_scale: runtime_budget.wallet_exposure_limit_scale,
         };
         let wallet_exposure = calc_wallet_exposure(
             symbol.exchange.c_mult,

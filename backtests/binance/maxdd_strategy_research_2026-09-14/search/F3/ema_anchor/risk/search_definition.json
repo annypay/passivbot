@@ -1,0 +1,72 @@
+{
+  "fold": "F3",
+  "strategy": "ema_anchor",
+  "stage": "risk",
+  "seed": 3101,
+  "budget": 64,
+  "population_size": 16,
+  "parameter_specs": [
+    {
+      "name": "twe",
+      "low": 0.25,
+      "high": 1.25,
+      "step": 0.01
+    },
+    {
+      "name": "entry_cooldown_minutes",
+      "low": 0.0,
+      "high": 120.0,
+      "step": 1.0
+    },
+    {
+      "name": "n_positions",
+      "low": 1.0,
+      "high": 3.0,
+      "step": 1.0
+    },
+    {
+      "name": "enforcer_threshold",
+      "low": 0.75,
+      "high": 1.0,
+      "step": 0.01
+    },
+    {
+      "name": "hsl_enabled",
+      "low": 0.0,
+      "high": 1.0,
+      "step": 1.0
+    },
+    {
+      "name": "unstuck_enabled",
+      "low": 0.0,
+      "high": 1.0,
+      "step": 1.0
+    }
+  ],
+  "base_params": {
+    "twe": 0.75,
+    "entry_cooldown_minutes": 30.0,
+    "n_positions": 2,
+    "enforcer_threshold": 0.9,
+    "hsl_enabled": false,
+    "unstuck_enabled": false,
+    "hsl_red_threshold": 0.15,
+    "hsl_cooldown_minutes": 2160.0,
+    "hsl_ema_span_minutes": 240.0,
+    "unstuck_close_pct": 0.05,
+    "unstuck_loss_allowance_pct": 0.01,
+    "unstuck_threshold": 0.5,
+    "unstuck_ema_dist": -0.05,
+    "base_qty_pct": 0.01,
+    "ema_span_0": 415.0,
+    "ema_span_1": 793.0,
+    "entry_double_down_factor": 0.25,
+    "offset": 0.01,
+    "offset_psize_weight": 1.0,
+    "offset_volatility_1h_weight": 13.0,
+    "offset_volatility_1m_weight": 0.4,
+    "offset_volatility_ema_span_1h": 448.0,
+    "offset_volatility_ema_span_1m": 664.0
+  },
+  "selected_params_hash": "8fe20cb49ba4a0c403be70479f18d540f09f295c26210c7515babce6b2753090"
+}

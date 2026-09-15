@@ -288,6 +288,48 @@ def _resolve_backtest_hsl_configs(config: dict) -> tuple[dict, dict]:
     return _convert(long_cfg), _convert(short_cfg)
 
 
+def _resolve_backtest_wallet_exposure_brake(config: dict) -> dict:
+    """Resolve the account-level entry brake for a backtest payload.
+
+    The brake scales new-entry exposure from the account drawdown against its running
+    equity peak. It is account-level, so when both sides enable it the stricter
+    (earlier-triggering, deeper) geometry wins; a side that keeps it disabled never
+    loosens the other side.
+    """
+    sides = []
+    for pside in ("long", "short"):
+        side_cfg = flatten_shared_bot_side(config.get("bot", {}).get(pside, {}))
+        # A config that predates the brake, or one that simply omits it, keeps it disabled
+        # rather than inheriting an enabled brake from another side.
+        if not bool(side_cfg.get("risk_wallet_exposure_brake_enabled", False)):
+            continue
+        start = float(side_cfg.get("risk_wallet_exposure_brake_start_drawdown", 0.15))
+        full = float(side_cfg.get("risk_wallet_exposure_brake_full_drawdown", 0.45))
+        min_scale = float(side_cfg.get("risk_wallet_exposure_brake_min_scale", 0.25))
+        if not (start >= 0.0 and full > start):
+            raise ValueError(
+                f"bot.{pside}.risk.wallet_exposure_brake requires 0 <= start_drawdown < full_drawdown"
+            )
+        if not (0.0 < min_scale <= 1.0):
+            raise ValueError(
+                f"bot.{pside}.risk.wallet_exposure_brake_min_scale must be in (0, 1]"
+            )
+        sides.append((start, full, min_scale))
+    if not sides:
+        return {
+            "enabled": False,
+            "start_drawdown": 0.15,
+            "full_drawdown": 0.45,
+            "min_scale": 0.25,
+        }
+    return {
+        "enabled": True,
+        "start_drawdown": min(item[0] for item in sides),
+        "full_drawdown": min(item[1] for item in sides),
+        "min_scale": min(item[2] for item in sides),
+    }
+
+
 def _resolve_backtest_hsl_signal_mode(config: dict) -> str:
     return normalize_hsl_signal_mode(require_config_value(config, "live.hsl_signal_mode"))
 
@@ -1402,7 +1444,12 @@ def process_forager_fills(
     hlcvs,
     equities_array,
     balance_sample_divider: int = 60,
+    starting_balance: float | None = None,
 ):
+    if starting_balance is not None:
+        starting_balance = float(starting_balance)
+        if not np.isfinite(starting_balance):
+            raise ValueError("starting_balance must be finite")
     fdf = pd.DataFrame(
         fills,
         columns=[
@@ -1477,30 +1524,21 @@ def process_forager_fills(
     )
     sample_divider = max(1, int(balance_sample_divider))
     if not fdf.empty:
-        timestamps_ns = fdf["timestamp"].astype("int64")
-        bucket = (timestamps_ns // (sample_divider * 60_000 * 1_000_000)) * (
-            sample_divider * 60_000 * 1_000_000
-        )
         usd_cash_series = (
-            fdf.groupby(bucket)["usd_cash_wallet"].last().rename("usd_cash_wallet")
+            fdf.groupby("timestamp")["usd_cash_wallet"].last().rename("usd_cash_wallet")
         )
         usd_total_balance_series = (
-            fdf.groupby(bucket)["usd_total_balance"].last().rename("usd_total_balance")
+            fdf.groupby("timestamp")["usd_total_balance"]
+            .last()
+            .rename("usd_total_balance")
         )
         btc_cash_series = (
-            fdf.groupby(bucket)["btc_cash_wallet"].last().rename("btc_cash_wallet")
+            fdf.groupby("timestamp")["btc_cash_wallet"].last().rename("btc_cash_wallet")
         )
         btc_total_balance_series = (
-            fdf.groupby(bucket)["btc_total_balance"].last().rename("btc_total_balance")
-        )
-        # convert to datetime index for easier alignment
-        usd_cash_series.index = pd.to_datetime(usd_cash_series.index, unit="ns")
-        usd_total_balance_series.index = pd.to_datetime(
-            usd_total_balance_series.index, unit="ns"
-        )
-        btc_cash_series.index = pd.to_datetime(btc_cash_series.index, unit="ns")
-        btc_total_balance_series.index = pd.to_datetime(
-            btc_total_balance_series.index, unit="ns"
+            fdf.groupby("timestamp")["btc_total_balance"]
+            .last()
+            .rename("btc_total_balance")
         )
     else:
         empty_dtidx = pd.DatetimeIndex([])
@@ -1566,30 +1604,39 @@ def process_forager_fills(
     else:
         bal_eq = bal_eq.sort_index()
         bal_eq = bal_eq[~bal_eq.index.duplicated(keep="first")]
-        bal_eq = (
-            bal_eq.reindex(
-                columns=[
-                    "usd_cash_wallet",
-                    "usd_total_balance",
-                    "usd_total_equity",
-                    "strategy_equity",
-                    "btc_cash_wallet",
-                    "btc_total_balance",
-                    "btc_total_equity",
-                ]
-            )
-            .ffill()
-            .bfill()
+        bal_eq = bal_eq.reindex(
+            columns=[
+                "usd_cash_wallet",
+                "usd_total_balance",
+                "usd_total_equity",
+                "strategy_equity",
+                "btc_cash_wallet",
+                "btc_total_balance",
+                "btc_total_equity",
+            ]
         )
+        balance_columns = [
+            "usd_cash_wallet",
+            "usd_total_balance",
+            "btc_cash_wallet",
+            "btc_total_balance",
+        ]
+        bal_eq[balance_columns] = bal_eq[balance_columns].ffill()
+        if starting_balance is not None:
+            before_first_fill = bal_eq["usd_total_balance"].isna()
+            bal_eq.loc[before_first_fill, "usd_cash_wallet"] = starting_balance
+            bal_eq.loc[before_first_fill, "usd_total_balance"] = starting_balance
+            bal_eq.loc[before_first_fill, "btc_cash_wallet"] = 0.0
+            # The account starts flat, so total BTC balance equals the
+            # contemporaneous marked BTC equity before the first fill.
+            bal_eq.loc[before_first_fill, "btc_total_balance"] = bal_eq.loc[
+                before_first_fill, "btc_total_equity"
+            ]
+        # Align balance states to their contemporaneous equity labels before
+        # sampling.  Bucket-start grouping would make later fills appear early.
+        bal_eq = bal_eq.reindex(equities_index)
         if sample_divider > 1 and not bal_eq.empty:
-            if isinstance(bal_eq.index, pd.DatetimeIndex):
-                try:
-                    bal_eq = bal_eq.resample(f"{sample_divider}min").last()
-                except ValueError:
-                    bal_eq = bal_eq.iloc[::sample_divider]
-            else:
-                bal_eq = bal_eq.iloc[::sample_divider]
-            bal_eq = bal_eq.dropna(how="all").ffill().bfill()
+            bal_eq = bal_eq.iloc[::sample_divider]
     bal_eq = bal_eq.round(4).astype(np.float32)
     return fdf, sort_dict_keys(analysis_appendix), bal_eq
 
@@ -2727,6 +2774,7 @@ def prep_backtest_args(
             "dynamic_wel_by_tradability": bool(
                 require_config_value(config, "backtest.dynamic_wel_by_tradability")
             ),
+            "wallet_exposure_brake": _resolve_backtest_wallet_exposure_brake(config),
             "hedge_mode": bool(require_config_value(config, "live.hedge_mode")),
             "max_realized_loss_pct": float(
                 require_config_value(config, "live.max_realized_loss_pct")
@@ -2914,6 +2962,7 @@ def post_process(
         hlcvs,
         equities_array,
         balance_sample_divider=balance_sample_divider,
+        starting_balance=get_optional_config_value(config, "backtest.starting_balance"),
     )
     for k in analysis_py:
         if k not in analysis:

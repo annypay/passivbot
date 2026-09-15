@@ -395,6 +395,7 @@ mod tests {
             effective_wallet_exposure_limit,
             configured_n_positions: 1,
             effective_n_positions: 1,
+            wallet_exposure_limit_scale: 1.0,
         }
     }
 

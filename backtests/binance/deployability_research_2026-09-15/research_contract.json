@@ -1,0 +1,384 @@
+{
+  "candidate_budget": 19,
+  "candidate_config_hashes": {
+    "ema_inventory": "5bf8009929530537624f5ce14ba985b8f055bdb0eeb6cfbe275aaac1549fb4d9",
+    "ema_public": "b3c98b18b4f7cd7da69bd1466120930c7f1e2eb551b68a566b3cbd7fda181b5a",
+    "tm_cooldown90": "897860a0025a4af0a082253306177c092cb965e7e7dd21b904fc925692125b73",
+    "tm_early_unstuck": "ba3dcc6e8497c59d83a1e50d281a45d6412435a98a55d722afcad20fdc591f9c",
+    "tm_ema_all": "2acfb79e702d22ce27a36fe94a6c074c0fd96db1fe7e040185b0153dfccb6ff6",
+    "tm_enforcer85": "92a3c5636c196343850fb2968fe035ef2d27a73e885f4a82e654c04ebd072d05",
+    "tm_exposure_exit": "45878cec8317093c91fa0b9f9cb40a4f90816817e2b8c79d861b69cab4457bff",
+    "tm_liquidity": "ee015c261b7138acfe08c30f8d6898b62166ee36d6b4ee2401582e8a091e6924",
+    "tm_public_adaptive": "6114847c41b489bda7b630c0896052b4b86c58d6ad40531d500396e84f16651f",
+    "tm_public_core": "89508d663fef7a6e39f4bee2d0933bbcd4e8844f4db2b2e655564629cc977c5b",
+    "tm_reference": "5d4bca29877bd8a1c5531dcb684857562ac887040ec71009c9d29343ca948165",
+    "tm_short_diagnostic": "c5abac7393888864f418782f08ab8f1abd71daa2c7fffa16e42147b87e224892",
+    "tm_slots3": "862fd79253b212ae6e2837c5b3be769ed3060cb456efa2c9e10a75c55285088e",
+    "tm_slots5": "4855de0d8dc7a41f0578d0037c40bce9da3adcd977281a6bd70732eb623ed73b",
+    "tm_slow_combination": "5bcde336622f2f555fd2875c1fb7b3249190d5b7b49f1e0cec61e2cfbf819aa8",
+    "tm_smaller_reentry": "41a2def77de40658016e3e6af9feef322b422e224a78a1283210cdfa8543547e",
+    "tm_ungated_unstuck": "57c4d13dd489bf35c04397daf09901f690cdf0bbb17ff6bef977f70b155bba5e",
+    "tm_wider_profit": "31132940cc66113c60e5c1ed3bcba251b5e5205fd74aae03d469051dab27bee0",
+    "tm_without_unstuck": "8e6a78b9aeab25a4e19cd9d218e1207173edd85624b0ab9572bc57d45250d33c"
+  },
+  "candidate_specs": [
+    {
+      "changes": {},
+      "direction": "long",
+      "hypothesis": "Matched conservative TM; HSL panic executes as market under stress.",
+      "name": "tm_reference",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "risk.n_positions": 3.0
+      },
+      "direction": "long",
+      "hypothesis": "More simultaneous slots, same total budget.",
+      "name": "tm_slots3",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "risk.n_positions": 5.0
+      },
+      "direction": "long",
+      "hypothesis": "Five slots, same total budget; less per-coin inventory.",
+      "name": "tm_slots5",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "risk.entry_cooldown_minutes": 90.0
+      },
+      "direction": "long",
+      "hypothesis": "Slow additions without forbidding protective exits.",
+      "name": "tm_cooldown90",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "strategy.trailing_martingale.close.threshold_base_pct": 0.012
+      },
+      "direction": "long",
+      "hypothesis": "Wider normal profit threshold versus fee-sensitive exits.",
+      "name": "tm_wider_profit",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "unstuck.close_pct": 0.025,
+        "unstuck.threshold": 0.3
+      },
+      "direction": "long",
+      "hypothesis": "Start reducing earlier, at half the normal reduction size.",
+      "name": "tm_early_unstuck",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "unstuck.ema_gating_enabled": false
+      },
+      "direction": "long",
+      "hypothesis": "Do not wait for EMA recovery; same finite account-wide loss allowance.",
+      "name": "tm_ungated_unstuck",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "strategy.trailing_martingale.close.threshold_we_weight": -0.015
+      },
+      "direction": "long",
+      "hypothesis": "High exposure permits negative markup; slices become less aggressive as inventory shrinks.",
+      "name": "tm_exposure_exit",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "strategy.trailing_martingale.entry.double_down_factor": 0.25
+      },
+      "direction": "long",
+      "hypothesis": "Restrain recursive quantity growth, not a per-position absolute loss cap.",
+      "name": "tm_smaller_reentry",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "strategy.trailing_martingale.entry.ema_gate_mode": "all"
+      },
+      "direction": "long",
+      "hypothesis": "Require EMA entry band for reentries as well as initials.",
+      "name": "tm_ema_all",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "forager.score_weights": {
+          "ema_readiness": 0.1,
+          "volatility": 0.3,
+          "volume": 0.6
+        },
+        "forager.volume_drop_pct": 0.2
+      },
+      "direction": "long",
+      "hypothesis": "Completed-candle liquidity ranking, not a real depth filter.",
+      "name": "tm_liquidity",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "unstuck.enabled": false
+      },
+      "direction": "long",
+      "hypothesis": "Ablate gradual loss taking while retaining exposure caps and HSL.",
+      "name": "tm_without_unstuck",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "risk.position_exposure_enforcer_threshold": 0.85,
+        "risk.total_exposure_enforcer_threshold": 0.85
+      },
+      "direction": "long",
+      "hypothesis": "Earlier exposure recycling; measure reduction/refill churn and realized costs.",
+      "name": "tm_enforcer85",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "forager.score_weights": {
+          "ema_readiness": 0.1,
+          "volatility": 0.3,
+          "volume": 0.6
+        },
+        "forager.volume_drop_pct": 0.2,
+        "risk.entry_cooldown_minutes": 90.0,
+        "risk.n_positions": 3.0,
+        "strategy.trailing_martingale.close.threshold_base_pct": 0.012,
+        "strategy.trailing_martingale.close.threshold_we_weight": -0.01,
+        "strategy.trailing_martingale.entry.double_down_factor": 0.35,
+        "strategy.trailing_martingale.entry.ema_gate_mode": "all",
+        "strategy.trailing_martingale.entry.threshold_base_pct": 0.03,
+        "unstuck.close_pct": 0.025,
+        "unstuck.threshold": 0.3
+      },
+      "direction": "long",
+      "hypothesis": "Predeclared combined conservative inventory and turnover design.",
+      "name": "tm_slow_combination",
+      "strategy": "trailing_martingale",
+      "template": null
+    },
+    {
+      "changes": {
+        "risk.entry_cooldown_minutes": 90.0,
+        "risk.n_positions": 3.0
+      },
+      "direction": "long",
+      "hypothesis": "Public five-coin signal template with equalized total budget and shared safety.",
+      "name": "tm_public_core",
+      "strategy": "trailing_martingale",
+      "template": "BTC_ETH_XRP_SOL_ADA_long.json"
+    },
+    {
+      "changes": {
+        "risk.entry_cooldown_minutes": 90.0,
+        "risk.n_positions": 3.0
+      },
+      "direction": "long",
+      "hypothesis": "Public default volatility/trailing signals with equalized budget; not old locked MFE selection.",
+      "name": "tm_public_adaptive",
+      "strategy": "trailing_martingale",
+      "template": "default_trailing_martingale_long.json"
+    },
+    {
+      "changes": {
+        "risk.entry_cooldown_minutes": 90.0,
+        "risk.n_positions": 3.0
+      },
+      "direction": "long",
+      "hypothesis": "EMA-anchor public signal template with common capped account risk.",
+      "name": "ema_public",
+      "strategy": "ema_anchor",
+      "template": "ema_anchor.json"
+    },
+    {
+      "changes": {
+        "forager.score_weights": {
+          "ema_readiness": 0.1,
+          "volatility": 0.3,
+          "volume": 0.6
+        },
+        "forager.volume_drop_pct": 0.2,
+        "risk.entry_cooldown_minutes": 90.0,
+        "risk.n_positions": 3.0,
+        "strategy.ema_anchor.base_qty_pct": 0.02,
+        "strategy.ema_anchor.entry_double_down_factor": 0.5,
+        "strategy.ema_anchor.offset": 0.012,
+        "strategy.ema_anchor.offset_psize_weight": 1.0
+      },
+      "direction": "long",
+      "hypothesis": "Small, slower EMA-anchor inventory as a distinct fixed-budget sleeve.",
+      "name": "ema_inventory",
+      "strategy": "ema_anchor",
+      "template": "ema_anchor.json"
+    },
+    {
+      "changes": {
+        "forager.score_weights": {
+          "ema_readiness": 0.1,
+          "volatility": 0.3,
+          "volume": 0.6
+        },
+        "forager.volume_drop_pct": 0.2,
+        "risk.entry_cooldown_minutes": 90.0,
+        "risk.n_positions": 3.0,
+        "strategy.trailing_martingale.close.threshold_base_pct": 0.012,
+        "strategy.trailing_martingale.close.threshold_we_weight": -0.01,
+        "strategy.trailing_martingale.entry.double_down_factor": 0.35,
+        "strategy.trailing_martingale.entry.ema_gate_mode": "all",
+        "strategy.trailing_martingale.entry.threshold_base_pct": 0.03,
+        "unstuck.close_pct": 0.025,
+        "unstuck.threshold": 0.3
+      },
+      "direction": "short",
+      "hypothesis": "Symmetric slow short sleeve; never assume hedge profitability.",
+      "name": "tm_short_diagnostic",
+      "strategy": "trailing_martingale",
+      "template": null
+    }
+  ],
+  "capital_usdt": 100000,
+  "combo_pairs": [
+    [
+      "tm_slow_combination",
+      "ema_inventory"
+    ],
+    [
+      "tm_public_core",
+      "ema_inventory"
+    ],
+    [
+      "tm_reference",
+      "ema_public"
+    ],
+    [
+      "tm_slow_combination",
+      "tm_short_diagnostic"
+    ]
+  ],
+  "cost_interpretation": "assumed effective transaction costs, not verified account fee tiers",
+  "cost_scenarios": {
+    "conservative": {
+      "maker_fee_override": 0.0006,
+      "taker_fee_override": 0.0008
+    },
+    "reference": {
+      "maker_fee_override": 0.0004,
+      "taker_fee_override": 0.0006
+    },
+    "severe": {
+      "maker_fee_override": 0.001,
+      "taker_fee_override": 0.0012
+    }
+  },
+  "dataset_manifest_sha256": "840c449a70636d47d599c579ee52081dd971ba9538a4a67b2613c6bc7333c6f1",
+  "execution_scenarios": {
+    "C1": {
+      "execution_delay_bars": 0,
+      "intrabar_fill_order": "close_first"
+    },
+    "C2": {
+      "execution_delay_bars": 0,
+      "intrabar_fill_order": "entry_first"
+    },
+    "C3": {
+      "execution_delay_bars": 1,
+      "intrabar_fill_order": "close_first"
+    },
+    "C4": {
+      "execution_delay_bars": 1,
+      "intrabar_fill_order": "entry_first"
+    }
+  },
+  "funding_method": "continuous accrual on prior-minute gross mark notional; not real funding",
+  "funding_stress_bps_per_8h": 1.0,
+  "gates": {
+    "completion_ratio_min": 0.999,
+    "conservative_funding_net_account_mdd_max": 0.15,
+    "conservative_funding_net_cagr_min": 0.08,
+    "conservative_positive_month_share_min": 0.6,
+    "effective_coin_count_exposure_time_min": 2.5,
+    "longest_underwater_days_max": 120,
+    "positive_halfyears_min": 4,
+    "regular_close_notional_under_5m_share_max": 0.1,
+    "regular_closed_notional_weighted_median_hold_minutes_min": 30.0,
+    "regular_gross_profit_under_5m_share_max": 0.1,
+    "severe_funding_net_account_mdd_max": 0.2,
+    "severe_funding_net_return_min": 0.0,
+    "top_coin_exposure_time_share_max": 0.6,
+    "traded_coin_count_min": 3,
+    "worst_halfyear_return_min": -0.05
+  },
+  "halfyear_edges": [
+    "2023-09-12",
+    "2024-03-12",
+    "2024-09-12",
+    "2025-03-12",
+    "2025-09-12",
+    "2026-03-12",
+    "2026-09-12"
+  ],
+  "helpers": {
+    "parameter_tool": "265679ed22485a07223fbec95af37044b1abcaafc64b8a73140a1ba222c5a825"
+  },
+  "portfolio_combination": "predeclared equal-budget segregated sleeves, no dynamic rebalancing",
+  "primary_execution": "C3",
+  "promotion_scope": "research screen only; all deployments remain blocked pending fresh data and execution evidence",
+  "purpose": "retrospective multicoin economics and deployability research",
+  "runtime": {
+    "expected_source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28",
+    "runtime_build_info": {
+      "crate_version": "0.1.0",
+      "source_fingerprint": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+    },
+    "runtime_compiled_path": "/home/mrseven2204/passivbot/venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "runtime_compiled_sha256": "15431c03d3eb891e970fefed914d3a152cc4fa5de770fcbe7b4ba89bb13bd0d9",
+    "runtime_compiled_source_stamp": "f5ddc0e27e453db921accad6daec5164fd10483a5b3b45671356fe8d4f427e28"
+  },
+  "safety": {
+    "bot_start": false,
+    "credentials": false,
+    "exchange_account_or_orders": false,
+    "network": false
+  },
+  "sample_status": "previously_observed_reused_not_a_new_unseen_holdout",
+  "selection_after_new_screen": "no new parameter tuning",
+  "short_hold_gate": "FIFO minimum age over candle uncertainty; ordinary closes only; never block risk exits",
+  "stress_shortlist_rule": "rank long sleeves by count of primary gate failures, then MDD, then negative CAGR; take first 3 plus tm_reference, tm_slow_combination and ema_inventory, deduplicated",
+  "terminal_exit_bps": 8.0,
+  "universe": [
+    "BTC",
+    "ETH",
+    "BNB",
+    "XRP",
+    "SOL"
+  ],
+  "version": 1,
+  "window": [
+    "2023-09-12",
+    "2026-09-12"
+  ]
+}

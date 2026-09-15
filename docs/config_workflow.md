@@ -5,7 +5,7 @@ This is the recommended way to work with Passivbot configs on the current config
 ## Source Of Truth
 
 - The canonical hardcoded defaults live in `src/config/schema.py`.
-- The example config `configs/examples/default_trailing_martingale_long.json` provides the maintained default strategy profile.
+- The example config `configs/examples/default_trailing_martingale_long.json` provides the maintained default strategy profile. Other maintained trade-off variants live beside it; see [Strategy profiles and variants](strategy_profiles.md).
 - New configs use top-level `config_version: "v8.4.0"`. Supported v8.0.0–v8.3.0 configs migrate
   on load; review warnings and the normalized result rather than manually relabeling an old file.
   Config-schema versions are separate from [package versions and release tags](releases.md).
@@ -16,7 +16,8 @@ This is the recommended way to work with Passivbot configs on the current config
 
 ## Recommended Workflow
 
-1. Copy `configs/examples/default_trailing_martingale_long.json` to a new file under
+1. Copy the profile you want — `configs/examples/default_trailing_martingale_long.json` for the
+   maintained default, or another file under `configs/examples/` — to a new file under
    `configs/private/`, which is ignored by Git.
 2. Edit that new file for your account, market universe, and strategy changes.
 3. Use `passivbot backtest` first.
@@ -47,6 +48,12 @@ passivbot live configs/private/my_config.json
 - Leave `logging.persist_to_file = true` for normal live operations so each bot run has a durable logfile under `logs/` and Passivbot's monitor tooling can follow the stable `logs/{user}.log` alias or Windows pointer.
 
 ## What The Default Profile Is
+
+`configs/examples/` ships more than one profile. The maintained default is
+`default_trailing_martingale_long.json`; a lower-tail variant that trades upside for a smaller
+worst drawdown is `trailing_martingale_twel100_ddf060.json`. See
+[Strategy profiles and variants](strategy_profiles.md) for the parameter delta, the evidence, and
+the reproducibility boundaries before choosing.
 
 The default profile mirrored by `configs/examples/default_trailing_martingale_long.json` is:
 
@@ -96,5 +103,6 @@ passivbot live configs/private/my_config.json
 ## Related Docs
 
 - [Configuration](configuration.md)
+- [Strategy profiles and variants](strategy_profiles.md)
 - [Optimizing](optimizing.md)
 - [Backtesting](backtesting.md)

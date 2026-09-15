@@ -1,0 +1,47 @@
+{
+  "strategy": "trailing_martingale",
+  "mfe_enabled_for_final_training": false,
+  "positive_training_winners": 2,
+  "non_worse_validation_folds": 2,
+  "comparator_oos": {
+    "all_primary_rows_eligible": false,
+    "worst_primary_oos_drawdown_worst_strategy_eq": 0.06547905359281059,
+    "worst_primary_oos_drawdown_worst_mean_1pct_strategy_eq": 0.06547905359281059,
+    "worst_primary_oos_strategy_eq_recovery_days_max": 49.16875,
+    "minimum_primary_oos_adg_strategy_eq": -0.00011302940292579056,
+    "geometric_compounded_primary_oos_gain_strategy_eq": 1.0440300007093437
+  },
+  "selected_mfe_oos": {
+    "all_primary_rows_eligible": false,
+    "worst_primary_oos_drawdown_worst_strategy_eq": 0.06546843386460015,
+    "worst_primary_oos_drawdown_worst_mean_1pct_strategy_eq": 0.06546843386460015,
+    "worst_primary_oos_strategy_eq_recovery_days_max": 49.16875,
+    "minimum_primary_oos_adg_strategy_eq": -0.00011040529325889725,
+    "geometric_compounded_primary_oos_gain_strategy_eq": 1.0480954565640548
+  },
+  "comparator_ranking_tuple": [
+    0.06547905359281059,
+    0.06547905359281059,
+    49.16875,
+    0.00011302940292579056,
+    -1.0440300007093437
+  ],
+  "selected_mfe_ranking_tuple": [
+    0.06546843386460015,
+    0.06546843386460015,
+    49.16875,
+    0.00011040529325889725,
+    -1.0480954565640548
+  ],
+  "contract_sha256": "1ee2e895a08ce9eef32d23507fe01cd97592033817ae6fcbf1aea3ebaf2ae553",
+  "fold_lock_sha256": {
+    "F1": "8871a755388a7ac3aaf5330d83bbb3b653bff03f0b324a1116adef131ab29548",
+    "F2": "cf543630fb6badcac4d01ddcfc9c55e1dfb7778f89305302310bfc931bdb89dd",
+    "F3": "531e84c08fc5537f3fc00bb4dab95f98a60fb7c646abd5d01be4431baa2f08bf"
+  },
+  "fold_validation_sha256": {
+    "F1": "83ba81555ca5b18b545643c19446c9877cfad21a5f3c929ca140cb7f150ef499",
+    "F2": "89d51b1ca0304583794f004268aebb5362b31bc78a649c6da79b6d57912f6595",
+    "F3": "633fc29473a6fd3f0b0cac873f44e5e2c0db8bd5f13e0b4c1b327923cd1eb8e0"
+  }
+}

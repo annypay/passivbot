@@ -1,0 +1,34 @@
+{
+  "B0": {
+    "native_drawdown_worst_usd": 0.7368846120975672,
+    "recomputed_minute_close_equity_mdd": 0.7368846119462893,
+    "ending_balance_ledger_residual_usdt": -0.045288131572306156,
+    "monthly_opening_closing_continuity": true,
+    "2025-10-10_balance_ledger_residual_usdt": -0.027261259934675763,
+    "candle_low_close_reconstruction_max_abs_residual_usdt": 0.11254917550832033
+  },
+  "C1": {
+    "native_drawdown_worst_usd": 0.734820921160004,
+    "recomputed_minute_close_equity_mdd": 0.7348209223421146,
+    "ending_balance_ledger_residual_usdt": -0.0533325569704175,
+    "monthly_opening_closing_continuity": true
+  },
+  "C2": {
+    "native_drawdown_worst_usd": 0.7350879761886542,
+    "recomputed_minute_close_equity_mdd": 0.7350879730010822,
+    "ending_balance_ledger_residual_usdt": -0.01194726163521409,
+    "monthly_opening_closing_continuity": true
+  },
+  "C3": {
+    "native_drawdown_worst_usd": 0.7870784183281139,
+    "recomputed_minute_close_equity_mdd": 0.7870784260384578,
+    "ending_balance_ledger_residual_usdt": -0.02493746974505484,
+    "monthly_opening_closing_continuity": true
+  },
+  "C4": {
+    "native_drawdown_worst_usd": 0.744947410938967,
+    "recomputed_minute_close_equity_mdd": 0.7449474173201023,
+    "ending_balance_ledger_residual_usdt": 0.030498342122882605,
+    "monthly_opening_closing_continuity": true
+  }
+}

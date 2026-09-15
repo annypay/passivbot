@@ -45,6 +45,7 @@ pub fn generate_orders(side: StrategySide, request: StrategyRequest<'_>) -> Gene
     };
     let runtime_context = RuntimeOrderContext {
         effective_wallet_exposure_limit: request.runtime_budget.effective_wallet_exposure_limit,
+        wallet_exposure_limit_scale: request.runtime_budget.wallet_exposure_limit_scale,
     };
     let entry_params = params.entry_params();
     let close_params = params.close_params();
@@ -391,6 +392,7 @@ mod tests {
                 effective_wallet_exposure_limit: 1.0,
                 configured_n_positions: 1,
                 effective_n_positions: 1,
+                wallet_exposure_limit_scale: 1.0,
             },
             position,
             trailing,

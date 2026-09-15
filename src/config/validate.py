@@ -45,6 +45,48 @@ def validate_backtest_execution_settings(backtest_config: dict) -> None:
         )
 
 
+def validate_wallet_exposure_brake(config: dict) -> None:
+    """Validate the per-side account drawdown brake that gates new-entry exposure."""
+    for pside in ("long", "short"):
+        side_cfg = config.get("bot", {}).get(pside, {})
+        risk = side_cfg.get("risk")
+        if not isinstance(risk, dict):
+            raise TypeError(f"bot.{pside}.risk must be a dict")
+        enabled = risk.get("wallet_exposure_brake_enabled")
+        if not isinstance(enabled, bool):
+            raise TypeError(
+                f"bot.{pside}.risk.wallet_exposure_brake_enabled must be a bool"
+            )
+        start = risk.get("wallet_exposure_brake_start_drawdown")
+        full = risk.get("wallet_exposure_brake_full_drawdown")
+        min_scale = risk.get("wallet_exposure_brake_min_scale")
+        for value, name in (
+            (start, "wallet_exposure_brake_start_drawdown"),
+            (full, "wallet_exposure_brake_full_drawdown"),
+            (min_scale, "wallet_exposure_brake_min_scale"),
+        ):
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise TypeError(f"bot.{pside}.risk.{name} must be a number")
+            if not math.isfinite(float(value)):
+                raise ValueError(f"bot.{pside}.risk.{name} must be finite")
+        start = float(start)
+        full = float(full)
+        min_scale = float(min_scale)
+        if start < 0.0:
+            raise ValueError(
+                f"bot.{pside}.risk.wallet_exposure_brake_start_drawdown must be >= 0"
+            )
+        if not full > start:
+            raise ValueError(
+                f"bot.{pside}.risk.wallet_exposure_brake_full_drawdown must exceed "
+                "wallet_exposure_brake_start_drawdown"
+            )
+        if not 0.0 < min_scale <= 1.0:
+            raise ValueError(
+                f"bot.{pside}.risk.wallet_exposure_brake_min_scale must be in (0, 1]"
+            )
+
+
 def _validate_fixed_runtime_overrides(config: dict) -> None:
     overrides = config.get("optimize", {}).get("fixed_runtime_overrides")
     if not isinstance(overrides, dict):
@@ -118,6 +160,7 @@ def validate_config(
     )
     validate_optimize_bounds_against_bot_config(config, optimize_bounds)
     validate_bot_config(config)
+    validate_wallet_exposure_brake(config)
     for pside in BOT_POSITION_SIDES:
         bot_side = require_config_dict(config, f"bot.{pside}")
         require_config_dict(bot_side, "strategy")

@@ -186,6 +186,10 @@
                 "total_exposure_enforcer_threshold": 1.0,
                 "total_exposure_entry_gate_enabled": true,
                 "total_wallet_exposure_limit": 1.5,
+                "wallet_exposure_brake_enabled": false,
+                "wallet_exposure_brake_full_drawdown": 0.45,
+                "wallet_exposure_brake_min_scale": 0.25,
+                "wallet_exposure_brake_start_drawdown": 0.15,
                 "we_excess_allowance_mode": "bounded",
                 "we_excess_allowance_pct": 0.37
             },
@@ -260,6 +264,10 @@
                 "total_exposure_enforcer_threshold": 0.8,
                 "total_exposure_entry_gate_enabled": true,
                 "total_wallet_exposure_limit": 0.0,
+                "wallet_exposure_brake_enabled": false,
+                "wallet_exposure_brake_full_drawdown": 0.45,
+                "wallet_exposure_brake_min_scale": 0.25,
+                "wallet_exposure_brake_start_drawdown": 0.15,
                 "we_excess_allowance_mode": "bounded",
                 "we_excess_allowance_pct": 0.0
             },

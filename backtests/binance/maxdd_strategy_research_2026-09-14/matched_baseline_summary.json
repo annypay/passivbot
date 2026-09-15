@@ -1,0 +1,23 @@
+{
+  "rows": 24,
+  "strategies": [
+    "ema_anchor",
+    "trailing_martingale"
+  ],
+  "tracks": [
+    "E-L",
+    "E-S",
+    "B-L"
+  ],
+  "risk_layers": [
+    "gates_only",
+    "gates_unstuck",
+    "gates_hsl",
+    "gates_unstuck_hsl"
+  ],
+  "window": [
+    "2023-09-12",
+    "2026-03-12"
+  ],
+  "maxdd_cap": 0.25
+}

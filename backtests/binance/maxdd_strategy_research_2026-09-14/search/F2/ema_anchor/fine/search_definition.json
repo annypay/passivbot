@@ -1,0 +1,144 @@
+{
+  "fold": "F2",
+  "strategy": "ema_anchor",
+  "stage": "fine",
+  "seed": 2103,
+  "budget": 64,
+  "population_size": 16,
+  "parameter_specs": [
+    {
+      "name": "twe",
+      "low": 0.25,
+      "high": 0.33999999999999997,
+      "step": 0.01
+    },
+    {
+      "name": "entry_cooldown_minutes",
+      "low": 36.0,
+      "high": 48.0,
+      "step": 1.0
+    },
+    {
+      "name": "n_positions",
+      "low": 1.0,
+      "high": 3.0,
+      "step": 1.0
+    },
+    {
+      "name": "enforcer_threshold",
+      "low": 0.774,
+      "high": 0.946,
+      "step": 0.01
+    },
+    {
+      "name": "base_qty_pct",
+      "low": 0.0252,
+      "high": 0.03,
+      "step": 0.0005
+    },
+    {
+      "name": "ema_span_0",
+      "low": 1080.0,
+      "high": 1320.0,
+      "step": 10.0
+    },
+    {
+      "name": "ema_span_1",
+      "low": 60.0,
+      "high": 139.0,
+      "step": 10.0
+    },
+    {
+      "name": "entry_double_down_factor",
+      "low": 0.3325,
+      "high": 0.4075,
+      "step": 0.01
+    },
+    {
+      "name": "offset",
+      "low": 0.0162,
+      "high": 0.019799999999999998,
+      "step": 0.0005
+    },
+    {
+      "name": "offset_psize_weight",
+      "low": 0.25,
+      "high": 0.5375,
+      "step": 0.05
+    },
+    {
+      "name": "offset_volatility_1h_weight",
+      "low": 14.625,
+      "high": 17.875,
+      "step": 0.25
+    },
+    {
+      "name": "offset_volatility_1m_weight",
+      "low": 0.44999999999999996,
+      "high": 0.95,
+      "step": 0.1
+    },
+    {
+      "name": "offset_volatility_ema_span_1h",
+      "low": 87.6,
+      "high": 152.4,
+      "step": 6.0
+    },
+    {
+      "name": "offset_volatility_ema_span_1m",
+      "low": 154.5,
+      "high": 225.5,
+      "step": 10.0
+    },
+    {
+      "name": "unstuck_close_pct",
+      "low": 0.043000000000000003,
+      "high": 0.057,
+      "step": 0.005
+    },
+    {
+      "name": "unstuck_loss_allowance_pct",
+      "low": 0.00615,
+      "high": 0.013850000000000001,
+      "step": 0.001
+    },
+    {
+      "name": "unstuck_threshold",
+      "low": 0.45,
+      "high": 0.55,
+      "step": 0.01
+    },
+    {
+      "name": "unstuck_ema_dist",
+      "low": -0.061000000000000006,
+      "high": -0.039,
+      "step": 0.005
+    }
+  ],
+  "base_params": {
+    "twe": 0.29,
+    "entry_cooldown_minutes": 42.0,
+    "n_positions": 3,
+    "enforcer_threshold": 0.86,
+    "hsl_enabled": false,
+    "unstuck_enabled": true,
+    "hsl_red_threshold": 0.15,
+    "hsl_cooldown_minutes": 2160.0,
+    "hsl_ema_span_minutes": 240.0,
+    "unstuck_close_pct": 0.05,
+    "unstuck_loss_allowance_pct": 0.01,
+    "unstuck_threshold": 0.5,
+    "unstuck_ema_dist": -0.05,
+    "base_qty_pct": 0.028,
+    "ema_span_0": 1200.0,
+    "ema_span_1": 70.0,
+    "entry_double_down_factor": 0.37,
+    "offset": 0.018,
+    "offset_psize_weight": 0.35,
+    "offset_volatility_1h_weight": 16.25,
+    "offset_volatility_1m_weight": 0.7,
+    "offset_volatility_ema_span_1h": 120.0,
+    "offset_volatility_ema_span_1m": 190.0
+  },
+  "selected_params_hash": "b8bc7fcf74b29c067a3ea5cc8216c05c5dba3433432b62d44cbd882788445b16"
+}

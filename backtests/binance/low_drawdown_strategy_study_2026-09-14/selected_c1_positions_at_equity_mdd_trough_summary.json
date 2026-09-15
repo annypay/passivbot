@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-10-10T21:19:00+00:00",
+  "balance": 244783.9144820966,
+  "active_positions": 1,
+  "cost_basis_notional_usdt": 558234.3109618969,
+  "cost_basis_wallet_exposure": 2.280518767513729,
+  "close_unrealized_pnl_usdt": -85965.94577619745,
+  "adverse_hl_unrealized_pnl_usdt": -103518.6209618969
+}

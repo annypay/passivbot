@@ -1,0 +1,10 @@
+{
+  "execution_identity_sha256": "a53efc780521576a50ded4123f89e781c21c45f1afb5c2ed99b3c449d2bb7a40",
+  "hashes": {
+    "config.json": "2bb7b508ea6497b9cf7b3e6d25a264bea9310753967072689e719149700b2185",
+    "execution_audit.csv": "6cbbbbd1792569c6da08d0777e48031416c94a2461382dba1ab8ce41951f0967",
+    "fills.csv": "3f9e0d6c9eebb4c57b9c33bf66579d95bd10744bd03a39df9197dd0f9da6d225",
+    "minute_equity.npy": "34ee3cd3d9597815bb208027b8bd63cbc7bfebbd339ed7b769746c3153fc2bdb",
+    "native_analysis.json": "f4fe85ec01fb009c9c07bd9373fdcdb9330f7cd84ee80b0977553baf17dc65f5"
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "scope": "selected_strategy_position_level_mfe_giveback",
+  "development_folds": [
+    "F1",
+    "F2",
+    "F3"
+  ],
+  "primary_tracks": [
+    "E-L",
+    "B-L"
+  ],
+  "training_stages": [
+    {
+      "name": "strict_ablation",
+      "policy": "Keep the locked parameter-only threshold and effective close quantity fixed. Compare the native retracement=0 passive grid-limit close with native retracement>0 trailing MFE closes. Positive giveback values are static fractions of threshold_base_pct, not fractions of the state-dependent effective threshold."
+    },
+    {
+      "name": "narrow_joint_search",
+      "policy": "Only around a positive strict-ablation winner, vary close threshold, giveback, and close quantity over a predeclared narrow neighborhood."
+    }
+  ],
+  "trailing_martingale_static_grid": {
+    "strict_giveback_fractions_of_threshold_base_pct": [
+      0.0,
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      0.7
+    ],
+    "fine_threshold_multipliers": [
+      0.9,
+      1.0,
+      1.1
+    ],
+    "fine_giveback_multipliers": [
+      0.75,
+      1.0,
+      1.25
+    ],
+    "fine_close_qty_multipliers": [
+      0.75,
+      1.0,
+      1.25
+    ],
+    "close_threshold_base_pct_bounds": [
+      0.002,
+      0.02
+    ],
+    "close_retracement_base_pct_bounds": [
+      0.00005,
+      0.01
+    ],
+    "close_qty_pct_bounds": [
+      0.05,
+      0.5
+    ],
+    "comparability_requirement": "close_threshold_we_weight must be nonzero. At zero, the native grid branch forces a full close while the trailing branch honors close_qty_pct, so the quantity-matched comparison is undefined."
+  },
+  "validation_lock": "Each fold writes its selected MFE parameters and exact parameter-only comparator before opening that fold's validation window.",
+  "interpretation_boundary": "This is a comparison of two official trailing_martingale close mechanisms: CloseGrid at retracement=0 versus CloseTrailing at retracement>0. It is not a same-mechanism one-field ablation. Retracement volatility weights remain zero in this study, so conclusions apply to the tested static giveback range and must not be generalized to every dynamic trailing configuration.",
+  "training_selection_priority": "Feasibility first, then total hard-threshold violation, worst primary-track MDD, worst 1% drawdown mean, recovery duration, ADG, and deterministic parameter hash.",
+  "enablement_rule": {
+    "positive_training_winners_minimum": 2,
+    "all_primary_validation_rows_must_satisfy": {
+      "backtest_completion_ratio_min": 0.999,
+      "drawdown_worst_strategy_eq_max": 0.25,
+      "adg_strategy_eq_min": 0.00005,
+      "gain_strategy_eq_strictly_greater_than": 1.0,
+      "activity_passed": true,
+      "liquidated": false
+    },
+    "fold_non_worse_rule": "The selected MFE candidate's worst primary-track validation MDD must be no greater than its exact parameter-only comparator in at least two of three folds.",
+    "aggregate_ranking": [
+      {
+        "metric": "worst_primary_oos_drawdown_worst_strategy_eq",
+        "direction": "minimize"
+      },
+      {
+        "metric": "worst_primary_oos_drawdown_worst_mean_1pct_strategy_eq",
+        "direction": "minimize"
+      },
+      {
+        "metric": "worst_primary_oos_strategy_eq_recovery_days_max",
+        "direction": "minimize"
+      },
+      {
+        "metric": "minimum_primary_oos_adg_strategy_eq",
+        "direction": "maximize"
+      },
+      {
+        "metric": "geometric_compounded_primary_oos_gain_strategy_eq",
+        "direction": "maximize"
+      }
+    ],
+    "decision": "Enable MFE for final training only when it satisfies every hard condition and its aggregate OOS tuple is lexicographically better than the exact parameter-only comparator. Otherwise keep MFE disabled."
+  },
+  "holdout_policy": "The final unseen holdout cannot change MFE enablement or its search neighborhood."
+}

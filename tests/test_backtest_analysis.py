@@ -644,6 +644,106 @@ def test_process_forager_fills_includes_strategy_equity_column():
     assert np.isclose(bal_eq["strategy_equity"].iloc[-1], 995.0)
 
 
+def test_process_forager_fills_seeds_prefill_balance_without_future_fill():
+    t0 = 1_740_000_000_000
+    fills = [
+        (
+            1,
+            t0 + 60_000,
+            "BTC",
+            0.0,
+            -1.0,
+            999.0,
+            0.0,
+            999.0,
+            50_000.0,
+            0.01,
+            100_000.0,
+            0.01,
+            100_000.0,
+            "entry_initial_normal_long",
+            "maker",
+            0.001,
+            0.001,
+            0.0,
+            0.001,
+        )
+    ]
+    equities_array = np.array(
+        [
+            [t0, 1000.0, 0.02, 1000.0],
+            [t0 + 60_000, 999.0, 0.01998, 999.0],
+            [t0 + 120_000, 999.5, 0.01999, 999.5],
+        ],
+        dtype=np.float64,
+    )
+
+    _fdf, _analysis_appendix, bal_eq = process_forager_fills(
+        fills=fills,
+        coins=["BTC"],
+        hlcvs=np.empty((0, 0), dtype=np.float64),
+        equities_array=equities_array,
+        balance_sample_divider=1,
+        starting_balance=1000.0,
+    )
+
+    before_fill = pd.to_datetime(t0, unit="ms")
+    at_fill = pd.to_datetime(t0 + 60_000, unit="ms")
+    assert bal_eq.loc[before_fill, "usd_cash_wallet"] == pytest.approx(1000.0)
+    assert bal_eq.loc[before_fill, "usd_total_balance"] == pytest.approx(1000.0)
+    assert bal_eq.loc[before_fill, "btc_cash_wallet"] == pytest.approx(0.0)
+    assert bal_eq.loc[at_fill, "usd_total_balance"] == pytest.approx(999.0)
+
+
+def test_process_forager_fills_does_not_backdate_fill_to_sample_bucket_start():
+    t0 = 1_740_000_000_000
+    fill_at_minute = 20
+    fills = [
+        (
+            fill_at_minute,
+            t0 + fill_at_minute * 60_000,
+            "BTC",
+            0.0,
+            -1.0,
+            999.0,
+            0.0,
+            999.0,
+            50_000.0,
+            0.01,
+            100_000.0,
+            0.01,
+            100_000.0,
+            "entry_initial_normal_long",
+            "maker",
+            0.001,
+            0.001,
+            0.0,
+            0.001,
+        )
+    ]
+    equities_array = np.array(
+        [
+            [t0 + minute * 60_000, 1000.0, 0.02, 1000.0]
+            for minute in range(121)
+        ],
+        dtype=np.float64,
+    )
+
+    _fdf, _analysis_appendix, bal_eq = process_forager_fills(
+        fills=fills,
+        coins=["BTC"],
+        hlcvs=np.empty((0, 0), dtype=np.float64),
+        equities_array=equities_array,
+        balance_sample_divider=60,
+        starting_balance=1000.0,
+    )
+
+    bucket_start = pd.to_datetime(t0, unit="ms")
+    next_sample = pd.to_datetime(t0 + 60 * 60_000, unit="ms")
+    assert bal_eq.loc[bucket_start, "usd_total_balance"] == pytest.approx(1000.0)
+    assert bal_eq.loc[next_sample, "usd_total_balance"] == pytest.approx(999.0)
+
+
 def test_create_forager_balance_figures_adds_strategy_equity_drawdown():
     idx = pd.date_range("2025-01-01", periods=4, freq="1h")
     bal_eq = pd.DataFrame(
