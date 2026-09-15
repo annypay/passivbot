@@ -46,7 +46,7 @@ Grid and trailing orders may be combined, such that the robot enters or closes a
 The Forager feature dynamically chooses which approved markets may open positions. It first prunes low relative-volume candidates, then ranks the remaining markets with configurable weights for quote volume, EMA readiness, and 1m log-range volatility.
 
 ### Unstucking Mechanism
-Passivbot manages underperforming, or "stuck", positions by realizing small losses over time. If multiple positions are stuck, the bot prioritizes positions with the smallest gap between the entry price and current market price for "unstucking". Losses are limited by ensuring that the account balance does not fall under a set percentage below the past peak balance.  
+Passivbot can manage "stuck" positions through partial loss realization when exposure, loss-allowance, and optional EMA conditions permit. Among eligible positions, it prioritizes the smallest entry-to-market price gap. Reduction size is based on the configured per-position exposure budget, not simply a fixed fraction of remaining inventory. Realized losses consume the unstuck allowance; that allowance is not a hard account-equity drawdown or liquidation limit, and limit reductions are not guaranteed to fill immediately. See [auto-unstucking and risk controls](docs/config.bot.md#auto-unstucking).
 
 ## Installation
 
