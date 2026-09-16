@@ -53,7 +53,7 @@ mod core {
         StrategySide,
     };
     use crate::types::{
-    default_true,
+        default_true,
         BotParams, BotParamsPair, EMABands, ExchangeParams, OrderBook, OrderType, Position,
         RuntimeBudgetState, RuntimeOrderContext, StateParams, TrailingPriceBundle,
         TwelEnforcerPolicy,
@@ -396,8 +396,9 @@ mod core {
         #[serde(default)]
         pub last_increase_fill_timestamp_ms: Option<u64>,
         /// Entry-regime gate: true when the precomputed regime permits new
-        /// positions at the current bar. Backtest-only today; defaults to true so
-        /// live callers are unaffected.
+        /// positions at the current bar. `backtest.rs` is the only producer today;
+        /// live callers leave the default, so the AND below is a no-op there.
+        /// Defaults to true, so an absent field never blocks.
         #[serde(default = "default_true")]
         pub regime_allows_initial_entry: bool,
         /// Entry-regime gate: true when the regime permits adding to an existing

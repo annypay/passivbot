@@ -5081,8 +5081,7 @@ impl<'a> Backtest<'a> {
             return true;
         }
         let stamp = self.first_timestamp_ms + (k as u64) * self.interval_ms;
-        let allowed = gate.is_on(stamp);
-        allowed
+        gate.is_on(stamp)
     }
 
     fn update_trailing_prices(&mut self, k: usize) {

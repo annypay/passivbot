@@ -11,12 +11,12 @@ since the latest release tag; these features may already be available when insta
   crossover as a pure timestamp lookup and may only *block* entries: closes, panic,
   and auto-unstuck are untouched, and an absent or disabled block is a no-op. The
   table is built from **completed** UTC days only, so a bar can never read its own
-  day's close. Live wires the same filter: the planning path reads closed 1-day
-  candles from the candlestick manager, publishes one verdict per symbol and side into
-  the Rust orchestrator input, and leaves the master params and the panic path
-  ungated. A symbol whose daily evidence cannot be assembled carries no table, which
-  reads as risk-off, so a data failure blocks new risk instead of silently trading the
-  ungated strategy.
+  day's close. The live planning path already reads closed 1-day candles from the
+  candlestick manager and records one verdict per symbol and side, but the engine does
+  not consume it yet: the per-side flags the Rust orchestrator reads are written by the
+  backtest only, so live currently trades the ungated strategy. Wiring those flags, and
+  with them what a missing daily series means, is follow-up work; the key is a
+  backtest filter until then.
 - Keep `backtest.entry_regime_gate` through config hydration and sanitizing. A
   `backtest.*` key the schema template does not declare is dropped when a config is
   rebuilt from the template, so a gated config run through the normal config pipeline

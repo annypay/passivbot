@@ -16607,6 +16607,9 @@ class Passivbot:
 
         The master (`symbol=None`) params always carry a disabled gate: the gate is
         per-symbol evidence, and global params must never encode one symbol's regime.
+
+        The engine does not read this field yet: it is the transport for the verdicts
+        once the per-side flags are wired (see `_load_orchestrator_entry_regime_gate`).
         """
         disabled = {
             "enabled": False,
@@ -17188,12 +17191,9 @@ class Passivbot:
                 "backtest.entry_regime_gate must be a dict, got "
                 f"{type(raw).__name__}"
             )
-        if raw.get("enabled") is None:
-            # Runbook spelling; the in-code spelling is the documented form.
-            enabled = False
-        else:
-            enabled = bool(raw.get("enabled"))
-        if not enabled:
+        # An absent or false `enabled` is the schema template's empty declaration: no
+        # gate is configured, so every caller sees None and nothing is filtered.
+        if not bool(raw.get("enabled")):
             return None
         fast = int(raw.get("sma_fast_days", 0) or 0)
         slow = int(raw.get("sma_slow_days", 0) or 0)
@@ -17216,15 +17216,17 @@ class Passivbot:
             "block_reentry": bool(raw.get("block_reentry", True)),
         }
 
-    def _entry_regime_gate_row_enabled(self, gate_cfg: dict, pside: str) -> bool:
-        """Whether this side consumes the filter at all.
+    def _entry_regime_gate_row_enabled(self, gate_cfg: dict) -> bool:
+        """Whether this configuration consumes the filter at all.
 
-        A side with neither block flag never consults the regime, so it needs no
-        daily evidence and must not be failed by a missing one.
+        One flag is enough: a side is skipped only when neither `block_initial` nor
+        `block_reentry` applies, and such a side never consults the regime, so it needs
+        no daily evidence and must not be failed by a missing one. The backtest attaches
+        a table to every approved side, so this is a decision about the configuration,
+        not about the side: gating long by one flag and short by the other would leave a
+        side ungated whenever exactly one flag was false.
         """
-        if pside == "long":
-            return bool(gate_cfg["block_initial"])
-        return bool(gate_cfg["block_reentry"])
+        return bool(gate_cfg["block_initial"]) or bool(gate_cfg["block_reentry"])
 
     async def _orchestrator_daily_closes(
         self, symbol: str, *, lookback_days: int, now_ms: int
@@ -17274,9 +17276,15 @@ class Passivbot:
     ) -> None:
         """Publish the daily entry-regime verdict for each approved symbol/side.
 
-        Fail-closed: a symbol whose daily evidence cannot be assembled carries no
-        table, and the Rust read path treats an absent table as risk-off, so it
-        blocks new risk instead of silently trading the ungated strategy.
+        Observability for now, not enforcement. The tables reach Rust through
+        `bot_params.entry_regime_gate`, but the engine reads the gate from
+        `regime_allows_initial_entry` / `regime_allows_reentry`, and only the backtest
+        writes those, so live trades the ungated strategy whatever this method decides.
+        A symbol whose daily evidence cannot be assembled is recorded in
+        `_orchestrator_entry_regime_gate_unavailable_symbols`, which is logged and not
+        yet acted on, and it falls back to a disabled table, which
+        `EntryRegimeGateConfig::is_on` reads as risk-on. Wiring the flags, and deciding
+        that a missing daily series blocks new risk instead, is follow-up work.
         """
         gate_cfg = self._entry_regime_gate_config()
         if gate_cfg is None:
@@ -17317,10 +17325,7 @@ class Passivbot:
             ]
             if not psides:
                 continue
-            gated_psides = [
-                pside for pside in psides if self._entry_regime_gate_row_enabled(gate_cfg, pside)
-            ]
-            if not gated_psides:
+            if not self._entry_regime_gate_row_enabled(gate_cfg):
                 continue
             expected_symbols.add(symbol)
             try:
@@ -17358,7 +17363,7 @@ class Passivbot:
                     block_initial=bool(gate_cfg["block_initial"]),
                     block_reentry=bool(gate_cfg["block_reentry"]),
                 )
-                for pside in gated_psides
+                for pside in psides
             }
         self._orchestrator_entry_regime_gate_tables = tables
         # A complete pass is stable for the rest of the UTC day. A partial one is not

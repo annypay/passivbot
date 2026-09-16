@@ -1484,3 +1484,98 @@ impl Default for Analysis {
         }
     }
 }
+
+
+#[cfg(test)]
+mod entry_regime_gate_tests {
+    use super::EntryRegimeGateConfig;
+
+    fn gate() -> EntryRegimeGateConfig {
+        EntryRegimeGateConfig {
+            enabled: true,
+            zero_is_on: false,
+            transition_ts: vec![1_000, 2_000],
+            regime: vec![0, 1],
+            block_initial: true,
+            block_reentry: true,
+        }
+    }
+
+    #[test]
+    fn disabled_gate_allows_every_timestamp() {
+        let config = EntryRegimeGateConfig::default();
+        assert!(!config.enabled);
+        assert!(config.validate().is_ok());
+        assert!(config.is_on(0));
+        assert!(config.is_on(u64::MAX));
+    }
+
+    #[test]
+    fn enabled_gate_is_risk_off_before_the_first_boundary() {
+        let config = gate();
+        assert!(!config.is_on(0));
+        assert!(!config.is_on(999));
+        // The first boundary declares raw 0, so it is risk-off as well.
+        assert!(!config.is_on(1_000));
+        assert!(!config.is_on(1_999));
+        assert!(config.is_on(2_000));
+        assert!(config.is_on(u64::MAX));
+    }
+
+    #[test]
+    fn zero_is_on_inverts_the_raw_flag_but_never_the_missing_evidence_rule() {
+        let mut config = gate();
+        config.zero_is_on = true;
+        assert!(config.is_on(1_000));
+        assert!(!config.is_on(2_000));
+        // Before the first boundary the filter has no completed evidence, so the
+        // answer stays risk-off whichever polarity the raw flag uses.
+        assert!(!config.is_on(999));
+    }
+
+    #[test]
+    fn enabled_gate_without_a_table_is_risk_off() {
+        let config = EntryRegimeGateConfig {
+            enabled: true,
+            ..EntryRegimeGateConfig::default()
+        };
+        assert!(!config.is_on(1_000));
+        // ... and no producer may build one that way.
+        assert!(config.validate().is_err());
+    }
+
+    #[test]
+    fn validate_rejects_malformed_tables() {
+        let mut config = gate();
+        config.regime = vec![0];
+        assert!(config.validate().unwrap_err().contains("must equal"));
+
+        let mut config = gate();
+        config.transition_ts = vec![2_000, 1_000];
+        assert!(config.validate().unwrap_err().contains("strictly ascending"));
+
+        let mut config = gate();
+        config.regime = vec![0, 2];
+        assert!(config.validate().unwrap_err().contains("0 or 1"));
+
+        let mut config = gate();
+        config.transition_ts = vec![];
+        config.regime = vec![];
+        assert!(config.validate().unwrap_err().contains("empty regime table"));
+
+        let mut config = gate();
+        config.block_initial = false;
+        config.block_reentry = false;
+        assert!(config.validate().unwrap_err().contains("neither block_initial"));
+    }
+
+    #[test]
+    fn a_disabled_gate_may_declare_neither_block_flag() {
+        let mut config = gate();
+        config.enabled = false;
+        config.block_initial = false;
+        config.block_reentry = false;
+        assert!(config.validate().is_ok());
+        assert!(config.is_on(1_000));
+    }
+}

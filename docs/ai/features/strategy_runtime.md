@@ -227,11 +227,16 @@ Semantics and invariants:
   series row as non-evidence.
 - The live planning path publishes one boundary at the start of the current UTC day:
   the verdict cannot change inside a day, so the whole table is that day's flag. A
-  side that declares neither `block_initial` nor `block_reentry` never consults the
-  filter and needs no daily evidence.
-- Failure is fail-closed. A symbol whose daily series is missing, unaligned, or too
-  short for the slow window carries no table, and an absent table is risk-off, so the
-  symbol blocks new risk rather than trading ungated. Live rejects
+  configuration that declares neither `block_initial` nor `block_reentry` never
+  consults the filter and needs no daily evidence; otherwise both the backtest and
+  live attach a table to every approved side.
+- **Live does not consume the verdict yet.** The two flags the engine reads
+  (`regime_allows_initial_entry` / `regime_allows_reentry`) are written by the
+  backtest only, so a live bot trades the ungated strategy whatever the published
+  table says: the live path computes, caches and logs the table as observability.
+  Wiring those flags is follow-up work, and it has to settle what a missing daily
+  series means, because such a symbol currently falls back to `enabled = false`,
+  which `EntryRegimeGateConfig::is_on` reads as risk-*on*. Live rejects
   `gate_mode = "invert_for_short"`: that is the long/short-flip research mode, not a
   tradeable live configuration.
 - The master (`symbol=None`) params always carry a disabled gate, and the protective
