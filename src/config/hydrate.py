@@ -22,6 +22,8 @@ Path = tuple[str, ...]
 
 PARTIALLY_OPEN_CONFIG_PATHS: set[Path] = {
     ("backtest", "reducer"),
+    ("backtest", "entry_regime_gate"),
+    ("backtest", "disable_plotting"),
     ("live", "startup_phase_budgets"),
     ("optimize", "fixed_runtime_overrides"),
 }

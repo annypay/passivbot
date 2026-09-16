@@ -30,7 +30,8 @@ use crate::types::{Analysis, OrderType};
 use crate::types::{
     BacktestParams, BotParams, BotParamsPair, CoinMeta, EMABands, Equities,
     EquityHardStopLossConfig, EquityHardStopLossTierRatios, ExchangeParams, ForagerScoreWeights,
-    HlcvsBundle, HlcvsMeta, OrderBook, Position, RuntimeOrderContext, StateParams,
+    EntryRegimeGateConfig, HlcvsBundle, HlcvsMeta, OrderBook, Position,
+    RuntimeOrderContext, StateParams,
     StrategyParamsPairValue, TrailingPriceBundle, TwelEnforcerPolicy, WalletExposureBrakeConfig,
     WeExcessAllowanceMode,
 };
@@ -2489,6 +2490,56 @@ fn extract_optional_twel_enforcer_policy(dict: &PyDict) -> PyResult<TwelEnforcer
     })
 }
 
+/// Parse the optional entry-regime gate table.
+///
+/// The table is a pure replay of a precomputed, strictly causal regime series:
+/// `transition_ts[i]` is the first millisecond at which `regime[i]` is in force.
+/// Absent or explicitly disabled configuration yields a disabled gate, and a
+/// disabled gate is a no-op in the engine.
+fn entry_regime_gate_from_dict(dict: &PyDict) -> PyResult<EntryRegimeGateConfig> {
+    let Some(value) = dict.get_item("entry_regime_gate")? else {
+        return Ok(EntryRegimeGateConfig::default());
+    };
+    if value.is_none() {
+        return Ok(EntryRegimeGateConfig::default());
+    }
+    let gate_dict = value
+        .downcast::<PyDict>()
+        .map_err(|_| PyValueError::new_err("entry_regime_gate must be a dict"))?;
+    let gate = EntryRegimeGateConfig {
+        enabled: extract_optional_bool(gate_dict, "enabled", false)?,
+        zero_is_on: extract_optional_bool(gate_dict, "zero_is_on", false)?,
+        transition_ts: extract_optional_u64_vec(gate_dict, "transition_ts")?,
+        regime: extract_optional_u8_vec(gate_dict, "regime")?,
+        block_initial: extract_optional_bool(gate_dict, "block_initial", true)?,
+        block_reentry: extract_optional_bool(gate_dict, "block_reentry", true)?,
+    };
+    gate.validate().map_err(PyValueError::new_err)?;
+    Ok(gate)
+}
+
+fn extract_optional_u64_vec(dict: &PyDict, key: &str) -> PyResult<Vec<u64>> {
+    match dict.get_item(key)? {
+        Some(item) => item.extract::<Vec<u64>>().map_err(|err| {
+            PyValueError::new_err(format!(
+                "entry_regime_gate.{key} must be a list of milliseconds: {err}"
+            ))
+        }),
+        None => Ok(Vec::new()),
+    }
+}
+
+fn extract_optional_u8_vec(dict: &PyDict, key: &str) -> PyResult<Vec<u8>> {
+    match dict.get_item(key)? {
+        Some(item) => item.extract::<Vec<u8>>().map_err(|err| {
+            PyValueError::new_err(format!(
+                "entry_regime_gate.{key} must be a list of 0/1 values: {err}"
+            ))
+        }),
+        None => Ok(Vec::new()),
+    }
+}
+
 fn bot_params_from_dict(dict: &PyDict) -> PyResult<BotParams> {
     let risk_wel_enforcer_threshold: f64 = extract_value(dict, "risk_wel_enforcer_threshold")?;
     let risk_twel_enforcer_threshold: f64 = extract_value(dict, "risk_twel_enforcer_threshold")?;
@@ -2543,6 +2594,7 @@ fn bot_params_from_dict(dict: &PyDict) -> PyResult<BotParams> {
         entry_weight_volatility_1m: extract_optional_f64(dict, "entry_weight_volatility_1m")?,
         entry_we_weight: extract_optional_f64(dict, "entry_we_weight")?,
         entry_initial_ema_dist: extract_optional_f64(dict, "entry_initial_ema_dist")?,
+        entry_regime_gate: entry_regime_gate_from_dict(dict)?,
         entry_initial_qty_pct: extract_optional_f64(dict, "entry_initial_qty_pct")?,
         entry_trailing_double_down_factor: extract_optional_f64(
             dict,

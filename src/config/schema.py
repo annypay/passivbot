@@ -142,8 +142,10 @@ def get_template_config():
                 "candle_interval_minutes": 1,
                 "coin_sources": {},
                 "compress_cache": True,
+                "disable_plotting": False,
                 "dynamic_wel_by_tradability": True,
                 "end_date": "now",
+                "entry_regime_gate": {},
                 "execution_audit_path": None,
                 "execution_delay_bars": 0,
                 "exchanges": [

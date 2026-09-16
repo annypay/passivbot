@@ -540,7 +540,7 @@ fn default_hsl_panic_close_order_type() -> String {
     "market".to_string()
 }
 
-fn default_true() -> bool {
+pub(crate) fn default_true() -> bool {
     true
 }
 
@@ -609,6 +609,91 @@ impl ForagerScoreWeights {
     }
 }
 
+/// Precomputed, strictly causal entry-regime gate.
+///
+/// The gate is a pure lookup: the caller (Python) computes the per-side regime
+/// table from data that was already complete before the bar being evaluated, and
+/// this struct only replays it. It deliberately holds no indicator state, so no
+/// arithmetic in the engine can turn the table into a same-bar or future-bar read.
+///
+/// Semantics are deliberately one-sided: the gate can only *block* entries. It
+/// never rescales position sizing and it never touches close or unstuck paths, so
+/// exit semantics are identical whether or not a gate is present.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EntryRegimeGateConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    /// When true the table is inverted (raw 0 = risk-on). Useful when the upstream
+    /// filter is naturally expressed as a "bad regime" flag.
+    #[serde(default)]
+    pub zero_is_on: bool,
+    /// Ascending effective-timestamp boundaries, one per entry of `regime`.
+    #[serde(default)]
+    pub transition_ts: Vec<u64>,
+    /// Regime value in force at and after the matching `transition_ts`.
+    #[serde(default)]
+    pub regime: Vec<u8>,
+    /// When true, new positions are blocked while the regime is off.
+    #[serde(default = "default_true")]
+    pub block_initial: bool,
+    /// When true, adding to an existing position is blocked while the regime is off.
+    #[serde(default = "default_true")]
+    pub block_reentry: bool,
+}
+
+impl EntryRegimeGateConfig {
+    pub fn validate(&self) -> Result<(), String> {
+        if self.transition_ts.len() != self.regime.len() {
+            return Err(format!(
+                "entry regime gate transition_ts length ({}) must equal regime length ({})",
+                self.transition_ts.len(),
+                self.regime.len()
+            ));
+        }
+        if self.transition_ts.windows(2).any(|pair| pair[0] >= pair[1]) {
+            return Err("entry regime gate transition_ts must be strictly ascending".to_string());
+        }
+        if self.regime.iter().any(|value| *value > 1) {
+            return Err("entry regime gate regime values must be 0 or 1".to_string());
+        }
+        if self.enabled && self.transition_ts.is_empty() {
+            return Err("entry regime gate enabled with an empty regime table".to_string());
+        }
+        if self.enabled && !self.block_initial && !self.block_reentry {
+            return Err(
+                "entry regime gate enabled with neither block_initial nor block_reentry".to_string(),
+            );
+        }
+        Ok(())
+    }
+
+    /// True when the regime permits entries at `timestamp_ms`.
+    ///
+    /// A timestamp before the first boundary is treated as risk-off: the filter
+    /// has no completed evidence yet, so the conservative answer is "block".
+    pub fn is_on(&self, timestamp_ms: u64) -> bool {
+        if !self.enabled {
+            return true;
+        }
+        if self.transition_ts.is_empty() {
+            return false;
+        }
+        let position = self
+            .transition_ts
+            .partition_point(|value| *value <= timestamp_ms);
+        if position == 0 {
+            return false;
+        }
+        let raw = self.regime[position - 1];
+        if self.zero_is_on {
+            raw == 0
+        } else {
+            raw != 0
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct BotParams {
@@ -640,6 +725,9 @@ pub struct BotParams {
     pub entry_we_weight: f64,
     #[serde(default)]
     pub entry_initial_ema_dist: f64,
+    /// Per-coin entry-regime gate table (empty when unused).
+    #[serde(default)]
+    pub entry_regime_gate: EntryRegimeGateConfig,
     #[serde(default)]
     pub entry_initial_qty_pct: f64,
     #[serde(default)]
@@ -736,6 +824,7 @@ impl Default for BotParams {
             entry_weight_volatility_1m: 0.0,
             entry_we_weight: 0.0,
             entry_initial_ema_dist: 0.0,
+            entry_regime_gate: EntryRegimeGateConfig::default(),
             entry_initial_qty_pct: 0.0,
             entry_trailing_double_down_factor: 0.0,
             entry_trailing_retracement_pct: 0.0,

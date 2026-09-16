@@ -188,6 +188,65 @@ unstuck span genes and materializes explicit runtime spans in saved candidates a
 GPU packing preserves the dependency on candidate strategy genes while retaining strategy coin
 pins. This is optimizer configuration finalization, not a live/backtest coupling mode.
 
+## Entry-Regime Gate
+
+`backtest.entry_regime_gate` optionally blocks entries from a precomputed,
+strictly causal daily SMA crossover. It is a **filter, not a signal**: it can only
+suppress entry orders.
+
+```text
+backtest.entry_regime_gate = {
+  enabled, sma_fast_days, sma_slow_days,
+  block_initial, block_reentry, confirm_days, require_long_only,
+}
+```
+
+Semantics and invariants:
+
+- The regime in force during UTC day `D` is decided by daily closes through the end
+  of day `D - 1`. Days before the slow window has filled are risk-off, because the
+  filter has no completed evidence yet.
+- The gate compresses to `(transition_ts, regime)` boundaries at the first bar of
+  each UTC day and is replayed in Rust as a timestamp lookup. No indicator state is
+  computed in the engine, so no arithmetic path can make it read a future bar.
+- `block_initial` suppresses opening a new position; `block_reentry` suppresses
+  adding to an existing one. Both default to true.
+- Closes, panic closes, auto-unstuck, and every protective reducer are unaffected.
+  A risk-off bar can always exit; it simply cannot add risk.
+- An absent block, `enabled = false`, or a side-absent table is a no-op, and a
+  disabled gate costs one branch per bar.
+- The per-side flags are refreshed for every symbol on every bar inside
+  `get_orchestrator_input_cached`. They must not be populated while the orchestrator
+  input cache is built, because that path runs once and the flags would freeze at
+  their first-bar value.
+- `src/entry_regime.py` owns the verdict arithmetic and is shared by the backtest
+  and the live path, so the two cannot drift. The backtest buckets its own 1-minute
+  bars into UTC days; live reads `timeframe="1d"` from the candlestick manager, which
+  aligns those buckets to the epoch and caps the range at the last finalized bucket.
+  Daily candles are therefore closed days only, and the engine still treats the last
+  series row as non-evidence.
+- The live planning path publishes one boundary at the start of the current UTC day:
+  the verdict cannot change inside a day, so the whole table is that day's flag. A
+  side that declares neither `block_initial` nor `block_reentry` never consults the
+  filter and needs no daily evidence.
+- Failure is fail-closed. A symbol whose daily series is missing, unaligned, or too
+  short for the slow window carries no table, and an absent table is risk-off, so the
+  symbol blocks new risk rather than trading ungated. Live rejects
+  `gate_mode = "invert_for_short"`: that is the long/short-flip research mode, not a
+  tradeable live configuration.
+- The master (`symbol=None`) params always carry a disabled gate, and the protective
+  panic path clears the table before it plans, because panic closes and never opens.
+- The key must stay declared in the schema template **and** listed in
+  `PARTIALLY_OPEN_CONFIG_PATHS` (`src/config/hydrate.py`). `clean_config` rebuilds a
+  config from the template and only visits template keys, so a `backtest.*` key
+  outside the template is dropped whenever a config is loaded through the normal
+  pipeline — which is the path the CLI uses and therefore the path artifact bundles
+  and their reports come from. Both declarations are required: the template entry
+  makes the subtree visited, and the partially-open entry makes the subtree's own
+  keys survive instead of being rebuilt from the template. A config that declares no
+  gate must not gain one, so the template default is an empty table rather than a
+  populated one.
+
 ## Live/Backtest Market Slippage Boundary
 
 Exact Rust backtest order construction must not consume a future candle range.

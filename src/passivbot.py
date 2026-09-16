@@ -141,6 +141,7 @@ from logging_setup import (
     resolve_live_log_file_settings,
     resolve_log_level,
 )
+from entry_regime import regime_flag_for_day
 from utils import (
     MarketIdentifierResolutionError,
     UnknownMarketIdentifier,
@@ -16432,6 +16433,9 @@ class Passivbot:
         )
 
         now_ms = int(self.get_exchange_time())
+        # Panic closes positions and never opens them, so no regime evidence is
+        # loaded here; clearing the table keeps a stale regime out of this plan.
+        self._orchestrator_entry_regime_gate_tables = {}
         global_bp = {
             "long": self._bot_params_to_rust_dict("long", None),
             "short": self._bot_params_to_rust_dict("short", None),
@@ -16598,6 +16602,28 @@ class Passivbot:
             current = current[part]
         return current
 
+    def _entry_regime_gate_for_rust(self, pside: str, symbol: str | None) -> dict:
+        """Per-side gate payload for the Rust `BotParams`.
+
+        The master (`symbol=None`) params always carry a disabled gate: the gate is
+        per-symbol evidence, and global params must never encode one symbol's regime.
+        """
+        disabled = {
+            "enabled": False,
+            "zero_is_on": False,
+            "transition_ts": [],
+            "regime": [],
+        }
+        if symbol is None:
+            return disabled
+        tables = getattr(self, "_orchestrator_entry_regime_gate_tables", None)
+        if not isinstance(tables, dict):
+            return disabled
+        payload = (tables.get(symbol) or {}).get(pside)
+        if not isinstance(payload, dict):
+            return disabled
+        return payload
+
     def _bot_params_to_rust_dict(self, pside: str, symbol: str | None) -> dict:
         """Build a dict matching Rust `BotParams` for JSON orchestrator input."""
         # Values which are configured globally (not per symbol) live under bot_value.
@@ -16737,6 +16763,17 @@ class Passivbot:
                     )
             else:
                 out[out_key] = float(val or 0.0)
+        gate_getter = getattr(self, "_entry_regime_gate_for_rust", None)
+        _entry_regime_gate_payload = (
+            gate_getter(pside, symbol)
+            if callable(gate_getter)
+            else {
+                "enabled": False,
+                "zero_is_on": False,
+                "transition_ts": [],
+                "regime": [],
+            }
+        )
         hsl_cfg = (
             self._equity_hard_stop_config(pside, symbol)
             if symbol is not None and hasattr(self, "_equity_hard_stop_config")
@@ -16794,6 +16831,7 @@ class Passivbot:
                 ),
                 "hsl_orange_tier_mode": str(hsl_cfg["orange_tier_mode"]),
                 "hsl_panic_close_order_type": str(hsl_cfg["panic_close_order_type"]),
+                "entry_regime_gate": _entry_regime_gate_payload,
             }
         )
         return out
@@ -17132,6 +17170,260 @@ class Passivbot:
             )
         )
 
+
+    def _entry_regime_gate_config(self) -> dict | None:
+        """Read the declared daily entry-regime gate, or None when absent.
+
+        The key lives under ``backtest.`` because that is where it was first
+        implemented and where every recorded evidence bundle reads it from.
+        Moving it would invalidate the reproducibility of those bundles, so the
+        path is deliberate debt, not an oversight.
+        """
+        try:
+            raw = self.config_get(["backtest", "entry_regime_gate"])
+        except (KeyError, TypeError):
+            return None
+        if not isinstance(raw, dict):
+            raise TypeError(
+                "backtest.entry_regime_gate must be a dict, got "
+                f"{type(raw).__name__}"
+            )
+        if raw.get("enabled") is None:
+            # Runbook spelling; the in-code spelling is the documented form.
+            enabled = False
+        else:
+            enabled = bool(raw.get("enabled"))
+        if not enabled:
+            return None
+        fast = int(raw.get("sma_fast_days", 0) or 0)
+        slow = int(raw.get("sma_slow_days", 0) or 0)
+        if fast <= 0 or slow <= 0 or fast >= slow:
+            raise ValueError(
+                "backtest.entry_regime_gate needs 0 < sma_fast_days < sma_slow_days, "
+                f"got fast={fast} slow={slow}"
+            )
+        gate_mode = str(raw.get("gate_mode", "both") or "both").strip().lower()
+        if gate_mode != "both":
+            raise ValueError(
+                "live supports only the default gate_mode='both'; the long/short flip "
+                f"research mode is not a tradeable live configuration, got {gate_mode!r}"
+            )
+        return {
+            "fast": fast,
+            "slow": slow,
+            "confirm_days": max(0, int(raw.get("confirm_days", 0) or 0)),
+            "block_initial": bool(raw.get("block_initial", True)),
+            "block_reentry": bool(raw.get("block_reentry", True)),
+        }
+
+    def _entry_regime_gate_row_enabled(self, gate_cfg: dict, pside: str) -> bool:
+        """Whether this side consumes the filter at all.
+
+        A side with neither block flag never consults the regime, so it needs no
+        daily evidence and must not be failed by a missing one.
+        """
+        if pside == "long":
+            return bool(gate_cfg["block_initial"])
+        return bool(gate_cfg["block_reentry"])
+
+    async def _orchestrator_daily_closes(
+        self, symbol: str, *, lookback_days: int, now_ms: int
+    ) -> "tuple[list[int], list[float]]":
+        """Closed UTC daily closes for one symbol, oldest first.
+
+        Requests ``timeframe="1d"`` so the exchange owns the day boundary: the
+        candlestick manager aligns these buckets to the epoch and caps the range
+        at the last finalized bucket, so the series never contains the UTC day
+        that is still forming.
+        """
+        cm = getattr(self, "cm", None)
+        getter = getattr(cm, "get_candles", None)
+        if not callable(getter):
+            raise RuntimeError("candlestick manager unavailable for daily regime evidence")
+        if getattr(cm, "exchange", None) is None:
+            raise RuntimeError(
+                "daily regime evidence needs an exchange-backed candlestick manager"
+            )
+        day_ms = 86_400_000
+        end_ts = ((int(now_ms) // day_ms) * day_ms) - day_ms
+        start_ts = end_ts - day_ms * int(lookback_days)
+        candles = await getter(
+            symbol,
+            start_ts=start_ts,
+            end_ts=end_ts,
+            timeframe="1d",
+            max_lookback_candles=int(lookback_days) + 1,
+        )
+        if candles is None or len(candles) == 0:
+            raise RuntimeError("no closed daily candles returned")
+        rows: dict[int, float] = {}
+        for row in candles:
+            ts = int(row["ts"])
+            if ts % day_ms != 0:
+                raise RuntimeError(f"daily candle not aligned to a UTC day: {ts}")
+            close = float(row["c"])
+            if math.isfinite(close) and close > 0.0:
+                rows[ts] = close
+        if not rows:
+            raise RuntimeError("no finite closed daily closes returned")
+        ordered = sorted(rows)
+        return ordered, [rows[ts] for ts in ordered]
+
+    async def _load_orchestrator_entry_regime_gate(
+        self, symbols: list[str], now_ms: int
+    ) -> None:
+        """Publish the daily entry-regime verdict for each approved symbol/side.
+
+        Fail-closed: a symbol whose daily evidence cannot be assembled carries no
+        table, and the Rust read path treats an absent table as risk-off, so it
+        blocks new risk instead of silently trading the ungated strategy.
+        """
+        gate_cfg = self._entry_regime_gate_config()
+        if gate_cfg is None:
+            self._orchestrator_entry_regime_gate_tables = {}
+            self._orchestrator_entry_regime_gate_unavailable_symbols = set()
+            self._orchestrator_entry_regime_gate_cache = None
+            return
+        # A daily verdict cannot change inside a UTC day, so rebuilding the table on
+        # every planning cycle would only repeat the same answer.
+        cache_key = (
+            int(now_ms) // 86_400_000,
+            gate_cfg["fast"],
+            gate_cfg["slow"],
+            gate_cfg["confirm_days"],
+            gate_cfg["block_initial"],
+            gate_cfg["block_reentry"],
+            tuple(sorted(symbols)),
+        )
+        if getattr(self, "_orchestrator_entry_regime_gate_cache", None) == cache_key:
+            return
+        self._orchestrator_entry_regime_gate_unavailable_symbols = set()
+        self._orchestrator_entry_regime_gate_tables = {}
+        approved_by_side = {}
+        for pside in ("long", "short"):
+            approved_by_side[pside] = self._entry_regime_gate_approved_symbols(
+                pside, symbols
+            )
+        if not any(approved_by_side.values()):
+            return
+        # The slow SMA is the binding window; the confirmation span needs that many
+        # more completed days before the filter can be defined at all.
+        lookback_days = gate_cfg["slow"] + gate_cfg["confirm_days"] + 2
+        tables: dict[str, dict[str, dict]] = {}
+        expected_symbols: set[str] = set()
+        for symbol in symbols:
+            psides = [
+                pside for pside in ("long", "short") if symbol in approved_by_side[pside]
+            ]
+            if not psides:
+                continue
+            gated_psides = [
+                pside for pside in psides if self._entry_regime_gate_row_enabled(gate_cfg, pside)
+            ]
+            if not gated_psides:
+                continue
+            expected_symbols.add(symbol)
+            try:
+                day_ts, daily_close = await self._orchestrator_daily_closes(
+                    symbol, lookback_days=lookback_days, now_ms=now_ms
+                )
+                # The verdict cannot change inside a UTC day, so one boundary at the
+                # start of the current day carries the whole table.
+                flag = regime_flag_for_day(
+                    day_ts,
+                    daily_close,
+                    now_ms,
+                    fast=gate_cfg["fast"],
+                    slow=gate_cfg["slow"],
+                    confirm_days=gate_cfg["confirm_days"],
+                )
+            except Exception as exc:
+                self._orchestrator_entry_regime_gate_unavailable_symbols.add(symbol)
+                logging.debug(
+                    "[regime_gate] daily evidence unavailable %s error_type=%s",
+                    Passivbot._log_symbol(symbol),
+                    type(exc).__name__,
+                )
+                continue
+            day_start = (int(now_ms) // 86_400_000) * 86_400_000
+            payload = {
+                "enabled": True,
+                "zero_is_on": False,
+                "transition_ts": [int(day_start)],
+                "regime": [1 if flag else 0],
+            }
+            tables[symbol] = {
+                pside: dict(
+                    payload,
+                    block_initial=bool(gate_cfg["block_initial"]),
+                    block_reentry=bool(gate_cfg["block_reentry"]),
+                )
+                for pside in gated_psides
+            }
+        self._orchestrator_entry_regime_gate_tables = tables
+        # A complete pass is stable for the rest of the UTC day. A partial one is not
+        # cached, so a symbol whose candles were transiently unavailable is retried on
+        # the next planning cycle instead of staying blocked until midnight.
+        if set(tables) == expected_symbols:
+            self._orchestrator_entry_regime_gate_cache = cache_key
+        if tables or self._orchestrator_entry_regime_gate_unavailable_symbols:
+            risk_off = sum(
+                1
+                for sides in tables.values()
+                for payload in sides.values()
+                if not payload["regime"][0]
+            )
+            logging.info(
+                "[regime_gate] sma=%s/%s confirm_days=%s symbols=%s risk_off_sides=%s "
+                "unavailable=%s",
+                gate_cfg["fast"],
+                gate_cfg["slow"],
+                gate_cfg["confirm_days"],
+                len(tables),
+                risk_off,
+                len(self._orchestrator_entry_regime_gate_unavailable_symbols),
+            )
+
+    def _entry_regime_gate_approved_symbols(self, pside: str, symbols: list[str]) -> set[str]:
+        """Symbols this side actually trades.
+
+        The runtime's own resolved set is authoritative: it already applies symbol
+        resolution and `ignored_coins`, exactly as `_build_live_symbol_universe` uses
+        it. Config strings are only a fallback for callers that have not resolved a
+        universe, and `backtest.approved_coins` may name a wider backtest universe, so
+        it is consulted last.
+        """
+        resolved = getattr(self, "approved_coins_minus_ignored_coins", None)
+        if isinstance(resolved, dict) and pside in resolved:
+            # A present key is a settled answer, including "this side trades nothing".
+            # An absent key means the runtime has not resolved a universe yet.
+            return {s for s in symbols if s in set(resolved[pside] or ())}
+        approved = None
+        for path in (
+            ["live", "approved_coins", pside],
+            ["backtest", "approved_coins", pside],
+        ):
+            try:
+                candidate = self.config_get(path)
+            except (KeyError, TypeError):
+                continue
+            if candidate is not None:
+                approved = candidate
+                break
+        if approved is None:
+            return set(symbols)
+        universe = set(symbols)
+        if isinstance(approved, str):
+            token = approved.strip().lower()
+            if token in {"", "all", "*"}:
+                return universe
+            return {s for s in universe if s.lower() == token}
+        if isinstance(approved, (list, tuple, set)):
+            allowed = {str(item) for item in approved}
+            if not allowed:
+                return set()
+            return {s for s in universe if s in allowed}
+        return set(symbols)
 
     async def _load_orchestrator_ema_bundle(
         self, symbols: list[str], modes: dict[str, dict[str, str]]
@@ -19606,6 +19898,9 @@ class Passivbot:
             getattr(self, "_orchestrator_trailing_unavailable_symbols", set())
         )
         market_snapshots = await self._get_orchestrator_market_snapshots(symbols)
+        await self._load_orchestrator_entry_regime_gate(
+            symbols, int(self.get_exchange_time())
+        )
         self._assert_staged_planner_preconditions(
             include_market_snapshot=True,
             context="rust order calculation",

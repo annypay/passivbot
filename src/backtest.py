@@ -130,6 +130,12 @@ from hlcvs_manifest import (
 )
 from hlcvs_override import load_hlcvs_data_override
 from ohlcv_utils import aggregate_hlcvs, align_and_aggregate_hlcvs
+from entry_regime import (
+    daily_closes_by_utc_day as _daily_closes_by_utc_day,
+    invert_regime_table as _invert_regime_table,
+    regime_on_per_day as _regime_on_per_day,
+    utc_day_index as _utc_day_index,
+)
 from warmup_utils import (
     compute_backtest_warmup_minutes,
     compute_per_coin_warmup_minutes,
@@ -286,6 +292,160 @@ def _resolve_backtest_hsl_configs(config: dict) -> tuple[dict, dict]:
         }
 
     return _convert(long_cfg), _convert(short_cfg)
+
+
+def _entry_regime_gate_config(config: dict) -> dict | None:
+    """Return the declared entry-regime gate block, or None when unused."""
+    block = get_optional_config_value(config, "backtest.entry_regime_gate", None)
+    if not isinstance(block, dict):
+        return None
+    if not bool(block.get("enabled", False)):
+        return None
+    try:
+        fast = int(block.get("sma_fast_days", 30))
+        slow = int(block.get("sma_slow_days", 60))
+    except (TypeError, ValueError) as exc:
+        raise ValueError("backtest.entry_regime_gate sma windows must be integers") from exc
+    if fast < 1 or slow < 2 or fast >= slow:
+        raise ValueError(
+            "backtest.entry_regime_gate requires 1 <= sma_fast_days < sma_slow_days"
+        )
+    gate_mode = str(block.get("gate_mode") or "both")
+    if gate_mode not in ("both", "invert_for_short"):
+        raise ValueError(
+            "backtest.entry_regime_gate.gate_mode must be 'both' or 'invert_for_short', "
+            f"got {gate_mode!r}"
+        )
+    try:
+        approved = effective_backtest_approved_coins_by_side(config)
+    except (KeyError, TypeError):
+        # No resolvable per-side coin lists: nothing to stamp a gate onto. The gate
+        # geometry itself still resolves, which keeps the resolver usable on a partial
+        # config.
+        approved = {}
+    return {
+        "fast": fast,
+        "slow": slow,
+        "block_initial": bool(block.get("block_initial", True)),
+        "block_reentry": bool(block.get("block_reentry", True)),
+        "require_long_only": bool(block.get("require_long_only", False)),
+        "confirm_days": max(0, int(block.get("confirm_days", 0) or 0)),
+        "gate_mode": gate_mode,
+        # Private: the applier needs to know which sides may trade, but this is not a
+        # gate setting and must not widen the resolved gate's public shape.
+        "_approved_sides": {
+            pside: list(approved.get(pside) or []) for pside in ("long", "short")
+        },
+    }
+
+
+def _utc_day_indices(timestamps_arr):
+    """Integer UTC-day index per bar, derived only from the bar's own timestamp."""
+    return _utc_day_index(timestamps_arr)
+
+
+def _entry_regime_transitions(timestamps_arr, close_by_coin, *, fast, slow, confirm_days=0):
+    """Compress a per-bar regime into ascending ``(timestamp_ms, regime)`` boundaries.
+
+    Boundaries land on the first bar of each UTC day, because a daily regime cannot
+    change inside a day.
+    """
+    ts = np.asarray(timestamps_arr, dtype="int64")
+    if ts.size == 0:
+        return [], []
+    day_index = _utc_day_indices(ts)
+    offset = int(day_index[0])
+    shifted = day_index - offset
+    n_days = int(shifted[-1]) + 1
+    daily_close, complete = _daily_closes_by_utc_day(
+        np.asarray(close_by_coin, dtype="float64"), shifted, n_days
+    )
+    on = _regime_on_per_day(daily_close, complete, fast, slow, confirm_days)
+    first_of_day = np.flatnonzero(np.diff(shifted, prepend=shifted[0] - 1) != 0)
+    transitions = []
+    regimes = []
+    for row in first_of_day:
+        value = 1 if bool(on[int(shifted[row])]) else 0
+        if not regimes or regimes[-1] != value:
+            transitions.append(int(ts[row]))
+            regimes.append(value)
+    return transitions, regimes
+
+
+def _apply_entry_regime_gate(
+    bot_params_list, coins, hlcvs, timestamps, gate_cfg, gate_mode="both"
+):
+    """Attach a per-coin/per-side regime gate table to the runtime bot params.
+
+    ``gate_mode`` says what each side consumes, because a long/short flip is a relation
+    between the two sides rather than a property of either:
+
+    - ``both``: both sides get the filter as declared (the original behaviour).
+    - ``invert_for_short``: the long side gets the filter, the short side its
+      complement, so with otherwise symmetric sides exactly one is eligible.
+
+    A side that approves no coins is skipped entirely, so it carries no table.
+    """
+    if gate_mode not in ("both", "invert_for_short"):
+        raise ValueError(
+            "gate mode must be 'both' or 'invert_for_short', got %r" % (gate_mode,)
+        )
+    approved = gate_cfg.get("_approved_sides") or {}
+    hlcvs_arr = np.asarray(hlcvs)
+    ts = np.asarray(timestamps, dtype="int64")
+    if hlcvs_arr.ndim != 3:
+        raise ValueError("entry-regime gate requires a 3-D HLCV array")
+    if ts.ndim != 1 or ts.size != hlcvs_arr.shape[0]:
+        raise ValueError("entry-regime gate requires one timestamp per HLCV row")
+    if len(bot_params_list) != len(coins):
+        raise ValueError("entry-regime gate requires one bot-params entry per coin")
+    close_all = hlcvs_arr[:, :, 2]
+    summary = {
+        "enabled": True,
+        "sma_fast_days": gate_cfg["fast"],
+        "sma_slow_days": gate_cfg["slow"],
+        "block_initial": gate_cfg["block_initial"],
+        "block_reentry": gate_cfg["block_reentry"],
+        "confirm_days": gate_cfg["confirm_days"],
+        "gate_mode": gate_mode,
+        "approved_sides": sorted(
+            pside for pside in ("long", "short") if approved.get(pside)
+        ),
+        "per_coin": {},
+    }
+    for idx, coin in enumerate(coins):
+        transitions, regimes = _entry_regime_transitions(
+            ts,
+            close_all[:, idx],
+            fast=gate_cfg["fast"],
+            slow=gate_cfg["slow"],
+            confirm_days=gate_cfg["confirm_days"],
+        )
+        summary["per_coin"][coin] = {
+            "transitions": len(transitions),
+            "risk_on_share": (float(sum(regimes)) / len(regimes)) if regimes else 0.0,
+        }
+        for pside in ("long", "short"):
+            if gate_cfg["require_long_only"] and pside != "long":
+                continue
+            if approved and coin not in (approved.get(pside) or []):
+                continue
+            if gate_mode == "invert_for_short" and pside == "short":
+                side_transitions, side_regimes = _invert_regime_table(transitions, regimes)
+            else:
+                side_transitions, side_regimes = transitions, regimes
+            payload = {
+                "enabled": True,
+                "zero_is_on": False,
+                "transition_ts": side_transitions,
+                "regime": side_regimes,
+                "block_initial": gate_cfg["block_initial"],
+                "block_reentry": gate_cfg["block_reentry"],
+            }
+            side_params = bot_params_list[idx].get(pside)
+            if isinstance(side_params, dict):
+                side_params["entry_regime_gate"] = payload
+    return summary
 
 
 def _resolve_backtest_wallet_exposure_brake(config: dict) -> dict:
@@ -1042,6 +1202,16 @@ def build_backtest_payload(
         is_runtime_compiled=True,
         metrics_only=metrics_only,
     )
+    regime_gate_cfg = _entry_regime_gate_config(runtime_config)
+    if regime_gate_cfg is not None:
+        _apply_entry_regime_gate(
+            bot_params_list,
+            sorted(set(require_config_value(runtime_config, f"backtest.coins.{exchange}"))),
+            hlcvs,
+            timestamps,
+            regime_gate_cfg,
+            str(regime_gate_cfg.get("gate_mode") or "both"),
+        )
     backtest_params = dict(backtest_params)
     backtest_params["skip_btc_analysis"] = bool(skip_btc_analysis)
     coins_order = backtest_params.get("coins", [])
@@ -3303,9 +3473,13 @@ async def main():
         await format_approved_ignored_coins(
             config, backtest_exchanges, prefer_backtest_coin_source_keys=True
         )
-    config["disable_plotting"] = (
+    effective_disable_plotting = (
         args.disable_plotting if args.disable_plotting is not None else False
     )
+    config["disable_plotting"] = effective_disable_plotting
+    # Mirror it onto a schema-backed surface so the dumped run config states which figure
+    # groups this run skipped; the persisted-bundle layout contract reads it from here.
+    config.setdefault("backtest", {})["disable_plotting"] = effective_disable_plotting
     config["backtest"]["cache_dir"] = {}
     config["backtest"]["coins"] = {}
     force_refetch_gaps = getattr(args, "force_refetch_gaps", False)
