@@ -55,10 +55,10 @@ summary, and the reproducibility boundaries.
 
 ```bash
 # Rebuild the locked candidate's artifact bundle, render its report, and verify the numbers.
-bash backtests/binance/dd_tail_research_2026-09-15/run.sh
+bash backtests/binance/dd_tail_research_2026-09-15/run.sh --label candidate
 
 # Same for the baseline the candidate is compared against, and for any other profile.
-bash backtests/binance/dd_tail_research_2026-09-15/run.sh --baseline
+bash backtests/binance/dd_tail_research_2026-09-15/run.sh --baseline --label baseline
 bash backtests/binance/dd_tail_research_2026-09-15/run.sh --profile configs/examples/<name>.json
 
 # Or run just the backtest for the profile itself, with its own window and fees.
@@ -66,12 +66,33 @@ passivbot backtest configs/examples/trailing_martingale_twel100_ddf060.json
 ```
 
 Every `run.sh` mode runs the frozen study window and the reported contract, so the bundles are
-directly comparable with the study's own cells, and each writes to its own directory:
+directly comparable with the study's own cells:
 
-| Bundle | Directory | Study cell it must reproduce |
+| Bundle | Bundle directory | Study cell it must reproduce |
 | --- | --- | --- |
 | Locked candidate | `artifacts/binance_actual_candidate/` | `cells/full/C1_binance_actual/combo_twel100_ddf060_ddthr0030` |
 | Baseline profile | `artifacts/binance_actual_baseline/` | `cells/full/C1_binance_actual/baseline` |
+
+## Run directory layout and dating
+
+The backtest names its run directory from the **UTC completion timestamp**, so every run produces a
+new dated directory and nothing is overwritten. `--label NAME` groups the run under a labeled
+exchange directory, which is what keeps parallel bundles apart:
+
+```
+<study>/artifacts/binance_actual_candidate/backtest_results/binance_candidate/binance/2026-09-16T01_22_18/
+<study>/artifacts/binance_actual_baseline/backtest_results/binance_baseline/binance/2026-09-16T01_24_14/
+```
+
+The tracked archive of that run is its `analysis.json` and `annual_analysis.md`; the fills ledger,
+equity series, audit and figures stay local. A report is always rendered into the run directory it
+describes, so the date on the folder is the date the run was produced, not the date it was last
+edited.
+
+Because a bundle holds one run, the report tooling picks the single run directory under it and
+refuses to guess when there is more than one. Re-running into a bundle therefore replaces the run
+directory rather than piling up beside it; point the tooling at a specific run with `--result-dir`
+if you want to keep several.
 
 The verifier compares the artifact's window against the cell's window before claiming agreement, so
 a bundle run over a different window reports that difference instead of failing three metric checks.

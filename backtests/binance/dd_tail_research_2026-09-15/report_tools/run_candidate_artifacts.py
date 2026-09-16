@@ -101,7 +101,10 @@ def set_path(cfg: dict, dotted: str, value: Any) -> None:
 
 
 def build_candidate_config(
-    apply_locked_ops: bool, study_window: str | None = None
+    apply_locked_ops: bool,
+    study_window: str | None = None,
+    label: str | None = None,
+    disable_plotting: str | None = None,
 ) -> tuple[dict, list[dict]]:
     from config_utils import load_config
 
@@ -142,7 +145,16 @@ def build_candidate_config(
     # Minute-resolution balance/equity series: drawdowns must be computed on the same
     # resolution as `analysis.json` (the reference report runs at minute resolution too).
     cfg["backtest"]["balance_sample_divider"] = 1
+    if disable_plotting:
+        cfg["backtest"]["disable_plotting"] = disable_plotting
     cfg["backtest"]["base_dir"] = str(RESULTS_BASE)
+    # The backtest names the run directory from the completion timestamp and appends its own
+    # `label` argument, so a labeled run lands in `<results>/binance_<label>/<timestamp>/`.
+    # The `binance` level is what the result-directory lookup keys on, so the label has to
+    # replace it rather than the parent `backtest_results` directory.
+    cfg["backtest"]["base_dir"] = str(
+        RESULTS_BASE / f"binance_{label}" if label else RESULTS_BASE
+    )
     cfg["backtest"]["execution_audit_path"] = str(AUDIT_PATH)
     # The archived baseline config predates `backtest.coins`; pin the frozen dataset basket
     # explicitly so the run cannot depend on market-discovery ordering.
@@ -188,6 +200,10 @@ def rust_identity() -> dict[str, Any]:
 
 
 def run_backtest(cfg: dict) -> int:
+    # The backtest opens the execution-audit CSV with create-new semantics, so a re-run into an
+    # existing bundle fails with EEXIST instead of overwriting. Clear it here: this tool owns the
+    # bundle, and a stale audit must never be mistaken for the current run's provenance.
+    AUDIT_PATH.unlink(missing_ok=True)
     env = dict(os.environ)
     env["PYTHONPATH"] = str(REPO / "src")
     cmd = [sys.executable, "-m", "backtest", str(CANDIDATE_CONFIG)]
@@ -198,13 +214,24 @@ def run_backtest(cfg: dict) -> int:
     return proc.returncode
 
 
-def find_result_dir() -> Path:
-    root = RESULTS_BASE / "binance"
+def run_dirs_under(results_base: Path) -> list[Path]:
+    """Run directories under a bundle, at the `binance` or `binance_<label>` level.
+
+    The backtest writes `<base_dir>/<exchange>[_label]/<UTC timestamp>/`, so the exchange level
+    may carry a suffix. Globbing for timestamp-named directories avoids hardcoding either name.
+    """
+    root = Path(results_base)
     if not root.is_dir():
-        raise SystemExit(f"no results directory at {root}")
-    dirs = sorted(p for p in root.iterdir() if p.is_dir())
+        return []
+    return sorted(p for p in root.glob("*/binance*/*") if p.is_dir() and p.name[:2].isdigit())
+
+
+def find_result_dir() -> Path:
+    dirs = run_dirs_under(RESULTS_BASE)
+    if not dirs:
+        raise SystemExit(f"no result dir under {RESULTS_BASE}")
     if len(dirs) != 1:
-        raise SystemExit(f"expected exactly one result dir under {root}, found {[p.name for p in dirs]}")
+        raise SystemExit(f"expected exactly one result dir under {RESULTS_BASE}, found {dirs}")
     return dirs[0]
 
 
@@ -231,6 +258,25 @@ def main() -> None:
         "--artifacts-subdir",
         default=DEFAULT_ARTIFACTS_SUBDIR,
         help=f"artifact directory under <study>/artifacts (default {DEFAULT_ARTIFACTS_SUBDIR})",
+    )
+    parser.add_argument(
+        "--disable-plotting",
+        default=None,
+        help=(
+            "value for `backtest.disable_plotting`: `all`, `summary`, `summary+coin_fills`, a "
+            "comma-separated group list, or a single group. Use it on hosts where the plotting "
+            "tail is OOM-killed; the analytical artifacts are written before plotting starts."
+        ),
+    )
+    parser.add_argument(
+        "--label",
+        default=None,
+        help=(
+            "suffix for the run directory the backtest creates. The directory is named "
+            "<UTC timestamp> by the backtest itself; a label makes it identifiable when the "
+            "run lives next to other dated runs, which is how the archived reference runs are "
+            "laid out."
+        ),
     )
     parser.add_argument(
         "--study-window",
@@ -268,7 +314,9 @@ def main() -> None:
                 f"{CONFIG_SOURCE} does not carry the baseline values the lock was recorded "
                 f"against; refusing to apply ops: {missing}"
             )
-    cfg, applied = build_candidate_config(use_locked_ops, args.study_window)
+    cfg, applied = build_candidate_config(
+        use_locked_ops, args.study_window, args.label, args.disable_plotting
+    )
     config_sha = sha256_file(CANDIDATE_CONFIG)
     print(f"candidate config written: {CANDIDATE_CONFIG}")
     print(f"  sha256={config_sha}")
@@ -327,6 +375,8 @@ def main() -> None:
             "maker_fee_override": cfg["backtest"]["maker_fee_override"],
             "taker_fee_override": cfg["backtest"]["taker_fee_override"],
         },
+        "run_label": args.label,
+        "disable_plotting": args.disable_plotting,
         "window": {
             # Name the frozen window whose dates these are, so a bundle states its own
             # comparability instead of leaving the reader to match date strings.

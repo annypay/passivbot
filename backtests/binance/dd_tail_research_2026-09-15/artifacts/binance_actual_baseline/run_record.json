@@ -2,7 +2,7 @@
   "artifact_status": "partial_exit_code_-9: all required analytical artifacts were written before the process was killed (matplotlib plotting tail only)",
   "backtest_exit_code": -9,
   "candidate_config": "backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_baseline/candidate.config.json",
-  "candidate_config_sha256": "0ca166e0a7974d3270793e9aca03a0890306bacef2d983cb88169c27afd46e8d",
+  "candidate_config_sha256": "530ae82dc8b59e6b37ad1a966927a4c050a026ba39007e3bdc710a7e72131051",
   "candidate_id": "default_trailing_martingale_long",
   "candidate_ops": [],
   "contract_cell_matrix_sha256": "7c4844c9b44eebcb060b4744ad6f112209605207b30baa2c0443ab3aea8ad834",
@@ -11,7 +11,8 @@
     "maker_fee_override": 0.0002,
     "taker_fee_override": 0.0005
   },
-  "elapsed_s": 108.29262661933899,
+  "disable_plotting": "coin_fills",
+  "elapsed_s": 109.70494532585144,
   "execution": {
     "execution_delay_bars": 0,
     "intrabar_fill_order": "close_first"
@@ -19,7 +20,8 @@
   "execution_audit_rows": 69799,
   "lock_sha256": "eebad2be530fd1faf98567a55a17a03367ee86a2dc78c199670efb7185918864",
   "locked_ops_applied": false,
-  "results_dir": "backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_baseline/backtest_results/binance/2026-09-15T10_46_52",
+  "results_dir": "backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_baseline/backtest_results/binance_baseline/binance/2026-09-16T01_24_14",
+  "run_label": "baseline",
   "rust_identity": {
     "compiled_path": "/home/mrseven2204/passivbot/venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
     "expected_source_fingerprint": "65c4152c67e908ad5ce228eb92db3150cf50cd6558862907a2b3becedfee65a3"
@@ -32,7 +34,6 @@
   },
   "source_config": "configs/examples/default_trailing_martingale_long.json",
   "source_config_sha256": "f94b5e5257bbbdf9d603c96797173d6db57256e24f3d2a1b34c49a9f230f6371",
-  "study_cell": null,
   "universe": {
     "coin_count": 40,
     "coins": [

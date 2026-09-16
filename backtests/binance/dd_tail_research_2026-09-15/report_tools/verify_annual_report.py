@@ -76,10 +76,13 @@ def load_json(path: Path) -> Any:
 
 
 def find_result_dir() -> Path:
-    root = RESULTS_BASE / "binance"
-    dirs = sorted(p for p in root.iterdir() if p.is_dir())
+    """The bundle's single run directory, at the `binance` or `binance_<label>` level."""
+    root = Path(RESULTS_BASE)
+    dirs = sorted(
+        p for p in root.glob("*/binance*/*") if p.is_dir() and p.name[:2].isdigit()
+    ) if root.is_dir() else []
     if len(dirs) != 1:
-        raise SystemExit(f"expected exactly one result dir under {root}, found {[p.name for p in dirs]}")
+        raise SystemExit(f"expected exactly one result dir under {root}, found {dirs}")
     return dirs[0]
 
 

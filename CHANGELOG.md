@@ -48,6 +48,11 @@ since the latest release tag; these features may already be available when insta
   never bind. `run.sh --baseline` produces a matching artifact bundle for the
   default profile, and the report verifier now compares windows before claiming
   agreement with a study cell.
+- Name every backtest run directory for the run that produced it. The backtest already
+  stamps the UTC completion time; the study tooling now takes `--label NAME` to suffix it, and
+  `run.sh` passes one, so re-runs and side-by-side bundles stay identifiable instead of
+  overwriting or colliding. A deep-analysis report is always rendered into the run directory it
+  describes.
 - Give strategy research deep analyses one report convention. Every `annual_analysis.md`
   now uses the same fixed section skeleton, table columns and data conventions, rendered by
   `backtests/report_spec/annual_analysis.py` and documented in

@@ -8,8 +8,24 @@
 # Every bundle runs the frozen study window and the reported execution/cost contract, so its
 # numbers are comparable with the study's own cells. The candidate is additionally rebuilt by
 # applying `holdout_candidate_lock.json` to the published default profile, and is the only bundle
-# the verifier expects to carry the locked ops. Each bundle gets its own directory under
-# `artifacts/`.
+# the verifier expects to carry the locked ops.
+#
+# Output layout. The backtest names its run directory from the UTC completion timestamp, e.g.
+# `2026-09-16T00_52_07`, so each run of this script produces a **dated run directory**; nothing
+# is overwritten. It is written under the bundle it belongs to:
+#
+#   artifacts/binance_actual_candidate/backtest_results/binance/<UTC timestamp>/
+#   artifacts/binance_actual_baseline/backtest_results/binance/<UTC timestamp>/
+#
+# `--label NAME` appends `_NAME` to that directory name. Because the study keeps several runs per
+# bundle, the report tooling picks the single run directory in the bundle and refuses to guess
+# when there is more than one: keep one completed run per bundle, or pass the tooling
+# `--result-dir` explicitly.
+#
+# Plotting. The per-coin fill panels (`coin_fills`) are the memory peak of the run and are killed
+# on a small host; the analytical artifacts are written before plotting starts, so they are
+# disabled here and the summary figures are kept. Override with DISABLE_PLOTTING=<value> for
+# `backtest.disable_plotting`; set it empty to attempt the full figure set.
 #
 # The scripts resolve the repository root from their own location, but the run happens
 # from the repository root because the HLCV cache root (`caches/hlcvs_data`) is a
@@ -30,6 +46,8 @@ CANDIDATE_CELL="cells/full/C1_binance_actual/combo_twel100_ddf060_ddthr0030/resu
 
 MODE="candidate"
 PROFILE=""
+LABEL=""
+DISABLE_PLOTTING="${DISABLE_PLOTTING-coin_fills}"
 while [ $# -gt 0 ]; do
   case "$1" in
     --baseline)
@@ -40,6 +58,10 @@ while [ $# -gt 0 ]; do
     --profile)
       MODE="profile"
       PROFILE="${2:?--profile needs a config path}"
+      shift 2
+      ;;
+    --label)
+      LABEL="${2:?--label needs a name}"
       shift 2
       ;;
     *)
@@ -56,6 +78,8 @@ case "$MODE" in
 esac
 
 PY_ARGS=(--artifacts-subdir "$SUBDIR" --study-window full)
+[ -n "$LABEL" ] && PY_ARGS+=(--label "$LABEL")
+[ -n "$DISABLE_PLOTTING" ] && PY_ARGS+=(--disable-plotting "$DISABLE_PLOTTING")
 # Candidate mode rebuilds the candidate from the lock; the other modes run the profile as-is.
 # Both must name a config explicitly, otherwise the tool falls back to the locked-ops baseline.
 if [ "$MODE" = "candidate" ]; then
@@ -80,4 +104,4 @@ else
 fi
 PYTHONPATH="$REPO_ROOT/src" "$PY" "$TOOLS/verify_annual_report.py" "${VERIFY_ARGS[@]}"
 
-echo "done: see backtests/binance/dd_tail_research_2026-09-15/artifacts/$SUBDIR/backtest_results/binance/<run>/annual_analysis.md"
+echo "done: see backtests/binance/dd_tail_research_2026-09-15/artifacts/$SUBDIR/backtest_results/binance/<UTC timestamp>${LABEL:+_$LABEL}/annual_analysis.md"

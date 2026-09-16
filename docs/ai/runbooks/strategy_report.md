@@ -110,6 +110,34 @@ PYTHONPATH=src python backtests/report_spec/annual_analysis.py \
 It writes the rendered report file plus the three CSVs into the result directory and refuses to
 write a report whose skeleton fails validation.
 
+## Where the report is written
+
+A report is rendered into the **run directory it describes**, never into a separate reports tree and
+never in place over another run. The backtest names that directory from the UTC completion
+timestamp, so every run produces a dated directory:
+
+```
+backtests/<exchange>/<study>/artifacts/<bundle>/backtest_results/<exchange>[_label]/<exchange>/<UTC timestamp>/
+  annual_analysis.md      # this convention
+  annual_metrics.csv      # the tables behind it
+  monthly_metrics.csv
+  coin_metrics.csv
+  analysis.json           # the numbers it cites
+  fills.csv, balance_and_equity.csv.gz, execution_audit.csv, *.png, fills_plots/
+```
+
+`--label NAME` on the study's `run.sh` groups the run under a labeled exchange directory, so
+parallel bundles and re-runs stay identifiable while every run keeps its own timestamped
+directory. Because the folder name carries the run timestamp, the date on a report's
+folder is the date that run was produced — a report re-rendered later still lives in its own run
+directory. To regenerate a report for an existing run without re-running the backtest:
+
+```bash
+PYTHONPATH=src python <study>/report_tools/generate_annual_report.py --artifacts-subdir <bundle>
+```
+
+which rewrites the report and the three CSVs **in that run directory**.
+
 ## Validation
 
 Run the study's own report and verifier:

@@ -19,7 +19,7 @@
 
 | 项目 | 数值 |
 | --- | --- |
-| 结果目录 | backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_baseline/backtest_results/binance/2026-09-15T10_46_52 |
+| 结果目录 | backtests/binance/dd_tail_research_2026-09-15/artifacts/binance_actual_baseline/backtest_results/binance_baseline/binance/2026-09-16T01_24_14 |
 | 数据源 / K 线粒度 | binance / 1 分钟 |
 | 有效区间（UTC） | 2023-09-12T00:01:00Z 至 2026-09-11T23:59:00Z |
 | 回测天数 / 数据完成度 | 1,096.00 天 / 100.00% |
@@ -311,7 +311,7 @@
 | `balance_and_equity.png` / `balance_and_equity_logy.png` / `drawdown.png` / `total_wallet_exposure.png` / `pnl_cumsum.png` / `fills_plots/` | 图表 |
 | `../candidate.config.json` / `../run_record.json` | 配置重建记录与全部工件哈希 |
 
-- 配置来源：`configs/examples/default_trailing_martingale_long.json`（sha256 `f94b5e5257bbbdf9…`）（published profile） = `../candidate.config.json`（sha256 `0ca166e0a7974d32…`）。
+- 配置来源：`configs/examples/default_trailing_martingale_long.json`（sha256 `f94b5e5257bbbdf9…`）（published profile） = `../candidate.config.json`（sha256 `530ae82dc8b59e6b…`）。
 - 研究契约 `research_contract_v4.json`（cell_matrix_sha256 `7c4844c9b44eebcb…`）、候选锁 `holdout_candidate_lock.json`（sha256 `eebad2be530fd1fa…`）。
 - Rust 扩展 source fingerprint：`65c4152c67e908ad5ce228eb92db3150cf50cd6558862907a2b3becedfee65a3`。
 - 本报告与三张汇总 CSV、`analysis.json` 的一致性由 `report_tools/verify_annual_report.py` 独立复算校验，并检查本规范的固定章节骨架是否完整。

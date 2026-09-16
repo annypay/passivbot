@@ -55,13 +55,24 @@ def load_json(path: Path) -> Any:
     return spec.load_json(path)
 
 
-def find_result_dir() -> Path:
-    root = RESULTS_BASE / "binance"
+def run_dirs_under(results_base: Path) -> list[Path]:
+    """Run directories under a bundle, at the `binance` or `binance_<label>` level.
+
+    The backtest writes `<base_dir>/<exchange>[_label]/<UTC timestamp>/`, so the exchange level
+    may carry a suffix. Globbing for timestamp-named directories avoids hardcoding either name.
+    """
+    root = Path(results_base)
     if not root.is_dir():
-        raise SystemExit(f"no results directory at {root}")
-    dirs = sorted(p for p in root.iterdir() if p.is_dir())
+        return []
+    return sorted(p for p in root.glob("*/binance*/*") if p.is_dir() and p.name[:2].isdigit())
+
+
+def find_result_dir() -> Path:
+    dirs = run_dirs_under(RESULTS_BASE)
+    if not dirs:
+        raise SystemExit(f"no result dir under {RESULTS_BASE}")
     if len(dirs) != 1:
-        raise SystemExit(f"expected exactly one result dir under {root}, found {[p.name for p in dirs]}")
+        raise SystemExit(f"expected exactly one result dir under {RESULTS_BASE}, found {dirs}")
     return dirs[0]
 
 
