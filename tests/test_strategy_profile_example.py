@@ -1,11 +1,17 @@
-"""Pin the published strategy profile to its documented delta.
+"""Pin the published strategy profiles to their documented deltas.
 
-`configs/examples/trailing_martingale_twel100_ddf060.json` is the lower-tail variant of the
-default long trailing-martingale profile. Its evidence is stored under
-`backtests/binance/dd_tail_research_2026-09-15/` and summarised in `docs/strategy_profiles.md`.
+Two profiles are pinned here:
 
-These tests fail when the profile drifts from its documented three-parameter delta, when it
-stops being loadable, or when its optimizer bounds no longer cover the values it ships.
+* `configs/examples/trailing_martingale_twel100_ddf060.json` is the lower-tail variant of the
+  default long trailing-martingale profile. Its evidence is stored under
+  `backtests/binance/dd_tail_research_2026-09-15/`.
+* `configs/examples/trailing_martingale_twel100_ddf060_sma20_50.json` is that lower-tail profile
+  plus a daily 20/50 entry-regime gate. Its evidence is stored under
+  `backtests/binance/returns_guarded_dd_research_2026-09-16/`.
+
+Both are summarised in `docs/strategy_profiles.md`. These tests fail when a profile drifts from
+its documented delta, when it stops being loadable, or when its optimizer bounds no longer cover
+the values it ships.
 """
 
 from __future__ import annotations
@@ -169,3 +175,92 @@ def _find_bound(node, key):
             if found is not None:
                 return found
     return None
+
+
+# --------------------------------------------------------------------------- #
+# gated lower-tail profile
+# --------------------------------------------------------------------------- #
+
+GATED_PROFILE = Path("configs/examples/trailing_martingale_twel100_ddf060_sma20_50.json")
+
+# The gate block the gated profile adds to the lower-tail profile. It is the whole delta.
+GATED_DELTA = {
+    "backtest.entry_regime_gate.block_initial": True,
+    "backtest.entry_regime_gate.block_reentry": True,
+    "backtest.entry_regime_gate.confirm_days": 0,
+    "backtest.entry_regime_gate.enabled": True,
+    "backtest.entry_regime_gate.sma_fast_days": 20,
+    "backtest.entry_regime_gate.sma_slow_days": 50,
+}
+
+
+def test_gated_profile_adds_only_the_gate_to_the_lower_tail_profile():
+    base = flatten(json.loads(PROFILE.read_text()))
+    gated = flatten(json.loads(GATED_PROFILE.read_text()))
+    changed = {key for key in set(base) | set(gated) if base.get(key) != gated.get(key)}
+    assert changed == set(GATED_DELTA)
+    for key, expected in GATED_DELTA.items():
+        assert gated[key] == expected, key
+
+
+def test_gated_profile_is_loadable_and_keeps_the_gate_through_the_pipeline():
+    """The gate is only effective if it survives `clean_config`; see the runtime contract."""
+    loaded = load_config(str(GATED_PROFILE), verbose=False)
+    assert loaded["live"]["strategy_kind"] == "trailing_martingale"
+    assert loaded["backtest"]["entry_regime_gate"] == {
+        "enabled": True,
+        "sma_fast_days": 20,
+        "sma_slow_days": 50,
+        "confirm_days": 0,
+        "block_initial": True,
+        "block_reentry": True,
+    }
+
+
+def test_gated_profile_resolves_to_the_params_its_evidence_used():
+    """The resolved live gate must equal the study cell's declared window."""
+    import sys
+
+    study_tools = (
+        Path(__file__).resolve().parents[1]
+        / "backtests/binance/returns_guarded_dd_research_2026-09-16/report_tools"
+    )
+    sys.path.insert(0, str(study_tools))
+    try:
+        import run_study as study
+    finally:
+        sys.path.pop(0)
+
+    declared = study._GATE_CELLS["g4_sma20_50"]
+    loaded = load_config(str(GATED_PROFILE), verbose=False)
+    gate = loaded["backtest"]["entry_regime_gate"]
+    assert gate["sma_fast_days"] == declared["sma_fast_days"]
+    assert gate["sma_slow_days"] == declared["sma_slow_days"]
+    assert gate["enabled"] is bool(declared["enabled"])
+    # The profile states the engine defaults explicitly so a changed default is caught here.
+    assert gate["confirm_days"] == declared.get("confirm_days", 0)
+    assert gate["block_initial"] is declared.get("block_initial", True)
+    assert gate["block_reentry"] is declared.get("block_reentry", True)
+
+
+def test_gated_profile_reports_the_contract_its_evidence_was_produced_under():
+    import sys
+
+    study_tools = (
+        Path(__file__).resolve().parents[1]
+        / "backtests/binance/returns_guarded_dd_research_2026-09-16/report_tools"
+    )
+    sys.path.insert(0, str(study_tools))
+    try:
+        import run_study as study
+    finally:
+        sys.path.pop(0)
+
+    loaded = load_config(str(GATED_PROFILE), verbose=False)
+    backtest = loaded["backtest"]
+    assert backtest["maker_fee_override"] == study.PRIMARY_COSTS["maker_fee_override"]
+    assert backtest["taker_fee_override"] == study.PRIMARY_COSTS["taker_fee_override"]
+    assert int(backtest["execution_delay_bars"]) == int(
+        study.PRIMARY_EXECUTION["execution_delay_bars"]
+    )
+    assert backtest["intrabar_fill_order"] == study.PRIMARY_EXECUTION["intrabar_fill_order"]

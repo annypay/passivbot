@@ -14,6 +14,7 @@ editing it for an account.
 | --- | --- |
 | `configs/examples/default_trailing_martingale_long.json` | Maintained default. Long-only, 7 slots, `total_wallet_exposure_limit = 1.5`, fast re-entry ladder, HSL disabled. |
 | `configs/examples/trailing_martingale_twel100_ddf060.json` | Lower-tail variant of the default. Same universe, same slots, same exit logic; lower exposure cap and a slower, wider re-entry ladder. |
+| `configs/examples/trailing_martingale_twel100_ddf060_sma20_50.json` | The lower-tail variant plus a daily 20/50-day entry-regime gate. Same strategy and exit logic; entries are additionally blocked while the daily fast SMA is below the slow SMA. |
 
 ## Lower-Tail Variant: `trailing_martingale_twel100_ddf060.json`
 
@@ -174,7 +175,101 @@ return forecast, and the profile is not published as a recommendation to run liv
 5. **Liquidation.** `liquidated = false` is a simulation outcome, not a margin guarantee: mark
    price, maintenance-margin tiers, funding, and venue behavior are not modelled.
 
-### Maintenance And Iteration
+## Gated Variant: `trailing_martingale_twel100_ddf060_sma20_50.json`
+
+### What Changes
+
+Relative to `trailing_martingale_twel100_ddf060.json`, the profile adds exactly one block and
+changes nothing else:
+
+| Path | Base | This profile | Effect |
+| --- | ---: | ---: | --- |
+| `backtest.entry_regime_gate.enabled` | absent | `true` | Turns the filter on. |
+| `backtest.entry_regime_gate.sma_fast_days` | absent | `20` | Fast daily SMA. |
+| `backtest.entry_regime_gate.sma_slow_days` | absent | `50` | Slow daily SMA. |
+| `backtest.entry_regime_gate.confirm_days` | absent | `0` | No extra confirmation: the cross alone decides. |
+
+`block_initial` and `block_reentry` are stated explicitly as `true`, which is also their default.
+
+`tests/test_strategy_profile_example.py` pins that delta, and
+`tests/test_live_entry_regime_gate.py` pins the live contract for the same key.
+
+The gate is a **filter, not a signal**. It can only suppress an entry: closes, panic closes, and
+auto-unstuck are untouched, so a risk-off day can always reduce or exit a position and simply
+cannot add risk. See [Strategy Runtime Contracts](ai/features/strategy_runtime.md) for the
+causality contract.
+
+### Evidence
+
+Evidence lives under `backtests/binance/returns_guarded_dd_research_2026-09-16/`, which is tracked
+in the repository. That study screens return-preserving ways to tighten the tail drawdown of this
+family; the gate is its only lever that lowers drawdown without lowering the return *capability* of
+the underlying strategy, because it removes trades rather than rescaling them. The gated cell is
+`g4_sma20_50`, and its artifact bundle (report, metric tables, figures and fill panels) is under
+`artifacts/best_dd_reducer/`.
+
+This profile also has a standalone artifact and deep analysis at
+`backtests/binance/g4_sma20_50_replay_2026-09-16/`, which replays the **published file** and reports
+it next to the un-gated profile and the un-gated default. Rebuild it with:
+
+```bash
+bash backtests/binance/g4_sma20_50_replay_2026-09-16/run.sh
+```
+
+One reproducibility boundary belongs here rather than only in the report. The published profile is an
+*operational* config: its backtest window is open-ended (`start_date = 2021-04-20`,
+`end_date = "now"`), it approves 41 candidate coins on both sides, and its data source lists two
+exchanges. The recorded evidence is a *fixed* three-year, single-exchange, 40-coin dataset. Running
+the file unmodified therefore does **not** reproduce the numbers in this section; the replay retargets
+the data identity (`backtest.exchanges`, `start_date`, `end_date`, `coins`, `cache_dir`, `base_dir`
+and `live.approved_coins`) and names every one of those retargets in its own report. No strategy,
+risk, exit or gate parameter is retargeted.
+
+All rows below share one frozen dataset (40 coins), one window (2023-09-12 → 2026-09-12) and one
+execution/cost contract: nominal T+1 with Binance USDT-M VIP0 fees (maker `0.0002` / taker
+`0.0005`).
+
+| Metric | Default profile | Lower-tail profile | This profile |
+| --- | ---: | ---: | ---: |
+| Worst minute-close equity drawdown | 73.16% | 32.92% | **10.52%** |
+| CAGR | +130.21% | +37.67% | +27.82% |
+| Gain multiple | 12.2068x | 2.6097x | 2.089x |
+| Longest underwater | 171.9 days | 25.6 days | 2.9 days |
+
+The trade is again explicit: the gate costs about a quarter of the lower-tail profile's CAGR and
+buys a threefold cut in its worst drawdown. Read it as a different risk shape, not an upgrade.
+
+#### Does the gate's advantage generalize?
+
+The gate was screened on the same window it is measured on, so the study re-evaluated the same
+four configurations on windows the screen never touched. One of them is genuinely new information:
+
+| Window | This profile | Lower-tail profile |
+| --- | ---: | ---: |
+| `stress` 2021-06-01 → 2026-09-11, drawdown | **11.50%** | 32.95% |
+| `stress`, CAGR | +23.83% | +42.71% |
+| Holdout 2025-09-12 → 2026-09-12, drawdown | 9.83% | 10.82% |
+| Holdout, CAGR | +22.07% | +32.65% |
+| Superseded contract (T+2, maker `0.001`), drawdown | 22.52% | 31.33% |
+| Superseded contract, CAGR | +26.43% | +36.96% |
+
+The drawdown advantage holds in all three, including a window that starts two years before the
+screened one. The cost is visible too: under the harsher execution contract this profile spends
+**116 days underwater** where the lower-tail profile spends about a day, because the gate's exits
+are the strategy's own and the filter only thins entries.
+
+#### What the gate is not
+
+- It is not event protection. The 2025 drawdown event is a fast, broad decline; a daily filter
+  reacts to it late. The gain comes from carrying less risk into sustained downtrends.
+- It does not raise the return ceiling. Splitting the same long arm into a long/short flip (short
+  entries taken where this gate blocks longs) was measured in the same study and made both
+  drawdown and CAGR worse in every budgeted variant, with the short leg's realized PnL negative
+  over the window. Funding is not modelled, so that result is optimistic for the short side.
+- It is not free capital efficiency. The blocked entries are simply absent; idle capital is part of
+  the cost.
+
+## Maintenance And Iteration
 
 - Changing any of the three behavioural parameters changes the risk shape. After a change,
   re-run the study rather than only the profile backtest, because the published summary numbers
@@ -195,6 +290,13 @@ return forecast, and the profile is not published as a recommendation to run liv
   trade-off, add a row to the table above, record the profile in
   `tests/test_strategy_profile_example.py`, and keep the study evidence under `backtests/`
   following `backtests/readme.md`.
+- The gated profile is derived: to retune or re-window its gate, edit the gate block here and the
+  cell declaration in `backtests/binance/returns_guarded_dd_research_2026-09-16/report_tools/run_study.py`
+  together, then re-run that study. Leaving them apart makes the published numbers untraceable.
+- The standalone replay pins the gate as a declaration: it aborts unless the frozen config runs with
+  `entry_regime_gate` enabled and matching the declared 20/50 parameters, because an ungated run is a
+  different strategy (about 29% worst drawdown instead of about 10.5%). It also aborts if the run did
+  not read the frozen bundle or if its log shows market-data fetching.
 - Strategy semantics themselves are contracts, not profile knobs. Read
   [Strategy Runtime Contracts](ai/features/strategy_runtime.md) before changing entry, close,
   risk, or unstuck behaviour, and

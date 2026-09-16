@@ -51,8 +51,10 @@ passivbot live configs/private/my_config.json
 
 `configs/examples/` ships more than one profile. The maintained default is
 `default_trailing_martingale_long.json`; a lower-tail variant that trades upside for a smaller
-worst drawdown is `trailing_martingale_twel100_ddf060.json`. See
-[Strategy profiles and variants](strategy_profiles.md) for the parameter delta, the evidence, and
+worst drawdown is `trailing_martingale_twel100_ddf060.json`, and
+`trailing_martingale_twel100_ddf060_sma20_50.json` is that lower-tail variant plus a daily
+entry-regime gate, which trades more upside for a still smaller one. See
+[Strategy profiles and variants](strategy_profiles.md) for the parameter deltas, the evidence, and
 the reproducibility boundaries before choosing.
 
 The default profile mirrored by `configs/examples/default_trailing_martingale_long.json` is:

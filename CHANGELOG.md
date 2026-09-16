@@ -6,6 +6,34 @@ since the latest release tag; these features may already be available when insta
 
 ## Unreleased
 
+- Add an opt-in, strictly causal entry-regime gate for exact Rust backtests,
+  `backtest.entry_regime_gate`. It replays a precomputed daily simple-moving-average
+  crossover as a pure timestamp lookup and may only *block* entries: closes, panic,
+  and auto-unstuck are untouched, and an absent or disabled block is a no-op. The
+  table is built from **completed** UTC days only, so a bar can never read its own
+  day's close. Live wires the same filter: the planning path reads closed 1-day
+  candles from the candlestick manager, publishes one verdict per symbol and side into
+  the Rust orchestrator input, and leaves the master params and the panic path
+  ungated. A symbol whose daily evidence cannot be assembled carries no table, which
+  reads as risk-off, so a data failure blocks new risk instead of silently trading the
+  ungated strategy.
+- Keep `backtest.entry_regime_gate` through config hydration and sanitizing. A
+  `backtest.*` key the schema template does not declare is dropped when a config is
+  rebuilt from the template, so a gated config run through the normal config pipeline
+  silently ran ungated. The key is now declared in the template and its subtree is a
+  partially-open path, so a gated config keeps its table and a config without one
+  still runs no gate.
+- Record the effective `disable_plotting` under `backtest.disable_plotting` so a run's
+  own dumped config states which figure groups it skipped. The CLI flag wrote a
+  top-level key that is not a schema key, so `clean_config` dropped it and a run
+  produced with the flag looked like it had silently lost panels to the persisted
+  report layout, which reads the setting from the run's own config.
+- Publish `configs/examples/trailing_martingale_twel100_ddf060_sma20_50.json`, the
+  lower-tail profile plus a 20/50-day entry-regime gate. It is the same strategy with
+  one additive filter, so its diff against the profile it extends is only the gate.
+  Evidence is under `backtests/binance/returns_guarded_dd_research_2026-09-16/` and
+  summarised in [Strategy Profiles](docs/strategy_profiles.md).
+
 - Make exact Rust backtests construct orders from completed history and current
   position state instead of the next candle's range. Missing held-position prices
   no longer trigger a perfect exit on a future-known last data candle.
