@@ -29,6 +29,8 @@ current task.
 | Version selection, release trigger, release preparation, or publication | `runbooks/release.md` |
 | Autonomous PR review | `runbooks/pr_review.md` |
 | Crash discovery and stress-suite generation | `runbooks/crash_discovery.md` |
+| Strategy research deep analysis report, or where its artifacts, figures and dataset
+identity are persisted | `runbooks/strategy_report.md` |
 | Structured live events | `features/live_events.md`, `generated/live_event_registry.md` |
 | Monitor persistence, recovery, rotation, retention | `features/monitor_persistence.md` |
 | Feature-specific change | `features/README.md` and the relevant feature contract |

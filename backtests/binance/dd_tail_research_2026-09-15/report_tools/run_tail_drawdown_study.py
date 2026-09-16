@@ -45,17 +45,26 @@ EXECUTION = {
     "C4": {"execution_delay_bars": 1, "intrabar_fill_order": "entry_first"},
 }
 COSTS = {
+    # Binance USDT-M perpetual VIP0: maker 2 bps / taker 5 bps per side.
+    "binance_actual": {"maker_fee_override": 0.0002, "taker_fee_override": 0.0005},
     "reference": {"maker_fee_override": 0.0004, "taker_fee_override": 0.00055},
     "conservative": {"maker_fee_override": 0.0006, "taker_fee_override": 0.0008},
     "severe": {"maker_fee_override": 0.001, "taker_fee_override": 0.0012},
 }
 SCENARIOS = {
+    "C1_binance_actual": ("C1", "binance_actual"),
+    "C3_binance_actual": ("C3", "binance_actual"),
     "C1_reference": ("C1", "reference"),
     "C3_conservative": ("C3", "conservative"),
     "C3_severe": ("C3", "severe"),
     "C2_conservative": ("C2", "conservative"),
     "C4_conservative": ("C4", "conservative"),
 }
+# The reported contract: nominal T+1 execution with Binance VIP0 fees. The published
+# example profile carries the same values so configuration and evidence cannot drift.
+PRIMARY_EXECUTION = EXECUTION["C1"]
+PRIMARY_COSTS = COSTS["binance_actual"]
+PRIMARY_SCENARIO = "C1_binance_actual"
 HALF_YEAR_EDGES = (
     "2023-09-12", "2024-03-12", "2024-09-12", "2025-03-12",
     "2025-09-12", "2026-03-12", "2026-09-12",
@@ -295,12 +304,27 @@ def contract_payload() -> dict[str, Any]:
     baseline_analysis = load_json(BASELINE_ANALYSIS)
     cells = [describe_cell(cid, grp, ops) for cid, grp, ops in LEVER_SPECS]
     return {
-        "version": 3,
+        "version": 4,
         "amendment_note": (
-            "v2 appended the G5_combo cells. v3 appends the G6_brake cells after the "
-            "account-level wallet-exposure brake landed in Rust; no gate, window, scenario, "
-            "universe, cost or execution field changed after any lever result was observed."
+            "v2 appended the G5_combo cells. v3 appended the G6_brake cells. v4 changes the "
+            "reported execution and cost contract only: nominal T+1 (execution_delay_bars=0) "
+            "with Binance USDT-M VIP0 fees (maker 0.0002 / taker 0.0005) instead of the earlier "
+            "T+2 conservative contract (maker 0.0006 / taker 0.0008). Gates, windows, the "
+            "40-coin universe and the cell matrix are unchanged; v3 evidence is retained "
+            "unchanged as the conservative-cost regime."
         ),
+        "contract_regimes": {
+            "v3_conservative": {
+                "execution": EXECUTION["C3"],
+                "costs": COSTS["conservative"],
+                "primary_scenario": "C3_conservative",
+            },
+            "v4_binance_actual": {
+                "execution": PRIMARY_EXECUTION,
+                "costs": PRIMARY_COSTS,
+                "primary_scenario": PRIMARY_SCENARIO,
+            },
+        },
         "purpose": "tail drawdown lever screen for the default trailing-martingale config",
         "safety": {
             "network": False,
@@ -317,8 +341,8 @@ def contract_payload() -> dict[str, Any]:
             "adg_strategy_eq": baseline_analysis["adg_strategy_eq"],
             "n_days": baseline_analysis["n_days"],
             "fills": baseline_analysis.get("fills"),
-            "execution": {"execution_delay_bars": 0, "intrabar_fill_order": "close_first"},
-            "costs": COSTS["reference"],
+            "execution": PRIMARY_EXECUTION,
+            "costs": PRIMARY_COSTS,
         },
         "windows": WINDOWS,
         "execution_scenarios": EXECUTION,
@@ -333,7 +357,7 @@ def contract_payload() -> dict[str, Any]:
         "gates": GATES,
         "cells": cells,
         "cell_matrix_sha256": stable_hash(cells),
-        "primary_scenario": "C3_conservative",
+        "primary_scenario": PRIMARY_SCENARIO,
         "sequential_protocol": (
             "selection window 2023-09-12..2025-09-12 and full window may be run freely; "
             "holdout window 2025-09-12..2026-09-12 may only be run after "
@@ -423,6 +447,29 @@ async def prepare_window(cfg: dict[str, Any]):
     return coins, hlcvs, mss, btc_usd_prices, timestamps
 
 
+MONTH_BUCKET_EDGES = tuple(
+    f"{year:04d}-{month:02d}-01" for year in range(2023, 2028) for month in range(1, 13)
+)
+
+
+def _bucket_returns(series: np.ndarray, stamps: np.ndarray, edges: list[str]) -> list[dict[str, Any]]:
+    """Equity return per chronological bucket, first-to-last sample inside the bucket."""
+    out: list[dict[str, Any]] = []
+    for idx in range(len(edges) - 1):
+        lo = int(np.searchsorted(stamps, np.datetime64(edges[idx]), side="left"))
+        hi = int(np.searchsorted(stamps, np.datetime64(edges[idx + 1]), side="left"))
+        if hi - lo < 2:
+            continue
+        out.append(
+            {
+                "start": edges[idx],
+                "end": edges[idx + 1],
+                "return": float(series[hi - 1] / series[lo] - 1.0),
+            }
+        )
+    return out
+
+
 def compute_metrics(analysis: dict[str, Any], equities, fills) -> dict[str, Any]:
     arr = np.asarray(equities)
     if arr.size == 0:
@@ -489,6 +536,7 @@ def compute_metrics(analysis: dict[str, Any], equities, fills) -> dict[str, Any]
         "final_equity": float(series[-1]),
         "start_equity": float(series[0]),
         "half_years": half_years,
+        "monthly_returns": _bucket_returns(series, stamps, list(MONTH_BUCKET_EDGES)),
         "positive_halfyears": int(sum(1 for hy in half_years if hy["return"] > 0.0)),
         "worst_halfyear_return": min((hy["return"] for hy in half_years), default=float("nan")),
     }
@@ -631,6 +679,36 @@ def gate_report(metrics: dict[str, Any], baseline_metrics: dict[str, Any]) -> di
     }
 
 
+def export_monthly_returns(records: list[dict[str, Any]], out_dir: Path) -> int:
+    """Flatten the per-cell monthly return series into one panel for the overfitting audit."""
+    import csv
+
+    rows: list[dict[str, Any]] = []
+    for rec in records:
+        monthly = rec["metrics"].get("monthly_returns")
+        if not monthly:
+            continue
+        for bucket in monthly:
+            rows.append(
+                {
+                    "window": rec["window"],
+                    "scenario": rec["scenario"],
+                    "cell_id": rec["cell_id"],
+                    "start": bucket["start"],
+                    "end": bucket["end"],
+                    "return": bucket["return"],
+                }
+            )
+    path = out_dir / "pbo_monthly_returns.csv"
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle, fieldnames=["window", "scenario", "cell_id", "start", "end", "return"]
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+    return len(rows)
+
+
 def analyze_command(args: argparse.Namespace) -> None:
     records = load_cells()
     if not records:
@@ -673,6 +751,9 @@ def analyze_command(args: argparse.Namespace) -> None:
     out_dir = STUDY / "analysis"
     out_dir.mkdir(parents=True, exist_ok=True)
     write_json(out_dir / "lever_screen.json", {"rows": rows})
+    if args.monthly:
+        count = export_monthly_returns(records, out_dir)
+        print(f"\nmonthly return panel exported: {count} cell-month rows")
     print(
         f"{'cell':22s} {'group':14s} {'win':10s} {'scen':16s} {'mdd':>7s} {'d_mdd':>7s} "
         f"{'cagr':>8s} {'ratio':>6s} {'uw_d':>7s} {'worst_hy':>9s} {'coins':>5s} gate"
@@ -713,17 +794,19 @@ def analyze_command(args: argparse.Namespace) -> None:
                 )
             )
         frozen = load_json(BASELINE_ANALYSIS)["drawdown_worst_strategy_eq"]
-        b = by_key.get(("full", "C1_reference", "baseline"))
+        b = by_key.get(("full", PRIMARY_SCENARIO, "baseline")) or by_key.get(
+            ("full", "C1_reference", "baseline")
+        )
         if b:
             print(
-                "\nbaseline reproduction check (full/C1_reference): measured mdd %.6f vs frozen %.6f"
-                % (b["metrics"]["minute_close_mdd"], frozen)
+                "\nbaseline reproduction check (full/%s): measured mdd %.6f vs frozen T+1 reference %.6f"
+                % (b["scenario"], b["metrics"]["minute_close_mdd"], frozen)
             )
 
 
 def writespec_command(args: argparse.Namespace) -> None:
     payload = contract_payload()
-    path = Path(args.out) if args.out else STUDY / "research_contract.json"
+    path = Path(args.out) if args.out else STUDY / "research_contract_v4.json"
     write_json(path, payload)
     print(f"wrote {path}")
     print(f"cell_matrix_sha256={payload['cell_matrix_sha256']}")
@@ -746,6 +829,11 @@ def main() -> None:
     rn.set_defaults(func=run_command)
 
     an = sub.add_parser("analyze")
+    an.add_argument(
+        "--monthly",
+        action="store_true",
+        help="additionally export analysis/pbo_monthly_returns.csv for the overfitting audit",
+    )
     an.set_defaults(func=analyze_command)
 
     args = parser.parse_args()

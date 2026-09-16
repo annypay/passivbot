@@ -1,0 +1,879 @@
+{
+  "amendment_note": "v2 appended the G5_combo cells. v3 appended the G6_brake cells. v4 changes the reported execution and cost contract only: nominal T+1 (execution_delay_bars=0) with Binance USDT-M VIP0 fees (maker 0.0002 / taker 0.0005) instead of the earlier T+2 conservative contract (maker 0.0006 / taker 0.0008). Gates, windows, the 40-coin universe and the cell matrix are unchanged; v3 evidence is retained unchanged as the conservative-cost regime.",
+  "baseline": {
+    "adg_strategy_eq": 0.0021975051102358645,
+    "config_path": "backtests/binance/2026-09-14T03_40_41/config.json",
+    "config_sha256": "9c186ff09427298123d94d78d4135cd4983a098118e2a1dacdf6a14bf19a7ac9",
+    "costs": {
+      "maker_fee_override": 0.0002,
+      "taker_fee_override": 0.0005
+    },
+    "drawdown_worst_strategy_eq": 0.7368846120975687,
+    "execution": {
+      "execution_delay_bars": 0,
+      "intrabar_fill_order": "close_first"
+    },
+    "fills": null,
+    "gain_strategy_eq": 11.087553396657242,
+    "n_days": 1095.9986111111111,
+    "run_dir": "backtests/binance/2026-09-14T03_40_41"
+  },
+  "cell_matrix_sha256": "7c4844c9b44eebcb060b4744ad6f112209605207b30baa2c0443ab3aea8ad834",
+  "cells": [
+    {
+      "cell_id": "twel_120",
+      "group": "G1_ceiling",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.2
+        }
+      ]
+    },
+    {
+      "cell_id": "twel_100",
+      "group": "G1_ceiling",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        }
+      ]
+    },
+    {
+      "cell_id": "twel_080",
+      "group": "G1_ceiling",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "cell_id": "twel_060",
+      "group": "G1_ceiling",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.6
+        }
+      ]
+    },
+    {
+      "cell_id": "allow_015",
+      "group": "G1_ceiling",
+      "ops": [
+        {
+          "baseline": 0.37,
+          "op": "set",
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "value": 0.15
+        }
+      ]
+    },
+    {
+      "cell_id": "allow_000",
+      "group": "G1_ceiling",
+      "ops": [
+        {
+          "baseline": 0.37,
+          "op": "set",
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "value": 0.0
+        }
+      ]
+    },
+    {
+      "cell_id": "npos_10",
+      "group": "G1_ceiling",
+      "ops": [
+        {
+          "baseline": 7,
+          "op": "set",
+          "path": "bot.long.risk.n_positions",
+          "value": 10.0
+        }
+      ]
+    },
+    {
+      "cell_id": "npos_14",
+      "group": "G1_ceiling",
+      "ops": [
+        {
+          "baseline": 7,
+          "op": "set",
+          "path": "bot.long.risk.n_positions",
+          "value": 14.0
+        }
+      ]
+    },
+    {
+      "cell_id": "ddf_060",
+      "group": "G2_geometry",
+      "ops": [
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        }
+      ]
+    },
+    {
+      "cell_id": "ddf_030",
+      "group": "G2_geometry",
+      "ops": [
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.3
+        }
+      ]
+    },
+    {
+      "cell_id": "ddthr_0030",
+      "group": "G2_geometry",
+      "ops": [
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ]
+    },
+    {
+      "cell_id": "ddthr_0060",
+      "group": "G2_geometry",
+      "ops": [
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.06
+        }
+      ]
+    },
+    {
+      "cell_id": "cd_120",
+      "group": "G2_geometry",
+      "ops": [
+        {
+          "baseline": 24.1,
+          "op": "set",
+          "path": "bot.long.risk.entry_cooldown_minutes",
+          "value": 120.0
+        }
+      ]
+    },
+    {
+      "cell_id": "cd_360",
+      "group": "G2_geometry",
+      "ops": [
+        {
+          "baseline": 24.1,
+          "op": "set",
+          "path": "bot.long.risk.entry_cooldown_minutes",
+          "value": 360.0
+        }
+      ]
+    },
+    {
+      "cell_id": "ema_initial",
+      "group": "G2_geometry",
+      "ops": [
+        {
+          "baseline": "all",
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.ema_gate_mode",
+          "value": "initial"
+        }
+      ]
+    },
+    {
+      "cell_id": "hsl_on_010",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.1
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        }
+      ]
+    },
+    {
+      "cell_id": "hsl_on_015",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.15
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        }
+      ]
+    },
+    {
+      "cell_id": "hsl_on_025",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.25
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        }
+      ]
+    },
+    {
+      "cell_id": "hsl_on_035",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.35
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        }
+      ]
+    },
+    {
+      "cell_id": "hsl_on_025_twel100",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.hsl.enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.hsl.red_threshold",
+          "value": 0.25
+        },
+        {
+          "baseline": "threshold",
+          "op": "set",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "value": "always"
+        },
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        }
+      ]
+    },
+    {
+      "cell_id": "unstuck_wide",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": -0.0269,
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "value": -0.1
+        },
+        {
+          "baseline": 0.0052,
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "value": 0.02
+        }
+      ]
+    },
+    {
+      "cell_id": "unstuck_ungated",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": true,
+          "op": "set",
+          "path": "bot.long.unstuck.ema_gating_enabled",
+          "value": false
+        }
+      ]
+    },
+    {
+      "cell_id": "unstuck_off",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": true,
+          "op": "set",
+          "path": "bot.long.unstuck.enabled",
+          "value": false
+        }
+      ]
+    },
+    {
+      "cell_id": "enforcer_085",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.risk.position_exposure_enforcer_enabled",
+          "value": true
+        },
+        {
+          "baseline": 1.0,
+          "op": "set",
+          "path": "bot.long.risk.position_exposure_enforcer_threshold",
+          "value": 0.85
+        },
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.risk.total_exposure_enforcer_enabled",
+          "value": true
+        },
+        {
+          "baseline": 1.0,
+          "op": "set",
+          "path": "bot.long.risk.total_exposure_enforcer_threshold",
+          "value": 0.85
+        }
+      ]
+    },
+    {
+      "cell_id": "close_we_weight",
+      "group": "G3_exit",
+      "ops": [
+        {
+          "baseline": -0.0001,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_we_weight",
+          "value": -0.015
+        }
+      ]
+    },
+    {
+      "cell_id": "forager_vol",
+      "group": "G4_selection",
+      "ops": [
+        {
+          "baseline": {
+            "ema_readiness": 0.21,
+            "volatility": 0.61,
+            "volume": 0.18
+          },
+          "op": "set",
+          "path": "bot.long.forager.score_weights",
+          "value": {
+            "ema_readiness": 0.1,
+            "volatility": 0.6,
+            "volume": 0.3
+          }
+        }
+      ]
+    },
+    {
+      "cell_id": "forager_liq",
+      "group": "G4_selection",
+      "ops": [
+        {
+          "baseline": {
+            "ema_readiness": 0.21,
+            "volatility": 0.61,
+            "volume": 0.18
+          },
+          "op": "set",
+          "path": "bot.long.forager.score_weights",
+          "value": {
+            "ema_readiness": 0.1,
+            "volatility": 0.3,
+            "volume": 0.6
+          }
+        },
+        {
+          "baseline": 0.04,
+          "op": "set",
+          "path": "bot.long.forager.volume_drop_pct",
+          "value": 0.2
+        }
+      ]
+    },
+    {
+      "cell_id": "dynwel_off",
+      "group": "G4_selection",
+      "ops": [
+        {
+          "baseline": true,
+          "op": "set",
+          "path": "backtest.dynamic_wel_by_tradability",
+          "value": false
+        }
+      ]
+    },
+    {
+      "cell_id": "combo_twel100_ddthr0060",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.06
+        }
+      ]
+    },
+    {
+      "cell_id": "combo_twel080_ddthr0060",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.06
+        }
+      ]
+    },
+    {
+      "cell_id": "combo_twel080_ddthr0030",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 0.8
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ]
+    },
+    {
+      "cell_id": "combo_twel100_ddf060_ddthr0030",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": 0.94,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "value": 0.6
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.03
+        }
+      ]
+    },
+    {
+      "cell_id": "combo_twel120_we_weight_twel100",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.2
+        },
+        {
+          "baseline": -0.0001,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_we_weight",
+          "value": -0.015
+        },
+        {
+          "baseline": 0.019,
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "value": 0.045
+        }
+      ]
+    },
+    {
+      "cell_id": "brake_015_045_025",
+      "group": "G6_brake",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_enabled",
+          "value": true
+        }
+      ]
+    },
+    {
+      "cell_id": "brake_graded_010_050",
+      "group": "G6_brake",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_start_drawdown",
+          "value": 0.1
+        },
+        {
+          "baseline": 0.45,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_full_drawdown",
+          "value": 0.5
+        },
+        {
+          "baseline": 0.25,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_min_scale",
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "cell_id": "brake_twel100",
+      "group": "G6_brake",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_enabled",
+          "value": true
+        },
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        }
+      ]
+    },
+    {
+      "cell_id": "brake_keep_geometry",
+      "group": "G6_brake",
+      "ops": [
+        {
+          "baseline": false,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_enabled",
+          "value": true
+        },
+        {
+          "baseline": 0.15,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_start_drawdown",
+          "value": 0.1
+        },
+        {
+          "baseline": 0.45,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_full_drawdown",
+          "value": 0.5
+        },
+        {
+          "baseline": 0.25,
+          "op": "set",
+          "path": "bot.long.risk.wallet_exposure_brake_min_scale",
+          "value": 0.1
+        },
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.5
+        }
+      ]
+    },
+    {
+      "cell_id": "combo_twel100_forager_liq",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "baseline": 1.5,
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "value": 1.0
+        },
+        {
+          "baseline": {
+            "ema_readiness": 0.21,
+            "volatility": 0.61,
+            "volume": 0.18
+          },
+          "op": "set",
+          "path": "bot.long.forager.score_weights",
+          "value": {
+            "ema_readiness": 0.1,
+            "volatility": 0.3,
+            "volume": 0.6
+          }
+        },
+        {
+          "baseline": 0.04,
+          "op": "set",
+          "path": "bot.long.forager.volume_drop_pct",
+          "value": 0.2
+        }
+      ]
+    }
+  ],
+  "contract_regimes": {
+    "v3_conservative": {
+      "costs": {
+        "maker_fee_override": 0.0006,
+        "taker_fee_override": 0.0008
+      },
+      "execution": {
+        "execution_delay_bars": 1,
+        "intrabar_fill_order": "close_first"
+      },
+      "primary_scenario": "C3_conservative"
+    },
+    "v4_binance_actual": {
+      "costs": {
+        "maker_fee_override": 0.0002,
+        "taker_fee_override": 0.0005
+      },
+      "execution": {
+        "execution_delay_bars": 0,
+        "intrabar_fill_order": "close_first"
+      },
+      "primary_scenario": "C1_binance_actual"
+    }
+  },
+  "cost_scenarios": {
+    "binance_actual": {
+      "maker_fee_override": 0.0002,
+      "taker_fee_override": 0.0005
+    },
+    "conservative": {
+      "maker_fee_override": 0.0006,
+      "taker_fee_override": 0.0008
+    },
+    "reference": {
+      "maker_fee_override": 0.0004,
+      "taker_fee_override": 0.00055
+    },
+    "severe": {
+      "maker_fee_override": 0.001,
+      "taker_fee_override": 0.0012
+    }
+  },
+  "execution_scenarios": {
+    "C1": {
+      "execution_delay_bars": 0,
+      "intrabar_fill_order": "close_first"
+    },
+    "C2": {
+      "execution_delay_bars": 0,
+      "intrabar_fill_order": "entry_first"
+    },
+    "C3": {
+      "execution_delay_bars": 1,
+      "intrabar_fill_order": "close_first"
+    },
+    "C4": {
+      "execution_delay_bars": 1,
+      "intrabar_fill_order": "entry_first"
+    }
+  },
+  "gates": {
+    "cagr_floor_fraction_of_baseline": 0.6,
+    "completion_ratio_min": 0.999,
+    "longest_underwater_days_max": 180.0,
+    "mdd_max": 0.45,
+    "positive_halfyears_min": 4,
+    "regular_close_under_5m_notional_share_max": 0.1,
+    "top_coin_exposure_time_share_max": 0.6,
+    "traded_coin_count_min": 3,
+    "worst_halfyear_return_min": -0.08
+  },
+  "half_year_edges": [
+    "2023-09-12",
+    "2024-03-12",
+    "2024-09-12",
+    "2025-03-12",
+    "2025-09-12",
+    "2026-03-12",
+    "2026-09-12"
+  ],
+  "primary_scenario": "C1_binance_actual",
+  "purpose": "tail drawdown lever screen for the default trailing-martingale config",
+  "safety": {
+    "bot_start": false,
+    "credentials": false,
+    "exchange_account_or_orders": false,
+    "network": false
+  },
+  "scenario_matrix": {
+    "C1_binance_actual": [
+      "C1",
+      "binance_actual"
+    ],
+    "C1_reference": [
+      "C1",
+      "reference"
+    ],
+    "C2_conservative": [
+      "C2",
+      "conservative"
+    ],
+    "C3_binance_actual": [
+      "C3",
+      "binance_actual"
+    ],
+    "C3_conservative": [
+      "C3",
+      "conservative"
+    ],
+    "C3_severe": [
+      "C3",
+      "severe"
+    ],
+    "C4_conservative": [
+      "C4",
+      "conservative"
+    ]
+  },
+  "sequential_protocol": "selection window 2023-09-12..2025-09-12 and full window may be run freely; holdout window 2025-09-12..2026-09-12 may only be run after holdout_candidate_lock.json exists",
+  "universe": [
+    "AAVE",
+    "ADA",
+    "ALGO",
+    "APT",
+    "ARB",
+    "ASTER",
+    "ATOM",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "CC",
+    "DOGE",
+    "DOT",
+    "ENA",
+    "ETH",
+    "FIL",
+    "GRAM",
+    "HBAR",
+    "HYPE",
+    "INJ",
+    "KAS",
+    "LINK",
+    "LTC",
+    "MORPHO",
+    "NEAR",
+    "ONDO",
+    "POL",
+    "RENDER",
+    "SOL",
+    "SUI",
+    "TAO",
+    "TON",
+    "TRX",
+    "UNI",
+    "WLD",
+    "XLM",
+    "XMR",
+    "XRP",
+    "ZEC"
+  ],
+  "universe_policy": "same 40-coin frozen basket for every window and cell; new listings join the tradable set only after their first candle, mirroring the baseline dataset",
+  "version": 4,
+  "windows": {
+    "full": [
+      "2023-09-12",
+      "2026-09-12"
+    ],
+    "holdout": [
+      "2025-09-12",
+      "2026-09-12"
+    ],
+    "selection": [
+      "2023-09-12",
+      "2025-09-12"
+    ]
+  }
+}

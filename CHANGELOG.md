@@ -6,6 +6,34 @@ since the latest release tag; these features may already be available when insta
 
 ## Unreleased
 
+- Add an opt-in, strictly causal entry-regime gate for exact Rust backtests,
+  `backtest.entry_regime_gate`. It replays a precomputed daily simple-moving-average
+  crossover as a pure timestamp lookup and may only *block* entries: closes, panic,
+  and auto-unstuck are untouched, and an absent or disabled block is a no-op. The
+  table is built from **completed** UTC days only, so a bar can never read its own
+  day's close. The live planning path already reads closed 1-day candles from the
+  candlestick manager and records one verdict per symbol and side, but the engine does
+  not consume it yet: the per-side flags the Rust orchestrator reads are written by the
+  backtest only, so live currently trades the ungated strategy. Wiring those flags, and
+  with them what a missing daily series means, is follow-up work; the key is a
+  backtest filter until then.
+- Keep `backtest.entry_regime_gate` through config hydration and sanitizing. A
+  `backtest.*` key the schema template does not declare is dropped when a config is
+  rebuilt from the template, so a gated config run through the normal config pipeline
+  silently ran ungated. The key is now declared in the template and its subtree is a
+  partially-open path, so a gated config keeps its table and a config without one
+  still runs no gate.
+- Record the effective `disable_plotting` under `backtest.disable_plotting` so a run's
+  own dumped config states which figure groups it skipped. The CLI flag wrote a
+  top-level key that is not a schema key, so `clean_config` dropped it and a run
+  produced with the flag looked like it had silently lost panels to the persisted
+  report layout, which reads the setting from the run's own config.
+- Publish `configs/examples/trailing_martingale_twel100_ddf060_sma20_50.json`, the
+  lower-tail profile plus a 20/50-day entry-regime gate. It is the same strategy with
+  one additive filter, so its diff against the profile it extends is only the gate.
+  Evidence is under `backtests/binance/returns_guarded_dd_research_2026-09-16/` and
+  summarised in [Strategy Profiles](docs/strategy_profiles.md).
+
 - Make exact Rust backtests construct orders from completed history and current
   position state instead of the next candle's range. Missing held-position prices
   no longer trigger a perfect exit on a future-known last data candle.
@@ -39,6 +67,26 @@ since the latest release tag; these features may already be available when insta
   summaries now live under `backtests/`. Large regenerable outputs (fills,
   execution audits, balance series, arrays, plots, per-run bookkeeping) stay
   local; see `backtests/readme.md` and the `/backtests` rules in `.gitignore`.
+- Record the execution and cost contract of published backtest evidence explicitly.
+  The tail-drawdown study now reports nominal T+1 order latency with Binance USDT-M
+  VIP0 fees (maker 0.0002 / taker 0.0005 per side) as contract v4, and keeps the
+  previous T+2 / 0.0006-0.0008 contract frozen as a stress reference. The shipped
+  profile states the same contract, so it reproduces its published numbers without
+  an override. Both profiles are maker-only, so the taker fee and slippage settings
+  never bind. `run.sh --baseline` produces a matching artifact bundle for the
+  default profile, and the report verifier now compares windows before claiming
+  agreement with a study cell.
+- Name every backtest run directory for the run that produced it. The backtest already
+  stamps the UTC completion time; the study tooling now takes `--label NAME` to suffix it, and
+  `run.sh` passes one, so re-runs and side-by-side bundles stay identifiable instead of
+  overwriting or colliding. A deep-analysis report is always rendered into the run directory it
+  describes.
+- Give strategy research deep analyses one report convention. Every `annual_analysis.md`
+  now uses the same fixed section skeleton, table columns and data conventions, rendered by
+  `backtests/report_spec/annual_analysis.py` and documented in
+  `docs/ai/runbooks/strategy_report.md`. Reports gain a per-direction fill attribution
+  section and a per-year detail section, and the report verifier now checks the skeleton
+  alongside its independent recomputation of every number.
 - Let CCXT REST clients inherit configured standard HTTP proxy environment variables,
   allowing WSL mirrored-network deployments to reach external exchange endpoints through
   a local proxy.

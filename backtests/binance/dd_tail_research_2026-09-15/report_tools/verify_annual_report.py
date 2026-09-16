@@ -30,8 +30,16 @@ RUN_RECORD = ARTIFACTS / "run_record.json"
 AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
 CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
 LOCK = STUDY / "holdout_candidate_lock.json"
+CONTRACT = STUDY / "research_contract_v4.json"
+REPORT_SPEC = REPO / "backtests" / "report_spec"
+if str(REPORT_SPEC) not in sys.path:
+    sys.path.insert(0, str(REPORT_SPEC))
+import annual_analysis as report_spec  # noqa: E402  (canonical report convention)
 BASELINE_CONFIG = REPO / "backtests/binance/2026-09-14T03_40_41/config.json"
-STUDY_CELL = STUDY / "cells/full/C3_conservative/combo_twel100_ddf060_ddthr0030/result.json"
+# The comparison cell must be the one produced under the reported contract; the v3
+# conservative cells are a different regime and are compared elsewhere.
+DEFAULT_ARTIFACTS_SUBDIR = "binance_actual_candidate"
+STUDY_CELL = STUDY / "cells/full/C1_binance_actual/combo_twel100_ddf060_ddthr0030/result.json"
 COIN_COLUMNS = [
     "coin",
     "fills_count",
@@ -68,10 +76,13 @@ def load_json(path: Path) -> Any:
 
 
 def find_result_dir() -> Path:
-    root = RESULTS_BASE / "binance"
-    dirs = sorted(p for p in root.iterdir() if p.is_dir())
+    """The bundle's single run directory, at the `binance` or `binance_<label>` level."""
+    root = Path(RESULTS_BASE)
+    dirs = sorted(
+        p for p in root.glob("*/binance*/*") if p.is_dir() and p.name[:2].isdigit()
+    ) if root.is_dir() else []
     if len(dirs) != 1:
-        raise SystemExit(f"expected exactly one result dir under {root}, found {[p.name for p in dirs]}")
+        raise SystemExit(f"expected exactly one result dir under {root}, found {dirs}")
     return dirs[0]
 
 
@@ -169,7 +180,72 @@ def compare_frames(left: pd.DataFrame, right: pd.DataFrame, columns: list[str], 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--result-dir", default=None)
+    parser.add_argument(
+        "--study",
+        default=None,
+        help=(
+            "study directory whose artifacts to verify, relative to the repository root. "
+            "Defaults to this tool's own study."
+        ),
+    )
+    parser.add_argument(
+        "--artifacts-dir-name",
+        default="artifacts",
+        help="artifacts directory name under the study (default: artifacts).",
+    )
+    parser.add_argument(
+        "--require-lock",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "require the study's candidate lock. Default: require it only for this tool's "
+            "own study, which always has one."
+        ),
+    )
+    parser.add_argument(
+        "--artifacts-subdir",
+        default=DEFAULT_ARTIFACTS_SUBDIR,
+        help=(
+            "artifact directory under <study>/artifacts "
+            f"(default {DEFAULT_ARTIFACTS_SUBDIR}). The study keeps several bundles "
+            "(candidate, baseline, archived v3 runs), so this does not auto-detect."
+        ),
+    )
+    parser.add_argument(
+        "--study-cell",
+        default=None,
+        help=(
+            "study cell whose metrics this artifact must reproduce; defaults to the locked "
+            "candidate's cell. Comparison is skipped, loudly, when the artifact was run over a "
+            "different window than that cell."
+        ),
+    )
+    parser.add_argument(
+        "--expect-locked-ops",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "require the artifact to carry the locked candidate ops (default: follow the run "
+            "record's locked_ops_applied flag)"
+        ),
+    )
     args = parser.parse_args()
+    global STUDY, LOCK, CONTRACT, ARTIFACTS, RESULTS_BASE, RUN_RECORD, AUDIT_PATH
+    global CANDIDATE_CONFIG, STUDY_CELL
+    if args.study:
+        study_root = Path(args.study)
+        if not study_root.is_absolute():
+            study_root = REPO / study_root
+        STUDY = study_root.resolve()
+        LOCK = STUDY / "holdout_candidate_lock.json"
+        CONTRACT = STUDY / "research_contract.json"
+    if args.study_cell:
+        STUDY_CELL = (STUDY / args.study_cell).resolve()
+    ARTIFACTS = STUDY / args.artifacts_dir_name / args.artifacts_subdir
+    RESULTS_BASE = ARTIFACTS / "backtest_results"
+    RUN_RECORD = ARTIFACTS / "run_record.json"
+    AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
+    CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
     result_dir = Path(args.result_dir) if args.result_dir else find_result_dir()
 
     # ---------- artifacts present ----------
@@ -199,7 +275,18 @@ def main() -> None:
     analysis = load_json(result_dir / "analysis.json")
     cfg = load_json(result_dir / "config.json")
     run_record = load_json(RUN_RECORD)
-    lock = load_json(LOCK)
+    require_lock = args.require_lock if args.require_lock is not None else args.study is None
+    lock: dict[str, Any] = {}
+    if LOCK.exists():
+        lock = load_json(LOCK)
+    elif require_lock:
+        raise SystemExit(f"required candidate lock not found: {LOCK}")
+    else:
+        check(
+            "study declares no candidate lock, so lock-derived checks are skipped",
+            True,
+            f"expected no {LOCK.name}",
+        )
 
     fills = pd.read_csv(result_dir / "fills.csv")
     fills = fills.loc[:, ~fills.columns.str.startswith("Unnamed")]
@@ -209,24 +296,69 @@ def main() -> None:
     equity["timestamp"] = pd.to_datetime(equity["timestamp"], utc=True)
 
     # ---------- config identity ----------
-    expected_ops = {op["path"]: op["value"] for op in lock["candidates"][0]["ops"]}
+    lock_ops = (lock.get("candidates") or [{}])[0].get("ops") or []
+    expected_ops = {op["path"]: op["value"] for op in lock_ops}
     baseline = load_json(BASELINE_CONFIG)
-    mismatched = [p for p, v in expected_ops.items() if get_path(cfg, p) != v]
-    check("candidate ops applied", not mismatched, f"mismatched={mismatched}")
-    baseline_consistent = all(
-        get_path(baseline, op["path"]) == op["baseline"] for op in lock["candidates"][0]["ops"]
+    expect_locked = (
+        run_record.get("locked_ops_applied", True)
+        if args.expect_locked_ops is None
+        else bool(args.expect_locked_ops)
     )
-    check("baseline values match lock record", baseline_consistent)
+    if not lock_ops:
+        check(
+            "no candidate lock, so candidate-geometry checks are skipped",
+            True,
+            f"lock declared: {bool(lock)}",
+        )
+    elif expect_locked:
+        mismatched = [p for p, v in expected_ops.items() if get_path(cfg, p) != v]
+        check("candidate ops applied", not mismatched, f"mismatched={mismatched}")
+        baseline_consistent = all(
+            get_path(baseline, op["path"]) == op["baseline"] for op in lock_ops
+        )
+        check("baseline values match lock record", baseline_consistent)
+    elif args.expect_locked_ops is None:
+        mismatch = [p for p, v in expected_ops.items() if get_path(cfg, p) != v]
+        check(
+            "profile-sourced artifact reproduces the locked candidate geometry",
+            not mismatch,
+            f"profile differs from locked ops on {mismatch}",
+        )
+    else:
+        check(
+            "artifact is not required to carry the locked ops",
+            True,
+            "explicitly disabled for a reference-profile artifact",
+        )
+    if CANDIDATE_CONFIG.exists() and "candidate_config_sha256" in run_record:
+        check(
+            "candidate config sha matches run record",
+            run_record["candidate_config_sha256"] == sha256_file(CANDIDATE_CONFIG),
+        )
+    else:
+        check(
+            "no locked candidate config in this bundle, so that hash check is skipped",
+            "candidate_config_sha256" not in run_record or not CANDIDATE_CONFIG.exists(),
+            f"config_exists={CANDIDATE_CONFIG.exists()} "
+            f"record_key={'candidate_config_sha256' in run_record}",
+        )
+    # The expected execution/cost contract comes from the study's own research
+    # contract, so this check works for any study that declares a scenario matrix
+    # rather than one specific study's module.
+    study_contract = load_json(CONTRACT)
+    primary_scenario = study_contract["primary_scenario"]
+    execution_name, cost_name = study_contract["scenario_matrix"][primary_scenario]
+    expected_execution = study_contract["execution_scenarios"][execution_name]
+    expected_costs = study_contract["cost_scenarios"][cost_name]
     check(
-        "candidate config sha matches run record",
-        run_record["candidate_config_sha256"] == sha256_file(CANDIDATE_CONFIG),
-    )
-    check(
-        "execution/cost contract",
-        cfg["backtest"]["execution_delay_bars"] == 1
-        and cfg["backtest"]["intrabar_fill_order"] == "close_first"
-        and float(cfg["backtest"]["maker_fee_override"]) == 0.0006
-        and float(cfg["backtest"]["taker_fee_override"]) == 0.0008,
+        f"execution/cost contract matches {primary_scenario}",
+        int(cfg["backtest"]["execution_delay_bars"])
+        == int(expected_execution["execution_delay_bars"])
+        and cfg["backtest"]["intrabar_fill_order"] == expected_execution["intrabar_fill_order"]
+        and float(cfg["backtest"]["maker_fee_override"]) == float(expected_costs["maker_fee_override"])
+        and float(cfg["backtest"]["taker_fee_override"]) == float(expected_costs["taker_fee_override"]),
+        f"cfg={cfg['backtest'].get('maker_fee_override')}/{cfg['backtest'].get('taker_fee_override')}"
+        f" @ delay={cfg['backtest'].get('execution_delay_bars')}",
     )
     check(
         "universe is the frozen 40-coin basket",
@@ -269,12 +401,14 @@ def main() -> None:
                 "fees_signed_usd": fees,
                 "net_realized_pnl_usd": realized + fees,
                 "max_abs_wallet_exposure_at_fill": float(sub["wallet_exposure"].abs().max()),
-                "first_fill_utc": sub["timestamp"].iloc[0].isoformat(),
-                "last_fill_utc": sub["timestamp"].iloc[-1].isoformat(),
+                # Space separator, matching the report convention: `isoformat()` would use
+                # `T` and `to_csv` would then re-parse the column and rewrite it.
+                "first_fill_utc": str(sub["timestamp"].iloc[0]),
+                "last_fill_utc": str(sub["timestamp"].iloc[-1]),
             }
         )
     coin_re = pd.DataFrame(coin_re, columns=COIN_COLUMNS).sort_values(
-        "net_realized_pnl_usd", ascending=False
+        "net_realized_pnl_usd", ascending=False, kind="stable"
     ).reset_index(drop=True)
     problems = compare_frames(coin_re, coin_csv, COIN_COLUMNS, 1e-6)
     check("coin_metrics.csv reproduces independently", not problems, "; ".join(problems))
@@ -321,21 +455,40 @@ def main() -> None:
     check("completion ratio 1.0", abs(float(analysis["backtest_completion_ratio"]) - 1.0) < 1e-12)
 
     # ---------- agreement with the study cell that produced the metrics ----------
+    # A cell is only comparable to an artifact that ran the same window. A profile carrying its own
+    # window (`end_date: now`) is a legitimate artifact but is not that cell, so compare the windows
+    # first and say so instead of reporting three misleading failures.
+    cell = load_json(STUDY_CELL)
+    cell_window_name = cell.get("window")
+    cell_dates = load_json(CONTRACT).get("windows", {}).get(cell_window_name)
+    artifact_window = run_record.get("window", {})
+    same_window = bool(cell_dates) and (
+        str(artifact_window.get("start_date")) == str(cell_dates[0])
+        and str(artifact_window.get("end_date")) == str(cell_dates[1])
+    )
     study_metrics = load_json(STUDY_CELL)["metrics"]
-    check(
-        "fills count matches study cell",
-        int(study_metrics["fills"]) == int(len(fills)),
-        f"study={int(study_metrics['fills'])} artifact={len(fills)}",
-    )
-    check(
-        "gain matches study cell",
-        abs(float(study_metrics["gain_strategy_eq"]) - float(analysis["gain_strategy_eq"])) < 1e-9,
-    )
-    check(
-        "drawdown matches study cell",
-        abs(float(study_metrics["minute_close_mdd"]) - float(analysis["drawdown_worst_strategy_eq"])) < 1e-9,
-        f"study={float(study_metrics['minute_close_mdd']):.12f} artifact={float(analysis['drawdown_worst_strategy_eq']):.12f}",
-    )
+    if same_window:
+        check(
+            "fills count matches study cell",
+            int(study_metrics["fills"]) == int(len(fills)),
+            f"study={int(study_metrics['fills'])} artifact={len(fills)}",
+        )
+        check(
+            "gain matches study cell",
+            abs(float(study_metrics["gain_strategy_eq"]) - float(analysis["gain_strategy_eq"])) < 1e-9,
+        )
+        check(
+            "drawdown matches study cell",
+            abs(float(study_metrics["minute_close_mdd"]) - float(analysis["drawdown_worst_strategy_eq"])) < 1e-9,
+            f"study={float(study_metrics['minute_close_mdd']):.12f} artifact={float(analysis['drawdown_worst_strategy_eq']):.12f}",
+        )
+    else:
+        check(
+            "artifact window differs from the compared study cell, so cell agreement is not claimed",
+            True,
+            f"cell={cell_window_name}{cell_dates} "
+            f"artifact={artifact_window.get('start_date')}..{artifact_window.get('end_date')}",
+        )
 
     # ---------- fills ledger sanity ----------
     check("fill timestamps monotonic", bool(fills["timestamp"].is_monotonic_increasing))
@@ -370,6 +523,58 @@ def main() -> None:
         )
     for _, row in coin_csv.head(3).iterrows():
         check(f"report contains top coin {row['coin']}", f"| {row['coin']} |" in report_text)
+
+    # ---------- canonical report structure ----------
+    # `docs/ai/runbooks/strategy_report.md` fixes the section skeleton; enforce it here so a
+    # renderer regression fails verification instead of silently shipping a report that no
+    # longer matches the convention.
+    structure_problems = report_spec.assert_report_structure(report_text)
+    check(
+        "report follows the canonical section skeleton",
+        not structure_problems,
+        "; ".join(structure_problems),
+    )
+    headings = report_spec.report_headings(report_text, include_detail=True)
+    check(
+        "report states scope, overall result, attribution and the period tables",
+        all(
+            heading in headings
+            for heading in (
+                report_spec.HEAD_SCOPE,
+                report_spec.HEAD_OVERALL,
+                report_spec.HEAD_ATTRIBUTION,
+                report_spec.HEAD_ANNUAL,
+                report_spec.HEAD_MONTHLY,
+            )
+        ),
+        f"headings={headings[:6]}",
+    )
+    # The metric CSVs are local-only (gitignored), so pin their schema against the documented
+    # contract here; this fails whenever the writer and the convention drift apart.
+    check(
+        "annual_metrics.csv columns match the report convention",
+        list(annual_csv.columns) == list(report_spec.PERIOD_CSV_COLUMNS),
+        f"extra={[c for c in annual_csv.columns if c not in report_spec.PERIOD_CSV_COLUMNS]} "
+        f"missing={[c for c in report_spec.PERIOD_CSV_COLUMNS if c not in annual_csv.columns]}",
+    )
+    check(
+        "monthly_metrics.csv columns match the report convention",
+        list(monthly_csv.columns) == list(report_spec.PERIOD_CSV_COLUMNS),
+        f"extra={[c for c in monthly_csv.columns if c not in report_spec.PERIOD_CSV_COLUMNS]} "
+        f"missing={[c for c in report_spec.PERIOD_CSV_COLUMNS if c not in monthly_csv.columns]}",
+    )
+    check(
+        "coin_metrics.csv columns match the report convention",
+        list(coin_csv.columns) == list(report_spec.COIN_CSV_COLUMNS),
+        f"extra={[c for c in coin_csv.columns if c not in report_spec.COIN_CSV_COLUMNS]} "
+        f"missing={[c for c in report_spec.COIN_CSV_COLUMNS if c not in coin_csv.columns]}",
+    )
+    detail_headings = report_spec.detail_headings(report_text)
+    check(
+        "report has one per-year detail section per annual row",
+        len(detail_headings) == len(annual_csv),
+        f"details={len(detail_headings)} annual_rows={len(annual_csv)}",
+    )
 
     report()
 

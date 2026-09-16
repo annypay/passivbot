@@ -14,13 +14,14 @@ editing it for an account.
 | --- | --- |
 | `configs/examples/default_trailing_martingale_long.json` | Maintained default. Long-only, 7 slots, `total_wallet_exposure_limit = 1.5`, fast re-entry ladder, HSL disabled. |
 | `configs/examples/trailing_martingale_twel100_ddf060.json` | Lower-tail variant of the default. Same universe, same slots, same exit logic; lower exposure cap and a slower, wider re-entry ladder. |
+| `configs/examples/trailing_martingale_twel100_ddf060_sma20_50.json` | The lower-tail variant plus a daily 20/50-day entry-regime gate. Same strategy and exit logic; entries are additionally blocked while the daily fast SMA is below the slow SMA. |
 
 ## Lower-Tail Variant: `trailing_martingale_twel100_ddf060.json`
 
 ### What Changes
 
 Relative to `default_trailing_martingale_long.json`, exactly three behavioural parameters
-change (plus one optimizer bound, see below):
+change, plus one optimizer bound and three backtest-contract keys (see below):
 
 | Path | Default | This profile | Effect |
 | --- | ---: | ---: | --- |
@@ -28,48 +29,130 @@ change (plus one optimizer bound, see below):
 | `bot.long.strategy.trailing_martingale.entry.double_down_factor` | `0.94` | `0.6` | Each re-entry adds 60% of the current position instead of 94%, so saturating the exposure cap takes many more steps. |
 | `bot.long.strategy.trailing_martingale.entry.threshold_base_pct` | `0.019` | `0.03` | Re-entry spacing widens from 1.9% to 3.0% below the average entry, thinning the ladder during a decline. |
 | `optimize.bounds.long.risk.total_wallet_exposure_limit` | `[1.5, 1.5, 0.01]` | `[0.6, 1.5, 0.01]` | Not a behaviour change: widens the search bound so this profile's own exposure cap is inside its optimizer space. |
+| `backtest.maker_fee_override` | `0.0004` | `0.0002` | States the reported cost contract (Binance USDT-M VIP0 maker, 0.02% per side). |
+| `backtest.taker_fee_override` | `0.00055` | `0.0005` | Same contract, taker side (0.05% per side). Inert here: this profile never sends a market order. |
+| `backtest.execution_delay_bars` | `1` | `0` | Nominal T+1 latency: a signal decoded from bar *t* may fill on bar *t+1*. |
+
+`intrabar_fill_order` stays `close_first` in both.
 
 Everything else is inherited unchanged: the 41-coin candidate universe, `n_positions = 7`,
 `we_excess_allowance_pct = 0.37` (`bounded`), `unstuck` settings, `close` trailing logic, HSL
-present but disabled, `entry.ema_gate_mode = "all"`, and the backtest section.
+present but disabled, and `entry.ema_gate_mode = "all"`.
+
+The three `backtest` keys exist so the shipped profile reproduces the published numbers when it is
+run as-is. They are a cost/latency statement, not a behaviour change, and the taker side of that
+statement is inert: `live.market_orders_allowed = false` and HSL panic closing is disabled, so no
+code path in this profile can emit a taker fill, and slippage never applies.
 
 `tests/test_strategy_profile_example.py` pins that delta: the profile fails validation if it
-drifts away from the three behavioural parameters above, if it stops loading, or if the shipped
-values fall outside their own optimizer bounds.
+drifts away from the three behavioural parameters above, if it stops loading, if its backtest
+contract stops matching the contract its evidence was produced under, or if the shipped values
+fall outside their own optimizer bounds.
 
 ### Evidence
 
 Evidence lives under `backtests/binance/dd_tail_research_2026-09-15/`, which is tracked in the
 repository. Read `tail_drawdown_attribution.md` for the full lever screen and
-`artifacts/backtest_results/binance/<run>/annual_analysis.md` for the profile's own deep
-analysis.
+`artifacts/binance_actual_candidate/backtest_results/binance/<run>/annual_analysis.md` for the
+profile's own deep analysis. `analysis/anti_pattern_audit.md` records the overfitting and
+anti-pattern review, and `analysis/overfitting_audit.json` holds the raw probability-of-backtest-
+overfitting (PBO) numbers.
 
-Both rows below use the same frozen 40-coin basket, the same window (2023-09-12 → 2026-09-12)
-and the same execution/cost contract (T+2 order latency, maker `0.0006` / taker `0.0008`).
+Both rows below use the same frozen dataset (40 coins with usable history out of the config's 41),
+the same window (2023-09-12 → 2026-09-12) and the same execution/cost contract: nominal **T+1**
+order latency with **Binance USDT-M VIP0** fees (maker `0.0002` / taker `0.0005` per side). That is
+contract **v4** in `research_contract_v4.json`.
 
-The shipped profile does **not** change any `backtest` setting: it keeps the template's
-`maker_fee_override`, `taker_fee_override` and nominal T+1 latency. The contract above is what the
-study that produced these numbers enforced, so reproducing the evidence means also applying those
-overrides rather than running the profile with its own defaults. At nominal T+1 and the template's
-lower maker fee the candidate's outcome is better, not worse — the study deliberately reports the
-conservative contract.
+The two rows are not produced the same way, and the difference matters when reproducing them:
+
+- **This profile** states contract v4 in its own `backtest` block, so
+  `bash backtests/binance/dd_tail_research_2026-09-15/run.sh` reproduces its column with no
+  override. Its artifact bundle, run record and verification live under
+  `artifacts/binance_actual_candidate/`.
+- **The default profile** is the study's baseline. Its column is the frozen baseline config
+  evaluated under the same v4 contract, which the study applies explicitly; its own artifact
+  bundle lives under `artifacts/binance_actual_baseline/`. The template file itself is unchanged:
+  it still keeps its historical `maker_fee_override = 0.0004` and `taker_fee_override = 0.00055`
+  at the same nominal T+1 latency. Those are the settings its own optimizer and parity tests were
+  built around, and the study records the reported contract rather than editing the maintained
+  default. The residual difference is small and one-directional: `0.0002` is the lower maker
+  assumption, so the baseline column is marginally optimistic about the *baseline*, which makes
+  the comparison below slightly conservative for this profile.
+
+Both columns are reproducible from the tracked evidence:
+
+```bash
+bash backtests/binance/dd_tail_research_2026-09-15/run.sh              # this profile's column
+bash backtests/binance/dd_tail_research_2026-09-15/run.sh --baseline   # the default's column
+```
 
 | Metric | Default profile | This profile |
 | --- | ---: | ---: |
-| Worst minute-close equity drawdown | 80.64% | 31.01% |
-| Gain multiple | 6.0558x | 2.8722x |
-| CAGR | +82.25% | +42.14% |
-| Longest underwater | 179.0 days | 1.9 days |
-| Worst half-year return | -5.69% | +6.45% |
-| Positive half-years | 5 / 6 | 6 / 6 |
-| Fills | 68,266 | 52,797 |
+| Worst minute-close equity drawdown | 73.16% | **32.92%** |
+| Gain multiple | 12.2068x | 2.6097x |
+| CAGR | +130.21% | +37.67% |
+| Longest underwater | 171.9 days | 25.6 days |
+| Worst half-year return | +20.73% | +11.37% |
+| Positive half-years | 6 / 6 | 6 / 6 |
+| Fills | 69,799 | 47,857 |
 
 On a locked, never-before-opened one-year holdout (2025-09-12 → 2026-09-12, same contract) the
-default profile drew down 80.93% at -27.55% CAGR while this profile drew down 13.90% at +33.55%
+default profile drew down 20.96% at +134.96% CAGR while this profile drew down 10.68% at +30.09%
 CAGR. The candidate was frozen in `holdout_candidate_lock.json` before that window was evaluated.
 
 The trade is explicit: **lower tail risk at materially lower upside.** Read the trade-off as
-risk-shape, not as an upgrade.
+risk-shape, not as an upgrade. The default profile earns roughly three times the multiple inside
+this window; it also spends 172 days underwater versus 26, and its worst drawdown is 2.2x deeper.
+
+#### Sensitivity: does the conclusion survive a harsher contract?
+
+The same two profiles were replayed under the superseded **v3** contract (T+2 latency, maker
+`0.0006` / taker `0.0008`, i.e. one extra bar of latency and 3x the maker fee). Only contract
+numbers move between the two blocks; the ranking does not.
+
+| Contract | Window | Default drawdown | Default CAGR | Profile drawdown | Profile CAGR |
+| --- | --- | ---: | ---: | ---: | ---: |
+| v4 (T+1, Binance VIP0) | full | 73.16% | +130.21% | 32.92% | +37.67% |
+| v3 (T+2, 3x maker) | full | 80.64% | +82.25% | 31.01% | +42.14% |
+| v4 (T+1, Binance VIP0) | holdout | 20.96% | +134.96% | 10.68% | +30.09% |
+| v3 (T+2, 3x maker) | holdout | 80.93% | −27.55% | 13.90% | +33.55% |
+
+Under the harsher contract the candidate looks slightly *better* (31.01% drawdown, +42.14% CAGR
+over the full window; 13.90% / +33.55% on the holdout) while the default profile degrades sharply,
+turning the holdout negative. The candidate is the less latency- and fee-sensitive of the two,
+which is the expected consequence of trading a wider ladder at a lower exposure cap. Do not mix
+rows from the two contract blocks in a single table — they are different simulations.
+
+#### Selection fragility
+
+The lever screen behind this profile searched 38 single-lever and combo variants plus the
+baseline. A combinatorially symmetric cross-validation (CSCV) over those 39 curves gives a
+probability of backtest overfitting (PBO) between **0.116 and 0.229** depending on the number of
+blocks (8/10/12/16), with the in-sample-best curve's Sharpe falling from ~7.2–7.8 in sample to
+~4.5 out of sample (slope −0.26 to −0.51). Read that as: the screen carries real signal, but
+picking the single best cell from it is fragile. The profile is published as a documented
+trade-off with a holdout behind it, not as the screen's optimum — the locked candidate is
+deliberately mid-pack on CAGR.
+
+Splitting the full window at the lock date makes the selection bias visible. Inside the
+in-sample selection window (2023-09-12 → 2025-09-12, v4 contract) the default profile compounds at
++128.57% CAGR against this profile's +41.40% — a 3.1x advantage, and the same ratio the full window
+shows. In the locked holdout the default profile goes to −27.55% CAGR while this profile stays at
++30.09%: the return edge that made the default look superior inside the sample does not survive
+out of it, while this profile's edge is smaller but keeps its sign. Max drawdown keeps the same
+ordering in both windows (73.16% vs 32.92% in-sample; 20.96% vs 10.68% on the holdout). The
+in-sample return gap is substantially market beta, not durable skill; that is what the fragility
+numbers below are measuring.
+
+CSCV needs a rectangle, so the panel is the intersection of the months every curve covers: 20 of
+the 37 monthly buckets, 2023-09 → 2025-05. The narrow window is not a choice — the `unstuck_off`
+cell liquidates in April 2025 and stops producing returns, and the intersection is what survives.
+That single curve is the only configuration whose monthly series ends early, and it is recorded
+in `overfitting_audit.json` under `panel.truncated_cells`. The 20 surviving months still contain
+the 2025 drawdown event, so the panel is not a quiet-period artifact: the baseline's worst month
+(`2025-02`, −31.90%) and the crash month (`2025-03`, −19.26%) are both inside it. The cost of
+the rectangle is the other direction — the panel ends in 2025-05 and therefore does not cover
+the final sixteen months of the full window at all.
 
 ### Reproducibility Boundaries
 
@@ -78,20 +161,115 @@ return forecast, and the profile is not published as a recommendation to run liv
 
 1. **Fill model.** Limit orders fill in full at their limit price and are booked as maker when
    the candle's high/low strictly crosses them. There is no order-book queue, partial fill,
-   spread, or cancel race.
-2. **Latency.** The evidence contract uses T+2 (one extra completed bar before an order can
-   fill). Nominal T+1 results are more optimistic; see the sensitivity table in the study
-   report.
+   spread, or cancel race. Both profiles are maker-only, so the taker fee and the slippage
+   setting never bind.
+2. **Latency.** The reported contract is nominal T+1. A T+2 replay is retained as a stress
+   reference; see the sensitivity table above.
 3. **Backtest-only hint.** With `close.retracement_base_pct > 0` the close path can still use the
    next candle's high/low to decide whether to expand a recursive close ladder. Live has no such
    candle.
 4. **Parameter time travel.** The parameters were selected from studies run in 2026 and replayed
    over history that starts in 2023. The holdout above is genuinely unseen, but the three-year
-   window is not.
+   window is not. The selection-fragility numbers above are the quantified version of this
+   caveat.
 5. **Liquidation.** `liquidated = false` is a simulation outcome, not a margin guarantee: mark
    price, maintenance-margin tiers, funding, and venue behavior are not modelled.
 
-### Maintenance And Iteration
+## Gated Variant: `trailing_martingale_twel100_ddf060_sma20_50.json`
+
+### What Changes
+
+Relative to `trailing_martingale_twel100_ddf060.json`, the profile adds exactly one block and
+changes nothing else:
+
+| Path | Base | This profile | Effect |
+| --- | ---: | ---: | --- |
+| `backtest.entry_regime_gate.enabled` | absent | `true` | Turns the filter on. |
+| `backtest.entry_regime_gate.sma_fast_days` | absent | `20` | Fast daily SMA. |
+| `backtest.entry_regime_gate.sma_slow_days` | absent | `50` | Slow daily SMA. |
+| `backtest.entry_regime_gate.confirm_days` | absent | `0` | No extra confirmation: the cross alone decides. |
+
+`block_initial` and `block_reentry` are stated explicitly as `true`, which is also their default.
+
+`tests/test_strategy_profile_example.py` pins that delta, and
+`tests/test_live_entry_regime_gate.py` pins the live contract for the same key.
+
+The gate is a **filter, not a signal**. It can only suppress an entry: closes, panic closes, and
+auto-unstuck are untouched, so a risk-off day can always reduce or exit a position and simply
+cannot add risk. See [Strategy Runtime Contracts](ai/features/strategy_runtime.md) for the
+causality contract.
+
+### Evidence
+
+Evidence lives under `backtests/binance/returns_guarded_dd_research_2026-09-16/`, which is tracked
+in the repository. That study screens return-preserving ways to tighten the tail drawdown of this
+family; the gate is its only lever that lowers drawdown without lowering the return *capability* of
+the underlying strategy, because it removes trades rather than rescaling them. The gated cell is
+`g4_sma20_50`, and its artifact bundle (report, metric tables, figures and fill panels) is under
+`artifacts/best_dd_reducer/`.
+
+This profile also has a standalone artifact and deep analysis at
+`backtests/binance/g4_sma20_50_replay_2026-09-16/`, which replays the **published file** and reports
+it next to the un-gated profile and the un-gated default. Rebuild it with:
+
+```bash
+bash backtests/binance/g4_sma20_50_replay_2026-09-16/run.sh
+```
+
+One reproducibility boundary belongs here rather than only in the report. The published profile is an
+*operational* config: its backtest window is open-ended (`start_date = 2021-04-20`,
+`end_date = "now"`), it approves 41 candidate coins on both sides, and its data source lists two
+exchanges. The recorded evidence is a *fixed* three-year, single-exchange, 40-coin dataset. Running
+the file unmodified therefore does **not** reproduce the numbers in this section; the replay retargets
+the data identity (`backtest.exchanges`, `start_date`, `end_date`, `coins`, `cache_dir`, `base_dir`
+and `live.approved_coins`) and names every one of those retargets in its own report. No strategy,
+risk, exit or gate parameter is retargeted.
+
+All rows below share one frozen dataset (40 coins), one window (2023-09-12 → 2026-09-12) and one
+execution/cost contract: nominal T+1 with Binance USDT-M VIP0 fees (maker `0.0002` / taker
+`0.0005`).
+
+| Metric | Default profile | Lower-tail profile | This profile |
+| --- | ---: | ---: | ---: |
+| Worst minute-close equity drawdown | 73.16% | 32.92% | **10.52%** |
+| CAGR | +130.21% | +37.67% | +27.82% |
+| Gain multiple | 12.2068x | 2.6097x | 2.089x |
+| Longest underwater | 171.9 days | 25.6 days | 2.9 days |
+
+The trade is again explicit: the gate costs about a quarter of the lower-tail profile's CAGR and
+buys a threefold cut in its worst drawdown. Read it as a different risk shape, not an upgrade.
+
+#### Does the gate's advantage generalize?
+
+The gate was screened on the same window it is measured on, so the study re-evaluated the same
+four configurations on windows the screen never touched. One of them is genuinely new information:
+
+| Window | This profile | Lower-tail profile |
+| --- | ---: | ---: |
+| `stress` 2021-06-01 → 2026-09-11, drawdown | **11.50%** | 32.95% |
+| `stress`, CAGR | +23.83% | +42.71% |
+| Holdout 2025-09-12 → 2026-09-12, drawdown | 9.83% | 10.82% |
+| Holdout, CAGR | +22.07% | +32.65% |
+| Superseded contract (T+2, maker `0.001`), drawdown | 22.52% | 31.33% |
+| Superseded contract, CAGR | +26.43% | +36.96% |
+
+The drawdown advantage holds in all three, including a window that starts two years before the
+screened one. The cost is visible too: under the harsher execution contract this profile spends
+**116 days underwater** where the lower-tail profile spends about a day, because the gate's exits
+are the strategy's own and the filter only thins entries.
+
+#### What the gate is not
+
+- It is not event protection. The 2025 drawdown event is a fast, broad decline; a daily filter
+  reacts to it late. The gain comes from carrying less risk into sustained downtrends.
+- It does not raise the return ceiling. Splitting the same long arm into a long/short flip (short
+  entries taken where this gate blocks longs) was measured in the same study and made both
+  drawdown and CAGR worse in every budgeted variant, with the short leg's realized PnL negative
+  over the window. Funding is not modelled, so that result is optimistic for the short side.
+- It is not free capital efficiency. The blocked entries are simply absent; idle capital is part of
+  the cost.
+
+## Maintenance And Iteration
 
 - Changing any of the three behavioural parameters changes the risk shape. After a change,
   re-run the study rather than only the profile backtest, because the published summary numbers
@@ -104,11 +282,21 @@ return forecast, and the profile is not published as a recommendation to run liv
 
   The script rebuilds the candidate config from the locked ops, runs the backtest, renders
   `annual_analysis.md` plus the three metric tables, and verifies the report against the
-  artifacts.
+  artifacts. Re-run `report_tools/audit_overfitting.py` to refresh the PBO numbers.
+- Changing the reported contract means a new contract version, not an edit to the current one:
+  add a `<regime>` block to `contract_regimes`, keep the old block frozen, and update the profile,
+  the test, and this page together.
 - To add a new variant: copy an existing profile, change only the parameters that define the
   trade-off, add a row to the table above, record the profile in
   `tests/test_strategy_profile_example.py`, and keep the study evidence under `backtests/`
   following `backtests/readme.md`.
+- The gated profile is derived: to retune or re-window its gate, edit the gate block here and the
+  cell declaration in `backtests/binance/returns_guarded_dd_research_2026-09-16/report_tools/run_study.py`
+  together, then re-run that study. Leaving them apart makes the published numbers untraceable.
+- The standalone replay pins the gate as a declaration: it aborts unless the frozen config runs with
+  `entry_regime_gate` enabled and matching the declared 20/50 parameters, because an ungated run is a
+  different strategy (about 29% worst drawdown instead of about 10.5%). It also aborts if the run did
+  not read the frozen bundle or if its log shows market-data fetching.
 - Strategy semantics themselves are contracts, not profile knobs. Read
   [Strategy Runtime Contracts](ai/features/strategy_runtime.md) before changing entry, close,
   risk, or unstuck behaviour, and

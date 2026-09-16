@@ -1650,6 +1650,10 @@ impl<'a> Backtest<'a> {
                         trailing_available: true,
                         last_increase_fill_timestamp_ms: self.last_increase_fill_timestamp_long
                             [idx],
+                        // Placeholder: refreshed for every symbol on every bar in
+                        // `get_orchestrator_input_cached`.
+                        regime_allows_initial_entry: true,
+                        regime_allows_reentry: true,
                         bot_params: self.bot_params[idx].long.clone(),
                         strategy_params: None,
                         parsed_strategy_params: Some(self.strategy_params[idx].long),
@@ -1662,6 +1666,8 @@ impl<'a> Backtest<'a> {
                         trailing_available: true,
                         last_increase_fill_timestamp_ms: self.last_increase_fill_timestamp_short
                             [idx],
+                        regime_allows_initial_entry: true,
+                        regime_allows_reentry: true,
                         bot_params: self.bot_params[idx].short.clone(),
                         strategy_params: None,
                         parsed_strategy_params: Some(self.strategy_params[idx].short),
@@ -1784,6 +1790,34 @@ impl<'a> Backtest<'a> {
 
             sym.long.runtime_budget = Some(self.runtime_budget[idx].long.clone());
             sym.short.runtime_budget = Some(self.runtime_budget[idx].short.clone());
+
+            // Entry-regime gate: refreshed here rather than when the orchestrator
+            // input cache is built, because this loop is the only place that runs
+            // for every symbol on every bar.
+            sym.long.regime_allows_initial_entry = self.regime_gate_allows_entries(
+                k,
+                idx,
+                0,
+                self.bot_params[idx].long.entry_regime_gate.block_initial,
+            );
+            sym.long.regime_allows_reentry = self.regime_gate_allows_entries(
+                k,
+                idx,
+                0,
+                self.bot_params[idx].long.entry_regime_gate.block_reentry,
+            );
+            sym.short.regime_allows_initial_entry = self.regime_gate_allows_entries(
+                k,
+                idx,
+                1,
+                self.bot_params[idx].short.entry_regime_gate.block_initial,
+            );
+            sym.short.regime_allows_reentry = self.regime_gate_allows_entries(
+                k,
+                idx,
+                1,
+                self.bot_params[idx].short.entry_regime_gate.block_reentry,
+            );
 
             let mut mode_long: Option<orchestrator::TradingMode> = self.configured_mode(idx, LONG);
             let mut mode_short: Option<orchestrator::TradingMode> =
@@ -5027,6 +5061,27 @@ impl<'a> Backtest<'a> {
             twe_short,
             twe_net,
         });
+    }
+
+    /// Regime gate lookup for one coin/side at bar `k`.
+    ///
+    /// `block` is the side's declared gate policy: `false` means that side is
+    /// never gated, so the common configuration costs one branch per bar and no
+    /// timestamp work at all.
+    fn regime_gate_allows_entries(&self, k: usize, coin: usize, pside: usize, block: bool) -> bool {
+        if !block {
+            return true;
+        }
+        let gate = if pside == 0 {
+            &self.bot_params[coin].long.entry_regime_gate
+        } else {
+            &self.bot_params[coin].short.entry_regime_gate
+        };
+        if !gate.enabled {
+            return true;
+        }
+        let stamp = self.first_timestamp_ms + (k as u64) * self.interval_ms;
+        gate.is_on(stamp)
     }
 
     fn update_trailing_prices(&mut self, k: usize) {

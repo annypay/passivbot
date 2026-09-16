@@ -70,10 +70,18 @@ or order-construction work; it is not mandatory for unrelated documentation or t
    Quantities and position sizes are signed internally.
 5. Preserve EMA spans as floats, including derived spans.
 6. Keep changes narrow. Preserve unrelated user files and pre-existing worktree changes.
+7. Persist a strategy research deep analysis under the binding layout, file names and dataset
+   placement in [the strategy report runbook](docs/ai/runbooks/strategy_report.md). The report, the
+   metric CSVs, the figures and the fill panels go into the dated run directory they describe;
+   HLCV arrays stay in `caches/hlcvs_data/` and the run records their identity instead of copying
+   them. Never write a report to a separate reports tree, never rename these artifacts, and treat
+   a layout-check failure as an incomplete bundle.
 
 ## Working And Validation
 
 Before broad edits, inspect the branch, recent commits, worktree status, and relevant callers/tests.
+Before running a backtest for a report, read `docs/ai/runbooks/strategy_report.md`; it fixes both the
+report's sections and the on-disk artifact layout, including image and dataset placement.
 For reviews against a moving branch, refresh the target ref and record the reviewed SHAs.
 
 When disagreeing with pull-request review feedback, do not silently discard the finding. If the

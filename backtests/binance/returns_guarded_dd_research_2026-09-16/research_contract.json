@@ -1,0 +1,4256 @@
+{
+  "amendments": [
+    "combos: G5 cells appended in one batch after G1-G3 results were read, before any combination cell ran. Gates, windows, the 40-coin universe and the execution/cost regime were never edited.",
+    "per-cell `config_sha256` added. It is a derived field describing the config `run` executed and `bundle` emits; no cell, gate, window, universe or execution/cost setting was edited."
+  ],
+  "cell_matrix_sha256": "8b70e2162d4b3a7add87708e84c70e5823ba4784c52dfc3d81d0d8c9e798359d",
+  "cells": [
+    {
+      "cell_id": "published",
+      "config_sha256": "ac1c83fb3fa4ec454add93356eaf7b6383d6663f68c80bebaf77b07320387b4e",
+      "group": "G0_reference",
+      "ops": []
+    },
+    {
+      "cell_id": "g1_ddf070",
+      "config_sha256": "99a96236def6750f3cd3fe2f3c46d7d62b5d45c1bee4625561246341b98208dd",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_ddf050",
+      "config_sha256": "d8845b05cd579c1023744be92ea0161acf030c279e02c17ad8ab2faf167068b5",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_thr02500",
+      "config_sha256": "c882b57b3293805dd5cd1f6c64cff0e006fe13ac2b4d030c430ddb53c6e04569",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.03,
+          "value": 0.025
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_thr04000",
+      "config_sha256": "d0eb7450bf4f5713e37915349037929e3ef99a6cb654ed49c1d085e190edff16",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.03,
+          "value": 0.04
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_thr05000",
+      "config_sha256": "fb38451dd2c97647318e3ce103862cc3f32cdb7033a69377d9b40cc5b04bb6e9",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.03,
+          "value": 0.05
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_rw000",
+      "config_sha256": "281051cb706a95b1712012dea83cf4427342db6d8df04c4d9c36380741f38180",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.334,
+          "value": 0.0
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_rw070",
+      "config_sha256": "5bb583b907041b94dfa4b44711820e0f9988e5910b9345694cd9ebd0afce454e",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.334,
+          "value": 0.7
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_tw105",
+      "config_sha256": "54dbe00157d4e9f886003a3e0b323599f29e1a2b06498228e4319fae51d82d5f",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 1.05
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_tw090",
+      "config_sha256": "904935c0b4e1beddc7a6bdecdfa2fd63b2f9866babbb369e388bbc9ba429a7b0",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_tw080",
+      "config_sha256": "4227294106351c7927b0a8bb6801e2e90586508ea4ced58e39cb28092852f5e6",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "cell_id": "g1_allow020",
+      "config_sha256": "4fd4c9ce00b0714f2387cafcc31d3659f840124804ecd3811814b9f3224b21e0",
+      "group": "G1_geometry",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "seed": 0.37,
+          "value": 0.2
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_la005",
+      "config_sha256": "b166bc0c1b5413d4708c221a734b7eefe1d5f7f812c4c7bdc520f526782d46f1",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "seed": 0.0052,
+          "value": 0.05
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_la010",
+      "config_sha256": "47344ead917db4b4cc5ab7360d3f8db5e237256635d510ef86d1f7edb9eb0447",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "seed": 0.0052,
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_dist020",
+      "config_sha256": "d1b362be501e5fbebfcb1bab2e4f018e5b120fc3eb773d8953c5770c4d3b6683",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "seed": -0.0269,
+          "value": -0.2
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_thr025",
+      "config_sha256": "4688c657a187ac31284c5c124746db61f0d4475257b4c7be8bd05d26d1bf1b03",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.threshold",
+          "seed": 0.466,
+          "value": 0.25
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_cp010",
+      "config_sha256": "6b1a42ccc1478955b107fc18be86213369d195d3118bca92b063a26232374965",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.close_pct",
+          "seed": 0.041,
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_wide_la010_d020",
+      "config_sha256": "621cf5d32ade8aa21e10c82d9edd220d8b88a1c068c22f32c59aca8005163353",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "seed": -0.0269,
+          "value": -0.2
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "seed": 0.0052,
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_wide_la010_d020_t025",
+      "config_sha256": "25993a80536e1d477b78593355ea26a3867ceb3a6c65164be87b9e234d8bac37",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "seed": -0.0269,
+          "value": -0.2
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "seed": 0.0052,
+          "value": 0.1
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.threshold",
+          "seed": 0.466,
+          "value": 0.25
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_wide_la005_d010",
+      "config_sha256": "2dbc976009985826f7ee4dcbb3c0d10b46edccdeb7c41a749776fe16fc4defbe",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "seed": -0.0269,
+          "value": -0.1
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "seed": 0.0052,
+          "value": 0.05
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_wide_span050",
+      "config_sha256": "b5efeadd5c6f0ba11094258fc4d69047fe102dde81d9e136bdea38e8de191aaa",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "seed": -0.0269,
+          "value": -0.2
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_span_0",
+          "seed": 790.0,
+          "value": 360.0
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_span_1",
+          "seed": 1080.0,
+          "value": 720.0
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "seed": 0.0052,
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_wide_span200",
+      "config_sha256": "c76daedea36a41d8c4c55b2258db5c2173c9d04e794e053d4a0fff349f4bb999",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "seed": -0.0269,
+          "value": -0.2
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_span_0",
+          "seed": 790.0,
+          "value": 2000.0
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_span_1",
+          "seed": 1080.0,
+          "value": 2880.0
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "seed": 0.0052,
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "cell_id": "g2_force_la050_d050",
+      "config_sha256": "1bfd19ea32bc45b24bf62ce0a3432221b8402fe030fe0d3f6077033bd6bb6c2d",
+      "group": "G2_stop",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.ema_dist",
+          "seed": -0.0269,
+          "value": -0.5
+        },
+        {
+          "op": "set",
+          "path": "bot.long.unstuck.loss_allowance_pct",
+          "seed": 0.0052,
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "cell_id": "g3_qty050",
+      "config_sha256": "0c9f3fb544a21056ebed3fc1639bf21313cba32b30ff408f079fc45774733ac7",
+      "group": "G3_scaleout",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.84,
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "cell_id": "g3_qty070",
+      "config_sha256": "6e345d106d6709886f5e60285b5b42200aed42704f29c5766722a26dd026541b",
+      "group": "G3_scaleout",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.84,
+          "value": 0.7
+        }
+      ]
+    },
+    {
+      "cell_id": "g3_qty100",
+      "config_sha256": "636d43e8fca4423bf7c03295694a04054f2bd8213d198cbf0def0d79ec370255",
+      "group": "G3_scaleout",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.84,
+          "value": 1.0
+        }
+      ]
+    },
+    {
+      "cell_id": "g3_crw0005",
+      "config_sha256": "ac05676cfa5c09c09af24529a86a42e11be956fa537e571786a07904bb3cd220",
+      "group": "G3_scaleout",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.0005
+        }
+      ]
+    },
+    {
+      "cell_id": "g3_crw001",
+      "config_sha256": "dc6e6a99ec733215a3e9fabe14ebd5f46877679eb0f29472214d23748ea8886b",
+      "group": "G3_scaleout",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.001
+        }
+      ]
+    },
+    {
+      "cell_id": "g3_cth0020",
+      "config_sha256": "8c827bf87a86be1c73312253791ca599022c878c267d85e086bb250ee83903b2",
+      "group": "G3_scaleout",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.0027,
+          "value": 0.002
+        }
+      ]
+    },
+    {
+      "cell_id": "g3_cth0000",
+      "config_sha256": "eb3319a57f5120364b31db3c5fbef6b2de0fa83bb0507c0ab9a522e7e7cf9940",
+      "group": "G3_scaleout",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.0027,
+          "value": 0.0
+        }
+      ]
+    },
+    {
+      "cell_id": "g4_sma30_60",
+      "config_sha256": "a7a4c983314f4d48e519bb98479249715d96bbe7b3433953328f6f7920cee3f0",
+      "entry_regime_gate": {
+        "enabled": true,
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "group": "G4_regime_gate",
+      "ops": []
+    },
+    {
+      "cell_id": "g4_sma30_60_initial_only",
+      "config_sha256": "781d97d7eb9832c487263953ced27db3f905631536084925e96a7ce70ae712e8",
+      "entry_regime_gate": {
+        "block_initial": true,
+        "block_reentry": false,
+        "enabled": true,
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "group": "G4_regime_gate",
+      "ops": []
+    },
+    {
+      "cell_id": "g4_sma30_60_reentry_only",
+      "config_sha256": "15fd9318feac3838ea72b470c8a06b5df726da9960099821ed356559f302b494",
+      "entry_regime_gate": {
+        "block_initial": false,
+        "block_reentry": true,
+        "enabled": true,
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "group": "G4_regime_gate",
+      "ops": []
+    },
+    {
+      "cell_id": "g4_sma20_50",
+      "config_sha256": "75c9244f1f39f4086fdb2cfd289e423e7f6f22e50ba889a41865f98212c549d8",
+      "entry_regime_gate": {
+        "enabled": true,
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "group": "G4_regime_gate",
+      "ops": []
+    },
+    {
+      "cell_id": "g4_sma10_30_confirm3",
+      "config_sha256": "3478512317f3e6b81a57123085b6d137390821710b273a0867194e3d64e50d45",
+      "entry_regime_gate": {
+        "confirm_days": 3,
+        "enabled": true,
+        "sma_fast_days": 10,
+        "sma_slow_days": 30
+      },
+      "group": "G4_regime_gate",
+      "ops": []
+    },
+    {
+      "cell_id": "g4_sma5_20",
+      "config_sha256": "9508c5c24961685056ebbededd6dd91bf0fed7aaf5764211676c7394b0864a0d",
+      "entry_regime_gate": {
+        "enabled": true,
+        "sma_fast_days": 5,
+        "sma_slow_days": 20
+      },
+      "group": "G4_regime_gate",
+      "ops": []
+    },
+    {
+      "cell_id": "g4_sma60_120",
+      "config_sha256": "52a4f075403053c39d2b4a95d2f1c3acdbe3c8957c80c27ac5282a3c4a17884e",
+      "entry_regime_gate": {
+        "enabled": true,
+        "sma_fast_days": 60,
+        "sma_slow_days": 120
+      },
+      "group": "G4_regime_gate",
+      "ops": []
+    },
+    {
+      "cell_id": "g4_sma1_2",
+      "config_sha256": "dd7df9b9c66e4fb7538a9691a3d6a6f62d0a2d6bdd6ec2017e568328b4ab52d6",
+      "entry_regime_gate": {
+        "enabled": true,
+        "sma_fast_days": 1,
+        "sma_slow_days": 2
+      },
+      "group": "G4_regime_gate",
+      "ops": []
+    },
+    {
+      "cell_id": "g6_probe_hedge",
+      "config_sha256": "7b23aa7fa618154cc6224616bb788c347e48009ae184c04a2e14b6349f053296",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.0_probe",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0081
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_probe_oneway",
+      "config_sha256": "794a82be2df633f8cd63e47bed963e052e82a38bc8a6901874e47ba8e93ec4ed",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.0_probe",
+      "hedge_mode": false,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0081
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_ctrl_both_always",
+      "config_sha256": "150c032e51a4645aa77f544f44de0c7726a3982f5bd6281683c75146a54759a6",
+      "gate_mode": "",
+      "group": "G6.1_confound",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0081
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_ctrl_short_only",
+      "config_sha256": "b9f144bad62eedc58d55e9ccbd90220a514f4459217f4a38fb0f1d9a7212c0eb",
+      "gate_mode": "",
+      "group": "G6.1_confound",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.6
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_flip_20_50",
+      "config_sha256": "7b23aa7fa618154cc6224616bb788c347e48009ae184c04a2e14b6349f053296",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.2_gate",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0081
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_flip_30_60",
+      "config_sha256": "123b1b85185a0c27cecd80afdcf460f559f0960ca252183f0823a61183099e70",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.2_gate",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0081
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_flip_20_50_tw060",
+      "config_sha256": "19ff8c0ebea3d1d7290f80a6f13510282f6b5422c1496a25b7c38340e3647392",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.3_short_budget",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.6
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.012150000000000001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_flip_20_50_tw030",
+      "config_sha256": "9fd7d65b74e2334acb93d4991cc1b2973604e089dbdd04230547a5b35cc4ff1f",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.3_short_budget",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.3
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.024300000000000002
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_flip_20_50_aggr",
+      "config_sha256": "7b23aa7fa618154cc6224616bb788c347e48009ae184c04a2e14b6349f053296",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.4_short_geometry",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0081
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_flip_20_50_cons",
+      "config_sha256": "7b23aa7fa618154cc6224616bb788c347e48009ae184c04a2e14b6349f053296",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.4_short_geometry",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0081
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_g20_50_tw035",
+      "config_sha256": "40cd720801c4040415f1bd8cf68c8ef98666fabca03c6bc05b0c0b2ee8578419",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.35
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.020828571428571432
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_g20_50_tw025",
+      "config_sha256": "7d9dc7a1dc11067e80acc79f996788c0087b3771921ff79f1c5a2c1aab416d8c",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.25
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.029160000000000002
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_g20_50_tw015",
+      "config_sha256": "aed48871fdf119c0e93098b184d79aac30fdb5bd30b454ca74c48e5dcee8cdc6",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.15
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.048600000000000004
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_g20_50_tw010",
+      "config_sha256": "f1bbbd984b8fdb1a899e43c1221228dd62586ec3f46aa9aba71992882d69fd72",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.1
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0729
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_g30_60_tw035",
+      "config_sha256": "a1e710bec08e7918601abff834403b4689f29c3decb92a1ce3bc3cd1b55f2ed5",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.35
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.020828571428571432
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_g30_60_tw025",
+      "config_sha256": "1f82f0cf096a0492277ca28d6ba5a958500076be5f088a4547a2c1807a88fbc0",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.25
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.029160000000000002
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_g30_60_tw015",
+      "config_sha256": "0d418198516bf3ace0799db8f9f174255eba1362a804ebdb45aa481e0323850d",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.15
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.048600000000000004
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_g30_60_tw010",
+      "config_sha256": "29454930bcc3f6b99ba5c5195939d091976bc399683f74f00f2f0e15bae79e9d",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": true,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.1
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.0729
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g6_bud_oneway_g20_50_tw025",
+      "config_sha256": "a5d3234f7398f247649537dd23b6097a6feccf19f9c076dcdba772f6cd643e66",
+      "entry_regime_gate": {
+        "enabled": true,
+        "gate_mode": "invert_for_short",
+        "sma_fast_days": 20,
+        "sma_slow_days": 50
+      },
+      "gate_mode": "invert_for_short",
+      "group": "G6.5_budgeted_flip",
+      "hedge_mode": false,
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.total_wallet_exposure_limit",
+          "seed": 0.0,
+          "value": 0.25
+        },
+        {
+          "op": "set",
+          "path": "bot.short.risk.we_excess_allowance_pct",
+          "seed": 0.0,
+          "value": 0.37
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.qty_pct",
+          "seed": 0.05,
+          "value": 0.84
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_base_pct",
+          "seed": 0.0,
+          "value": 0.0005
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 22.95
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 52.34
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.02,
+          "value": -0.0027
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 0.48
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 3.22
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.close.threshold_we_weight",
+          "seed": -0.1,
+          "value": -0.0001
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.2,
+          "value": 0.7
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_gate_mode",
+          "seed": "all",
+          "value": "all"
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_0",
+          "seed": 60.0,
+          "value": 790.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.ema_span_1",
+          "seed": 60.0,
+          "value": 1080.0
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_ema_dist",
+          "seed": -0.1,
+          "value": 0.0028
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.initial_qty_pct",
+          "seed": 0.005,
+          "value": 0.029160000000000002
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_base_pct",
+          "seed": -0.01,
+          "value": 0.0008
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 15.5
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 50.42
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.retracement_we_weight",
+          "seed": 0.0,
+          "value": 0.334
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.001,
+          "value": 0.03
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1h_weight",
+          "seed": 0.01,
+          "value": 4.58
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_volatility_1m_weight",
+          "seed": 0.01,
+          "value": 17.68
+        },
+        {
+          "op": "set",
+          "path": "bot.short.strategy.trailing_martingale.entry.threshold_we_weight",
+          "seed": 0.0,
+          "value": 1.007
+        }
+      ],
+      "sides": [
+        "long",
+        "short"
+      ]
+    },
+    {
+      "cell_id": "g5_tw090_thr040",
+      "config_sha256": "3c64493ceb51815393b5e91b4a0e135117dbcb90c0b89a6ca9e132ad0df77254",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.03,
+          "value": 0.04
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_tw095_thr035",
+      "config_sha256": "38fe4f8a1cdefe4743d299e55e3dc6788d5ae9b8ce97b5b7bec5da342f32e128",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.95
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.03,
+          "value": 0.035
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_tw090_ddf070",
+      "config_sha256": "6433358faf1c6a9bae3a4f318209b0bd9d7beb0173d33ba81c942472bdd83d13",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_tw095_cth000",
+      "config_sha256": "c8565f5bf56d4762fcef06aef2daf03ac348c52332c5e464657ea87704af44d2",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.95
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.0027,
+          "value": 0.0
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_thr035_cth000",
+      "config_sha256": "b3d5d8f7ba5ba21dae47c56e78b0769cace5c8f2bc93b7d37e9831f4699b1a6f",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.0027,
+          "value": 0.0
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.03,
+          "value": 0.035
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_ddf070_cth000",
+      "config_sha256": "a03e054eb80e85cfaa9d3fcadc1b1aac92dde0a17692d0ad02bd6034a8f24802",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.0027,
+          "value": 0.0
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_tw095_ddf070_cth000",
+      "config_sha256": "1632f2f8ed8dcb9fa622ba5aa54e1782f0ce9b0d95c14801319b1d69f18b439d",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.95
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.0027,
+          "value": 0.0
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.double_down_factor",
+          "seed": 0.6,
+          "value": 0.7
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_tw090_thr035_cth000",
+      "config_sha256": "b4a259b7548f605dd3a2fa2c107d1ecb25e8734c69499c2612dd8a563689a39c",
+      "group": "G5_combo",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.close.threshold_base_pct",
+          "seed": -0.0027,
+          "value": 0.0
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.03,
+          "value": 0.035
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_gate_tw095_thr035",
+      "config_sha256": "1a7df0181cf4fea2dc531f552634894403455b48c439e4969da5677a8ca77b9a",
+      "entry_regime_gate": {
+        "enabled": true,
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "group": "G5_combo_gated",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.95
+        },
+        {
+          "op": "set",
+          "path": "bot.long.strategy.trailing_martingale.entry.threshold_base_pct",
+          "seed": 0.03,
+          "value": 0.035
+        }
+      ]
+    },
+    {
+      "cell_id": "g5_gate_tw090",
+      "config_sha256": "34ec7affa3a903edb83343db64e595805c9a2ba706de60382e96b2393b480e40",
+      "entry_regime_gate": {
+        "enabled": true,
+        "sma_fast_days": 30,
+        "sma_slow_days": 60
+      },
+      "group": "G5_combo_gated",
+      "ops": [
+        {
+          "op": "set",
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "seed": 1.0,
+          "value": 0.9
+        }
+      ]
+    }
+  ],
+  "cost_scenarios": {
+    "binance_actual": {
+      "maker_fee_override": 0.0002,
+      "taker_fee_override": 0.0005
+    },
+    "conservative": {
+      "maker_fee_override": 0.0006,
+      "taker_fee_override": 0.0008
+    },
+    "reference": {
+      "maker_fee_override": 0.0004,
+      "taker_fee_override": 0.00055
+    },
+    "severe": {
+      "maker_fee_override": 0.001,
+      "taker_fee_override": 0.0012
+    }
+  },
+  "excluded_by_design": [
+    "MFE giveback re-test: implemented natively as close.retracement_base_pct and already rejected by maxdd_strategy_research_2026-09-14 (mfe_enabled_for_final_training=false)",
+    "account-level mark-to-market brake: implemented and measured worse than a static exposure cap in dd_tail_research_2026-09-15 (Phase B)",
+    "Deribit put tail hedge: no local option-chain history",
+    "short-side hedging: prior studies measured -8.4%..-9.1% CAGR"
+  ],
+  "execution_scenarios": {
+    "C1": {
+      "execution_delay_bars": 0,
+      "intrabar_fill_order": "close_first"
+    },
+    "C2": {
+      "execution_delay_bars": 0,
+      "intrabar_fill_order": "entry_first"
+    },
+    "C3": {
+      "execution_delay_bars": 1,
+      "intrabar_fill_order": "close_first"
+    },
+    "C4": {
+      "execution_delay_bars": 1,
+      "intrabar_fill_order": "entry_first"
+    }
+  },
+  "extreme_scenario": "C3_severe",
+  "gates": {
+    "cagr_floor_full": 0.25,
+    "cagr_floor_valid": 0.15,
+    "completion_ratio_min": 0.999,
+    "longest_underwater_days_max": 180.0,
+    "mdd_max_full": 0.3,
+    "mdd_max_valid": 0.3,
+    "positive_halfyears_min": 10,
+    "traded_coin_count_min": 3,
+    "worst_halfyear_return_min": -0.08
+  },
+  "half_year_edges": [
+    "2023-09-12",
+    "2024-03-12",
+    "2024-09-12",
+    "2025-03-12",
+    "2025-09-12",
+    "2026-03-12",
+    "2026-09-12"
+  ],
+  "half_year_edges_stress": [
+    "2021-01-01",
+    "2021-07-01",
+    "2022-01-01",
+    "2022-07-01",
+    "2023-01-01",
+    "2023-07-01",
+    "2024-01-01",
+    "2024-07-01",
+    "2025-01-01",
+    "2025-07-01",
+    "2026-01-01",
+    "2026-07-01",
+    "2026-09-11"
+  ],
+  "locked_windows": [
+    "holdout",
+    "fresh",
+    "stress"
+  ],
+  "primary_scenario": "C1_binance_actual",
+  "purpose": "return-preserving drawdown reduction for the default trailing-martingale profile: can the three-year return multiple be kept while the worst mark-to-market drawdown is capped near 30%?",
+  "reference": {
+    "config_path": "backtests/binance/2026-09-14T03_40_41/config.json",
+    "config_sha256": "9c186ff09427298123d94d78d4135cd4983a098118e2a1dacdf6a14bf19a7ac9",
+    "drawdown_worst_strategy_eq": 0.7368846120975687,
+    "gain_strategy_eq": 11.087553396657242,
+    "run_dir": "backtests/binance/2026-09-14T03_40_41"
+  },
+  "safety": {
+    "bot_start": false,
+    "credentials": false,
+    "exchange_account_or_orders": false,
+    "network": false
+  },
+  "scenario_matrix": {
+    "C1_binance_actual": [
+      "C1",
+      "binance_actual"
+    ],
+    "C1_reference": [
+      "C1",
+      "reference"
+    ],
+    "C3_binance_actual": [
+      "C3",
+      "binance_actual"
+    ],
+    "C3_conservative": [
+      "C3",
+      "conservative"
+    ],
+    "C3_severe": [
+      "C3",
+      "severe"
+    ]
+  },
+  "seed": {
+    "config_path": "configs/examples/trailing_martingale_twel100_ddf060.json",
+    "config_sha256": "be16e816a46c73e66b36509fa65452022252ff3cc0a7304f6ff3a90d256e155d",
+    "role": "published lower-tail profile; grids are patches against it because it is the closest known geometry to the <=30% drawdown goal"
+  },
+  "sequential_protocol": "fit and full windows may be run freely; holdout, fresh and stress may only be run after holdout_candidate_lock.json exists. The lock records the selected cells and the artifact hashes it was derived from, and the lock mtime must precede every locked-window cell mtime.",
+  "universe": [
+    "AAVE",
+    "ADA",
+    "ALGO",
+    "APT",
+    "ARB",
+    "ASTER",
+    "ATOM",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "CC",
+    "DOGE",
+    "DOT",
+    "ENA",
+    "ETH",
+    "FIL",
+    "GRAM",
+    "HBAR",
+    "HYPE",
+    "INJ",
+    "KAS",
+    "LINK",
+    "LTC",
+    "MORPHO",
+    "NEAR",
+    "ONDO",
+    "POL",
+    "RENDER",
+    "SOL",
+    "SUI",
+    "TAO",
+    "TON",
+    "TRX",
+    "UNI",
+    "WLD",
+    "XLM",
+    "XMR",
+    "XRP",
+    "ZEC"
+  ],
+  "universe_policy": "same 40-coin frozen basket for every window and cell; new listings join the tradable set only after their first candle, mirroring the baseline dataset",
+  "version": 1,
+  "windows": {
+    "fit": [
+      "2023-09-12",
+      "2025-09-12"
+    ],
+    "fresh": [
+      "2026-06-13",
+      "2026-09-11"
+    ],
+    "full": [
+      "2023-09-12",
+      "2026-09-12"
+    ],
+    "holdout": [
+      "2025-09-12",
+      "2026-09-12"
+    ],
+    "stress": [
+      "2021-06-01",
+      "2026-09-11"
+    ]
+  }
+}

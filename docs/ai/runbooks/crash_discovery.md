@@ -5,7 +5,7 @@ backtest/optimizer scenario suites. Keep output under
 `crash_finder_results/<date>_crash_scenarios/`; it is working research material and is not committed by
 default. Studies whose conclusions are cited by a shipped strategy profile are the exception: their
 reports, scripts, contracts, locks and metric summaries are tracked under `backtests/` so the profile
-stays traceable. See `backtests/readme.md` and `docs/strategy_profiles.md`.
+stays traceable. See `../../../backtests/readme.md` and `../../strategy_profiles.md`.
 
 ## Modes And Semantics
 

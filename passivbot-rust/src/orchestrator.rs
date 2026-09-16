@@ -53,6 +53,7 @@ mod core {
         StrategySide,
     };
     use crate::types::{
+        default_true,
         BotParams, BotParamsPair, EMABands, ExchangeParams, OrderBook, OrderType, Position,
         RuntimeBudgetState, RuntimeOrderContext, StateParams, TrailingPriceBundle,
         TwelEnforcerPolicy,
@@ -394,6 +395,16 @@ mod core {
         pub trailing_available: bool,
         #[serde(default)]
         pub last_increase_fill_timestamp_ms: Option<u64>,
+        /// Entry-regime gate: true when the precomputed regime permits new
+        /// positions at the current bar. `backtest.rs` is the only producer today;
+        /// live callers leave the default, so the AND below is a no-op there.
+        /// Defaults to true, so an absent field never blocks.
+        #[serde(default = "default_true")]
+        pub regime_allows_initial_entry: bool,
+        /// Entry-regime gate: true when the regime permits adding to an existing
+        /// position at the current bar.
+        #[serde(default = "default_true")]
+        pub regime_allows_reentry: bool,
         /// Per-symbol/per-pside params after applying coin_overrides.
         pub bot_params: BotParams,
         #[serde(default)]
@@ -2508,6 +2519,22 @@ mod core {
         }
     }
 
+    /// Apply the precomputed entry-regime gate on top of the mode decision.
+    ///
+    /// Deliberately entry-only. Closes, panic, and auto-unstuck keep their own
+    /// independent paths, so a risk-off bar can still exit but cannot add risk.
+    fn regime_allows_entries(
+        has_pos: bool,
+        allows_initial: bool,
+        allows_reentry: bool,
+    ) -> bool {
+        if has_pos {
+            allows_reentry
+        } else {
+            allows_initial
+        }
+    }
+
     fn should_generate_closes(mode: TradingMode, has_pos: bool) -> bool {
         match mode {
             TradingMode::Manual => false,
@@ -3738,7 +3765,12 @@ mod core {
                         closes.push(p);
                     }
                 } else {
-                    let wants_entries = should_generate_entries(mode, has_pos, allow_initial);
+                    let wants_entries = should_generate_entries(mode, has_pos, allow_initial)
+                        && regime_allows_entries(
+                            has_pos,
+                            s.long.regime_allows_initial_entry,
+                            s.long.regime_allows_reentry,
+                        );
                     let wants_closes = should_generate_closes(mode, has_pos);
                     if wants_entries || wants_closes {
                         let (generated_entries, generated_closes, close_inputs_unavailable) =
@@ -3834,7 +3866,12 @@ mod core {
                         closes.push(p);
                     }
                 } else {
-                    let wants_entries = should_generate_entries(mode, has_pos, allow_initial);
+                    let wants_entries = should_generate_entries(mode, has_pos, allow_initial)
+                        && regime_allows_entries(
+                            has_pos,
+                            s.short.regime_allows_initial_entry,
+                            s.short.regime_allows_reentry,
+                        );
                     let wants_closes = should_generate_closes(mode, has_pos);
                     if wants_entries || wants_closes {
                         let (generated_entries, generated_closes, close_inputs_unavailable) =
@@ -4664,6 +4701,8 @@ mod core {
                     strategy_params: None,
                     parsed_strategy_params: None,
                     last_increase_fill_timestamp_ms: None,
+                    regime_allows_initial_entry: true,
+                    regime_allows_reentry: true,
                     runtime_budget: None,
                 },
                 short: SymbolSideInput {
@@ -4675,6 +4714,8 @@ mod core {
                     strategy_params: None,
                     parsed_strategy_params: None,
                     last_increase_fill_timestamp_ms: None,
+                    regime_allows_initial_entry: true,
+                    regime_allows_reentry: true,
                     runtime_budget: None,
                 },
             }
