@@ -9,6 +9,7 @@ single-sided or short-window run produces.
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -219,3 +220,136 @@ def test_report_numbers_come_from_the_context_not_from_constants():
 def test_renderer_requires_a_complete_context():
     with pytest.raises(ValueError):
         spec.render_annual_analysis({"analysis": {}})
+
+# --------------------------------------------------------------------------------------
+# Persisted bundle layout (docs/ai/runbooks/strategy_report.md, "Artifact Persistence")
+# --------------------------------------------------------------------------------------
+
+
+def complete_bundle(root: Path, *, config: dict | None = None, plots: int = 2) -> Path:
+    """A run directory that satisfies the layout contract, for tamper tests."""
+    run = root / "2026-01-02T03_04_05"
+    run.mkdir(parents=True)
+    for name in (*spec.BUNDLE_REPORT_FILES, *spec.BUNDLE_LOCAL_FILES):
+        (run / name).write_text("x", encoding="utf-8")
+    (run / "execution_audit.csv").write_text("decision_index,activation_index,fill_index\n", encoding="utf-8")
+    for name in (*spec.BUNDLE_FIGURE_FILES, *spec.BUNDLE_OPTIONAL_FIGURE_FILES):
+        (run / name).write_bytes(b"\x89PNG")
+    plots_dir = run / "fills_plots"
+    plots_dir.mkdir()
+    for index in range(plots):
+        (plots_dir / f"COIN{index}.png").write_bytes(b"\x89PNG")
+    (run / "config.json").write_text(
+        json.dumps(
+            config
+            if config is not None
+            else {
+                "backtest": {
+                    "execution_audit_path": str(run / "execution_audit.csv"),
+                    "disable_plotting": False,
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    return run
+
+
+def test_complete_bundle_passes_the_layout_check(tmp_path):
+    assert spec.assert_bundle_layout(complete_bundle(tmp_path)) == []
+
+
+def test_layout_rejects_a_missing_artifact(tmp_path):
+    run = complete_bundle(tmp_path)
+    (run / "monthly_metrics.csv").unlink()
+    problems = spec.assert_bundle_layout(run)
+    assert any("monthly_metrics.csv" in problem for problem in problems)
+
+
+def test_layout_rejects_a_missing_required_input(tmp_path):
+    run = complete_bundle(tmp_path)
+    (run / "balance_and_equity.csv.gz").unlink()
+    problems = spec.assert_bundle_layout(run)
+    assert any("balance_and_equity.csv.gz" in problem for problem in problems)
+
+
+def test_layout_rejects_a_run_directory_that_is_not_a_utc_timestamp(tmp_path):
+    run = complete_bundle(tmp_path)
+    renamed = run.parent / "latest"
+    run.rename(renamed)
+    problems = spec.assert_bundle_layout(renamed)
+    assert any("UTC completion timestamp" in problem for problem in problems)
+
+
+def test_layout_rejects_a_report_outside_its_run_directory(tmp_path):
+    run = complete_bundle(tmp_path)
+    (run / "annual_analysis.md").unlink()
+    problems = spec.assert_bundle_layout(run)
+    assert any("annual_analysis.md" in problem for problem in problems)
+
+
+def test_layout_rejects_a_missing_figure(tmp_path):
+    run = complete_bundle(tmp_path)
+    (run / "drawdown.png").unlink()
+    problems = spec.assert_bundle_layout(run)
+    assert any("drawdown.png" in problem for problem in problems)
+
+
+def test_layout_accepts_a_disabled_figure_group(tmp_path):
+    run = complete_bundle(tmp_path, config={
+        "backtest": {
+            "execution_audit_path": str(tmp_path / "2026-01-02T03_04_05/execution_audit.csv"),
+            "disable_plotting": "pnl,hard_stop",
+        }
+    })
+    (run / "pnl_cumsum.png").unlink()
+    (run / "hard_stop_drawdown.png").unlink()
+    assert spec.assert_bundle_layout(run) == []
+
+
+def test_layout_rejects_a_figure_whose_group_is_disabled(tmp_path):
+    run = complete_bundle(tmp_path, config={
+        "backtest": {
+            "execution_audit_path": str(tmp_path / "2026-01-02T03_04_05/execution_audit.csv"),
+            "disable_plotting": "pnl",
+        }
+    })
+    problems = spec.assert_bundle_layout(run)
+    assert any("pnl_cumsum.png" in problem for problem in problems)
+
+
+def test_layout_rejects_an_empty_plot_directory(tmp_path):
+    run = complete_bundle(tmp_path, plots=0)
+    problems = spec.assert_bundle_layout(run)
+    assert any("fills_plots" in problem for problem in problems)
+
+
+def test_layout_rejects_a_missing_execution_audit(tmp_path):
+    run = complete_bundle(tmp_path)
+    (run / "execution_audit.csv").unlink()
+    problems = spec.assert_bundle_layout(run)
+    assert any("execution_audit_path" in problem for problem in problems)
+
+
+def test_disabled_plot_groups_matches_the_backtest_tokens():
+    assert spec.disabled_plot_groups({}) == set()
+    assert spec.disabled_plot_groups({"backtest": {"disable_plotting": "coin_fills"}}) == {"coin_fills"}
+    summary = spec.disabled_plot_groups({"backtest": {"disable_plotting": "summary"}})
+    assert summary == {"balance", "twe", "pnl", "hard_stop"}
+    assert spec.disabled_plot_groups({"backtest": {"disable_plotting": True}}) >= {
+        "balance",
+        "twe",
+        "pnl",
+        "hard_stop",
+        "coin_fills",
+    }
+
+
+def test_expected_bundle_files_tracks_the_disabled_groups():
+    full = spec.expected_bundle_files({"backtest": {"disable_plotting": False}})
+    assert "drawdown.png" in full and "pnl_cumsum.png" in full
+    assert set(spec.BUNDLE_REPORT_FILES) <= set(full)
+    assert set(spec.BUNDLE_PLOT_DIRS) <= set(full)
+    reduced = spec.expected_bundle_files({"backtest": {"disable_plotting": "pnl"}})
+    assert "pnl_cumsum.png" not in reduced
+    assert "drawdown.png" in reduced

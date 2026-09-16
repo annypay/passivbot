@@ -80,3 +80,86 @@ def test_release_hygiene_trigger_is_always_routed():
     assert "Ask for explicit permission" in principles
     assert "Version selection, release trigger, release preparation, or publication" in router
     assert release_runbook.is_file()
+
+
+REPORT_SPEC = Path(__file__).resolve().parents[1] / "backtests" / "report_spec"
+
+
+#: Sentences the persistence contract must keep. Each one is a rule that would silently disappear
+#: from an agent's instructions if the prose were edited without re-reading it.
+PERSISTENCE_CONTRACTS = (
+    # the section exists at all
+    "## Artifact Persistence And On-Disk Format",
+    # Rule 1: one report, one run, one directory
+    "The report is always named annual_analysis.md",
+    "not a claim about the window length",
+    "never into a separate reports tree",
+    "the date on a report's folder is the date that run was produced",
+    # Rule 2: fixed names and locations, figures included
+    "| Deep analysis report | `<run dir>/annual_analysis.md` |",
+    "| Summary figures | `<run dir>/<figure>.png` |",
+    "| Per-coin fill panels | `<run dir>/fills_plots/<COIN>.png` |",
+    "Figure names are the backtest's, not the study's",
+    "never move a report out of its run directory",
+    # Rule 3: dataset identity instead of copies
+    "HLCV arrays are never copied into a study or a run directory",
+    "records the identity that reproduces them",
+    # Rule 4: one run per bundle
+    "refuses to guess",
+    # Rule 5: tracked versus local
+    "Tracked evidence versus reproducible output",
+    "Never paste host-specific absolute paths into tracked evidence",
+    # Rule 6: enforced in code
+    "assert_bundle_layout",
+    # report-level rules the persisted format depends on
+    "is never printed as `nan`",
+    "State where the strategy was actually active",
+)
+
+
+def test_deep_analysis_persistence_contract_stays_routed_and_complete():
+    """The on-disk format is a contract, not a convention of habit."""
+    runbook = " ".join(
+        (AI_DOCS_DIR / "runbooks" / "strategy_report.md").read_text(encoding="utf-8").split()
+    )
+    for contract in PERSISTENCE_CONTRACTS:
+        assert contract in runbook, contract
+
+    # It must stay reachable from the two places an agent actually reads first.
+    router = " ".join((AI_DOCS_DIR / "README.md").read_text(encoding="utf-8").split())
+    assert "where its artifacts, figures and dataset" in router
+
+    agents = " ".join(
+        (Path(__file__).resolve().parents[1] / "AGENTS.md").read_text(encoding="utf-8").split()
+    )
+    assert "dated run directory they describe" in agents
+    assert "a layout-check failure as an incomplete bundle" in agents
+
+
+def test_bundle_layout_constants_match_the_documented_names():
+    """Rule 6 names the executable contract; the module must define exactly those names."""
+    import sys
+
+    if str(REPORT_SPEC) not in sys.path:
+        sys.path.insert(0, str(REPORT_SPEC))
+    import annual_analysis as spec
+
+    assert spec.BUNDLE_REPORT_FILES == (
+        "annual_analysis.md",
+        "annual_metrics.csv",
+        "monthly_metrics.csv",
+        "coin_metrics.csv",
+    )
+    for name in (
+        "analysis.json",
+        "config.json",
+        "dataset.json",
+        "fills.csv",
+        "balance_and_equity.csv.gz",
+    ):
+        assert name in spec.BUNDLE_LOCAL_FILES
+    # The audit path is study-configured, so it must not be pinned as a run-directory file.
+    assert "execution_audit.csv" not in spec.BUNDLE_LOCAL_FILES
+    assert spec.BUNDLE_PLOT_DIRS == ("fills_plots",)
+    assert "drawdown.png" in spec.BUNDLE_FIGURE_FILES
+    assert set(spec.BUNDLE_FIGURE_GROUPS) == {"balance", "twe", "pnl", "hard_stop"}

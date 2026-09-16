@@ -390,6 +390,12 @@ Cargo.lock
 !/backtests/**/*.py
 !/backtests/**/*.sh
 !/backtests/**/*.json
+# One-shot authoring scratch (`_patch_*.py`, `_probe_*.py`, `_diag_*.py`, ...) is written
+# against the generating host, carries its absolute paths and is not reproducible from the
+# study input. The studies keep the helper module their tools import. This rule sits after the
+# re-includes above because the last matching pattern decides.
+/backtests/**/report_tools/_*
+!/backtests/**/report_tools/_study_module.py
 # Per-run bookkeeping trees hold one compiled runtime config plus a copy of the same
 # metadata for every individual run; the study-level manifests already index them.
 /backtests/**/runs/
@@ -400,6 +406,9 @@ Cargo.lock
 /backtests/**/dataset.json
 /backtests/**/study_input_config.json
 /backtests/**/candidate.config.json
+# The artifact-bundle runner emits the config it hands the CLI under this name; it is as
+# reproducible and as host-path-carrying as the other compiled configs above.
+/backtests/**/emitted.config.json
 # Global catch-alls from this file apply here too (results*, historical_data, caches).
 /backtests/**/[Rr]esults*
 /historical_data

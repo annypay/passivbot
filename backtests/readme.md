@@ -22,6 +22,9 @@ Not tracked (large, regenerable from the tracked inputs plus the local HLCV cach
 - compiled runtime configs (`config.json`, `config.original.json`, `dataset.json`,
   `study_input_config.json`, `candidate.config.json`), which are large, carry the generating
   host's paths, and are reproducible from the study inputs.
+- one-shot authoring scratch in a study's `report_tools/` (`_patch_*.py`, `_probe_*.py`,
+  `_diag_*.py`, ...), which is written against the generating host and is not reproducible from
+  the study input; the importable helper a study's tools load (`_study_module.py`) is kept.
 
 The exact allowlist lives in the `/backtests` section of the repository `.gitignore`.
 To check a path before committing:
@@ -32,7 +35,9 @@ git check-ignore -v backtests/binance/<study>/<path>
 
 Files that are tracked may still contain absolute paths recorded at generation time (for
 example `dataset.json`-derived entries inside a locked contract). Those are historical
-records of the generating host; they do not affect reproduction.
+records of the generating host; they do not affect reproduction. A study's own frozen run config
+does not lean on that licence: it states where it writes its run directory and its execution audit
+repository-relative, so a fresh checkout reproduces the run without editing a host path.
 
 ## Current studies
 
@@ -44,16 +49,39 @@ records of the generating host; they do not affect reproduction.
 | `binance/maxdd_strategy_research_2026-09-14` | Strategy-path and parameter search under a drawdown cap, plus walk-forward validation. |
 | `binance/deployability_research_2026-09-15` | Multi-coin economics, execution stress, and portfolio assembly on a small universe. |
 | `binance/dd_tail_research_2026-09-15` | Why the default profile draws down 73.69% and which configuration levers reduce the tail; produces the published lower-tail profile. |
+| `binance/hsl_npos1_analysis_2026-09-16` | What the published HSL-enabled trailing-martingale example actually did over its own declared window (2021-04-20 .. 2026-09-12): the rule set traded for 30 days, hit a hard stop on 2021-05-19, and produced no further fills for the remaining 1,942 days. Its deep analysis is the reference for that profile. |
+| `binance/returns_guarded_dd_research_2026-09-16` | Whether the three-year return multiple survives a ~30% drawdown cap: a 48-cell screen over ladder geometry, path-dependent stops, scale-out shape, and a new strictly causal daily-SMA entry-regime gate, plus the measured drawdown/return frontier. |
+| `binance/g4_sma20_50_replay_2026-09-16` | Standalone deep analysis of the published gated profile: replays `trailing_martingale_twel100_ddf060_sma20_50.json` offline over the frozen bundle and reports it next to the un-gated profile and the study cell. |
 
-## Reproducing the published profile
+## Reproducing the published profiles
 
-The published profile is `configs/examples/trailing_martingale_twel100_ddf060.json`, which
-differs from `configs/examples/default_trailing_martingale_long.json` in three behavioural
-parameters, one optimizer bound, and the three `backtest` keys that state the reported
-execution/cost contract. See `docs/strategy_profiles.md` for the parameter table, the evidence
-summary, and the reproducibility boundaries.
+The published profiles are:
+
+- `configs/examples/trailing_martingale_twel100_ddf060.json`, which differs from
+  `configs/examples/default_trailing_martingale_long.json` in three behavioural parameters, one
+  optimizer bound, and the three `backtest` keys that state the reported execution/cost contract.
+- `configs/examples/trailing_martingale_twel100_ddf060_sma20_50.json`, which is the profile above
+  plus a daily 20/50 entry-regime gate, and nothing else. Its standalone artifact and deep analysis
+  are `binance/g4_sma20_50_replay_2026-09-16/`.
+
+See `docs/strategy_profiles.md` for the parameter tables, the evidence summary, and the
+reproducibility boundaries. Both profiles are reproducible from the studies below: the lower-tail
+profile from `dd_tail_research_2026-09-15`, and the gated profile from the `best_dd_reducer` bundle
+of `returns_guarded_dd_research_2026-09-16` (study cell `g4_sma20_50`) or, standalone, from
+`g4_sma20_50_replay_2026-09-16`.
 
 ```bash
+# Return-preserving drawdown screen (48 cells, offline local HLCV).
+cd "$(git rev-parse --show-toplevel)"
+venv/bin/python backtests/binance/returns_guarded_dd_research_2026-09-16/report_tools/run_study.py \
+  run --cells all --windows full --scenarios C1_binance_actual
+venv/bin/python backtests/binance/returns_guarded_dd_research_2026-09-16/report_tools/render_tables.py
+
+# Artifact bundles plus their deep-analysis reports, then verify both.
+bash backtests/binance/returns_guarded_dd_research_2026-09-16/run.sh
+bash backtests/binance/returns_guarded_dd_research_2026-09-16/run.sh --cells seed --force
+bash backtests/binance/returns_guarded_dd_research_2026-09-16/run.sh --verify-only
+
 # Rebuild the locked candidate's artifact bundle, render its report, and verify the numbers.
 bash backtests/binance/dd_tail_research_2026-09-15/run.sh --label candidate
 
@@ -61,8 +89,16 @@ bash backtests/binance/dd_tail_research_2026-09-15/run.sh --label candidate
 bash backtests/binance/dd_tail_research_2026-09-15/run.sh --baseline --label baseline
 bash backtests/binance/dd_tail_research_2026-09-15/run.sh --profile configs/examples/<name>.json
 
-# Or run just the backtest for the profile itself, with its own window and fees.
+# Or run just the backtest for a profile itself, with its own window and fees.
 passivbot backtest configs/examples/trailing_martingale_twel100_ddf060.json
+passivbot backtest configs/examples/trailing_martingale_twel100_ddf060_sma20_50.json
+
+# Rebuild and verify the gated profile's bundle inside the study (study cell `g4_sma20_50`).
+bash backtests/binance/returns_guarded_dd_research_2026-09-16/run.sh --cells best_dd_reducer --force
+
+# The gated profile's standalone deep analysis, with its own bundle and verifier.
+bash backtests/binance/g4_sma20_50_replay_2026-09-16/run.sh
+bash backtests/binance/g4_sma20_50_replay_2026-09-16/run.sh --verify-only
 ```
 
 Every `run.sh` mode runs the frozen study window and the reported contract, so the bundles are
@@ -94,6 +130,18 @@ refuses to guess when there is more than one. Re-running into a bundle therefore
 directory rather than piling up beside it; point the tooling at a specific run with `--result-dir`
 if you want to keep several.
 
+`returns_guarded_dd_research_2026-09-16/run.sh` enforces that one-run-per-bundle rule: a
+`--force` re-run clears the bundle's previous run directory before the new backtest
+starts, because the run directory is named from the completion timestamp and a second
+one would otherwise make the report tooling refuse to pick.
+
+That study's bundles run the full figure set. The analytical artifacts (analysis,
+config, fills, balance/equity, dataset) are written before the figure tail, so if the
+tail is killed the bundle still renders and verifies; `run_record.json` records both
+the process exit code and an `artifact_status`, and each run directory carries a copy
+of the streamed `execution_audit.csv` that the verifier cross-checks against
+`fills.csv`.
+
 The verifier compares the artifact's window against the cell's window before claiming agreement, so
 a bundle run over a different window reports that difference instead of failing three metric checks.
 `passivbot backtest` on the same profile is a different exercise: it uses the profile's own window
@@ -116,10 +164,18 @@ default profile nor the lower-tail profile has one.
 
 ## Report format
 
-Deep analyses use the fixed section order, table columns and data conventions defined in
-`docs/ai/runbooks/strategy_report.md`, rendered by `backtests/report_spec/annual_analysis.py`.
+Deep analyses use the fixed section order, table columns, data conventions and **on-disk artifact
+layout** defined in `docs/ai/runbooks/strategy_report.md`, rendered by
+`backtests/report_spec/annual_analysis.py`.
 `verify_annual_report.py` recomputes every reported number from the fills ledger and equity series
-and checks that skeleton, so a report that drifts from the convention fails verification. The frozen
+and checks that skeleton, so a report that drifts from the convention fails verification.
+
+The runbook's "Artifact Persistence And On-Disk Format" section is the normative answer to where a
+report, its figures, its fills panels and its dataset identity live. Its executable half is
+`BUNDLE_REPORT_FILES`, `BUNDLE_LOCAL_FILES`, `BUNDLE_FIGURE_FILES`, `BUNDLE_PLOT_DIRS` and
+`assert_bundle_layout` in `backtests/report_spec/annual_analysis.py`, checked by
+`tests/test_annual_analysis_report_spec.py` and `tests/test_ai_docs.py`. HLCV arrays stay in
+`caches/hlcvs_data/`; a run records their identity in its `dataset.json` instead of copying them. The frozen
 reference sample is `binance/2026-09-14T03_25_14/annual_analysis.md`.
 
 ## Evidence boundaries

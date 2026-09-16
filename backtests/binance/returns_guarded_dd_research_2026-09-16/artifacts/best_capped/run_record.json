@@ -1,0 +1,146 @@
+{
+  "alignment": {
+    "aligned": true,
+    "cell_id": "g5_tw090_ddf070",
+    "cell_result_found": true,
+    "checked": true,
+    "compared": {
+      "drawdown_worst_strategy_eq": {
+        "abs_delta": 1.1102230246251565e-16,
+        "analysis_key": "drawdown_worst_strategy_eq",
+        "bundle": 0.2899393913318835,
+        "cell": 0.2899393913318834,
+        "cell_key": "minute_close_mdd"
+      },
+      "fills_count": {
+        "abs_delta": 0.0,
+        "analysis_key": "fills_count",
+        "bundle": 48264.0,
+        "cell": 48264.0,
+        "cell_key": "fills"
+      },
+      "gain_strategy_eq": {
+        "abs_delta": 0.0,
+        "analysis_key": "gain_strategy_eq",
+        "bundle": 2.512816960012561,
+        "cell": 2.512816960012561,
+        "cell_key": "gain_strategy_eq"
+      },
+      "n_days": {
+        "abs_delta": 0.0,
+        "analysis_key": "n_days",
+        "bundle": 1095.9986111111111,
+        "cell": 1095.9986111111111,
+        "cell_key": "analysis_n_days"
+      }
+    },
+    "mismatches": [],
+    "note": "bundle minute-close metrics must equal the screening cell's because the bundle runs the same window, cost regime and universe",
+    "scenario": "C1_binance_actual",
+    "window": "full"
+  },
+  "artifact_status": "partial_plotting_tail",
+  "backtest_exit_code": -9,
+  "bundle": "best_capped",
+  "candidate_lock": null,
+  "candidate_lock_note": "this study performs no candidate lock and opens no holdout window; each bundle reproduces a screening cell under the frozen research contract",
+  "cell_config_sha256": "6433358faf1c6a9bae3a4f318209b0bd9d7beb0173d33ba81c942472bdd83d13",
+  "cell_id": "g5_tw090_ddf070",
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "elapsed_s": 117.9975516796112,
+  "emitted_config": "backtests/binance/returns_guarded_dd_research_2026-09-16/artifacts/best_capped/emitted.config.json",
+  "emitted_config_sha256": "20a642605f9087481cb334b1f65d378df26831a43d4a25e210893fdb10f84b3a",
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "label": "best_capped",
+  "missing_artifacts": [],
+  "plotting": "summary figures enabled, per-coin panels disabled (--disable_plotting <none>); analytical artifacts are written before the figure tail",
+  "render_exit_code": 0,
+  "render_stderr": [],
+  "render_stdout": [
+    "wrote backtests/binance/returns_guarded_dd_research_2026-09-16/artifacts/best_capped/backtest_results/binance_best_capped/binance/2026-09-16T09_42_34/annual_analysis.md",
+    "wrote annual_metrics.csv (4 rows)",
+    "wrote monthly_metrics.csv (37 rows)",
+    "wrote coin_metrics.csv (39 rows)"
+  ],
+  "required_artifacts": [
+    "analysis.json",
+    "config.json",
+    "fills.csv",
+    "balance_and_equity.csv.gz",
+    "dataset.json",
+    "execution_audit.csv",
+    "balance_and_equity.png",
+    "balance_and_equity_logy.png",
+    "total_wallet_exposure.png",
+    "pnl_cumsum.png"
+  ],
+  "run_dir": "backtests/binance/returns_guarded_dd_research_2026-09-16/artifacts/best_capped/backtest_results/binance_best_capped/binance/2026-09-16T09_42_34",
+  "rust_identity": {
+    "compiled_path": "/home/mrseven2204/passivbot/venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "expected_source_fingerprint": "b4bae6e2db348de837f77736e5100d6373a9b99d8c176fbc604a872daf46c69a",
+    "stamped_source_fingerprint": "b4bae6e2db348de837f77736e5100d6373a9b99d8c176fbc604a872daf46c69a"
+  },
+  "safety": {
+    "bot_start": false,
+    "credentials": false,
+    "exchange_account_or_orders": false,
+    "network_downloads": false
+  },
+  "scenario": "C1_binance_actual",
+  "universe": {
+    "coins": [
+      "AAVE",
+      "ADA",
+      "ALGO",
+      "APT",
+      "ARB",
+      "ASTER",
+      "ATOM",
+      "AVAX",
+      "BCH",
+      "BNB",
+      "BTC",
+      "CC",
+      "DOGE",
+      "DOT",
+      "ENA",
+      "ETH",
+      "FIL",
+      "GRAM",
+      "HBAR",
+      "HYPE",
+      "INJ",
+      "KAS",
+      "LINK",
+      "LTC",
+      "MORPHO",
+      "NEAR",
+      "ONDO",
+      "POL",
+      "RENDER",
+      "SOL",
+      "SUI",
+      "TAO",
+      "TON",
+      "TRX",
+      "UNI",
+      "WLD",
+      "XLM",
+      "XMR",
+      "XRP",
+      "ZEC"
+    ],
+    "exchange": "binance"
+  },
+  "window": {
+    "end_date": "2026-09-12",
+    "name": "full",
+    "start_date": "2023-09-12"
+  }
+}

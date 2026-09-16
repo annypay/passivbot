@@ -370,7 +370,13 @@ def build_period_table(equity: pd.DataFrame, fills: pd.DataFrame, freq: str) -> 
         else:
             coverage = COVERAGE_FULL
         rows.append(summarize_period(labels[idx], coverage, equity, fills, start, end))
-    return pd.DataFrame(rows, columns=PERIOD_CSV_COLUMNS)
+    frame = pd.DataFrame(rows, columns=PERIOD_CSV_COLUMNS)
+    # `active_coins` is a comma-joined coin list, not a number. Leaving the column inferred lets
+    # an all-empty slice make it float, and `to_csv`/`read_csv` then turn a period with no fills
+    # into a literal `nan` cell instead of an empty string. Pin the column so the artifact says
+    # what the convention says it says.
+    frame["active_coins"] = frame["active_coins"].fillna("").astype(str)
+    return frame
 
 
 def build_coin_table(fills: pd.DataFrame) -> pd.DataFrame:
@@ -1046,6 +1052,205 @@ def assert_report_structure(text: str) -> list[str]:
         problems.append("结果解读 must be the last section")
     return problems
 # --------------------------------------------------------------------------------------
+# Contract: the persisted artifact bundle
+# --------------------------------------------------------------------------------------
+#
+# Normative prose: `docs/ai/runbooks/strategy_report.md`, section
+# "Artifact Persistence And On-Disk Format". These constants are the machine-readable half of
+# that contract and change together with it.
+#
+# A deep analysis is only authoritative if its numbers can be re-derived from what was left on
+# disk, so the layout is part of the convention rather than an implementation detail.
+
+#: Files the report convention itself produces. Their names are fixed across every study, which is
+#: what makes two bundles diffable; a report whose own directory lacks any of these is not a
+#: completed deep analysis.
+BUNDLE_REPORT_FILES = (
+    "annual_analysis.md",
+    "annual_metrics.csv",
+    "monthly_metrics.csv",
+    "coin_metrics.csv",
+)
+
+#: Files the backtest must have left behind for the report's numbers to be re-derivable.
+#: `config.json` and `dataset.json` record the effective run contract and the dataset identity.
+#: The streamed execution audit is not listed here on purpose: studies place it at a
+#: study-configured path (usually `artifacts/<bundle>/execution_audit.csv`), so the layout check
+#: resolves `backtest.execution_audit_path` from the run's own config instead of pinning a name.
+BUNDLE_LOCAL_FILES = (
+    "analysis.json",
+    "config.json",
+    "dataset.json",
+    "fills.csv",
+    "balance_and_equity.csv.gz",
+)
+
+#: Figure groups a study may disable, keyed by the token `backtest.disable_plotting` accepts, and
+#: the figures each group draws. Mirrors the guards in `src/backtest.py` and the figure keys in
+#: `src/plotting.py`: `create_forager_balance_figures` is what draws the strategy-equity drawdown
+#: figure, so `drawdown.png` belongs to `balance`.
+BUNDLE_FIGURE_GROUPS = {
+    "balance": ("balance_and_equity.png", "balance_and_equity_logy.png", "drawdown.png"),
+    "twe": ("total_wallet_exposure.png",),
+    "pnl": ("pnl_cumsum.png",),
+    "hard_stop": ("hard_stop_drawdown.png",),
+}
+
+#: Figures whose plot group is enabled, so a completed run is expected to carry them.
+BUNDLE_FIGURE_FILES = (
+    "balance_and_equity.png",
+    "drawdown.png",
+    "total_wallet_exposure.png",
+    "pnl_cumsum.png",
+)
+
+#: Figures that are emitted only when a group is enabled *and* the run has data for them
+#: (log-scale balance mode; hard-stop episodes). Present or absent is both valid, but their group
+#: being disabled while they exist is still a contradiction.
+BUNDLE_OPTIONAL_FIGURE_FILES = (
+    "balance_and_equity_logy.png",
+    "hard_stop_drawdown.png",
+)
+
+#: Directories the backtest writes inside the run directory. `fills_plots` holds one panel per
+#: traded coin, named after the coin.
+BUNDLE_PLOT_DIRS = ("fills_plots",)
+
+#: A run directory is named from the backtest's UTC completion timestamp.
+BUNDLE_RUN_DIR_PATTERN = r"^\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}$"
+
+# --------------------------------------------------------------------------------------
+# Contract: bundle layout check
+# --------------------------------------------------------------------------------------
+
+
+def disabled_plot_groups(config: dict[str, Any]) -> set[str]:
+    """Plot groups a run disabled, from `backtest.disable_plotting`.
+
+    Mirrors `src/backtest.py:parse_disabled_plot_groups` for the tokens this convention cares
+    about, so a study does not have to import the backtest module to describe its own bundle.
+    """
+    raw = (config.get("backtest", {}) or {}).get("disable_plotting")
+    if raw in (None, False, "", [], ()):
+        return set()
+    if raw is True:
+        return set(BUNDLE_FIGURE_GROUPS) | {"all", "summary", "coin_fills"}
+    if isinstance(raw, str):
+        tokens = [token.strip().lower() for token in raw.split(",") if token.strip()]
+    elif isinstance(raw, (list, tuple, set)):
+        tokens = [str(token).strip().lower() for token in raw if str(token).strip()]
+    else:
+        return set()
+    out: set[str] = set()
+    for token in tokens:
+        if token in {"true", "all", "y", "yes", "1"}:
+            out.update(BUNDLE_FIGURE_GROUPS)
+            out.add("all")
+        elif token == "summary":
+            out.update({"balance", "twe", "pnl", "hard_stop"})
+        else:
+            out.add(token)
+    return out
+
+
+def expected_bundle_files(config: dict[str, Any] | None = None) -> tuple[str, ...]:
+    """Files a completed run directory must contain, honouring disabled figure groups.
+
+    Optional figures (`BUNDLE_OPTIONAL_FIGURE_FILES`) are excluded: they depend on the run's data
+    as well as its plot groups, so the layout check accepts them either way.
+    """
+    disabled = disabled_plot_groups(config or {})
+    figures = [
+        name
+        for name in BUNDLE_FIGURE_FILES
+        if not any(name in names and group in disabled for group, names in BUNDLE_FIGURE_GROUPS.items())
+    ]
+    return (
+        tuple(BUNDLE_REPORT_FILES)
+        + tuple(BUNDLE_LOCAL_FILES)
+        + tuple(BUNDLE_PLOT_DIRS)
+        + tuple(figures)
+    )
+
+
+def assert_bundle_layout(
+    result_dir: Path,
+    *,
+    config: dict[str, Any] | None = None,
+    expect_plots: bool = True,
+) -> list[str]:
+    """Return layout problems for a run directory; an empty list means the bundle is complete.
+
+    Checks the persisted form of the convention's Rules 1-3:
+
+    * the report and its three metric tables live in the run directory under their fixed names;
+    * the files the numbers are derived from are present, so the report stays re-derivable;
+    * the run directory is the nested or flat shape Rule 1 allows, named by UTC timestamp;
+    * the figure set matches the run's own `disable_plotting`, so a run cannot silently lose
+      panels that a sibling bundle emitted;
+    * the per-coin panels are present when they are expected;
+    * the run's configured `backtest.execution_audit_path` resolves to a real file, so the
+      execution-boundary evidence the report cites actually exists.
+    """
+    result_dir = Path(result_dir)
+    if not result_dir.is_dir():
+        return [f"run directory does not exist: {result_dir}"]
+
+    problems: list[str] = []
+    if not re.match(BUNDLE_RUN_DIR_PATTERN, result_dir.name):
+        problems.append(
+            f"run directory name {result_dir.name!r} is not a UTC completion timestamp; "
+            "a report must live in the dated run directory it describes"
+        )
+
+    for name in BUNDLE_LOCAL_FILES + BUNDLE_REPORT_FILES:
+        if not (result_dir / name).exists():
+            problems.append(f"missing artifact {name}")
+
+    for name in BUNDLE_PLOT_DIRS:
+        directory = result_dir / name
+        if directory.is_dir() and not any(directory.iterdir()):
+            problems.append(f"plot directory {name}/ is empty")
+
+    try:
+        cfg = config if config is not None else load_json(result_dir / "config.json")
+    except (OSError, ValueError, TypeError):
+        cfg = {}
+
+    audit_path = (cfg.get("backtest", {}) or {}).get("execution_audit_path") if cfg else None
+    if audit_path:
+        if not Path(audit_path).exists():
+            problems.append(f"backtest.execution_audit_path points at a missing file: {audit_path}")
+    elif (result_dir / "config.json").exists():
+        problems.append(
+            "backtest.execution_audit_path is not set, so the run left no per-fill execution audit"
+        )
+
+    disabled = disabled_plot_groups(cfg)
+    expected = expected_bundle_files(cfg)
+    for name in (*BUNDLE_FIGURE_FILES, *BUNDLE_OPTIONAL_FIGURE_FILES):
+        present = (result_dir / name).exists()
+        group = next(
+            (grp for grp, names in BUNDLE_FIGURE_GROUPS.items() if name in names), None
+        )
+        if present and group is not None and group in disabled:
+            problems.append(
+                f"figure {name} is present although its plot group {group!r} is disabled in "
+                "backtest.disable_plotting; state the disabled groups in 口径与范围, or keep the figure"
+            )
+        elif not present and group is not None and group not in disabled and name in BUNDLE_FIGURE_FILES:
+            problems.append(f"missing figure {name}")
+
+    if expect_plots and "coin_fills" not in disabled:
+        plots = result_dir / "fills_plots"
+        if not plots.is_dir() or not any(plots.iterdir()):
+            problems.append(
+                "fills_plots/ has no per-coin panels although coin_fills is not disabled"
+            )
+
+    return problems
+
+# --------------------------------------------------------------------------------------
 # Standalone CLI
 # --------------------------------------------------------------------------------------
 
@@ -1097,6 +1302,15 @@ def main(argv: list[str] | None = None) -> int:
         default=True,
         help="write annual/monthly/coin metric CSVs next to the report (default: yes)",
     )
+    parser.add_argument(
+        "--check-layout",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "after writing, assert the persisted bundle matches the layout contract in "
+            "docs/ai/runbooks/strategy_report.md (default: yes)"
+        ),
+    )
     args = parser.parse_args(argv)
 
     result_dir = Path(args.result_dir).resolve()
@@ -1122,6 +1336,13 @@ def main(argv: list[str] | None = None) -> int:
         print(f"wrote annual_metrics.csv ({len(tables['annual'])} rows)")
         print(f"wrote monthly_metrics.csv ({len(tables['monthly'])} rows)")
         print(f"wrote coin_metrics.csv ({len(tables['coins'])} rows)")
+    if args.check_layout:
+        layout_problems = assert_bundle_layout(result_dir, config=context.get("config"))
+        if layout_problems:
+            for problem in layout_problems:
+                print(f"layout problem: {problem}", file=sys.stderr)
+            return 1
+        print("bundle layout: complete")
     return 0
 
 

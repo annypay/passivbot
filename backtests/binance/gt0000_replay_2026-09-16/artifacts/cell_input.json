@@ -1,0 +1,103 @@
+{
+  "cell_id": "g3_cth0000",
+  "coin_count": 40,
+  "coins": [
+    "AAVE",
+    "ADA",
+    "ALGO",
+    "APT",
+    "ARB",
+    "ASTER",
+    "ATOM",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "CC",
+    "DOGE",
+    "DOT",
+    "ENA",
+    "ETH",
+    "FIL",
+    "GRAM",
+    "HBAR",
+    "HYPE",
+    "INJ",
+    "KAS",
+    "LINK",
+    "LTC",
+    "MORPHO",
+    "NEAR",
+    "ONDO",
+    "POL",
+    "RENDER",
+    "SOL",
+    "SUI",
+    "TAO",
+    "TON",
+    "TRX",
+    "UNI",
+    "WLD",
+    "XLM",
+    "XMR",
+    "XRP",
+    "ZEC"
+  ],
+  "contract": {
+    "cell_matrix_sha256": "8b70e2162d4b3a7add87708e84c70e5823ba4784c52dfc3d81d0d8c9e798359d",
+    "path": "backtests/binance/returns_guarded_dd_research_2026-09-16/research_contract.json",
+    "primary_scenario": "C1_binance_actual",
+    "seed_config": "configs/examples/trailing_martingale_twel100_ddf060.json",
+    "seed_config_sha256": "be16e816a46c73e66b36509fa65452022252ff3cc0a7304f6ff3a90d256e155d",
+    "version": 1,
+    "window_full": [
+      "2023-09-12",
+      "2026-09-12"
+    ]
+  },
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "elapsed_s": 41.95365023612976,
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "group": "G3_scaleout",
+  "metrics": {
+    "cagr": 0.4436190191698064,
+    "drawdown_worst_strategy_eq": 0.3319093927473669,
+    "fill_rows": 41890,
+    "gain_strategy_eq": 3.0093057733627346,
+    "halfyear_count": 6,
+    "minute_close_mdd": 0.3319093927473691,
+    "position_held_days_max": 27.71875,
+    "positive_halfyears": 6,
+    "recovery_days": 14.822916666666666,
+    "sortino_ratio_strategy_eq": 0.052699775625616826,
+    "strategy_eq_recovery_days_max": 34.677083333333336,
+    "total_underwater_days": 15.855555555555556,
+    "total_wallet_exposure_max": 1.0000145283356043,
+    "traded_coin_count": 39.0,
+    "worst_1pct_mean_drawdown": 0.0639545542277961,
+    "worst_halfyear_return": 0.10427825171697958
+  },
+  "ops": [
+    {
+      "op": "set",
+      "path": "bot.long.strategy.trailing_martingale.close.threshold_base_pct",
+      "seed": -0.0027,
+      "value": 0.0
+    }
+  ],
+  "peak_rss_gb": 2.481220245361328,
+  "scenario": "C1_binance_actual",
+  "source_hashes": {
+    "cell_result_json": "f8400d67385b2e2916aa0a432250aa62526c1ce25e5fa4f6c626d04ba6e41a03",
+    "research_contract_json": "0b02c35b39144e2aa1f78cad123e56a3909aba4a5cd4c469135bb4ab8e897fcd",
+    "run_config_json": "588172b6a6495bcbd2f80c5bbc88c39f558334798b2efb875b46c619f217c3dd",
+    "seed_config_json": "be16e816a46c73e66b36509fa65452022252ff3cc0a7304f6ff3a90d256e155d"
+  },
+  "window": "full"
+}

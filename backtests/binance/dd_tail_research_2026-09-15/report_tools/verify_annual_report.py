@@ -181,6 +181,28 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--result-dir", default=None)
     parser.add_argument(
+        "--study",
+        default=None,
+        help=(
+            "study directory whose artifacts to verify, relative to the repository root. "
+            "Defaults to this tool's own study."
+        ),
+    )
+    parser.add_argument(
+        "--artifacts-dir-name",
+        default="artifacts",
+        help="artifacts directory name under the study (default: artifacts).",
+    )
+    parser.add_argument(
+        "--require-lock",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "require the study's candidate lock. Default: require it only for this tool's "
+            "own study, which always has one."
+        ),
+    )
+    parser.add_argument(
         "--artifacts-subdir",
         default=DEFAULT_ARTIFACTS_SUBDIR,
         help=(
@@ -208,11 +230,18 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
+    global STUDY, LOCK, CONTRACT, ARTIFACTS, RESULTS_BASE, RUN_RECORD, AUDIT_PATH
+    global CANDIDATE_CONFIG, STUDY_CELL
+    if args.study:
+        study_root = Path(args.study)
+        if not study_root.is_absolute():
+            study_root = REPO / study_root
+        STUDY = study_root.resolve()
+        LOCK = STUDY / "holdout_candidate_lock.json"
+        CONTRACT = STUDY / "research_contract.json"
     if args.study_cell:
-        global STUDY_CELL
         STUDY_CELL = (STUDY / args.study_cell).resolve()
-    global ARTIFACTS, RESULTS_BASE, RUN_RECORD, AUDIT_PATH, CANDIDATE_CONFIG
-    ARTIFACTS = STUDY / "artifacts" / args.artifacts_subdir
+    ARTIFACTS = STUDY / args.artifacts_dir_name / args.artifacts_subdir
     RESULTS_BASE = ARTIFACTS / "backtest_results"
     RUN_RECORD = ARTIFACTS / "run_record.json"
     AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
@@ -246,7 +275,18 @@ def main() -> None:
     analysis = load_json(result_dir / "analysis.json")
     cfg = load_json(result_dir / "config.json")
     run_record = load_json(RUN_RECORD)
-    lock = load_json(LOCK)
+    require_lock = args.require_lock if args.require_lock is not None else args.study is None
+    lock: dict[str, Any] = {}
+    if LOCK.exists():
+        lock = load_json(LOCK)
+    elif require_lock:
+        raise SystemExit(f"required candidate lock not found: {LOCK}")
+    else:
+        check(
+            "study declares no candidate lock, so lock-derived checks are skipped",
+            True,
+            f"expected no {LOCK.name}",
+        )
 
     fills = pd.read_csv(result_dir / "fills.csv")
     fills = fills.loc[:, ~fills.columns.str.startswith("Unnamed")]
@@ -256,18 +296,25 @@ def main() -> None:
     equity["timestamp"] = pd.to_datetime(equity["timestamp"], utc=True)
 
     # ---------- config identity ----------
-    expected_ops = {op["path"]: op["value"] for op in lock["candidates"][0]["ops"]}
+    lock_ops = (lock.get("candidates") or [{}])[0].get("ops") or []
+    expected_ops = {op["path"]: op["value"] for op in lock_ops}
     baseline = load_json(BASELINE_CONFIG)
     expect_locked = (
         run_record.get("locked_ops_applied", True)
         if args.expect_locked_ops is None
         else bool(args.expect_locked_ops)
     )
-    if expect_locked:
+    if not lock_ops:
+        check(
+            "no candidate lock, so candidate-geometry checks are skipped",
+            True,
+            f"lock declared: {bool(lock)}",
+        )
+    elif expect_locked:
         mismatched = [p for p, v in expected_ops.items() if get_path(cfg, p) != v]
         check("candidate ops applied", not mismatched, f"mismatched={mismatched}")
         baseline_consistent = all(
-            get_path(baseline, op["path"]) == op["baseline"] for op in lock["candidates"][0]["ops"]
+            get_path(baseline, op["path"]) == op["baseline"] for op in lock_ops
         )
         check("baseline values match lock record", baseline_consistent)
     elif args.expect_locked_ops is None:
@@ -283,20 +330,33 @@ def main() -> None:
             True,
             "explicitly disabled for a reference-profile artifact",
         )
+    if CANDIDATE_CONFIG.exists() and "candidate_config_sha256" in run_record:
+        check(
+            "candidate config sha matches run record",
+            run_record["candidate_config_sha256"] == sha256_file(CANDIDATE_CONFIG),
+        )
+    else:
+        check(
+            "no locked candidate config in this bundle, so that hash check is skipped",
+            "candidate_config_sha256" not in run_record or not CANDIDATE_CONFIG.exists(),
+            f"config_exists={CANDIDATE_CONFIG.exists()} "
+            f"record_key={'candidate_config_sha256' in run_record}",
+        )
+    # The expected execution/cost contract comes from the study's own research
+    # contract, so this check works for any study that declares a scenario matrix
+    # rather than one specific study's module.
+    study_contract = load_json(CONTRACT)
+    primary_scenario = study_contract["primary_scenario"]
+    execution_name, cost_name = study_contract["scenario_matrix"][primary_scenario]
+    expected_execution = study_contract["execution_scenarios"][execution_name]
+    expected_costs = study_contract["cost_scenarios"][cost_name]
     check(
-        "candidate config sha matches run record",
-        run_record["candidate_config_sha256"] == sha256_file(CANDIDATE_CONFIG),
-    )
-    sys.path.insert(0, str(STUDY / "report_tools"))
-    import run_tail_drawdown_study as study  # noqa: E402
-
-    check(
-        f"execution/cost contract matches {study.PRIMARY_SCENARIO}",
+        f"execution/cost contract matches {primary_scenario}",
         int(cfg["backtest"]["execution_delay_bars"])
-        == int(study.PRIMARY_EXECUTION["execution_delay_bars"])
-        and cfg["backtest"]["intrabar_fill_order"] == study.PRIMARY_EXECUTION["intrabar_fill_order"]
-        and float(cfg["backtest"]["maker_fee_override"]) == study.PRIMARY_COSTS["maker_fee_override"]
-        and float(cfg["backtest"]["taker_fee_override"]) == study.PRIMARY_COSTS["taker_fee_override"],
+        == int(expected_execution["execution_delay_bars"])
+        and cfg["backtest"]["intrabar_fill_order"] == expected_execution["intrabar_fill_order"]
+        and float(cfg["backtest"]["maker_fee_override"]) == float(expected_costs["maker_fee_override"])
+        and float(cfg["backtest"]["taker_fee_override"]) == float(expected_costs["taker_fee_override"]),
         f"cfg={cfg['backtest'].get('maker_fee_override')}/{cfg['backtest'].get('taker_fee_override')}"
         f" @ delay={cfg['backtest'].get('execution_delay_bars')}",
     )

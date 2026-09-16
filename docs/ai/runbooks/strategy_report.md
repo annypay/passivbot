@@ -2,13 +2,13 @@
 
 A **strategy research deep analysis** is the report that ships next to a completed backtest
 artifact bundle. Every such report uses the same section skeleton, the same table
-columns and the same data conventions, so two reports from different studies can be read side by
-side.
+columns, the same data conventions and the same on-disk layout, so two reports from different
+studies can be read side by side and their bundles can be verified the same way.
 
 Frozen reference sample: `../../../backtests/binance/2026-09-14T03_25_14/annual_analysis.md`. It is the
 authority for wording and layout; it is never edited. The renderer that implements this convention
-is `../../../backtests/report_spec/annual_analysis.py`; `REPORT_SECTIONS` and the column constants
-in that module are the machine-readable form of this document.
+is `../../../backtests/report_spec/annual_analysis.py`; `REPORT_SECTIONS`, the column constants and
+the bundle-layout constants in that module are the machine-readable form of this document.
 
 ## Section Skeleton
 
@@ -29,6 +29,121 @@ slot in where marked; nothing else may be inserted.
 | 10 | `## 结果解读` | Prose observations. Must cover all four of: (a) balance and strategy-equity growth with the `gain_*` multiples and the warning that they use tail daily equity, (b) per-period attribution naming the best year and the worst-drawdown year, (c) risk: worst drawdown(s), worst-1% mean drawdown, longest recovery, underwater share, and the risk-adjusted ratios, (d) trade structure: long vs short fills and maker vs taker fills with their net PnL. Ends with an explicit statement that the report is not a forecast. |
 
 `## 可复核数据` and `## 结果解读` are always last, in that order.
+
+## Artifact Persistence And On-Disk Format
+
+A deep analysis is only authoritative if its numbers can be re-derived from what was left on disk.
+This section is the normative answer to **where every artifact class is written and what it is
+named**. It applies to every study, whether or not that study ships its own tooling.
+
+### Rule 1 — One report, one run, one directory
+
+The report is always named annual_analysis.md. "Annual" is the convention's name, not a claim
+about the window length: a 30-day run and a 5-year run produce the same file name. It is written
+into the **run directory it describes**, never into a separate reports tree, never into the study
+root, and never in place over another run.
+
+That run directory is named by the backtest from its **UTC completion timestamp**, so every run
+produces its own dated directory and nothing is overwritten:
+
+```
+backtests/<exchange>/<study>/artifacts/<bundle>/backtest_results/<exchange>[_label]/<exchange>/<UTC timestamp>/
+```
+
+Two shapes exist and both are valid:
+
+- **nested** — studies with their own `artifacts/` tree, the normal case, shape above;
+- **flat** — studies that keep the profile's own `backtest.base_dir`:
+  `backtests/<exchange>/<UTC timestamp>/`.
+
+Because the directory name carries the run timestamp, the date on a report's folder is the date that
+run was produced, not the date the report was last re-rendered.
+
+### Rule 2 — Every artifact class has one name and one location
+
+| Artifact class | Exact path | Written by |
+|---|---|---|
+| Deep analysis report | `<run dir>/annual_analysis.md` | report tool / shared renderer |
+| Annual table | `<run dir>/annual_metrics.csv` | report tool / shared renderer |
+| Monthly table | `<run dir>/monthly_metrics.csv` | report tool / shared renderer |
+| Per-coin table | `<run dir>/coin_metrics.csv` | report tool / shared renderer |
+| Native metrics | `<run dir>/analysis.json` | backtest |
+| Fill ledger | `<run dir>/fills.csv` | backtest |
+| Sampled equity | `<run dir>/balance_and_equity.csv.gz` | backtest |
+| Effective run config | `<run dir>/config.json` | backtest |
+| Dataset identity | `<run dir>/dataset.json` | backtest |
+| Summary figures | `<run dir>/<figure>.png` | backtest |
+| Per-coin fill panels | `<run dir>/fills_plots/<COIN>.png` | backtest |
+| Frozen run config | `<study>/artifacts/<name>.config.json` | study tooling |
+| Run log | `<study>/artifacts/logs/<name>.log` | study tooling |
+
+The streamed execution audit is the one artifact whose path a study chooses: it is written
+wherever `backtest.execution_audit_path` points (the reference studies use
+`<study>/artifacts/<bundle>/execution_audit.csv`, or `<study>/artifacts/execution_audit.csv` for a
+single-bundle study). The run's own `config.json` records that path, and the layout check verifies
+it resolves to a real file rather than pinning a name.
+
+Figure names are the backtest's, not the study's: `balance_and_equity.png`,
+`balance_and_equity_logy.png`, `drawdown.png`, `total_wallet_exposure.png`, `pnl_cumsum.png`,
+`hard_stop_drawdown.png` when hard-stop data exists, and `scenario_equity_comparison.png` for a
+multi-scenario suite run. `backtest.disable_plotting` drops figure **groups** — per-coin panels are
+the memory peak of a long run, so a study may disable `coin_fills` and keep the summary figures, but
+it must say which groups it disabled in `## 口径与范围`.
+
+Never invent a parallel name for an artifact that already has one, and never move a report out of
+its run directory to build a "reports" folder. When a study needs extra evidence (an audit matrix, a
+stress table, a separate analysis note), add it next to the report in the same run directory and
+reference it from `## 可复核数据`.
+
+### Rule 3 — The dataset stays in the cache; the run records its identity
+
+HLCV arrays are never copied into a study or a run directory. They live in
+`caches/hlcvs_data/<exchange>__<coins>__<start>_to_<end>__<cache_hash>/`, and the run's
+`dataset.json` records the identity that reproduces them: `cache_dir_label`, `cache_hash`, the coin
+list, the requested window, and the `content_hashes` of `hlcvs`, `timestamps` and `btc_usd_prices`.
+
+A report cites that identity in `## 可复核数据`. "Which data was this?" is answered by
+`dataset.json`, never by a path copied out of prose. When a run materializes its dataset from the
+local candle catalog rather than from a pre-built bundle, the report says so, and the run must not
+have downloaded anything.
+
+### Rule 4 — Re-runs get their own directory; bundles hold exactly one
+
+The report tooling picks the single run directory under a bundle and **refuses to guess** when there
+is more than one. A re-run therefore either replaces the bundle's run directory or is filed under a
+new `--label NAME` group:
+
+```
+backtest_results/binance_candidate/binance/<UTC timestamp>/
+backtest_results/binance_baseline/binance/<UTC timestamp>/
+```
+
+Use a label to keep parallel bundles, or a candidate/baseline pair, apart. Do not point report
+tooling at an ambiguous bundle; pass `--result-dir` explicitly when several runs must coexist.
+
+### Rule 5 — Tracked evidence versus reproducible output
+
+The tracked/local split is the repository's, defined by the `/backtests` rules in
+`../../../.gitignore` and summarized in `../../../backtests/readme.md`. Two consequences bind a study:
+
+- **Tracked:** `*.md`, `*.py`, `*.sh`, and JSON that is not a compiled config. A run's
+  `analysis.json` is tracked, so the numbers a report cites survive a fresh checkout.
+- **Local and regenerable:** `fills.csv`, `execution_audit.csv`, `balance_and_equity.csv.gz`,
+  `*.npy`, `*.npz`, `*.png`, `*.pyc`, `*.log`, the three metric CSVs, and the compiled configs
+  `config.json`, `config.original.json`, `dataset.json`, `study_input_config.json`,
+  `candidate.config.json`, `emitted.config.json`.
+
+Never paste host-specific absolute paths into tracked evidence. A compiled config that records the
+generating host's paths stays local; when a report needs provenance, cite the source config's
+repository-relative path plus its sha256.
+
+### Rule 6 — The layout is checkable, and is checked
+
+`backtests/report_spec/annual_analysis.py` owns the executable form of Rules 1–3 as
+`BUNDLE_REPORT_FILES`, `BUNDLE_LOCAL_FILES`, `BUNDLE_FIGURE_FILES`, `BUNDLE_PLOT_DIRS` and
+`assert_bundle_layout`. A study's `run.sh` or the shared CLI must fail rather than report success
+when the persisted bundle is incomplete, and a study's verifier re-checks the layout as well as the
+numbers. Changing this document without changing those constants — or the reverse — is a defect.
 
 ## Data Conventions
 
@@ -51,14 +166,14 @@ slot in where marked; nothing else may be inserted.
 - **Direction.** A fill is 多头 or 空头 by whether its type contains `long` or `short`.
 - **One-sided books.** The attribution table always has two rows. When a direction has zero fills,
   keep the row and state which case it is: the direction is **configured but was not triggered**
-  (report `live.approved_coins.<side>` count and `live.hedge_mode`), or **not configured**. Never
-  drop the row and never claim the direction is unavailable.
+  (report the `live.approved_coins.<side>` count and `live.hedge_mode`), or **not configured**.
+  Never drop the row and never claim the direction is unavailable.
 - **Maker-only books.** When `taker_fills_count` is zero, say so explicitly and state that the
   taker fee and `market_order_slippage_pct` therefore do not affect the result.
 
 ## Metric Table Files
 
-`annual_metrics.csv` and `monthly_metrics.csv` share one schema, one row per period:
+The annual and monthly tables share one schema, one row per period:
 
 ```
 period, sample_start_utc, sample_end_utc, coverage,
@@ -72,8 +187,10 @@ realized_pnl_raw_usd, fees_signed_usd, net_realized_pnl_usd,
 max_abs_wallet_exposure_at_fill, active_coins
 ```
 
-`coin_metrics.csv` is written for every study; it carries `coin`, the fill split, the PnL split,
-`max_abs_wallet_exposure_at_fill`, and the first/last fill timestamps.
+The per-coin table is written for every study; it carries `coin`, the fill split, the PnL split,
+`max_abs_wallet_exposure_at_fill`, and the first/last fill timestamps. It is ordered alphabetically
+by `coin`, while the report's `## 按币种贡献` table is ordered by net realized PnL descending. Both
+orders are fixed so that a diff of either artifact is meaningful.
 
 **Deliberate deviation from the reference.** The reference report's period CSVs end at
 `max_abs_wallet_exposure_at_fill`. This convention adds `active_coins` as the final column so a
@@ -86,11 +203,17 @@ and order, so a period row is still comparable column by column.
   numbers appear, and cross-regime comparisons are made in prose, not by subtracting table cells.
 - **Every number is derived from the artifact directory** or from an explicitly cited study cell.
   A hand-typed figure is a defect, not a convenience.
+- **A derived value with no meaningful value is never printed as `nan`.** Report `n/a`, or restate
+  the claim with a denominator that exists. A `nan%` or `nan USDT` in prose is a defect.
 - **State the contract, do not imply it.** Latency, `intrabar_fill_order`, maker and taker rates,
   and the research-contract version all appear in `## 口径与范围`.
+- **State where the strategy was actually active.** A long window does not imply a long-lived
+  strategy. When fills are concentrated in a fraction of the window — a halt, a hard stop, a late
+  start, or a universe that only becomes tradable partway — the report says so explicitly and names
+  the first and last fill, so zero-fill periods are not misread as flat performance.
 - **Keep the skeleton machine-checkable.** `report_spec.assert_report_structure` validates the
-  section order, and `verify_annual_report.py` runs it, so a renderer regression fails verification
-  instead of shipping a report that quietly stopped matching this convention.
+  section order and `assert_bundle_layout` validates the persisted files, so a renderer regression
+  fails verification instead of shipping a report that quietly stopped matching this convention.
 
 ## Rendering
 
@@ -108,35 +231,10 @@ PYTHONPATH=src python backtests/report_spec/annual_analysis.py \
 ```
 
 It writes the rendered report file plus the three CSVs into the result directory and refuses to
-write a report whose skeleton fails validation.
+write a report whose skeleton or persisted bundle fails validation.
 
-## Where the report is written
-
-A report is rendered into the **run directory it describes**, never into a separate reports tree and
-never in place over another run. The backtest names that directory from the UTC completion
-timestamp, so every run produces a dated directory:
-
-```
-backtests/<exchange>/<study>/artifacts/<bundle>/backtest_results/<exchange>[_label]/<exchange>/<UTC timestamp>/
-  annual_analysis.md      # this convention
-  annual_metrics.csv      # the tables behind it
-  monthly_metrics.csv
-  coin_metrics.csv
-  analysis.json           # the numbers it cites
-  fills.csv, balance_and_equity.csv.gz, execution_audit.csv, *.png, fills_plots/
-```
-
-`--label NAME` on the study's `run.sh` groups the run under a labeled exchange directory, so
-parallel bundles and re-runs stay identifiable while every run keeps its own timestamped
-directory. Because the folder name carries the run timestamp, the date on a report's
-folder is the date that run was produced — a report re-rendered later still lives in its own run
-directory. To regenerate a report for an existing run without re-running the backtest:
-
-```bash
-PYTHONPATH=src python <study>/report_tools/generate_annual_report.py --artifacts-subdir <bundle>
-```
-
-which rewrites the report and the three CSVs **in that run directory**.
+To regenerate a report for an existing run without re-running the backtest, call the same tooling
+with that run directory: the rewrite happens **in that run directory**.
 
 ## Validation
 
@@ -149,7 +247,8 @@ bash backtests/binance/dd_tail_research_2026-09-15/run.sh --baseline   # baselin
 
 `verify_annual_report.py` recomputes every reported number from the fills ledger and equity series
 with code that does not import the renderer, then checks the section skeleton, the per-year detail
-sections, and that the three metric CSVs match the schemas above. The CSVs themselves are
-local-only (gitignored) build products, so that last check is what keeps the writer and this
-document from drifting apart. Regression coverage
-for the convention itself is `../../../tests/test_annual_analysis_report_spec.py`.
+sections, the persisted bundle layout, and that the three metric CSVs match the schemas above. The
+CSVs themselves are local-only (gitignored) build products, so that last check is what keeps the
+writer and this document from drifting apart. Regression coverage for the convention itself is
+`../../../tests/test_annual_analysis_report_spec.py`; the persistence rules above are additionally
+pinned by `../../../tests/test_ai_docs.py`.
