@@ -12,7 +12,7 @@ Tracked (small, hard to regenerate, human-readable):
 - `*.py` and `*.sh` — the exact study scripts, plus the run entry point that reproduces a study.
 - `*.json` — research contracts, candidate locks, manifests, per-configuration result and
   metric summaries, plus each artifact bundle's run record and `analysis.json`.
-- `annual_analysis.md` — the rendered deep-analysis report for each tracked artifact bundle.
+- `annual_analysis.md` — the rendered deep-analysis report for each tracked artifact bundle. Every such report follows `docs/ai/runbooks/strategy_report.md`: one fixed section skeleton, one table schema, one set of data conventions, so reports from different studies are directly comparable.
 
 Not tracked (large, regenerable from the tracked inputs plus the local HLCV cache):
 
@@ -92,6 +92,14 @@ Both profiles are maker-only (`live.market_orders_allowed = false`, HSL panic cl
 the taker fee and `market_order_slippage_pct` never bind in either contract. A market-order fill
 would need both a code path that emits one and a slippage assumption alongside it; neither the
 default profile nor the lower-tail profile has one.
+
+## Report format
+
+Deep analyses use the fixed section order, table columns and data conventions defined in
+`docs/ai/runbooks/strategy_report.md`, rendered by `backtests/report_spec/annual_analysis.py`.
+`verify_annual_report.py` recomputes every reported number from the fills ledger and equity series
+and checks that skeleton, so a report that drifts from the convention fails verification. The frozen
+reference sample is `binance/2026-09-14T03_25_14/annual_analysis.md`.
 
 ## Evidence boundaries
 

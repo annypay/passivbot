@@ -48,6 +48,12 @@ since the latest release tag; these features may already be available when insta
   never bind. `run.sh --baseline` produces a matching artifact bundle for the
   default profile, and the report verifier now compares windows before claiming
   agreement with a study cell.
+- Give strategy research deep analyses one report convention. Every `annual_analysis.md`
+  now uses the same fixed section skeleton, table columns and data conventions, rendered by
+  `backtests/report_spec/annual_analysis.py` and documented in
+  `docs/ai/runbooks/strategy_report.md`. Reports gain a per-direction fill attribution
+  section and a per-year detail section, and the report verifier now checks the skeleton
+  alongside its independent recomputation of every number.
 - Let CCXT REST clients inherit configured standard HTTP proxy environment variables,
   allowing WSL mirrored-network deployments to reach external exchange endpoints through
   a local proxy.

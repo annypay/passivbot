@@ -31,6 +31,10 @@ AUDIT_PATH = ARTIFACTS / "execution_audit.csv"
 CANDIDATE_CONFIG = ARTIFACTS / "candidate.config.json"
 LOCK = STUDY / "holdout_candidate_lock.json"
 CONTRACT = STUDY / "research_contract_v4.json"
+REPORT_SPEC = REPO / "backtests" / "report_spec"
+if str(REPORT_SPEC) not in sys.path:
+    sys.path.insert(0, str(REPORT_SPEC))
+import annual_analysis as report_spec  # noqa: E402  (canonical report convention)
 BASELINE_CONFIG = REPO / "backtests/binance/2026-09-14T03_40_41/config.json"
 # The comparison cell must be the one produced under the reported contract; the v3
 # conservative cells are a different regime and are compared elsewhere.
@@ -334,12 +338,14 @@ def main() -> None:
                 "fees_signed_usd": fees,
                 "net_realized_pnl_usd": realized + fees,
                 "max_abs_wallet_exposure_at_fill": float(sub["wallet_exposure"].abs().max()),
-                "first_fill_utc": sub["timestamp"].iloc[0].isoformat(),
-                "last_fill_utc": sub["timestamp"].iloc[-1].isoformat(),
+                # Space separator, matching the report convention: `isoformat()` would use
+                # `T` and `to_csv` would then re-parse the column and rewrite it.
+                "first_fill_utc": str(sub["timestamp"].iloc[0]),
+                "last_fill_utc": str(sub["timestamp"].iloc[-1]),
             }
         )
     coin_re = pd.DataFrame(coin_re, columns=COIN_COLUMNS).sort_values(
-        "net_realized_pnl_usd", ascending=False
+        "net_realized_pnl_usd", ascending=False, kind="stable"
     ).reset_index(drop=True)
     problems = compare_frames(coin_re, coin_csv, COIN_COLUMNS, 1e-6)
     check("coin_metrics.csv reproduces independently", not problems, "; ".join(problems))
@@ -454,6 +460,58 @@ def main() -> None:
         )
     for _, row in coin_csv.head(3).iterrows():
         check(f"report contains top coin {row['coin']}", f"| {row['coin']} |" in report_text)
+
+    # ---------- canonical report structure ----------
+    # `docs/ai/runbooks/strategy_report.md` fixes the section skeleton; enforce it here so a
+    # renderer regression fails verification instead of silently shipping a report that no
+    # longer matches the convention.
+    structure_problems = report_spec.assert_report_structure(report_text)
+    check(
+        "report follows the canonical section skeleton",
+        not structure_problems,
+        "; ".join(structure_problems),
+    )
+    headings = report_spec.report_headings(report_text, include_detail=True)
+    check(
+        "report states scope, overall result, attribution and the period tables",
+        all(
+            heading in headings
+            for heading in (
+                report_spec.HEAD_SCOPE,
+                report_spec.HEAD_OVERALL,
+                report_spec.HEAD_ATTRIBUTION,
+                report_spec.HEAD_ANNUAL,
+                report_spec.HEAD_MONTHLY,
+            )
+        ),
+        f"headings={headings[:6]}",
+    )
+    # The metric CSVs are local-only (gitignored), so pin their schema against the documented
+    # contract here; this fails whenever the writer and the convention drift apart.
+    check(
+        "annual_metrics.csv columns match the report convention",
+        list(annual_csv.columns) == list(report_spec.PERIOD_CSV_COLUMNS),
+        f"extra={[c for c in annual_csv.columns if c not in report_spec.PERIOD_CSV_COLUMNS]} "
+        f"missing={[c for c in report_spec.PERIOD_CSV_COLUMNS if c not in annual_csv.columns]}",
+    )
+    check(
+        "monthly_metrics.csv columns match the report convention",
+        list(monthly_csv.columns) == list(report_spec.PERIOD_CSV_COLUMNS),
+        f"extra={[c for c in monthly_csv.columns if c not in report_spec.PERIOD_CSV_COLUMNS]} "
+        f"missing={[c for c in report_spec.PERIOD_CSV_COLUMNS if c not in monthly_csv.columns]}",
+    )
+    check(
+        "coin_metrics.csv columns match the report convention",
+        list(coin_csv.columns) == list(report_spec.COIN_CSV_COLUMNS),
+        f"extra={[c for c in coin_csv.columns if c not in report_spec.COIN_CSV_COLUMNS]} "
+        f"missing={[c for c in report_spec.COIN_CSV_COLUMNS if c not in coin_csv.columns]}",
+    )
+    detail_headings = report_spec.detail_headings(report_text)
+    check(
+        "report has one per-year detail section per annual row",
+        len(detail_headings) == len(annual_csv),
+        f"details={len(detail_headings)} annual_rows={len(annual_csv)}",
+    )
 
     report()
 
