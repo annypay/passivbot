@@ -1,6 +1,6 @@
 # 0002 — 币安实盘调试与上线（2026-09-17 起）
 
-状态：**进行中，停在阶段 C（余额为 0，无法进入实盘启动）**
+状态：**进行中 —— 阶段 A/B/C 全绿；已完成零余额启动冒烟（见阶段 D）；等待入金后执行正式启动**
 分支：`codex/binance-live-debug`（基于 `codex/entry-regime-gate-warmup`，即 PR #5）
 Pull request：[#6](https://github.com/annypay/passivbot/pull/6)（本轮的探针工具、代理修复与本记录）
 实盘策略：`backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json`（公共证据文件，运行期间**零改动**，账号用 `-u` 覆盖）
@@ -136,10 +136,60 @@ venv/bin/passivbot live \
 - **(b) 入金 1,000–2,500 USDT**：接受 BTC（可能还有部分 20 USDT 档币）被跳过，币池约 30–39 币，属可接受的偏离但要写进记录。
 - **(c) 按小资金放大 `initial_qty_pct` 等仓位参数**：这是**改策略**，等于放弃 g4 证据的仓位口径，不建议直接上实盘；若要，须重新回测+深度分析再上线。
 
+## 阶段 D 冒烟：零余额启动（未成交，风险为零）
+
+在**不入金**的前提下验证实盘启动链路本身（认证、行情、首次 K 线、对账、风险输入、fail-closed 行为）与监控工具。零余额意味着任何下单都会被风险输入闸门挡住，因此本次冒烟不可能产生成交。
+
+```bash
+tmux new-session -d -s pblive -c /home/mrseven2204/passivbot \
+  "venv/bin/passivbot live backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json \
+     -u binance_live --log-level info > /tmp/dsh-live/d1_bootstrap_console.log 2>&1"
+```
+
+时间线（UTC）：
+
+| 时刻 | 事件 | 结果 |
+| --- | --- | --- |
+| 03:49:26 | `runtime.started`、配置加载 | `[config] changed live.user bybit_01 -> binance_live` ✓ `-u` 覆盖生效 |
+| 03:49:26 | 市场加载 | 命中本地缓存；`[config] skipping unsupported markets for approved_coins: coins=TON` → **live 币池 39 币**，与阶段 B 探针一致 |
+| 03:49:28 | forager 列表 | `counts=long:39,short:0`；short 侧因零敞口关闭 |
+| 03:49:30 | 全币种挂单扫描 | `scoped_orders=0 broad_orders=0 extra_orders=0` ✓ |
+| 03:50:00 | `account-ready` / `active-candle-ready` | 33.82s / 34.03s；`trading-ready candle warmup skipped: no positions/open orders` |
+| 03:50–03:56 | 39 币首次 K 线拉取 | 公网行情、经代理，全部成功 |
+| 03:55:46 | `risk.input.status` deferred | `reason=current_balance_unavailable balance_raw=0.0 retry_count=9 max_attempts=10` |
+| 03:56:49 | `risk.input.status` failed → `bot.stopped` | `action=stop_without_restart` → `RiskInputUnavailable` → `FatalBotException`（`stage=risk_input_readiness`），**进程自行退出** |
+
+结论：
+
+1. **链路全通**：160/160 远程调用成功、0 失败；账户关键面（balance/positions/open_orders）0 失败；monitor 写入 513 条结构化事件。
+2. **零成交**：复检账户为 持仓 0、挂单 0、`positionAmt` 非零 0 —— 本次冒烟没有触碰任何仓位。
+3. **fail-closed 按设计生效**：余额为 0 时 bot 拒绝启动并自行退出，符合「不得伪造交易输入」的核心规则；重试 10 次（每次 60s）后 `stop_without_restart`。
+4. **门控预取排在风险输入就绪之后**：本次 `entry_regime.gate.verdict` 事件 0 条、`bot.ready` 0 条，因为预取在 `risk_input_recovery.wait_for_startup()` 之后，余额为 0 时不会执行。因此「`[regime_gate] warmup` 先于 `bot.ready`」这条**尚未在真实运行中观察到**（由 fake-live 端到端用例 + 阶段 B 真实数据探针间接覆盖），入金后作为启动清单第 1 项确认。这是一个明确的证据边界，不当作已验证。
+5. **账户级副作用（已发生，需知悉）**：passivbot 启动时按设计调用 `set_position_mode(True)`，把币安账户的**持仓模式从单向切到双向**（复检 `dualSidePosition=true`；冒烟前为 false）。`live.hedge_mode=false` 只表示「不请求同币种同时持多空」，short 侧 TWE=0 所以不会开空。若要改回单向，需在无持仓、无挂单时操作（币安限制）。
+
+证据与复现：
+
+```bash
+ls -l logs/binance_live.log                                   # 指向本次带时间戳日志
+passivbot tool live-smoke-report monitor/binance/binance_live --brief
+passivbot tool live-event-query monitor/binance/binance_live --problem-events --limit 12 --compact
+```
+
+`live-smoke-report`（只扫本次 bot 目录）：`account_critical_remote_calls` 159/159 成功、**0 限流**；`attention_count=8` = 4 条 problem events + 4 条日志匹配，全部来自上面那条零余额链路，没有其它异常。
+
+### 入金后的启动清单（顺序按本次实测修正）
+
+1. `[regime_gate] warmup lookback_days=60 required_days=50 history_days_min≥50 missing_days_max=0 unavailable=…`；
+2. `entry_regime.gate.verdict` 出现在 `bot.ready` **之前**；
+3. `bot.ready` 与启动耗时、EMA readiness、对账结果；
+4. 挂单全为 maker、`n_positions ≤ 7`、总敞口 ≤ 1.0×；
+5. `live-smoke-report` 的 `account_critical_remote_calls` 无失败、无限流。
+
 ## 未决与后续
 
 1. **入金**（阻塞项）：按上面 (a)/(b)/(c) 选定后我再执行阶段 D。
 2. **密钥轮换**：对话中已暴露，建议在币安后台轮换或至少确认无提现权限 + 绑 IP。
 3. **HSL 关闭**：上线后账户级没有自动兜底；是否需要打开 `bot.long.hsl.enabled` 或设置 `live.max_realized_loss_pct` 作为最后防线，请决定。
-4. **TON**：实盘实际币池为 39 币（TON 合约不可交易）；如要保持配置与运行一致，可在私有运行配置里替换它。
+4. **TON**：实盘实际币池为 39 币（TON 合约不可交易）——本次冒烟已实测确认 live 会跳过它；如要保持配置与运行一致，可在私有运行配置里替换它。
+6. **账户持仓模式已被切到双向**（阶段 D 冒烟所致，属 passivbot 设计行为）；若你希望保持单向，需要另行改回并确认没有其它工具依赖。
 5. **长期部署**：本机 WSL + tmux 跑通后再考虑 systemd / Docker live profile / VPS（VPS 需要单独授权）。
