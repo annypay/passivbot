@@ -207,13 +207,62 @@ passivbot tool live-event-query monitor/binance/binance_live --problem-events --
 
 `live-smoke-report`（只扫本次 bot 目录）：`account_critical_remote_calls` 159/159 成功、**0 限流**；`attention_count=8` = 4 条 problem events + 4 条日志匹配，全部来自上面那条零余额链路，没有其它异常。
 
+### 生产预取方法对真实交易所的验证（无凭据、无订单）
+
+为把「门控预热在真实数据上可用」从**探针间接证明**推进到**生产代码直接证明**，用真实 ccxt 公开客户端构造运行时自己的 `CandlestickManager`，在一个裸 `Passivbot` 实例上直接调用生产方法 `prewarm_entry_regime_gate()`（不启动 bot、无凭据、无订单）：
+
+```python
+raw = json.load(open(g4_config))                     # 原始文档，门控走 backtest.* 回退
+client = load_ccxt_instance("binance")               # 公开 REST，代理生效
+cm = CandlestickManager(exchange=client, exchange_name="binance", cache_dir="caches", archive_enabled=False)
+bot = Passivbot.__new__(Passivbot)                   # 裸实例 + 真实 CM
+bot.config, bot.coin_overrides, bot.cm = raw, {}, cm
+bot.approved_coins_minus_ignored_coins = {"long": {39 个可交易 symbol}, "short": set()}
+bot.get_exchange_time = lambda: now_ms
+bot._emit_entry_regime_gate_verdict = capture
+summary = await bot.prewarm_entry_regime_gate()
+```
+
+实测输出（2026-09-17，真实币安日线）：
+
+```text
+[regime_gate] sma=20/50 confirm_days=0 source=backtest.entry_regime_gate symbols=39   lookback_days=60 required_days=50 history_days_min=61 missing_days_max=0 risk_off_sides=3 unavailable=0
+[regime_gate] warmup lookback_days=60 required_days=50 symbols=39 history_days_min=61   missing_days_max=0 risk_on_sides=36 risk_off_sides=3 unavailable=0 elapsed_ms=33616.76
+```
+
+| 观察项 | 值 | 意义 |
+| --- | --- | --- |
+| `lookback_days` / `required_days` | 60 / 50 | PR #5 的派生深度 |
+| `history_days_min` / `missing_days_max` | 61 / 0 | 39 个币的日线全部取满、无缺口 |
+| `risk_on_sides` / `risk_off_sides` | 36 / 3 | risk-off 为 CC、GRAM、ONDO |
+| `unavailable` | 0 | 没有币因取数失败被 fail-closed 挡住 |
+| `elapsed_ms` | 33.6s | 39 币串行日线取数（经代理）≈ 0.86s/币，启动清单可用这个量级预期 |
+| 缓存 | `_orchestrator_entry_regime_gate_cache` 已结算 | 首周期直接复用，不再取数 |
+| TON | `inactive_linear_swap_market` | 与阶段 B 探针一致，live 币池 39 币 |
+
+**交叉验证**：本方法给出的 36 risk-on / 3 risk-off 与独立探针（`entry-regime-probe`，另一条代码路径）**完全一致**，且事件 payload 四个新字段（`lookback_days`/`required_days`/`min_history_days`/`max_missing_days`）齐全。
+
+**仍未在真实运行中观察到的**：`[regime_gate] warmup` 行相对于 `bot.ready` 的**先后顺序**。零余额时预取不会执行（见上节），因此该顺序目前只有 fake-live 端到端用例覆盖；入金后的启动清单第 1–2 项即为此确认。
+
+### 启动后的持续记录与监控（每轮照做）
+
+```bash
+passivbot tool live-smoke-report monitor/binance/binance_live --brief        # 账户关键面/限流/attention
+passivbot tool live-event-query monitor/binance/binance_live --problem-events --limit 12 --compact
+passivbot tool live-event-query monitor/binance/binance_live   --event-type entry_regime.gate.verdict --compact                            # 每日门控判决
+tail -n 50 logs/binance_live.log                                              # 文本日志（符号链接）
+```
+
+每轮把「进程存活、cycle/fill/position、门控判决变化、error 级事件、账户挂单类型」记进本文件的时间线，并注明命令与结果。
+
 ### 入金后的启动清单（顺序按本次实测修正）
 
 1. `[regime_gate] warmup lookback_days=60 required_days=50 history_days_min≥50 missing_days_max=0 unavailable=…`；
 2. `entry_regime.gate.verdict` 出现在 `bot.ready` **之前**；
 3. `bot.ready` 与启动耗时、EMA readiness、对账结果；
 4. 挂单全为 maker、`n_positions ≤ 7`、总敞口 ≤ 1.0×；
-5. `live-smoke-report` 的 `account_critical_remote_calls` 无失败、无限流。
+5. `passivbot tool live-smoke-report monitor/binance/binance_live --brief` 的 `account_critical_remote_calls` 无失败、无限流。
+   （注意：该工具**没有** `--exchange/--user` 参数，必须用位置参数指向 bot 目录；本轮实测踩到过。）
 
 ## 未决与后续
 
