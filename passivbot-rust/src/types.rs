@@ -692,6 +692,20 @@ impl EntryRegimeGateConfig {
             raw != 0
         }
     }
+
+    /// Whether a new position may open at `timestamp_ms`.
+    ///
+    /// Mirrors the per-side policy the backtest and live share: a side that does not
+    /// declare the block flag never consults the regime, and `is_on` already answers
+    /// `true` for a disabled gate.
+    pub fn allows_initial(&self, timestamp_ms: u64) -> bool {
+        !self.block_initial || self.is_on(timestamp_ms)
+    }
+
+    /// Whether an existing position may be added to at `timestamp_ms`.
+    pub fn allows_reentry(&self, timestamp_ms: u64) -> bool {
+        !self.block_reentry || self.is_on(timestamp_ms)
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -1577,5 +1591,34 @@ mod entry_regime_gate_tests {
         config.block_reentry = false;
         assert!(config.validate().is_ok());
         assert!(config.is_on(1_000));
+    }
+
+    #[test]
+    fn a_side_that_does_not_declare_the_flag_is_never_blocked() {
+        let mut config = gate();
+        // Risk-off at this instant (raw 0 in force), yet the flag is off.
+        config.block_initial = false;
+        config.block_reentry = false;
+        assert!(config.allows_initial(1_000));
+        assert!(config.allows_reentry(1_000));
+    }
+
+    #[test]
+    fn policy_flags_are_honoured_independently() {
+        let mut config = gate();
+        config.block_initial = true;
+        config.block_reentry = false;
+        // Raw 0 at the first boundary, raw 1 from the second.
+        assert!(!config.allows_initial(1_000));
+        assert!(config.allows_reentry(1_000));
+        assert!(config.allows_initial(2_000));
+        assert!(config.allows_reentry(2_000));
+    }
+
+    #[test]
+    fn a_disabled_gate_allows_both_paths() {
+        let config = EntryRegimeGateConfig::default();
+        assert!(config.allows_initial(0));
+        assert!(config.allows_reentry(u64::MAX));
     }
 }

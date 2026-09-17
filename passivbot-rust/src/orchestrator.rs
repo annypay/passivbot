@@ -395,14 +395,15 @@ mod core {
         pub trailing_available: bool,
         #[serde(default)]
         pub last_increase_fill_timestamp_ms: Option<u64>,
-        /// Entry-regime gate: true when the precomputed regime permits new
-        /// positions at the current bar. `backtest.rs` is the only producer today;
-        /// live callers leave the default, so the AND below is a no-op there.
-        /// Defaults to true, so an absent field never blocks.
+        /// Entry-regime gate: true when the regime permits opening a new position.
+        /// Consulted only when `SymbolInput::regime_eval_ts_ms` is absent; with a
+        /// timestamp present the orchestrator derives this from the gate table in
+        /// `bot_params` instead, so live and backtest cannot drift apart. Defaults
+        /// to true, so an absent field never blocks.
         #[serde(default = "default_true")]
         pub regime_allows_initial_entry: bool,
         /// Entry-regime gate: true when the regime permits adding to an existing
-        /// position at the current bar.
+        /// position. See `regime_allows_initial_entry` for which path consults it.
         #[serde(default = "default_true")]
         pub regime_allows_reentry: bool,
         /// Per-symbol/per-pside params after applying coin_overrides.
@@ -449,6 +450,16 @@ mod core {
         /// projection; backtest and older callers fall back to `emas.m1`.
         #[serde(default)]
         pub forager_m1: Option<EmaTimeframeBundle>,
+        /// Decision timestamp for the entry-regime gate, in exchange milliseconds.
+        ///
+        /// `Some(ts)` makes the orchestrator evaluate the per-symbol gate table it
+        /// carries in `bot_params` at `ts`, which is the single implementation of the
+        /// rule for both the backtest (each bar's timestamp) and live (the planning
+        /// timestamp). `None` keeps the caller-supplied `regime_allows_*` booleans, so
+        /// producers that never set a gate (GPU fixtures, older callers) are
+        /// unaffected.
+        #[serde(default)]
+        pub regime_eval_ts_ms: Option<u64>,
         pub long: SymbolSideInput,
         pub short: SymbolSideInput,
     }
@@ -2535,6 +2546,33 @@ mod core {
         }
     }
 
+    /// Entry verdicts for one symbol side at the current decision timestamp.
+    ///
+    /// When the caller supplied `SymbolInput::regime_eval_ts_ms`, the gate table in
+    /// `bot_params` decides: `EntryRegimeGateConfig::allows_initial` /
+    /// `allows_reentry` answer for that instant, and a disabled or absent table
+    /// allows. Without a timestamp the transmitted booleans stand, which is the
+    /// contract for producers that predate the table.
+    fn side_regime_verdict(s: &SymbolInput, pside: PositionSide) -> (bool, bool) {
+        let gate = match pside {
+            PositionSide::Long => &s.long.bot_params.entry_regime_gate,
+            PositionSide::Short => &s.short.bot_params.entry_regime_gate,
+        };
+        if let Some(ts) = s.regime_eval_ts_ms {
+            return (gate.allows_initial(ts), gate.allows_reentry(ts));
+        }
+        match pside {
+            PositionSide::Long => (
+                s.long.regime_allows_initial_entry,
+                s.long.regime_allows_reentry,
+            ),
+            PositionSide::Short => (
+                s.short.regime_allows_initial_entry,
+                s.short.regime_allows_reentry,
+            ),
+        }
+    }
+
     fn should_generate_closes(mode: TradingMode, has_pos: bool) -> bool {
         match mode {
             TradingMode::Manual => false,
@@ -3765,11 +3803,13 @@ mod core {
                         closes.push(p);
                     }
                 } else {
+                    let (regime_allows_initial, regime_allows_reentry) =
+                        side_regime_verdict(s, PositionSide::Long);
                     let wants_entries = should_generate_entries(mode, has_pos, allow_initial)
                         && regime_allows_entries(
                             has_pos,
-                            s.long.regime_allows_initial_entry,
-                            s.long.regime_allows_reentry,
+                            regime_allows_initial,
+                            regime_allows_reentry,
                         );
                     let wants_closes = should_generate_closes(mode, has_pos);
                     if wants_entries || wants_closes {
@@ -3866,11 +3906,13 @@ mod core {
                         closes.push(p);
                     }
                 } else {
+                    let (regime_allows_initial, regime_allows_reentry) =
+                        side_regime_verdict(s, PositionSide::Short);
                     let wants_entries = should_generate_entries(mode, has_pos, allow_initial)
                         && regime_allows_entries(
                             has_pos,
-                            s.short.regime_allows_initial_entry,
-                            s.short.regime_allows_reentry,
+                            regime_allows_initial,
+                            regime_allows_reentry,
                         );
                     let wants_closes = should_generate_closes(mode, has_pos);
                     if wants_entries || wants_closes {
@@ -4614,6 +4656,56 @@ mod core {
         use crate::orchestrator::EntryPeekHints;
         use std::collections::HashSet;
 
+        #[test]
+        fn entry_regime_verdict_follows_the_timestamp_when_one_is_given() {
+            let mut symbol = make_basic_symbol(0);
+            let table = crate::types::EntryRegimeGateConfig {
+                enabled: true,
+                zero_is_on: false,
+                transition_ts: vec![1_000, 2_000],
+                regime: vec![0, 1],
+                block_initial: true,
+                block_reentry: true,
+            };
+            symbol.long.bot_params.entry_regime_gate = table.clone();
+            symbol.short.bot_params.entry_regime_gate = table;
+
+            symbol.regime_eval_ts_ms = Some(1_000);
+            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (false, false));
+            assert_eq!(
+                side_regime_verdict(&symbol, PositionSide::Short),
+                (false, false)
+            );
+
+            symbol.regime_eval_ts_ms = Some(2_000);
+            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (true, true));
+
+            // No timestamp: the transmitted booleans stand and the table is ignored.
+            symbol.regime_eval_ts_ms = None;
+            symbol.long.regime_allows_initial_entry = false;
+            symbol.long.regime_allows_reentry = true;
+            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (false, true));
+        }
+
+        #[test]
+        fn entry_regime_policy_flags_apply_per_side() {
+            let mut symbol = make_basic_symbol(0);
+            symbol.regime_eval_ts_ms = Some(5_000);
+            symbol.long.bot_params.entry_regime_gate = crate::types::EntryRegimeGateConfig {
+                enabled: true,
+                zero_is_on: false,
+                transition_ts: vec![1_000],
+                regime: vec![0],
+                block_initial: true,
+                block_reentry: false,
+            };
+            // Risk-off (raw 0) at 5_000: initial entries blocked, re-entries allowed.
+            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (false, true));
+            // A side that does not declare the flag never consults the regime.
+            symbol.long.bot_params.entry_regime_gate.block_initial = false;
+            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (true, true));
+        }
+
         fn tm_params_for_test(
             bot_params: &BotParams,
         ) -> crate::strategies::TrailingMartingaleParams {
@@ -4692,6 +4784,7 @@ mod core {
                 effective_min_cost: 0.0,
                 emas,
                 forager_m1: None,
+                regime_eval_ts_ms: None,
                 long: SymbolSideInput {
                     mode: None,
                     position: Position::default(),
