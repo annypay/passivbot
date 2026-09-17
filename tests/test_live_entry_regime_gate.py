@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from pathlib import Path
 
 import numpy as np
@@ -228,33 +229,29 @@ async def test_daily_read_requests_closed_utc_days_only():
     bot.cm = cm
     now = DAY0 + 150 * DAY_MS + 12 * 3_600_000  # midday inside day 150
 
-    day_ts, closes = await (
-        bot._orchestrator_daily_closes("BTC", lookback_days=52, now_ms=now)
-    )
+    series = await bot._orchestrator_daily_closes("BTC", lookback_days=60, now_ms=now)
 
     call = cm.calls[0]
     assert call["timeframe"] == "1d"
-    assert call["max_lookback_candles"] == 53
+    assert call["max_lookback_candles"] == 61
     # The range ends at the last day that has closed, never at the forming day.
     assert call["end_ts"] == DAY0 + 149 * DAY_MS
-    assert call["start_ts"] == DAY0 + 149 * DAY_MS - 52 * DAY_MS
-    assert len(day_ts) == 53
+    assert call["start_ts"] == DAY0 + 149 * DAY_MS - 60 * DAY_MS
+    assert series.depth == 61
     # Every returned row is a UTC midnight, and the forming day is absent.
-    assert all(ts % DAY_MS == 0 for ts in day_ts)
-    assert day_ts[-1] == DAY0 + 149 * DAY_MS
-    assert now // DAY_MS * DAY_MS not in day_ts
-    assert len(closes) == len(day_ts)
+    assert all(ts % DAY_MS == 0 for ts in series.day_ts)
+    assert series.day_ts[-1] == DAY0 + 149 * DAY_MS
+    assert now // DAY_MS * DAY_MS not in series.day_ts
+    assert len(series.closes) == series.depth
 
 
 async def test_daily_read_is_ordered_oldest_first():
     bot = make_gate_bot()
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(120)})
     now = DAY0 + 119 * DAY_MS + 60_000
-    day_ts, closes = await (
-        bot._orchestrator_daily_closes("BTC", lookback_days=52, now_ms=now)
-    )
-    assert day_ts == sorted(day_ts)
-    assert closes == sorted(closes)
+    series = await bot._orchestrator_daily_closes("BTC", lookback_days=60, now_ms=now)
+    assert series.day_ts == sorted(series.day_ts)
+    assert series.closes == sorted(series.closes)
 
 
 async def test_daily_read_rejects_an_unaligned_bucket():
@@ -270,7 +267,7 @@ async def test_daily_read_rejects_an_unaligned_bucket():
     with pytest.raises(RuntimeError, match="not aligned to a UTC day"):
         await (
             bot._orchestrator_daily_closes(
-                "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
+                "BTC", lookback_days=60, now_ms=DAY0 + 60 * DAY_MS
             )
         )
 
@@ -283,7 +280,7 @@ async def test_daily_read_requires_an_exchange_backed_manager():
     with pytest.raises(RuntimeError, match="exchange-backed"):
         await (
             bot._orchestrator_daily_closes(
-                "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
+                "BTC", lookback_days=60, now_ms=DAY0 + 60 * DAY_MS
             )
         )
 
@@ -294,7 +291,7 @@ async def test_daily_read_requires_a_candlestick_manager():
     with pytest.raises(RuntimeError, match="candlestick manager"):
         await (
             bot._orchestrator_daily_closes(
-                "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
+                "BTC", lookback_days=60, now_ms=DAY0 + 60 * DAY_MS
             )
         )
 
@@ -305,7 +302,7 @@ async def test_daily_read_rejects_an_empty_series():
     with pytest.raises(RuntimeError, match="no closed daily candles"):
         await (
             bot._orchestrator_daily_closes(
-                "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
+                "BTC", lookback_days=60, now_ms=DAY0 + 60 * DAY_MS
             )
         )
 
@@ -315,14 +312,14 @@ async def test_daily_read_skips_non_finite_closes():
     closes = rising_then_flat(60)
     closes[10] = float("nan")
     bot.cm = FakeCandleManager({"BTC": closes})
-    day_ts, kept = await (
-        bot._orchestrator_daily_closes(
-            "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
-        )
+    series = await bot._orchestrator_daily_closes(
+        "BTC", lookback_days=60, now_ms=DAY0 + 60 * DAY_MS
     )
-    assert len(day_ts) == len(kept) == 52
-    assert DAY0 + 10 * DAY_MS not in day_ts
-    assert all(np.isfinite(value) for value in kept)
+    # The tape holds 60 closed days and one of them has no usable close.
+    assert series.depth == 59
+    assert DAY0 + 10 * DAY_MS not in series.day_ts
+    assert len(series.closes) == series.depth
+    assert all(np.isfinite(value) for value in series.closes)
 
 
 # --------------------------------------------------------------------------- #
@@ -470,7 +467,7 @@ async def test_republish_replaces_the_previous_table():
     assert bot._orchestrator_entry_regime_gate_unavailable_symbols == {"BTC"}
 
 
-async def test_lookback_covers_the_slow_window_and_the_confirmation_span():
+async def test_lookback_asks_for_more_than_the_filter_needs():
     bot = make_gate_bot(
         {
             "enabled": True,
@@ -481,18 +478,38 @@ async def test_lookback_covers_the_slow_window_and_the_confirmation_span():
         approved_long=["BTC"],
         approved_short=[],
     )
-    cm = FakeCandleManager({"BTC": rising_then_flat(200)})
+    cm = FakeCandleManager({"BTC": rising_then_flat(400)})
     bot.cm = cm
-    now = DAY0 + 150 * DAY_MS + 12 * 3_600_000
+    now = DAY0 + 300 * DAY_MS + 12 * 3_600_000
     await run_publish(bot, ["BTC"], now)
 
-    # 30 slow days + 3 confirmation days + 2 spare = 35 days of evidence, and an
-    # inclusive [start, end] window of 35 days spans 36 candles. Both bounds end at
+    # max(60, 30 slow + 3 confirmation + 10 margin) = 60 days of evidence, and an
+    # inclusive [start, end] window of 60 days spans 61 candles. Both bounds end at
     # the last closed day.
     call = cm.calls[0]
-    assert call["max_lookback_candles"] == 36
-    assert call["end_ts"] == DAY0 + 149 * DAY_MS
-    assert call["start_ts"] == DAY0 + 149 * DAY_MS - 35 * DAY_MS
+    assert call["max_lookback_candles"] == 61
+    assert call["end_ts"] == DAY0 + 299 * DAY_MS
+    assert call["start_ts"] == DAY0 + 299 * DAY_MS - 60 * DAY_MS
+
+
+async def test_lookback_grows_past_the_floor_for_a_longer_slow_window():
+    bot = make_gate_bot(
+        {
+            "enabled": True,
+            "sma_fast_days": 20,
+            "sma_slow_days": 200,
+            "confirm_days": 5,
+        },
+        approved_long=["BTC"],
+        approved_short=[],
+    )
+    cm = FakeCandleManager({"BTC": rising_then_flat(400)})
+    bot.cm = cm
+    now = DAY0 + 300 * DAY_MS + 12 * 3_600_000
+    await run_publish(bot, ["BTC"], now)
+
+    # 200 + 5 + 10 = 215 days, above the 60-day floor, so the floor is a floor only.
+    assert cm.calls[0]["max_lookback_candles"] == 216
 
 
 # --------------------------------------------------------------------------- #
@@ -891,3 +908,173 @@ def test_a_gap_in_the_closed_days_reads_as_risk_off():
     assert len(transitions) == len(regimes)
     assert set(regimes) <= {0, 1}
     assert any(value == 0 for value in regimes), "the gap must not read as risk-on"
+
+
+# --------------------------------------------------------------------------- #
+# warm-up depth and the boot pre-warm
+# --------------------------------------------------------------------------- #
+
+
+async def test_the_published_gate_warms_sixty_days_and_decides_immediately():
+    """The published 20/50 gate needs 50 completed days; the pass asks for 60."""
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    cm = FakeCandleManager({"BTC": rising_then_flat(200)})
+    bot.cm = cm
+    now = DAY0 + 150 * DAY_MS + 12 * 3_600_000
+
+    tables = await run_publish(bot, ["BTC"], now)
+
+    assert cm.calls[0]["max_lookback_candles"] == 61
+    assert tables["BTC"]["long"]["regime"] == [1]
+    stats = bot._orchestrator_entry_regime_gate_stats
+    assert stats["lookback_days"] == 60
+    assert stats["required_days"] == 50
+    assert stats["min_history_days"] == 61
+    assert stats["max_missing_days"] == 0
+    assert stats["risk_on_sides"] == 1
+
+
+async def test_a_series_below_the_slow_window_reports_its_depth():
+    """The verdict needs slow + confirm_days completed days; fewer is risk-off."""
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    bot.cm = FakeCandleManager({"BTC": rising_then_flat(49)})
+
+    tables = await run_publish(bot, ["BTC"], DAY0 + 49 * DAY_MS)
+
+    assert tables["BTC"]["long"]["regime"] == [0]
+    assert not bot._orchestrator_entry_regime_gate_unavailable_symbols
+    stats = bot._orchestrator_entry_regime_gate_stats
+    assert stats["min_history_days"] == 49
+    assert stats["required_days"] == 50
+    assert stats["min_history_days"] < stats["required_days"]
+
+
+async def test_a_daily_gap_inside_the_slow_window_is_visible_and_risk_off():
+    """A missing day is not evidence, so the window spanning it stays undefined."""
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    closes = rising_then_flat(200)
+    closes[140] = float("nan")
+    bot.cm = FakeCandleManager({"BTC": closes})
+
+    tables = await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS + 12 * 3_600_000)
+
+    assert tables["BTC"]["long"]["regime"] == [0]
+    stats = bot._orchestrator_entry_regime_gate_stats
+    # The depth looks sufficient, so the gap count is what explains the risk-off row.
+    assert stats["max_missing_days"] == 1
+    assert stats["min_history_days"] == 60
+
+
+async def test_the_regime_gate_log_line_matches_its_arguments():
+    """A formatting handler must render the record: seven args for six placeholders
+    once turned every live-gate test red in a full run."""
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
+    records: list[logging.LogRecord] = []
+
+    class _Capture(logging.Handler):
+        def emit(self, record):
+            records.append(record)
+
+    handler = _Capture()
+    logger = logging.getLogger()
+    previous_level = logger.level
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+    try:
+        await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS + 12 * 3_600_000)
+    finally:
+        logger.removeHandler(handler)
+        logger.setLevel(previous_level)
+
+    gate_records = [r for r in records if "[regime_gate]" in str(r.getMessage())]
+    assert gate_records, "the pass reports what it published"
+    # getMessage() performs the %-formatting, so a placeholder/argument mismatch raises.
+    text = gate_records[-1].getMessage()
+    assert "lookback_days=60" in text
+    assert "required_days=50" in text
+    assert "history_days_min=61" in text
+    assert "missing_days_max=0" in text
+
+
+async def test_prewarm_resolves_the_gate_before_the_first_cycle():
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    now = DAY0 + 150 * DAY_MS + 12 * 3_600_000
+    bot.get_exchange_time = lambda: int(now)
+    bot.approved_coins_minus_ignored_coins = {"long": {"BTC"}, "short": set()}
+    cm = FakeCandleManager({"BTC": rising_then_flat(200)})
+    bot.cm = cm
+
+    summary = await bot.prewarm_entry_regime_gate()
+
+    assert summary["enabled"] is True
+    assert summary["symbol_count"] == 1
+    assert summary["risk_on_sides"] == 1
+    assert summary["lookback_days"] == 60
+    assert summary["required_days"] == 50
+    assert summary["min_history_days"] == 61
+    assert summary["unavailable_count"] == 0
+    assert bot._orchestrator_entry_regime_gate_tables["BTC"]["long"]["regime"] == [1]
+    # The settled pass is cached for the rest of the UTC day, so the first planning
+    # cycle reuses it instead of fetching the series again.
+    assert getattr(bot, "_orchestrator_entry_regime_gate_cache", None) is not None
+    assert len(cm.calls) == 1
+
+
+async def test_prewarm_retries_a_transient_read_failure_once():
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    now = DAY0 + 150 * DAY_MS + 12 * 3_600_000
+    bot.get_exchange_time = lambda: int(now)
+    bot.approved_coins_minus_ignored_coins = {"long": {"BTC"}, "short": set()}
+
+    class _FlakyOnce(FakeCandleManager):
+        def __init__(self):
+            super().__init__({"BTC": rising_then_flat(200)})
+            self.failures = 0
+
+        async def get_candles(self, symbol, **kwargs):
+            if self.failures == 0:
+                self.failures += 1
+                raise RuntimeError("transient daily read failure")
+            return await super().get_candles(symbol, **kwargs)
+
+    async def _no_sleep(seconds, *, stage):
+        return None
+
+    bot._sleep_unless_shutdown = _no_sleep
+    cm = _FlakyOnce()
+    bot.cm = cm
+
+    summary = await bot.prewarm_entry_regime_gate()
+
+    assert cm.failures == 1
+    assert summary["unavailable_count"] == 0
+    assert summary["risk_on_sides"] == 1
+    assert bot._orchestrator_entry_regime_gate_tables["BTC"]["long"]["regime"] == [1]
+    assert getattr(bot, "_orchestrator_entry_regime_gate_cache", None) is not None
+
+
+async def test_prewarm_is_a_no_op_without_a_gate():
+    bot = make_gate_bot(
+        {"enabled": False, "sma_fast_days": 20, "sma_slow_days": 50},
+        approved_long=["BTC"],
+        approved_short=[],
+    )
+    cm = FakeCandleManager({"BTC": rising_then_flat(200)})
+    bot.cm = cm
+
+    assert await bot.prewarm_entry_regime_gate() == {"enabled": False}
+    assert cm.calls == []
+
+
+async def test_prewarm_without_a_resolved_universe_reads_nothing():
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    bot.approved_coins_minus_ignored_coins = {}
+    cm = FakeCandleManager({"BTC": rising_then_flat(200)})
+    bot.cm = cm
+
+    summary = await bot.prewarm_entry_regime_gate()
+
+    assert summary["enabled"] is True
+    assert summary["symbol_count"] == 0
+    assert cm.calls == []

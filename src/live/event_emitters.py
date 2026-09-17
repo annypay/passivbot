@@ -2463,6 +2463,10 @@ def _emit_entry_regime_gate_verdict_unchecked(
     risk_off_sides: int,
     unavailable_count: int,
     unavailable_symbols: Any = None,
+    lookback_days: int = 0,
+    required_days: int = 0,
+    min_history_days: int = 0,
+    max_missing_days: int = 0,
     symbol_sample_limit: int = 8,
 ) -> None:
     data = {
@@ -2475,6 +2479,12 @@ def _emit_entry_regime_gate_verdict_unchecked(
         "risk_on_sides": int(risk_on_sides),
         "risk_off_sides": int(risk_off_sides),
         "unavailable_count": int(unavailable_count),
+        # Warm-up depth: how many completed days the pass asked for, how many the filter
+        # needs, the shallowest symbol it actually assembled, and the widest daily gap.
+        "lookback_days": int(lookback_days),
+        "required_days": int(required_days),
+        "min_history_days": int(min_history_days),
+        "max_missing_days": int(max_missing_days),
     }
     if unavailable_symbols:
         names = sorted(str(name) for name in unavailable_symbols)

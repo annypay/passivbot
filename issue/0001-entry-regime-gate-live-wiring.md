@@ -3,7 +3,7 @@
 状态：进行中（接线已落地，等待实盘头几周）
 分支：`codex/entry-regime-gate-live-wiring`
 Base：`codex/entry-regime-gate-and-gated-profile`（PR #2）
-Pull request：[#3](https://github.com/annypay/passivbot/pull/3)
+Pull request：[#3](https://github.com/annypay/passivbot/pull/3)、[#5](https://github.com/annypay/passivbot/pull/5)（预热 60 天与深度字段）
 撰写者：2026-09-16/17 的 agent 会话
 
 ## 为什么有这份记录
@@ -49,6 +49,7 @@ Pull request：[#3](https://github.com/annypay/passivbot/pull/3)
 | 分支 | `codex/entry-regime-gate-live-wiring` |
 | 撰写时 head | `8cc058afe`（其后紧接本记录的中文版重写提交） |
 | Pull request | [#3](https://github.com/annypay/passivbot/pull/3)（base：`codex/entry-regime-gate-and-gated-profile`） |
+| 预热补充 PR | [#5](https://github.com/annypay/passivbot/pull/5)（base：`codex/entry-regime-gate-live-wiring`）——60 天取数深度、启动预取与四个深度字段，见下方 2026-09-17 段 |
 | 父 PR | #2（门控、profile、证据）——合并它才能有干净的回退故事 |
 
 ## 撰写时的验证结果
@@ -100,6 +101,10 @@ venv/bin/python src/tools/run_fake_live.py \
 | `unavailable_symbols` | 事件（有上限的样本） | 无 | 点名日线读取失败的币 |
 | `day_start_ms`、`planning_ts_ms` | 事件 | `planning_ts_ms` 落在以 `day_start_ms` 开始的那一天内 | `planning_ts_ms` 早于 `day_start_ms` 说明时钟有问题 |
 | `risk_on_sides` | 事件 | 方向数 − `risk_off_sides` − unavailable 的方向数 | 与日志行不一致说明计数在一轮中变了 |
+| `lookback_days` | `[regime_gate]` 行、`[regime_gate] warmup` 行与事件 | 20/50 下 60 | 小于 60 说明加载的不是这份派生规则 |
+| `required_days` | 同上 | 20/50 下 50（= `sma_slow_days + confirm_days`） | 与 `sma` 配置不符说明配置被改过 |
+| `history_days_min` / `min_history_days` | 同上 | ≥ `required_days`；请求被完整满足时为 `lookback_days + 1`（20/50 下 61） | < `required_days` 就是判决为 risk-off 的原因：历史不够 |
+| `missing_days_max` / `max_missing_days` | 同上 | 0 | >0 表示请求窗口里有交易所没给的日线；落在最近 `sma_slow_days` 天内就会让判决 risk-off |
 | `regime_eval_ts_ms` | 规划 payload（debug profile） | 本轮的交易所时间 | `null` 表示未配置门控 |
 | `_orchestrator_entry_regime_gate_tables` | 进程内状态 | 每个 approved 币/方向一条 | 缺某个币，说明它没拿到表 |
 | `_orchestrator_entry_regime_gate_unavailable_symbols` | 进程内状态 | 空 | 重试名单；读取成功后会自行清空 |
@@ -111,7 +116,7 @@ venv/bin/python src/tools/run_fake_live.py \
 
 | 症状 | 可能原因 | 处置 |
 | --- | --- | --- |
-| 启动后头几天完全不开仓 | warm-up：在 `sma_slow_days + confirm_days + 2` 个已完成日出现之前判决都是 risk-off | 20/50 下约 52 天的常态；用 `[regime_gate]` 行确认，不要靠关掉门控来"验证" |
+| 启动后完全不开仓 | 判决为 risk-off：要么最近 `sma_slow_days` 天里真在下跌，要么取回的历史不足 / 有缺口 | 先看 `[regime_gate] warmup` 行：`history_days_min < required_days` 是历史不足，`missing_days_max > 0` 是缺口；两者都为 0 且 `risk_off_sides` 高，才是行情本身（不要靠关掉门控来"验证"） |
 | 只有一个币不开仓，其它正常 | 该币判决为 risk-off，或它的日线读取失败 | 看 `unavailable` 与事件里的 `unavailable_symbols`；反复失败属于交易所/K 线问题 |
 | regime 看起来关闭的日子却开了仓 | 交易所提供的日线序列与对照的图表不同（交易所、收盘日边界或缺口） | 把该交易所该币的日收盘与此表的 `transition_ts` 逐日对照 |
 | 完全没有 `[regime_gate]` 行 | 没有解析到门控 | 看 `source=`；只写 `backtest.entry_regime_gate` 的配置也能通过 `_raw` 解析，所以出现 `none` 就是真的没有该键 |
@@ -125,6 +130,48 @@ venv/bin/python src/tools/run_fake_live.py \
 1. 把配置所用声明里的 `enabled` 置为 `false`——门控停止过滤，表也不再生成。重载配置或重启 bot。
 2. 或者 revert 本次接线的 commit 并重启：行为与本记录之前完全一致，门控只存在于回测。
 3. 两种回退都不触碰 tracked 证据或已发布 profile。
+
+## 2026-09-17 更正与补充：预热 60 天，首周期即可判决
+
+### 更正一处错误结论
+
+本记录先前（以及 PR #3 正文、`CHANGELOG.md`）写着「启动后约 52 天不开仓」。**这是错的**，根因是把取数窗口当成了等待期：实盘在**启动当次**就向交易所请求已收盘日线（`_orchestrator_daily_closes`，改动前为 `sma_slow_days + confirm_days + 2` 天，本轮起为下面表格里的派生深度），而判决需要的是**序列里有** `sma_slow_days + confirm_days` 个已完成日，不是「等这么多天」。同样的错误表述也出现在 `docs/ai/features/strategy_runtime.md`，本轮已一并改正。
+
+实测（`src/entry_regime.py` 的纯函数，只读探针）：
+
+| 序列里的已完成日 | `confirm_days` | 判决 |
+| --- | --- | --- |
+| 49 | 0 | risk-off |
+| **50** | 0 | **risk-on** |
+| 54 | 5 | risk-off |
+| **55** | 5 | **risk-on** |
+
+即阈值就是 `sma_slow_days + confirm_days`；只要交易所能给出这段历史，实盘**首个规划周期**就能得到真实判决。
+
+### 本轮改了什么
+
+| 方面 | 改动 |
+| --- | --- |
+| 取数深度 | `live_lookback_days(slow, confirm_days) = max(60, slow + confirm_days + 10)`（`src/entry_regime.py`）：20/50 由 52 天升到 **60 天**（实际请求 61 根）；慢窗口更长时按需放大。余量的用途是：交易日少给最近一天、或最近一天尚未 finalize 时，序列里仍有足够的已完成日。 |
+| 启动预热 | 新增 `prewarm_entry_regime_gate`，在 `bot.ready` **之前**、`warmup_trading_ready_candles()` 之后执行；失败重试一次（2 秒退避），且**绝不阻断启动**；成功则把该 UTC 日的表结算缓存，首周期直接复用，不重复取数。 |
+| 可见性 | `entry_regime.gate.verdict` 新增 `lookback_days`、`required_days`、`min_history_days`、`max_missing_days`；`[regime_gate]` 行补齐同名字段；新增一行启动就绪行 `[regime_gate] warmup ... elapsed_ms=...`。 |
+| 边界（未改） | 缺口语义不变：最近 `sma_slow_days` 天内缺一天 → 该窗口未定义 → risk-off，最长可延续 `sma_slow_days` 天。60 天取数给的是余量，不是容错；`max_missing_days` 只是把它暴露出来。 |
+
+启动后应当看到（20/50）：
+
+```text
+[regime_gate] warmup lookback_days=60 required_days=50 symbols=41 history_days_min=61 missing_days_max=0 risk_on_sides=... risk_off_sides=... unavailable=0 elapsed_ms=...
+```
+
+### 回测侧的一处已知边界（本轮只记录，未修）
+
+g4 证据的冻结数据集从 2023-08-17 开始，而报告窗口从 2023-09-12 开始（26 天窗口前历史）。回测把门控建在整个 HLCV 数组上，判决需要 50 天才有定义，因此该次回测**前约 24 天**是 risk-off。要修就得重新冻结数据集（`…__8300950b42789a26`）并重出已发布证据，属于独立决策。
+
+### 本轮验证
+
+- `tests/test_live_entry_regime_gate.py`、`tests/test_entry_regime_gate.py`：全绿（含取数深度、深度统计、缺口可见性、日志格式化、预热与重试）。
+- `tests/test_fake_live_entry_regime_gate_dry_run.py`：新增稀疏日线 tape 的端到端用例——verdict 出现在 `bot.ready` **之前**，`risk_on_sides=1`、`unavailable_count=0`、`lookback_days=60`、`min_history_days ≥ 50`。
+- 无 Rust 改动，故无需重建扩展；已发布 profile 与 tracked 证据未改。
 
 ## 观察项
 

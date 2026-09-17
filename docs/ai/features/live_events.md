@@ -338,6 +338,14 @@ what the gate decided and on which evidence:
   `day_start_ms` (the UTC day the verdict belongs to), `planning_ts_ms` (the exchange
   timestamp the engine evaluates the table at), `symbol_count`, `risk_on_sides`,
   `risk_off_sides`, `unavailable_count`, and a bounded `unavailable_symbols` sample.
+- The same event reports the assembled warm-up depth: `lookback_days` (completed daily
+  rows requested), `required_days` (`sma_slow_days + confirm_days`, the minimum the
+  verdict needs), `min_history_days` (the shallowest symbol actually assembled) and
+  `max_missing_days` (the widest daily gap inside the requested window). A verdict whose
+  `min_history_days` is below `required_days`, or whose `max_missing_days` is above zero,
+  is explaining a risk-off answer rather than reporting a fault.
+- The startup pre-warm publishes the first verdict of a run before `bot.ready`, so a live
+  event stream can carry a gate decision ahead of readiness.
 - The side counts exclude symbols whose daily evidence could not be assembled: those are
   reported through `unavailable_count` alone, and each of them carries an explicit
   risk-off table, so `risk_off_sides` counts computed risk-off days only.

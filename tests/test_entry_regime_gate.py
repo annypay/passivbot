@@ -22,6 +22,7 @@ if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
 
 import backtest  # noqa: E402
+import entry_regime  # noqa: E402
 
 MINUTES_PER_DAY = 1440
 
@@ -338,3 +339,64 @@ class TestGateApplication:
                     "confirm_days": 0,
                 },
             )
+
+
+class TestLiveWarmup:
+    """The live pre-warm depth and the threshold it must clear.
+
+    A live start has to fetch the daily evidence itself, so the depth it asks for is a
+    reviewed rule: enough completed days for the verdict, plus a margin. The threshold
+    itself is `slow + confirm_days` completed days *in the fetched series*, which is what
+    these cases pin.
+    """
+
+    def test_published_gate_asks_for_sixty_days(self):
+        assert entry_regime.live_lookback_days(50) == 60
+
+    @pytest.mark.parametrize(
+        "slow,confirm_days,expected",
+        [
+            (10, 0, 60),
+            (30, 3, 60),
+            (50, 0, 60),
+            (60, 0, 70),
+            (100, 20, 130),
+            (200, 5, 215),
+        ],
+    )
+    def test_the_request_always_exceeds_what_the_filter_needs(
+        self, slow, confirm_days, expected
+    ):
+        assert entry_regime.live_lookback_days(slow, confirm_days) == expected
+        assert expected > slow + confirm_days
+
+    @pytest.mark.parametrize(
+        "n_days,confirm_days,expected",
+        [
+            (49, 0, False),
+            (50, 0, True),
+            (54, 5, False),
+            (55, 5, True),
+        ],
+    )
+    def test_the_verdict_needs_slow_plus_confirmation_completed_days(
+        self, n_days, confirm_days, expected
+    ):
+        day_ms = entry_regime.MS_PER_UTC_DAY
+        today = 20_000 * day_ms
+        days = [today - (n_days - index) * day_ms for index in range(n_days)]
+        closes = [100.0 + index for index in range(n_days)]
+        verdict = entry_regime.regime_flag_for_day(
+            days,
+            closes,
+            today + 3_600_000,
+            fast=20,
+            slow=50,
+            confirm_days=confirm_days,
+        )
+        assert verdict is expected
+
+    def test_the_container_reports_the_assembled_depth(self):
+        series = entry_regime.DailyCloses([0, 86_400_000], [1.0, 2.0])
+        assert series.depth == 2
+        assert series.closes == [1.0, 2.0]
