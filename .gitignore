@@ -430,3 +430,5 @@ Cargo.lock
 
 # Fake-live/monitor test artifacts
 /monitor/
+/logs/
+/tmp/

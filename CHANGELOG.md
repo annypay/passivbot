@@ -6,6 +6,15 @@ since the latest release tag; these features may already be available when insta
 
 ## Unreleased
 
+- Let the live bot's own CCXT clients inherit a proxy from the environment. `HTTP_PROXY`
+  and `HTTPS_PROXY` were already honoured by `utils.load_ccxt_instance` (the research and
+  downloader clients) and documented in the README, but the live REST and websocket
+  clients built their own sessions and ignored them, so a proxied host could not reach the
+  exchange at all. An explicit `aiohttp_trust_env` in the account entry still wins.
+- Add `passivbot tool entry-regime-probe`, a read-only public market-data probe that
+  reports the live entry-regime verdict per approved coin before a live start, together
+  with the assembled daily-history depth, the missing-day count and each symbol's
+  `min_cost` / `min_qty`. It needs no API keys and never contacts a private endpoint.
 - Enforce the entry-regime gate in live trading. The planning payload now carries
   `regime_eval_ts_ms`, and the Rust orchestrator evaluates the published daily table at
   that instant, which is the same code path the backtest drives with each bar's

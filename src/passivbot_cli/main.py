@@ -140,6 +140,10 @@ TOOL_COMMANDS: dict[str, CommandSpec] = {
         "tools.hsl_startup_preview",
         "read-only offline HSL startup preview",
     ),
+    "entry-regime-probe": CommandSpec(
+        "tools.probe_entry_regime_gate",
+        "read-only public daily-candle probe for the live entry-regime gate",
+    ),
     "hsl-replay-benchmark": CommandSpec(
         "tools.hsl_replay_benchmark",
         "benchmark the offline coin-HSL replay hot path",

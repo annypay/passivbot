@@ -698,7 +698,8 @@ _CCXT_PROXY_ENV_VARS = (
 )
 
 
-def _ccxt_should_trust_environment() -> bool:
+def ccxt_should_trust_environment() -> bool:
+    """Whether a proxy environment variable is set for ccxt clients to inherit."""
     return any(os.environ.get(name) for name in _CCXT_PROXY_ENV_VARS)
 
 
@@ -715,7 +716,7 @@ def load_ccxt_instance(exchange_id: str, enable_rate_limit: bool = True, timeout
         # Default ccxt timeout can be too low for long lookbacks; raise to be tolerant.
         "timeout": int(timeout_ms),
     }
-    if _ccxt_should_trust_environment():
+    if ccxt_should_trust_environment():
         client_config["aiohttp_trust_env"] = True
     try:
         cc = getattr(ccxt, client_id)(client_config)
