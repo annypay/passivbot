@@ -2,8 +2,8 @@
 
 Status: active (wiring landed, waiting for the first live weeks)
 Branch: `codex/entry-regime-gate-live-wiring`
-Base: `codex/research-evidence-and-strategy-profile` (PR #2)
-Pull request: #3 (stacked on #2) — see *Delivery* below
+Base: `codex/entry-regime-gate-and-gated-profile` (PR #2)
+Pull request: [#3](https://github.com/annypay/passivbot/pull/3), six commits
 Owner at write time: agent session of 2026-09-16/17
 
 ## Why this record exists
@@ -65,7 +65,8 @@ where it is correct; `src/config/hydrate.py` needed no change of that kind.
 | Item | Value |
 | --- | --- |
 | Branch | `codex/entry-regime-gate-live-wiring` |
-| Pull request | #3 (base: `codex/research-evidence-and-strategy-profile`) |
+| Head at write time | `b73eaf789` |
+| Pull request | [#3](https://github.com/annypay/passivbot/pull/3) (base: `codex/entry-regime-gate-and-gated-profile`) |
 | Parent PR | #2 (gate, profile, evidence) — must merge for a clean rollback story |
 
 ## Verification at write time
