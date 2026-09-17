@@ -46,6 +46,7 @@ import ccxt.pro as ccxt_pro
 import ccxt.async_support as ccxt_async
 from procedures import assert_correct_ccxt_version
 from config.access import get_optional_live_value, require_live_value
+from utils import ccxt_should_trust_environment
 
 assert_correct_ccxt_version(ccxt=ccxt_async)
 
@@ -383,6 +384,11 @@ class CCXTBot(Passivbot):
         config = {k: v for k, v in self.user_info.items() if k not in passivbot_fields}
         config["enableRateLimit"] = True
         config.setdefault("timeout", 30000)  # 30 s — CCXT default ~10 s is too tight on cold boot
+        # Documented contract: a proxy in the environment is inherited by the live REST and
+        # websocket clients, exactly as `utils.load_ccxt_instance` already does for the
+        # research and downloader clients. An explicit user setting still wins.
+        if "aiohttp_trust_env" not in config and ccxt_should_trust_environment():
+            config["aiohttp_trust_env"] = True
 
         # Remap legacy credential field names to CCXT-native names for backwards compatibility
         legacy_mappings = {
