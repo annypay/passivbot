@@ -1,0 +1,1549 @@
+{
+  "arms": [
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__3y/backtest_results/binance_off__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_off__3y.config.json",
+      "config_sha256": "ccff0466f2fb92641ea2d44e65600d0aff73eb7cd84428cc9971f16dfac33777",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [],
+      "description": "HSL 关闭：原生窗口控制组（锚点复用，不重跑）",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__3y/execution_audit.csv",
+      "key": "off__3y",
+      "leg": "3y",
+      "lever": "off",
+      "lever_hypothesis": "控制组；尾部上界由暴露峰值决定",
+      "lever_label": "HSL 关闭（控制）",
+      "lever_question": "基线收益与尾部损失是什么？",
+      "reused": true,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/coin__3y/backtest_results/binance_coin__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/coin__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_coin__3y.config.json",
+      "config_sha256": "5be4a62bc61fd41cdb577f6fec9cc89826c350e37a619b3a704ec1c039e70778",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        }
+      ],
+      "description": "HSL coin：上一轮研究的候选（锚点复用，不重跑）",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/coin__3y/execution_audit.csv",
+      "key": "coin__3y",
+      "leg": "3y",
+      "lever": "coin",
+      "lever_hypothesis": "只砍单币，无法防组合级崩塌；代价 = 已实现 panic 亏损",
+      "lever_label": "HSL coin（当前候选）",
+      "lever_question": "单币级熔断是否改变组合级尾部？",
+      "reused": true,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/pside_r15__3y/backtest_results/binance_pside_r15__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/pside_r15__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_pside_r15__3y.config.json",
+      "config_sha256": "a07dee57086ff62de819aac0cd179624b12b59a9dcae05668da56428694851f8",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "pside"
+        }
+      ],
+      "description": "HSL 组合级（按边）熔断，red=0.15",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/pside_r15__3y/execution_audit.csv",
+      "key": "pside_r15__3y",
+      "leg": "3y",
+      "lever": "pside_r15",
+      "lever_hypothesis": "阈值相对策略净值，原生窗最差 DD<0.15 ⇒ 休眠保险",
+      "lever_label": "HSL pside red=0.15",
+      "lever_question": "组合级熔断在默认阈值下是否会介入？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r15__3y/backtest_results/binance_unified_r15__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r15__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r15__3y.config.json",
+      "config_sha256": "b7dccd7c79ac3a1ee1e6a56fedb34119f6e491a8f895c6f21477df624e7d8ae9",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        }
+      ],
+      "description": "HSL 账户级熔断，red=0.15",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r15__3y/execution_audit.csv",
+      "key": "unified_r15__3y",
+      "leg": "3y",
+      "lever": "unified_r15",
+      "lever_hypothesis": "长仓单边下 pside 与 unified 行为接近",
+      "lever_label": "HSL unified red=0.15",
+      "lever_question": "账户级熔断与 pside 在单边配置下是否等价？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__3y/backtest_results/binance_unified_r10__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10__3y.config.json",
+      "config_sha256": "90364f835e983b6b86038dda2dd4a745ad0d5be96eb137233947464930b52bac",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        }
+      ],
+      "description": "HSL 账户级熔断，red=0.10",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__3y/execution_audit.csv",
+      "key": "unified_r10__3y",
+      "leg": "3y",
+      "lever": "unified_r10",
+      "lever_hypothesis": "开始约束尾部；代价是更频繁的停牌与地板价平仓",
+      "lever_label": "HSL unified red=0.10",
+      "lever_question": "把阈值降到 0.10 能封住多少尾部、代价多大？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_fast__3y/backtest_results/binance_unified_r10_fast__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_fast__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10_fast__3y.config.json",
+      "config_sha256": "6975ec6f8b6afdce6eef724797d6fead9fc6418e3e708c0463d4db2f4808c178",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 120.0
+        }
+      ],
+      "description": "HSL 账户级熔断 red=0.10，EMA 快速化到 120 分钟",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_fast__3y/execution_audit.csv",
+      "key": "unified_r10_fast__3y",
+      "leg": "3y",
+      "lever": "unified_r10_fast",
+      "lever_hypothesis": "对持续性崩盘更快；对闪崩仍受 min(raw,EMA) 限制",
+      "lever_label": "HSL unified red=0.10, EMA 120min",
+      "lever_question": "更快的熔断是否更有效，误触发是否更贵？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_market__3y/backtest_results/binance_unified_r10_market__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_market__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10_market__3y.config.json",
+      "config_sha256": "67a4d23f47fc331c0e8ace6b14fb23b343e4c2e4b9759735711f2735c80d7ffb",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        },
+        {
+          "from": "limit",
+          "path": "bot.long.hsl.panic_close_order_type",
+          "to": "market"
+        }
+      ],
+      "description": "HSL 账户级熔断 red=0.10，panic 走市价",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_market__3y/execution_audit.csv",
+      "key": "unified_r10_market__3y",
+      "leg": "3y",
+      "lever": "unified_r10_market",
+      "lever_hypothesis": "市价 panic 有滑点成本，但保证离场",
+      "lever_label": "HSL unified red=0.10, panic=market",
+      "lever_question": "崩盘中限价砍不掉的现实成本是多少？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_never__3y/backtest_results/binance_unified_r10_never__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_never__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10_never__3y.config.json",
+      "config_sha256": "0a270d54c8929bbd2ff7dd0c8982d80cb7f3d7c065a40bba6e7d527f06abbab7",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        },
+        {
+          "from": "threshold",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "to": "never"
+        }
+      ],
+      "description": "HSL 账户级熔断 red=0.10，触发后永久停止",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_never__3y/execution_audit.csv",
+      "key": "unified_r10_never__3y",
+      "leg": "3y",
+      "lever": "unified_r10_never",
+      "lever_hypothesis": "一次触发即永久离线；上限清晰、复利代价最大",
+      "lever_label": "HSL unified red=0.10, restart=never",
+      "lever_question": "终止式开关（保命终点）代价几何？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twe_090__3y/backtest_results/binance_twe_090__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twe_090__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_twe_090__3y.config.json",
+      "config_sha256": "57b7fdeb791d7b0df524207235f5190cb1e07579156bd08ef248c6bcd8a5f8b1",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 0.9
+        }
+      ],
+      "description": "结构性降杠杆：总暴露上限 1.0→0.9",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twe_090__3y/execution_audit.csv",
+      "key": "twe_090__3y",
+      "leg": "3y",
+      "lever": "twe_090",
+      "lever_hypothesis": "代价与收益近似线性，是任何叠层必须打败的基准",
+      "lever_label": "结构性降杠杆 TWE 0.90",
+      "lever_question": "线性降杠杆换来多少尾部削减？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/allowance_000__3y/backtest_results/binance_allowance_000__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/allowance_000__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_allowance_000__3y.config.json",
+      "config_sha256": "a781d5900623871142516a1feeb5def5c006c1633046482a491ada1037615bb5",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "取消单槽超额允许：单币上界 19.57%→14.29%",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/allowance_000__3y/execution_audit.csv",
+      "key": "allowance_000__3y",
+      "leg": "3y",
+      "lever": "allowance_000",
+      "lever_hypothesis": "单币上界 19.57%→14.29%，代价远小于 TWE 降杠杆",
+      "lever_label": "取消超额允许 we_excess_allowance_pct=0",
+      "lever_question": "最小侵入地压低单币上界是否几乎免费？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twel_enforcer_070__3y/backtest_results/binance_twel_enforcer_070__3y",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twel_enforcer_070__3y",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_twel_enforcer_070__3y.config.json",
+      "config_sha256": "03fe4bbef3454e64319325d9094bef9d52346cf9b618eae620103e9a92228c17",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.risk.total_exposure_enforcer_enabled",
+          "to": true
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_exposure_enforcer_threshold",
+          "to": 0.7
+        }
+      ],
+      "description": "组合暴露强制回收：超过 0.7 即减仓",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twel_enforcer_070__3y/execution_audit.csv",
+      "key": "twel_enforcer_070__3y",
+      "leg": "3y",
+      "lever": "twel_enforcer_070",
+      "lever_hypothesis": "硬刹车把下跌中的仓位强制实现亏损，预计劣于静态降杠杆",
+      "lever_label": "组合暴露强制回收 threshold=0.70",
+      "lever_question": "崩盘中强制减仓是否优于不动？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__ext/backtest_results/binance_off__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_off__ext.config.json",
+      "config_sha256": "2dd33d876ed0d01bd0db0b6abb454065e8232a71b624d29045c7aee6398cae48",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [],
+      "description": "HSL 关闭：5.4 年压力腿控制组",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__ext/execution_audit.csv",
+      "key": "off__ext",
+      "leg": "ext",
+      "lever": "off",
+      "lever_hypothesis": "控制组；尾部上界由暴露峰值决定",
+      "lever_label": "HSL 关闭（控制）",
+      "lever_question": "基线收益与尾部损失是什么？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/coin__ext/backtest_results/binance_coin__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/coin__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_coin__ext.config.json",
+      "config_sha256": "d3d7b321146905465be0bca29b36d0d903ad3338ec97f86df08176360cb8cac9",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        }
+      ],
+      "description": "HSL coin：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/coin__ext/execution_audit.csv",
+      "key": "coin__ext",
+      "leg": "ext",
+      "lever": "coin",
+      "lever_hypothesis": "只砍单币，无法防组合级崩塌；代价 = 已实现 panic 亏损",
+      "lever_label": "HSL coin（当前候选）",
+      "lever_question": "单币级熔断是否改变组合级尾部？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/pside_r15__ext/backtest_results/binance_pside_r15__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/pside_r15__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_pside_r15__ext.config.json",
+      "config_sha256": "e6f7de8959263a03a69540d29d8b8465bbf7414cca7cbc8e15bda2246acf874a",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "pside"
+        }
+      ],
+      "description": "HSL 组合级熔断 red=0.15：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/pside_r15__ext/execution_audit.csv",
+      "key": "pside_r15__ext",
+      "leg": "ext",
+      "lever": "pside_r15",
+      "lever_hypothesis": "阈值相对策略净值，原生窗最差 DD<0.15 ⇒ 休眠保险",
+      "lever_label": "HSL pside red=0.15",
+      "lever_question": "组合级熔断在默认阈值下是否会介入？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r15__ext/backtest_results/binance_unified_r15__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r15__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r15__ext.config.json",
+      "config_sha256": "bcc990bb3b2697efc9bbd7b909746af3046ea9180f229ef50b0331dec2347953",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        }
+      ],
+      "description": "HSL 账户级熔断 red=0.15：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r15__ext/execution_audit.csv",
+      "key": "unified_r15__ext",
+      "leg": "ext",
+      "lever": "unified_r15",
+      "lever_hypothesis": "长仓单边下 pside 与 unified 行为接近",
+      "lever_label": "HSL unified red=0.15",
+      "lever_question": "账户级熔断与 pside 在单边配置下是否等价？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__ext/backtest_results/binance_unified_r10__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10__ext.config.json",
+      "config_sha256": "9725eb42c45203d63c026b6b772e2b36e648d3ce3bdc155c7d682e67f4e9f06c",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        }
+      ],
+      "description": "HSL 账户级熔断 red=0.10：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__ext/execution_audit.csv",
+      "key": "unified_r10__ext",
+      "leg": "ext",
+      "lever": "unified_r10",
+      "lever_hypothesis": "开始约束尾部；代价是更频繁的停牌与地板价平仓",
+      "lever_label": "HSL unified red=0.10",
+      "lever_question": "把阈值降到 0.10 能封住多少尾部、代价多大？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_fast__ext/backtest_results/binance_unified_r10_fast__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_fast__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10_fast__ext.config.json",
+      "config_sha256": "d21c7ddca1f02d37139b87a1c4bfdc4ad75ec1198cdca49acbeb70c77eede853",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 120.0
+        }
+      ],
+      "description": "HSL 账户级熔断 red=0.10 快速化：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_fast__ext/execution_audit.csv",
+      "key": "unified_r10_fast__ext",
+      "leg": "ext",
+      "lever": "unified_r10_fast",
+      "lever_hypothesis": "对持续性崩盘更快；对闪崩仍受 min(raw,EMA) 限制",
+      "lever_label": "HSL unified red=0.10, EMA 120min",
+      "lever_question": "更快的熔断是否更有效，误触发是否更贵？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_market__ext/backtest_results/binance_unified_r10_market__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_market__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10_market__ext.config.json",
+      "config_sha256": "8841281cdd94b2b6ad0a5a9741d2261c460d21e85ca480bbaf6df2f036a268bb",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        },
+        {
+          "from": "limit",
+          "path": "bot.long.hsl.panic_close_order_type",
+          "to": "market"
+        }
+      ],
+      "description": "HSL 账户级熔断 red=0.10 市价 panic：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_market__ext/execution_audit.csv",
+      "key": "unified_r10_market__ext",
+      "leg": "ext",
+      "lever": "unified_r10_market",
+      "lever_hypothesis": "市价 panic 有滑点成本，但保证离场",
+      "lever_label": "HSL unified red=0.10, panic=market",
+      "lever_question": "崩盘中限价砍不掉的现实成本是多少？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_never__ext/backtest_results/binance_unified_r10_never__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_never__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10_never__ext.config.json",
+      "config_sha256": "638115bb54988c072074b9e8b4015e76507ea5b6df988976274bfe3269b7248c",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        },
+        {
+          "from": "threshold",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "to": "never"
+        }
+      ],
+      "description": "HSL 账户级熔断 red=0.10 永久停止：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10_never__ext/execution_audit.csv",
+      "key": "unified_r10_never__ext",
+      "leg": "ext",
+      "lever": "unified_r10_never",
+      "lever_hypothesis": "一次触发即永久离线；上限清晰、复利代价最大",
+      "lever_label": "HSL unified red=0.10, restart=never",
+      "lever_question": "终止式开关（保命终点）代价几何？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twe_090__ext/backtest_results/binance_twe_090__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twe_090__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_twe_090__ext.config.json",
+      "config_sha256": "b58a3fe66fd4fb11878d5900703f73883265eaf107459dea2f4289b49fea2d04",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 0.9
+        }
+      ],
+      "description": "结构性降杠杆 TWE 0.9：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twe_090__ext/execution_audit.csv",
+      "key": "twe_090__ext",
+      "leg": "ext",
+      "lever": "twe_090",
+      "lever_hypothesis": "代价与收益近似线性，是任何叠层必须打败的基准",
+      "lever_label": "结构性降杠杆 TWE 0.90",
+      "lever_question": "线性降杠杆换来多少尾部削减？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/allowance_000__ext/backtest_results/binance_allowance_000__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/allowance_000__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_allowance_000__ext.config.json",
+      "config_sha256": "ce2d428f7740cc53f89c14b73b48c08b80ec6a7ab5d14c5c6863c3b1bf19cece",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "取消单槽超额允许：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/allowance_000__ext/execution_audit.csv",
+      "key": "allowance_000__ext",
+      "leg": "ext",
+      "lever": "allowance_000",
+      "lever_hypothesis": "单币上界 19.57%→14.29%，代价远小于 TWE 降杠杆",
+      "lever_label": "取消超额允许 we_excess_allowance_pct=0",
+      "lever_question": "最小侵入地压低单币上界是否几乎免费？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twel_enforcer_070__ext/backtest_results/binance_twel_enforcer_070__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twel_enforcer_070__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_twel_enforcer_070__ext.config.json",
+      "config_sha256": "d777a47c6ae3e7fabd5123bd9cb3fe973b3c13b506bc9d15b5519085b48fa939",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.risk.total_exposure_enforcer_enabled",
+          "to": true
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_exposure_enforcer_threshold",
+          "to": 0.7
+        }
+      ],
+      "description": "组合暴露强制回收：5.4 年压力腿",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/twel_enforcer_070__ext/execution_audit.csv",
+      "key": "twel_enforcer_070__ext",
+      "leg": "ext",
+      "lever": "twel_enforcer_070",
+      "lever_hypothesis": "硬刹车把下跌中的仓位强制实现亏损，预计劣于静态降杠杆",
+      "lever_label": "组合暴露强制回收 threshold=0.70",
+      "lever_question": "崩盘中强制减仓是否优于不动？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/max_realized_050__ext/backtest_results/binance_max_realized_050__ext",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/max_realized_050__ext",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_max_realized_050__ext.config.json",
+      "config_sha256": "39425feb5040dd0a4c7536843f5090d73493459467dc5ba182f97688484a1583",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 1,
+          "path": "live.max_realized_loss_pct",
+          "to": 0.5
+        }
+      ],
+      "description": "实现亏损闸门 0.5：证伪臂（预期阻止减仓、尾部更差）",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/max_realized_050__ext/execution_audit.csv",
+      "key": "max_realized_050__ext",
+      "leg": "ext",
+      "lever": "max_realized_050",
+      "lever_hypothesis": "反而阻止 unstuck 减仓，把仓位钉在最大暴露上",
+      "lever_label": "实现亏损闸门 max_realized_loss_pct=0.50",
+      "lever_question": "阻止实现亏损是否等同于保命？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": false
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__synth_a/backtest_results/binance_off__synth_a",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__synth_a",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_off__synth_a.config.json",
+      "config_sha256": "230c6a906c5751f82c182ffcf0cbb2b90f90995814f5c7d66ec338a97f68b5ee",
+      "dataset": "synth_a",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [],
+      "description": "合成情景 A（单币崩塌）下的 HSL 关闭对照组",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__synth_a/execution_audit.csv",
+      "key": "off__synth_a",
+      "leg": "syn",
+      "lever": "off",
+      "lever_hypothesis": "控制组；尾部上界由暴露峰值决定",
+      "lever_label": "HSL 关闭（控制）",
+      "lever_question": "基线收益与尾部损失是什么？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": true
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__synth_a/backtest_results/binance_unified_r10__synth_a",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__synth_a",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10__synth_a.config.json",
+      "config_sha256": "3b5cff7ae3c1d5c91f5972f356abf1084eb8e5757c54f74dc38682f86f754a5c",
+      "dataset": "synth_a",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        }
+      ],
+      "description": "合成情景 A 下的账户级熔断 red=0.10",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__synth_a/execution_audit.csv",
+      "key": "unified_r10__synth_a",
+      "leg": "syn",
+      "lever": "unified_r10",
+      "lever_hypothesis": "开始约束尾部；代价是更频繁的停牌与地板价平仓",
+      "lever_label": "HSL unified red=0.10",
+      "lever_question": "把阈值降到 0.10 能封住多少尾部、代价多大？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": true
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__synth_b/backtest_results/binance_off__synth_b",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__synth_b",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_off__synth_b.config.json",
+      "config_sha256": "dd9b69cebfde0c85862973ae6b9bd27efed4fecc58ffb766572d2926af57ca1e",
+      "dataset": "synth_b",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [],
+      "description": "合成情景 B（三币同时崩塌）下的 HSL 关闭对照组",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__synth_b/execution_audit.csv",
+      "key": "off__synth_b",
+      "leg": "syn",
+      "lever": "off",
+      "lever_hypothesis": "控制组；尾部上界由暴露峰值决定",
+      "lever_label": "HSL 关闭（控制）",
+      "lever_question": "基线收益与尾部损失是什么？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": true
+    },
+    {
+      "base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__synth_b/backtest_results/binance_unified_r10__synth_b",
+      "bundle_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__synth_b",
+      "config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10__synth_b.config.json",
+      "config_sha256": "761ff94e8af83be40832bce0edc48f52fa0dc972fa91cdd43095bf948b1d80b3",
+      "dataset": "synth_b",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        }
+      ],
+      "description": "合成情景 B 下的账户级熔断 red=0.10",
+      "execution_audit_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__synth_b/execution_audit.csv",
+      "key": "unified_r10__synth_b",
+      "leg": "syn",
+      "lever": "unified_r10",
+      "lever_hypothesis": "开始约束尾部；代价是更频繁的停牌与地板价平仓",
+      "lever_label": "HSL unified red=0.10",
+      "lever_question": "把阈值降到 0.10 能封住多少尾部、代价多大？",
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "synthetic": true
+    }
+  ],
+  "coin_count": 40,
+  "coins": [
+    "AAVE",
+    "ADA",
+    "ALGO",
+    "APT",
+    "ARB",
+    "ASTER",
+    "ATOM",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "CC",
+    "DOGE",
+    "DOT",
+    "ENA",
+    "ETH",
+    "FIL",
+    "GRAM",
+    "HBAR",
+    "HYPE",
+    "INJ",
+    "KAS",
+    "LINK",
+    "LTC",
+    "MORPHO",
+    "NEAR",
+    "ONDO",
+    "POL",
+    "RENDER",
+    "SOL",
+    "SUI",
+    "TAO",
+    "TON",
+    "TRX",
+    "UNI",
+    "WLD",
+    "XLM",
+    "XMR",
+    "XRP",
+    "ZEC"
+  ],
+  "comparison_metric_groups": {
+    "回撤与恢复": [
+      "drawdown_worst_strategy_eq",
+      "drawdown_worst_mean_1pct_strategy_eq",
+      "strategy_eq_recovery_days_max",
+      "peak_recovery_days_strategy_eq",
+      "strategy_eq_underwater_pct_mean"
+    ],
+    "尾部形状": [
+      "expected_shortfall_1pct_strategy_eq",
+      "omega_ratio_strategy_eq",
+      "sterling_ratio_strategy_eq",
+      "loss_profit_ratio"
+    ],
+    "收益": [
+      "gain_strategy_eq",
+      "adg_strategy_eq",
+      "mdg_strategy_eq"
+    ],
+    "暴露与结构": [
+      "total_wallet_exposure_max",
+      "total_wallet_exposure_mean",
+      "exposure_mean_ratio_usd",
+      "high_exposure_days_max_long",
+      "fills_count",
+      "fills_count_close",
+      "fills_active_symbols_count"
+    ],
+    "生存": [
+      "liquidated",
+      "n_days",
+      "backtest_completion_ratio"
+    ]
+  },
+  "context_live_hsl_keys": [
+    "hsl_position_during_cooldown_policy"
+  ],
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "datasets": [
+    {
+      "key": "3y",
+      "leg": "3y",
+      "manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+      "manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+      "note": "the profile's native bundle",
+      "override_mode": null,
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+      "present": true,
+      "synthetic": false,
+      "window": [
+        "2023-09-12",
+        "2026-09-12"
+      ]
+    },
+    {
+      "key": "ext",
+      "leg": "ext",
+      "manifest_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+      "manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "note": "dataset override serves the bundle's own requested window",
+      "override_mode": "dataset",
+      "path": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "present": true,
+      "synthetic": false,
+      "window": [
+        "2021-04-20",
+        "2026-09-13"
+      ]
+    },
+    {
+      "key": "synth_a",
+      "leg": "syn",
+      "manifest_config_hash": "4353a7a5e0d6ee69ca8c5ba353197a12c0aeafd5da850e9ee7397f96e64a16f1",
+      "manifest_sha256": "f455a7f1436fc019442cb045af5fd00c55ab32354eefcd347eb4b3164ab4701a",
+      "note": "native bundle with the top-1 exposure coin collapsed (synthetic)",
+      "override_mode": "dataset",
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_a",
+      "present": true,
+      "synthetic": true,
+      "window": [
+        "2023-09-12",
+        "2026-09-12"
+      ]
+    },
+    {
+      "key": "synth_b",
+      "leg": "syn",
+      "manifest_config_hash": "fa1b8b5aa30ed2c9c71e190dfa0361e8ad0040d0137d96120fcd9a97f37188c5",
+      "manifest_sha256": "f89e9ce20d82d4036673ff497d56ad2b78f0a7510a9780f39bd4b45e69ba20b9",
+      "note": "native bundle with the top-3 exposure coins collapsed (synthetic)",
+      "override_mode": "dataset",
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_b",
+      "present": true,
+      "synthetic": true,
+      "window": [
+        "2023-09-12",
+        "2026-09-12"
+      ]
+    }
+  ],
+  "decision_rules": [
+    {
+      "id": "J1",
+      "rule": "某账户级 arm 在两腿 ΔCAGR ≥ −0.5pp/年 且事件内最差回撤下降 ≥30% ⇒ 推荐启用，取满足条件的最大 red_threshold。"
+    },
+    {
+      "id": "J2",
+      "rule": "扩展腿（5.4 年）最差 DD < 20% 且合成单币归零损失 ≤ 20% ⇒ 判定单币归零不构成一波带走；给出同时归零的临界币数 k* = 判据阈值 / 单币 WE 上界。"
+    },
+    {
+      "id": "J3",
+      "rule": "任一 arm 出现 liquidated=true 或最差 DD > 50% ⇒ 上实盘前必须结构性降杠杆（TWE ≤ 0.8 或 n_positions ≥ 10）。"
+    },
+    {
+      "id": "J4",
+      "rule": "合成注入显示引擎在崩塌中仍持续加仓、且损失超过 WE 上限 ⇒ 升级为结构性修正工单（本 PR 不改引擎）。"
+    }
+  ],
+  "event_rule": {
+    "benchmark": "BTC",
+    "labels": [
+      [
+        "2021-05 中国挖矿禁令/五月崩盘（闸门预热期，仅参考）",
+        "2021-05-01",
+        "2021-06-15"
+      ],
+      [
+        "2022-05 LUNA/UST 崩盘与三箭传染",
+        "2022-05-01",
+        "2022-07-05"
+      ],
+      [
+        "2022-11 FTX 崩盘",
+        "2022-11-01",
+        "2023-01-10"
+      ],
+      [
+        "2023-08 基线起点回撤",
+        "2023-08-15",
+        "2023-10-31"
+      ],
+      [
+        "2024-08 日元套息平仓",
+        "2024-07-25",
+        "2024-09-15"
+      ],
+      [
+        "2025-02 关税冲击与山寨下跌",
+        "2025-01-25",
+        "2025-05-05"
+      ],
+      [
+        "2025-10 闪崩（历史最大清算）",
+        "2025-10-01",
+        "2025-11-20"
+      ],
+      [
+        "2026 近端窗口",
+        "2026-05-15",
+        "2026-09-13"
+      ]
+    ],
+    "lookback_days": 7,
+    "min_gap_days": 30,
+    "threshold": -0.15
+  },
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "gate_mode": "both",
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "honesty_boundaries": [
+    "历史未崩不等于未来安全；结论只在两条冻结腿与合成情景的范围内成立。",
+    "扩展腿 2021-04-20 起交易、2022 年之前只有 22 个币有数据，且币池是活到 2026 年的当前top40，存在幸存者偏差；早期月份受闸门预热影响，2021-05 事件只能作旁证。",
+    "HSL 触发指标为 min(raw, EMA)，对一天内完成并反弹的闪崩天然迟钝，不能当作插针保险。",
+    "合成情景是价格路径注入，不是历史事实，也不等价于真实退市流程（无撮合/无交易所公告）。",
+    "回测不含交易所/稳定币对手方风险、真实期权与资金费率成本、真实流动性枯竭下的滑点与API 断连；这些必须在报告里作为未建模风险列出。"
+  ],
+  "hsl_block": {
+    "cooldown_minutes_after_red": 2160.0,
+    "ema_span_minutes": 720.0,
+    "enabled": false,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.15,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "hsl_metrics": [
+    "hard_stop_triggers",
+    "hard_stop_triggers_long",
+    "hard_stop_triggers_per_year",
+    "hard_stop_restarts",
+    "hard_stop_restarts_long",
+    "hard_stop_time_in_yellow_pct",
+    "hard_stop_time_in_orange_pct",
+    "hard_stop_time_in_red_pct",
+    "hard_stop_duration_minutes_mean",
+    "hard_stop_duration_minutes_max",
+    "hard_stop_flatten_time_minutes_mean",
+    "hard_stop_trigger_drawdown_mean",
+    "hard_stop_panic_close_loss_sum",
+    "hard_stop_panic_close_loss_max",
+    "hard_stop_panic_close_loss_drawdown_pct_min",
+    "hard_stop_panic_close_loss_drawdown_pct_mean",
+    "hard_stop_panic_close_loss_drawdown_pct_max",
+    "hard_stop_post_restart_retrigger_pct",
+    "hard_stop_halt_to_restart_equity_loss_pct"
+  ],
+  "levers": [
+    {
+      "hypothesis": "控制组；尾部上界由暴露峰值决定",
+      "key": "off",
+      "label": "HSL 关闭（控制）",
+      "question": "基线收益与尾部损失是什么？"
+    },
+    {
+      "hypothesis": "只砍单币，无法防组合级崩塌；代价 = 已实现 panic 亏损",
+      "key": "coin",
+      "label": "HSL coin（当前候选）",
+      "question": "单币级熔断是否改变组合级尾部？"
+    },
+    {
+      "hypothesis": "阈值相对策略净值，原生窗最差 DD<0.15 ⇒ 休眠保险",
+      "key": "pside_r15",
+      "label": "HSL pside red=0.15",
+      "question": "组合级熔断在默认阈值下是否会介入？"
+    },
+    {
+      "hypothesis": "长仓单边下 pside 与 unified 行为接近",
+      "key": "unified_r15",
+      "label": "HSL unified red=0.15",
+      "question": "账户级熔断与 pside 在单边配置下是否等价？"
+    },
+    {
+      "hypothesis": "开始约束尾部；代价是更频繁的停牌与地板价平仓",
+      "key": "unified_r10",
+      "label": "HSL unified red=0.10",
+      "question": "把阈值降到 0.10 能封住多少尾部、代价多大？"
+    },
+    {
+      "hypothesis": "对持续性崩盘更快；对闪崩仍受 min(raw,EMA) 限制",
+      "key": "unified_r10_fast",
+      "label": "HSL unified red=0.10, EMA 120min",
+      "question": "更快的熔断是否更有效，误触发是否更贵？"
+    },
+    {
+      "hypothesis": "市价 panic 有滑点成本，但保证离场",
+      "key": "unified_r10_market",
+      "label": "HSL unified red=0.10, panic=market",
+      "question": "崩盘中限价砍不掉的现实成本是多少？"
+    },
+    {
+      "hypothesis": "一次触发即永久离线；上限清晰、复利代价最大",
+      "key": "unified_r10_never",
+      "label": "HSL unified red=0.10, restart=never",
+      "question": "终止式开关（保命终点）代价几何？"
+    },
+    {
+      "hypothesis": "代价与收益近似线性，是任何叠层必须打败的基准",
+      "key": "twe_090",
+      "label": "结构性降杠杆 TWE 0.90",
+      "question": "线性降杠杆换来多少尾部削减？"
+    },
+    {
+      "hypothesis": "单币上界 19.57%→14.29%，代价远小于 TWE 降杠杆",
+      "key": "allowance_000",
+      "label": "取消超额允许 we_excess_allowance_pct=0",
+      "question": "最小侵入地压低单币上界是否几乎免费？"
+    },
+    {
+      "hypothesis": "硬刹车把下跌中的仓位强制实现亏损，预计劣于静态降杠杆",
+      "key": "twel_enforcer_070",
+      "label": "组合暴露强制回收 threshold=0.70",
+      "question": "崩盘中强制减仓是否优于不动？"
+    },
+    {
+      "hypothesis": "反而阻止 unstuck 减仓，把仓位钉在最大暴露上",
+      "key": "max_realized_050",
+      "label": "实现亏损闸门 max_realized_loss_pct=0.50",
+      "question": "阻止实现亏损是否等同于保命？"
+    }
+  ],
+  "live_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "coin"
+  },
+  "modelled_live_hsl_keys": [
+    "hsl_signal_mode"
+  ],
+  "panic_fill_marker": "panic",
+  "parent_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "parent_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "parent_max_realized_loss_pct": 1,
+  "parent_profile_input": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/profile_input.json",
+  "parent_profile_input_sha256": "1e6e8c61811e303297e1e72365fd5dad48a05aaddf42c75b8f89265eaf8778ce",
+  "parent_risk": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 1.0,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.37
+  },
+  "parent_study": "backtests/binance/g4_sma20_50_replay_2026-09-16",
+  "prior_study": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17",
+  "reference_arms": [
+    {
+      "analysis_sha256": "295485faa423d6840decf7d7d1e9e9d17352f794a30d68e0ae704e1519d1c3db",
+      "key": "ref_hsl_off_3y",
+      "label": "g4 profile, HSL off, 3y",
+      "role": "the published profile's own tracked evidence (HSL off)",
+      "run_dir": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/backtest_results/binance/2026-09-16T11_45_49"
+    },
+    {
+      "analysis_sha256": "15f10f7056976e3635f4954565929aff29a703d20518f9ee99ebe830f1ecf5a7",
+      "key": "ref_hsl_coin_3y",
+      "label": "g4 profile, HSL coin, 3y",
+      "role": "the previous study's HSL coin-mode replay on the current engine",
+      "run_dir": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_on/backtest_results/binance_hsl_on/binance/2026-09-17T04_47_58"
+    }
+  ],
+  "reference_report": "backtests/binance/2026-09-14T03_25_14/annual_analysis.md",
+  "report_convention": "docs/ai/runbooks/strategy_report.md",
+  "reused_arm_keys": [
+    "off__3y",
+    "coin__3y"
+  ],
+  "run_order": [
+    "pside_r15__3y",
+    "unified_r15__3y",
+    "unified_r10__3y",
+    "unified_r10_fast__3y",
+    "unified_r10_market__3y",
+    "unified_r10_never__3y",
+    "twe_090__3y",
+    "allowance_000__3y",
+    "twel_enforcer_070__3y",
+    "off__ext",
+    "coin__ext",
+    "pside_r15__ext",
+    "unified_r15__ext",
+    "unified_r10__ext",
+    "unified_r10_fast__ext",
+    "unified_r10_market__ext",
+    "unified_r10_never__ext",
+    "twe_090__ext",
+    "allowance_000__ext",
+    "twel_enforcer_070__ext",
+    "max_realized_050__ext",
+    "off__synth_a",
+    "unified_r10__synth_a",
+    "off__synth_b",
+    "unified_r10__synth_b"
+  ],
+  "shock_levels": [
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0
+  ],
+  "study": "backtests/binance/g4_tail_risk_research_2026-09-17",
+  "synthetic": {
+    "built": true,
+    "bundles": {
+      "synth_a": {
+        "file_hashes": {
+          "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+          "hlcvs": "b57a426d1218f78b67a9d1dc49f1138ae20881d7a7d720289fa5c27ce4e79582",
+          "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+        },
+        "key": "synth_a",
+        "label": "单币崩塌（合成 A，孤立事件）",
+        "manifest_config_hash": "4353a7a5e0d6ee69ca8c5ba353197a12c0aeafd5da850e9ee7397f96e64a16f1",
+        "manifest_sha256": "f455a7f1436fc019442cb045af5fd00c55ab32354eefcd347eb4b3164ab4701a",
+        "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_a",
+        "synthetic": true,
+        "targets": [
+          "AAVE"
+        ],
+        "transform": {
+          "collapse_days": 3,
+          "declared_window": [
+            "2023-09-12",
+            "2026-09-12"
+          ],
+          "end_multiple": 0.005,
+          "hold_days": 14,
+          "kind": "synthetic_price_path_collapse",
+          "price_columns_scaled": "high, low, close (volume, timestamps, benchmark unchanged)",
+          "source_bundle": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+          "source_manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+          "source_manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+          "targets": [
+            {
+              "coin": "AAVE",
+              "collapse_rows": 4320,
+              "end_multiple": 0.005,
+              "exposure_at_injection_usd": 24057.339637513393,
+              "first_price": 93.56999969482422,
+              "hold_rows": 20160,
+              "injection_start_ms": 1713025320000,
+              "injection_start_utc": "2024-04-13T16:22:00Z",
+              "max_abs_wallet_exposure_at_fill": 0.1971152332179137,
+              "start_row": 345430,
+              "trough_price": 0.4084000015258789
+            }
+          ]
+        }
+      },
+      "synth_b": {
+        "file_hashes": {
+          "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+          "hlcvs": "60d338c4d964cf716ee779ef4736cc46236595203d734b9c7c6b0336c59226c9",
+          "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+        },
+        "key": "synth_b",
+        "label": "三币先后崩塌（合成 B，每次以该币自身峰值敞口时点为起点）",
+        "manifest_config_hash": "fa1b8b5aa30ed2c9c71e190dfa0361e8ad0040d0137d96120fcd9a97f37188c5",
+        "manifest_sha256": "f89e9ce20d82d4036673ff497d56ad2b78f0a7510a9780f39bd4b45e69ba20b9",
+        "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_b",
+        "synthetic": true,
+        "targets": [
+          "AAVE",
+          "WLD",
+          "INJ"
+        ],
+        "transform": {
+          "collapse_days": 3,
+          "declared_window": [
+            "2023-09-12",
+            "2026-09-12"
+          ],
+          "end_multiple": 0.005,
+          "hold_days": 14,
+          "kind": "synthetic_price_path_collapse",
+          "price_columns_scaled": "high, low, close (volume, timestamps, benchmark unchanged)",
+          "source_bundle": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+          "source_manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+          "source_manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+          "targets": [
+            {
+              "coin": "AAVE",
+              "collapse_rows": 4320,
+              "end_multiple": 0.005,
+              "exposure_at_injection_usd": 24057.339637513393,
+              "first_price": 93.56999969482422,
+              "hold_rows": 20160,
+              "injection_start_ms": 1713025320000,
+              "injection_start_utc": "2024-04-13T16:22:00Z",
+              "max_abs_wallet_exposure_at_fill": 0.1971152332179137,
+              "start_row": 345430,
+              "trough_price": 0.4084000015258789
+            },
+            {
+              "coin": "WLD",
+              "collapse_rows": 4320,
+              "end_multiple": 0.005,
+              "exposure_at_injection_usd": 22378.986599999997,
+              "first_price": 6.253600120544434,
+              "hold_rows": 20160,
+              "injection_start_ms": 1709690460000,
+              "injection_start_utc": "2024-03-06T02:01:00Z",
+              "max_abs_wallet_exposure_at_fill": 0.1957413712940006,
+              "start_row": 289849,
+              "trough_price": 0.040401000976562504
+            },
+            {
+              "coin": "INJ",
+              "collapse_rows": 4320,
+              "end_multiple": 0.005,
+              "exposure_at_injection_usd": 24365.59375479313,
+              "first_price": 19.93199920654297,
+              "hold_rows": 20160,
+              "injection_start_ms": 1718720400000,
+              "injection_start_utc": "2024-06-18T14:20:00Z",
+              "max_abs_wallet_exposure_at_fill": 0.1957205656536647,
+              "start_row": 440348,
+              "trough_price": 0.10772500038146973
+            }
+          ]
+        }
+      }
+    },
+    "note": "派生 bundle 是本地、可重建的合成数据；它们不出现在任何真实数据结论里，报告必须标注“合成”。",
+    "source_bundle": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "source_manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+    "study": "backtests/binance/g4_tail_risk_research_2026-09-17"
+  },
+  "synthetic_injections": {
+    "synth_a": {
+      "collapse_days": 3,
+      "end_multiple": 0.005,
+      "hold_days": 14,
+      "label": "单币崩塌（合成 A，孤立事件）",
+      "target_metrics_run": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/backtest_results/binance/2026-09-16T11_45_49",
+      "targets": 1
+    },
+    "synth_b": {
+      "collapse_days": 3,
+      "end_multiple": 0.005,
+      "hold_days": 14,
+      "label": "三币先后崩塌（合成 B，每次以该币自身峰值敞口时点为起点）",
+      "target_metrics_run": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/backtest_results/binance/2026-09-16T11_45_49",
+      "targets": 3
+    }
+  }
+}

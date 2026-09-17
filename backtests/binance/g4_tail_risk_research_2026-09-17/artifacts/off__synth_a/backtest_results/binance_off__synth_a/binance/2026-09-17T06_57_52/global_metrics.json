@@ -1,0 +1,191 @@
+{
+  "analysis_sha256": "ca49acc4b20977928d12dc19ed0b704d366e106379ae4e1c3e27ff410028d487",
+  "backtest_elapsed_s": 61.611863136291504,
+  "config_sha256": "230c6a906c5751f82c182ffcf0cbb2b90f90995814f5c7d66ec338a97f68b5ee",
+  "dataset": {
+    "array_dtypes": {
+      "btc_usd_prices": "float64",
+      "timestamps": "int64"
+    },
+    "array_shapes": {
+      "btc_usd_prices": [
+        1614529
+      ],
+      "timestamps": [
+        1614529
+      ]
+    },
+    "cache_dir": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_a",
+    "cache_dir_label": "binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_a",
+    "cache_hash": "synthetic_collapse_a",
+    "coin_count": 40,
+    "data_hashes": {
+      "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+      "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+    },
+    "declared_window": [
+      "2023-09-12",
+      "2026-09-12"
+    ],
+    "file_bytes_hashes": {
+      "btc_usd_prices": "49f36faa085c51faeecb4d8e6c48c9a8f5ad2bfbd0f36a0cb9d70aeb337c7c36",
+      "hlcvs": "de82154f45b0427ec0c64aefe4139a0665ec188e789ef8f46e182ecd38bd7f61",
+      "timestamps": "d49b23433086198a9bcae1256f0a621f28b66d922795a0ef998eb6cb48ed2d18"
+    },
+    "frozen_bundle_label": "binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_a",
+    "full_array_hash": false,
+    "hash_convention": "logical NumPy payload via hlcvs_manifest.hash_logical_array; file_bytes hashes the gzip byte stream for provenance only",
+    "key": "synth_a",
+    "leg": "syn",
+    "manifest_config_hash": "4353a7a5e0d6ee69ca8c5ba353197a12c0aeafd5da850e9ee7397f96e64a16f1",
+    "manifest_hashes": {
+      "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+      "hlcvs": "b57a426d1218f78b67a9d1dc49f1138ae20881d7a7d720289fa5c27ce4e79582",
+      "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+    },
+    "manifest_pinned_sha256": "",
+    "manifest_sha256": "f455a7f1436fc019442cb045af5fd00c55ab32354eefcd347eb4b3164ab4701a",
+    "override_mode": "dataset",
+    "synthetic": true,
+    "synthetic_record": {
+      "file_hashes": {
+        "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+        "hlcvs": "b57a426d1218f78b67a9d1dc49f1138ae20881d7a7d720289fa5c27ce4e79582",
+        "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+      },
+      "key": "synth_a",
+      "label": "单币崩塌（合成 A，孤立事件）",
+      "manifest_config_hash": "4353a7a5e0d6ee69ca8c5ba353197a12c0aeafd5da850e9ee7397f96e64a16f1",
+      "manifest_sha256": "f455a7f1436fc019442cb045af5fd00c55ab32354eefcd347eb4b3164ab4701a",
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_a",
+      "synthetic": true,
+      "targets": [
+        "AAVE"
+      ],
+      "transform": {
+        "collapse_days": 3,
+        "declared_window": [
+          "2023-09-12",
+          "2026-09-12"
+        ],
+        "end_multiple": 0.005,
+        "hold_days": 14,
+        "kind": "synthetic_price_path_collapse",
+        "price_columns_scaled": "high, low, close (volume, timestamps, benchmark unchanged)",
+        "source_bundle": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+        "source_manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+        "source_manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+        "targets": [
+          {
+            "coin": "AAVE",
+            "collapse_rows": 4320,
+            "end_multiple": 0.005,
+            "exposure_at_injection_usd": 24057.339637513393,
+            "first_price": 93.56999969482422,
+            "hold_rows": 20160,
+            "injection_start_ms": 1713025320000,
+            "injection_start_utc": "2024-04-13T16:22:00Z",
+            "max_abs_wallet_exposure_at_fill": 0.1971152332179137,
+            "start_row": 345430,
+            "trough_price": 0.4084000015258789
+          }
+        ]
+      }
+    }
+  },
+  "declared_delta": [],
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "engine": {
+    "compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "compiled_source_stamp": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76",
+    "error": null,
+    "module_loaded": false,
+    "module_name": "passivbot_rust",
+    "pid": 809835,
+    "preferred_compiled_mtime": 1789608593.8090339,
+    "preferred_compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "preferred_compiled_sha256": "d9c407662fa93e97d5ddeb506961bf80d8b001e3e1e716d763d0122718c181fa",
+    "runtime_matches_preferred": false,
+    "runtime_module_mtime": null,
+    "runtime_module_path": null,
+    "runtime_module_sha256": null,
+    "runtime_module_source_stamp": null,
+    "source_fingerprint": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76"
+  },
+  "entry_regime_gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "environment": {
+    "executable": "python",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "execution_audit_rows": 28359,
+  "generated_at_unix_s": 1789628277.2537558,
+  "git": {
+    "branch": "codex/g4-tail-risk-research",
+    "dirty": true,
+    "head": "2017489adbebf5286701445edf71647aeac71bdf",
+    "status_porcelain": [
+      "M backtests/readme.md",
+      "?? backtests/binance/g4_tail_risk_research_2026-09-17/",
+      "?? issue/0003-g4-tail-risk-and-wipeout-2026-09-17.md",
+      "?? tests/test_g4_tail_risk_research.py"
+    ]
+  },
+  "hsl_long": {
+    "cooldown_minutes_after_red": 2160,
+    "ema_span_minutes": 720.0,
+    "enabled": false,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.15,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "leg": "syn",
+  "lever": "off",
+  "live_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "coin"
+  },
+  "live_max_realized_loss_pct": 1,
+  "parent_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "parent_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "risk_long": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 1,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.37
+  },
+  "run_base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__synth_a/backtest_results/binance_off__synth_a",
+  "run_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__synth_a/backtest_results/binance_off__synth_a/binance/2026-09-17T06_57_52",
+  "run_dir_name": "2026-09-17T06_57_52",
+  "runtime_flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "synthetic": true,
+  "variant": "off__synth_a",
+  "variant_description": "合成情景 A（单币崩塌）下的 HSL 关闭对照组",
+  "variant_label": "HSL 关闭（控制）"
+}

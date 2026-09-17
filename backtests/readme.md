@@ -53,6 +53,7 @@ repository-relative, so a fresh checkout reproduces the run without editing a ho
 | `binance/returns_guarded_dd_research_2026-09-16` | Whether the three-year return multiple survives a ~30% drawdown cap: a 48-cell screen over ladder geometry, path-dependent stops, scale-out shape, and a new strictly causal daily-SMA entry-regime gate, plus the measured drawdown/return frontier. |
 | `binance/g4_sma20_50_replay_2026-09-16` | Standalone deep analysis of the published gated profile: replays `trailing_martingale_twel100_ddf060_sma20_50.json` offline over the frozen bundle and reports it next to the un-gated profile and the study cell. |
 | `binance/g4_sma20_50_hsl_on_replay_2026-09-17` | 打开 HSL 的变体重放：同一份冻结配置在当前引擎上跑两次（HSL 关的配对对照 + HSL 开），三列对比（tracked 基线 / 配对对照 / HSL 开）给出 HSL 的运行学、账本代价与「是否降低尾部回撤」的样本内结论。中文 README 见该 study 目录。 |
+| `binance/g4_tail_risk_research_2026-09-17` | 尾部风险（“一波带走”）研究：把同一份冻结 g4 配置在原生 3 年、5.4 年历史压力腿与两条合成崩塌情景上逐 arm 重放（HSL coin/pside/unified、结构性降杠杆、暴露强制回收、实现亏损闸门），给出单币/多币归零的损失上界、事件窗口压力表、熔断代价与预注册判据 J1–J4 的裁决。中文 README 与 `tail_risk_analysis.md` 见该 study 目录。 |
 
 ## Reproducing the published profiles
 
@@ -104,6 +105,12 @@ bash backtests/binance/g4_sma20_50_replay_2026-09-16/run.sh --verify-only
 # HSL variant (paired control + HSL on), with layout check and independent verification
 bash backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/run.sh
 bash backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/run.sh --verify-only
+# Tail-risk ("wipe-out") study: synthetic collapse bundles, 27 declared arms over two real legs
+# and two synthetic legs, per-arm deep analyses plus a cross-arm synthesis.
+bash backtests/binance/g4_tail_risk_research_2026-09-17/run.sh
+bash backtests/binance/g4_tail_risk_research_2026-09-17/run.sh --verify-only
+bash backtests/binance/g4_tail_risk_research_2026-09-17/run.sh --variant unified_r10__ext
+venv/bin/python -m pytest tests/test_g4_tail_risk_research.py -q
 ```
 
 Every `run.sh` mode runs the frozen study window and the reported contract, so the bundles are

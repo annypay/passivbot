@@ -1,0 +1,228 @@
+{
+  "candidate_config_path": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/g4_unified_r10_fast__3y.config.json",
+  "candidate_config_sha256": "6975ec6f8b6afdce6eef724797d6fead9fc6418e3e708c0463d4db2f4808c178",
+  "candidate_id": "g4_tail_risk_unified_r10_fast__3y",
+  "candidate_kind": "tail_risk_arm_replay",
+  "comparison": {
+    "reference_arms": {
+      "ref_hsl_coin_3y": {
+        "analysis_sha256": "15f10f7056976e3635f4954565929aff29a703d20518f9ee99ebe830f1ecf5a7",
+        "run_dir": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_on/backtest_results/binance_hsl_on/binance/2026-09-17T04_47_58"
+      },
+      "ref_hsl_off_3y": {
+        "analysis_sha256": "295485faa423d6840decf7d7d1e9e9d17352f794a30d68e0ae704e1519d1c3db",
+        "run_dir": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/backtest_results/binance/2026-09-16T11_45_49"
+      }
+    },
+    "variant_input": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/variant_input.json",
+    "variant_input_sha256": "40a8999603bc71d3cfe0c4b3720491fa1c3fa9449502601fbc9b6323d789be7d"
+  },
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "dataset": {
+    "array_dtypes": {
+      "btc_usd_prices": "float64",
+      "timestamps": "int64"
+    },
+    "array_shapes": {
+      "btc_usd_prices": [
+        1614529
+      ],
+      "timestamps": [
+        1614529
+      ]
+    },
+    "cache_dir": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "cache_dir_label": "binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "cache_hash": "8300950b42789a26",
+    "coin_count": 40,
+    "data_hashes": {
+      "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+      "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+    },
+    "declared_window": [
+      "2023-09-12",
+      "2026-09-12"
+    ],
+    "file_bytes_hashes": {
+      "btc_usd_prices": "068cfcfac00902391765aee9029e20301b2e71f685d0484e333819a4cdb39c8c",
+      "hlcvs": "785376ec6944b33b18cbd5d4c73164a684c7474bf1278f6f51048b372f40c258",
+      "timestamps": "22c874c0efd6347e64c3c7bf7a334425756601af1fe451392cfa1f47e4ecd3ce"
+    },
+    "frozen_bundle_label": "binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "full_array_hash": false,
+    "hash_convention": "logical NumPy payload via hlcvs_manifest.hash_logical_array; file_bytes hashes the gzip byte stream for provenance only",
+    "key": "3y",
+    "leg": "3y",
+    "manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+    "manifest_hashes": {
+      "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+      "hlcvs": "4b1ece45d4484a6fa81387b144dfc4282719345d1505a1aeb1def1feec3b93a4",
+      "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+    },
+    "manifest_pinned_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+    "manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+    "override_mode": null,
+    "synthetic": false
+  },
+  "declared_delta": [
+    {
+      "from": false,
+      "path": "bot.long.hsl.enabled",
+      "to": true
+    },
+    {
+      "from": "coin",
+      "path": "live.hsl_signal_mode",
+      "to": "unified"
+    },
+    {
+      "from": 0.15,
+      "path": "bot.long.hsl.red_threshold",
+      "to": 0.1
+    },
+    {
+      "from": 720.0,
+      "path": "bot.long.hsl.ema_span_minutes",
+      "to": 120.0
+    }
+  ],
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "engine": {
+    "compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "compiled_source_stamp": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76",
+    "expected_source_fingerprint": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76",
+    "git": {
+      "branch": "codex/g4-tail-risk-research",
+      "dirty": true,
+      "head": "2017489adbebf5286701445edf71647aeac71bdf",
+      "status_porcelain": [
+        "M backtests/readme.md",
+        "?? backtests/binance/g4_tail_risk_research_2026-09-17/",
+        "?? issue/0003-g4-tail-risk-and-wipeout-2026-09-17.md",
+        "?? tests/test_g4_tail_risk_research.py"
+      ]
+    },
+    "preferred_compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "runtime_module_path": null,
+    "source_fingerprint_matches_compiled_stamp": true,
+    "source_fingerprint_matches_loaded_stamp": false
+  },
+  "engine_note": "Every arm of this study runs on the same engine revision and the same execution and cost contract; the reference arms were produced by the same engine revision earlier, which is what makes the columns comparable.",
+  "entry_regime_gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "hsl_block": {
+    "cooldown_minutes_after_red": 2160,
+    "ema_span_minutes": 120.0,
+    "enabled": true,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.1,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "live_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "unified"
+  },
+  "risk_block": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 1,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.37
+  },
+  "runtime_flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "source_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "source_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "universe": {
+    "coin_count": 40,
+    "coins": [
+      "AAVE",
+      "ADA",
+      "ALGO",
+      "APT",
+      "ARB",
+      "ASTER",
+      "ATOM",
+      "AVAX",
+      "BCH",
+      "BNB",
+      "BTC",
+      "CC",
+      "DOGE",
+      "DOT",
+      "ENA",
+      "ETH",
+      "FIL",
+      "GRAM",
+      "HBAR",
+      "HYPE",
+      "INJ",
+      "KAS",
+      "LINK",
+      "LTC",
+      "MORPHO",
+      "NEAR",
+      "ONDO",
+      "POL",
+      "RENDER",
+      "SOL",
+      "SUI",
+      "TAO",
+      "TON",
+      "TRX",
+      "UNI",
+      "WLD",
+      "XLM",
+      "XMR",
+      "XRP",
+      "ZEC"
+    ],
+    "exchange": "binance"
+  },
+  "variant": {
+    "dataset": "3y",
+    "description": "HSL 账户级熔断 red=0.10，EMA 快速化到 120 分钟",
+    "hsl_enabled": true,
+    "key": "unified_r10_fast__3y",
+    "leg": "3y",
+    "lever": "unified_r10_fast",
+    "lever_label": "HSL unified red=0.10, EMA 120min",
+    "synthetic": false
+  },
+  "window": {
+    "effective_end_date": "2026-09-11T23:59:00Z",
+    "effective_start_date": "2023-09-12T00:01:00Z",
+    "end_date": "2026-09-12",
+    "start_date": "2023-09-12"
+  }
+}
