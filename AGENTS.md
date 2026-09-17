@@ -32,6 +32,24 @@ terms, or omit them. Task input is not publication license.
 Configuration is private by default. Without case-specific approval, publish only the repository's
 intentional templates under `configs/examples/`. Keep private inputs outside the tracked tree.
 
+## 记录语言（Record Language）
+
+本仓库的记录用中文书写，便于作者回溯研究与实盘过程。以下载体一律使用中文（简体）；
+标识符、字段名、配置键、命令、路径、代码、日志与引文保留原文，不翻译：
+
+1. **commit message**，含主题与正文。约定式前缀（`feat:`、`fix:`、`docs:` 等）保留英文。
+2. **annotated tag** 的 tag 名与 `-m` 备注。tag 名沿用既有形态（`vX.Y.Z`），备注用中文。
+3. **Pull request 的标题与正文**，表格、清单与代码块一并使用中文。
+4. `issue/` 下的全部记录：施工、调试、dry run、实盘排障与状态回溯。
+5. `backtests/` 下的文档记录：study 的 `README.md`、深度分析、审计与证据边界说明。
+   由 `backtests/report_spec/annual_analysis.py` 渲染的报告沿用该渲染器固定的中文章节骨架
+   （`REPORT_SECTIONS`）；不得为了统一语言而改动该模块的章节常量、表格列名，或
+   `docs/ai/runbooks/strategy_report.md` 里已冻结的骨架与数据口径。
+
+本约定自声明之日起约束新增与改写的记录；既有记录按「只追加历史」原则保留原语言，不做批量
+翻译，正在被本次改动重写的文件除外。`CHANGELOG.md`、`docs/` 与 `docs/ai/` 的契约文本、
+代码注释与 docstring 仍用英文，因为它们与上游 passivbot 的英文文档、release 说明对照阅读。
+
 ## Instruction Precedence
 
 When instructions conflict, use this order:
