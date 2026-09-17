@@ -1,0 +1,198 @@
+{
+  "coin_count": 40,
+  "coins": [
+    "AAVE",
+    "ADA",
+    "ALGO",
+    "APT",
+    "ARB",
+    "ASTER",
+    "ATOM",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "CC",
+    "DOGE",
+    "DOT",
+    "ENA",
+    "ETH",
+    "FIL",
+    "GRAM",
+    "HBAR",
+    "HYPE",
+    "INJ",
+    "KAS",
+    "LINK",
+    "LTC",
+    "MORPHO",
+    "NEAR",
+    "ONDO",
+    "POL",
+    "RENDER",
+    "SOL",
+    "SUI",
+    "TAO",
+    "TON",
+    "TRX",
+    "UNI",
+    "WLD",
+    "XLM",
+    "XMR",
+    "XRP",
+    "ZEC"
+  ],
+  "comparison_columns": [
+    {
+      "analysis_sha256": "295485faa423d6840decf7d7d1e9e9d17352f794a30d68e0ae704e1519d1c3db",
+      "key": "tracked_baseline_hsl_off",
+      "role": "tracked HSL-OFF evidence (older engine revision)",
+      "run_dir": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/backtest_results/binance/2026-09-16T11_45_49"
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_off_control",
+      "key": "hsl_off_control",
+      "role": "the parent g4 config re-run on the current engine: isolates engine drift from the HSL change"
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_on",
+      "key": "hsl_on",
+      "role": "the parent g4 config with bot.long.hsl.enabled flipped to true"
+    }
+  ],
+  "comparison_metric_groups": {
+    "\u4ea4\u6613\u7ed3\u6784": [
+      "fills_count",
+      "fills_active_symbols_count",
+      "fills_count_entry",
+      "fills_count_close",
+      "fills_gap_longest_days",
+      "total_wallet_exposure_max",
+      "total_wallet_exposure_mean",
+      "position_held_days_max"
+    ],
+    "\u56de\u64a4\u4e0e\u6062\u590d": [
+      "drawdown_worst_strategy_eq",
+      "drawdown_worst_mean_1pct_strategy_eq",
+      "strategy_eq_recovery_days_max",
+      "peak_recovery_days_strategy_eq_long"
+    ],
+    "\u6536\u76ca": [
+      "gain_strategy_eq",
+      "adg_strategy_eq",
+      "mdg_strategy_eq"
+    ],
+    "\u98ce\u9669\u8c03\u6574": [
+      "sortino_ratio_strategy_eq",
+      "sharpe_ratio_strategy_eq",
+      "loss_profit_ratio"
+    ]
+  },
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "dataset": {
+    "bundle": "binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "cache_dir": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26"
+  },
+  "declared_delta": [
+    {
+      "from": false,
+      "path": "bot.long.hsl.enabled",
+      "to": true
+    }
+  ],
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "gate_mode": "both",
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "hsl_block": {
+    "cooldown_minutes_after_red": 2160.0,
+    "ema_span_minutes": 720.0,
+    "enabled": true,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.15,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "hsl_metrics": [
+    "hard_stop_triggers",
+    "hard_stop_triggers_long",
+    "hard_stop_triggers_per_year",
+    "hard_stop_restarts",
+    "hard_stop_restarts_long",
+    "hard_stop_time_in_yellow_pct",
+    "hard_stop_time_in_orange_pct",
+    "hard_stop_time_in_red_pct",
+    "hard_stop_duration_minutes_mean",
+    "hard_stop_duration_minutes_max",
+    "hard_stop_flatten_time_minutes_mean",
+    "hard_stop_trigger_drawdown_mean",
+    "hard_stop_panic_close_loss_sum",
+    "hard_stop_panic_close_loss_max",
+    "hard_stop_panic_close_loss_drawdown_pct_min",
+    "hard_stop_panic_close_loss_drawdown_pct_mean",
+    "hard_stop_panic_close_loss_drawdown_pct_max",
+    "hard_stop_post_restart_retrigger_pct",
+    "hard_stop_halt_to_restart_equity_loss_pct"
+  ],
+  "live_only_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "coin"
+  },
+  "panic_fill_marker": "panic",
+  "parent_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "parent_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "parent_profile_input": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/profile_input.json",
+  "parent_profile_input_sha256": "1e6e8c61811e303297e1e72365fd5dad48a05aaddf42c75b8f89265eaf8778ce",
+  "parent_study": "backtests/binance/g4_sma20_50_replay_2026-09-16",
+  "reference_report": "backtests/binance/2026-09-14T03_25_14/annual_analysis.md",
+  "report_convention": "docs/ai/runbooks/strategy_report.md",
+  "study": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17",
+  "variants": [
+    {
+      "base_dir": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_off_control/backtest_results/binance_control",
+      "bundle_dir": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_off_control",
+      "config_path": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/g4_sma20_50_hsl_off_control.config.json",
+      "config_sha256": "029f8558e6410a0079fc3174b92c966ee6a4df2434bcd6d10f81afef786aedce",
+      "description": "the parent g4 config re-run on the current engine: isolates engine drift from the HSL change",
+      "execution_audit_path": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_off_control/execution_audit.csv",
+      "hsl_enabled": false,
+      "key": "hsl_off_control",
+      "label": "control"
+    },
+    {
+      "base_dir": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_on/backtest_results/binance_hsl_on",
+      "bundle_dir": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_on",
+      "config_path": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/g4_sma20_50_hsl_on.config.json",
+      "config_sha256": "681f54f2387c895d9be5c4ba7febfde90687f64f44a78ee69b9142bbf13c1782",
+      "description": "the parent g4 config with bot.long.hsl.enabled flipped to true",
+      "execution_audit_path": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/hsl_on/execution_audit.csv",
+      "hsl_enabled": true,
+      "key": "hsl_on",
+      "label": "hsl_on"
+    }
+  ],
+  "window": {
+    "balance_sample_divider": 60,
+    "candle_interval_minutes": 1,
+    "dynamic_wel_by_tradability": true,
+    "end_date": "2026-09-12",
+    "start_date": "2023-09-12"
+  }
+}
