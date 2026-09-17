@@ -22,9 +22,15 @@ Causality contract
 
 Risk-off blocks entries; it never forces an exit. Closes, panic and auto-unstuck are
 outside this module's authority.
+
+The depth a *live* start must fetch before it can decide is decided here too
+(`live_lookback_days`), so the number of completed days asked of the exchange is one
+reviewed rule rather than a formula each caller re-derives.
 """
 
 from __future__ import annotations
+
+from dataclasses import dataclass
 
 import numpy as np
 
@@ -33,6 +39,44 @@ MS_PER_MINUTE = 60_000
 
 REGIME_RISK_ON = 1
 REGIME_RISK_OFF = 0
+
+#: Completed daily rows a live pre-warm requests at minimum. The published 20/50 gate
+#: lands here: exactly 1.2x its 50-day slow window.
+LIVE_LOOKBACK_MIN_DAYS = 60
+#: Completed days requested on top of what the filter needs, so one lagging or missing
+#: recent daily candle cannot leave the slow SMA window undefined.
+LIVE_LOOKBACK_MARGIN_DAYS = 10
+
+
+@dataclass(frozen=True)
+class DailyCloses:
+    """Assembled closed UTC daily closes for one symbol, oldest first.
+
+    ``day_ts`` are UTC-midnight start instants and ``closes`` carries one close per day.
+    ``depth`` is what a caller reports as the assembled history: a request for more days
+    than the exchange holds comes back shorter rather than failing, while the verdict
+    rule needs `slow + confirm_days` of them.
+    """
+
+    day_ts: list[int]
+    closes: list[float]
+
+    @property
+    def depth(self) -> int:
+        return len(self.day_ts)
+
+
+def live_lookback_days(slow: int, confirm_days: int = 0) -> int:
+    """Completed daily rows a live pre-warm requests for one gate.
+
+    The verdict needs ``slow + confirm_days`` completed days *in the fetched series*, so
+    the request covers that plus a margin: a request that only just fills the window
+    turns one lagging or missing recent day into a risk-off stretch of up to ``slow``
+    days. The floor keeps the published 20/50 gate at 60 days, which is where the
+    margin and the floor agree.
+    """
+    required = int(slow) + int(confirm_days)
+    return max(LIVE_LOOKBACK_MIN_DAYS, required + LIVE_LOOKBACK_MARGIN_DAYS)
 
 
 def utc_day_index(timestamps_ms) -> np.ndarray:

@@ -10,6 +10,9 @@ What this file proves end to end, through the real planning path:
    and records the symbol as unavailable instead of opening a position — the fail-closed
    branch.
 2. **A window the tape cannot fill**: risk-off, not an error, and no position.
+3. **A 60-day warm-up** (a sparse one-candle-per-UTC-midnight tape): the boot pre-warm
+   assembles the published depth and publishes a risk-on verdict *before* `bot.ready`, so
+   the first cycle never plans without one.
 
 What it deliberately does not attempt, and where that is covered instead:
 
@@ -50,6 +53,11 @@ TOTAL_DAYS = 5
 NOON_MINUTE = 12 * 60
 BOOT_EARLY = 2
 BOOT_RISING = (TOTAL_DAYS - 1) * MINUTES_PER_DAY + NOON_MINUTE
+# A sparse tape: one candle per UTC midnight, so the fake exchange's 1d aggregation is
+# exactly the daily series the gate reads. 65 rows leave 64 closed days behind the boot
+# row, more than the 60-day warm-up window.
+DAILY_DAYS = 65
+BOOT_LAST_DAY = DAILY_DAYS - 1
 
 
 def _replay_candles() -> list[list]:
@@ -64,6 +72,26 @@ def _replay_candles() -> list[list]:
         rows.append(
             [
                 START_MS + minute * MINUTE_MS,
+                open_price,
+                max(open_price, price),
+                min(open_price, price),
+                price,
+                1.0,
+            ]
+        )
+    return rows
+
+
+def _daily_replay_candles(days: int = DAILY_DAYS) -> list[list]:
+    """One rising candle per UTC midnight, spaced a full day apart."""
+    rows: list[list] = []
+    price = 100.0
+    for day in range(days):
+        open_price = price
+        price = round(price * 1.01, 6)
+        rows.append(
+            [
+                START_MS + day * MINUTE_MS * MINUTES_PER_DAY,
                 open_price,
                 max(open_price, price),
                 min(open_price, price),
@@ -108,15 +136,49 @@ def _write_scenario(tmp_path: Path, *, boot_index: int) -> Path:
     return path
 
 
+def _write_daily_scenario(tmp_path: Path, *, boot_index: int) -> Path:
+    scenario = {
+        "name": "entry_regime_gate_daily_warmup",
+        "exchange": "fake",
+        "boot_index": int(boot_index),
+        "account": {"balance": 10_000.0},
+        "symbols": {
+            SYMBOL: {
+                "price_step": 0.01,
+                "qty_step": 0.001,
+                "min_qty": 0.001,
+                "min_cost": 5.0,
+                "maker_fee": 0.0002,
+                "taker_fee": 0.00055,
+            }
+        },
+        "replay": {"symbols": {SYMBOL: {"candles": _daily_replay_candles()}}},
+    }
+    path = tmp_path / f"scenario_daily_{boot_index}.json"
+    path.write_text(json.dumps(scenario), encoding="utf-8")
+    return path
+
+
 async def _run(
-    tmp_path: Path, *, gate_enabled: bool, boot_index: int, steps: int = 3, **gate_overrides
+    tmp_path: Path,
+    *,
+    gate_enabled: bool,
+    boot_index: int,
+    steps: int = 3,
+    daily_tape: bool = False,
+    **gate_overrides,
 ) -> Path:
     out = tmp_path / f"run_{'on' if gate_enabled else 'off'}_{boot_index}"
+    scenario_path = (
+        _write_daily_scenario(tmp_path, boot_index=boot_index)
+        if daily_tape
+        else _write_scenario(tmp_path, boot_index=boot_index)
+    )
     return await _run_fake_case(
         config_path=str(
             _write_config(tmp_path, gate_enabled=gate_enabled, **gate_overrides)
         ),
-        scenario_path=str(_write_scenario(tmp_path, boot_index=boot_index)),
+        scenario_path=str(scenario_path),
         user=None,
         max_steps=steps,
         output_dir=out,
@@ -168,3 +230,42 @@ async def test_a_window_the_tape_cannot_fill_is_risk_off_not_an_error(tmp_path):
         for v in verdicts
     )
     assert not _fill_steps(run_dir), "an undecidable window must not open a position"
+
+
+def _events(run_dir: Path) -> list[dict]:
+    events = _load(run_dir, "live_events.json")
+    return events if isinstance(events, list) else events.get("events", [])
+
+
+def _first_index(rows: list[dict], event_type: str) -> int | None:
+    for index, row in enumerate(rows):
+        if row.get("event_type") == event_type:
+            return index
+    return None
+
+
+async def test_a_sixty_day_warmup_decides_before_the_bot_is_ready(tmp_path):
+    """The boot pre-warm assembles 60 days and publishes before trading readiness."""
+    run_dir = await _run(
+        tmp_path,
+        gate_enabled=True,
+        boot_index=BOOT_LAST_DAY,
+        steps=1,
+        daily_tape=True,
+    )
+
+    rows = _events(run_dir)
+    verdict_at = _first_index(rows, "entry_regime.gate.verdict")
+    ready_at = _first_index(rows, "bot.ready")
+    assert verdict_at is not None, "the pre-warm publishes a verdict"
+    assert ready_at is not None, "the run reaches readiness"
+    assert verdict_at < ready_at, "the verdict must exist before the bot is ready"
+
+    data = rows[verdict_at]["data"]
+    assert data["lookback_days"] == 60
+    # The harness config gates a 2/3 SMA, so its floor is the 60-day warm-up window.
+    assert data["required_days"] == 3
+    assert data["min_history_days"] >= 50
+    assert data["max_missing_days"] == 0
+    assert data["unavailable_count"] == 0
+    assert data["risk_on_sides"] == 1

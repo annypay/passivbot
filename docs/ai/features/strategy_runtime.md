@@ -246,12 +246,27 @@ Semantics and invariants:
   for the slow window gets an explicit risk-off row (`enabled = true`, `regime = [0]`) for
   the UTC day, which blocks new risk through exactly the rule a computed risk-off day
   uses. The symbol is logged, and the pass is not cached, so the next planning cycle
-  retries the read. Warm-up reads the same way: until the slow window plus `confirm_days`
-  has completed days behind it the verdict is risk-off, so a fresh live start opens no
-  new position for `sma_slow_days + confirm_days + 2` days.
+  retries the read.
+- Warm-up is a fetch depth, not a waiting period. The verdict is defined once the
+  assembled series holds `sma_slow_days + confirm_days` completed days, and a live start
+  asks the exchange for them itself: `live_lookback_days` (`src/entry_regime.py`) requests
+  `max(60, sma_slow_days + confirm_days + 10)` completed daily rows — 60 days for the
+  published 20/50 gate — so the first planning cycle can decide rather than starting
+  risk-off and waiting for days to accumulate. A request for more days than the exchange
+  holds comes back shorter, so a symbol whose history is genuinely too short stays
+  risk-off.
+- A day the exchange did not return is not evidence: every SMA window spanning it stays
+  undefined and reads risk-off. That is why the request carries a margin — a request that
+  only just fills the slow window turns one lagging or missing recent day into a risk-off
+  stretch of up to `sma_slow_days` days.
+- Live assembles that evidence once at startup. `prewarm_entry_regime_gate` runs before
+  `bot.ready`, retries a failed read once, and leaves the settled per-UTC-day table for the
+  first cycle to reuse. It never aborts startup: a symbol that stays unavailable keeps the
+  fail-closed row the planning path publishes anyway.
 - Each rebuilt table publishes one `entry_regime.gate.verdict` event carrying the SMA
-  parameters, the UTC day, the planning timestamp, and the counts of risk-on sides,
-  risk-off sides and unavailable symbols. Live rejects
+  parameters, the UTC day, the planning timestamp, the counts of risk-on sides, risk-off
+  sides and unavailable symbols, and the assembled warm-up depth (`lookback_days`,
+  `required_days`, `min_history_days`, `max_missing_days`). Live rejects
   `gate_mode = "invert_for_short"`: that is the long/short-flip research mode, not a
   tradeable live configuration.
 - The master (`symbol=None`) params always carry a disabled gate, and the protective

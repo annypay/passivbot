@@ -20,8 +20,17 @@ since the latest release tag; these features may already be available when insta
 - Fail closed when the daily evidence is missing. A symbol whose closed daily series
   cannot be assembled now carries an explicit risk-off row for the UTC day, so new risk
   is blocked rather than silently traded ungated, and the read is retried on the next
-  planning cycle. Until the slow window has completed days behind it, that same rule
-  means no new positions, so a fresh live start of the 20/50 profile waits about 52 days.
+  planning cycle. The verdict is defined once the assembled series holds
+  `sma_slow_days + confirm_days` completed days; a live start fetches that history itself
+  (see the next entry), so a fresh start of the 20/50 profile decides on its first
+  planning cycle whenever the exchange serves the history.
+- Warm the gate up at startup and report its depth. A live start now requests
+  `max(60, sma_slow_days + confirm_days + 10)` completed daily rows per gated symbol —
+  60 days for the published 20/50 gate — and assembles the verdict once before
+  `bot.ready`, with one bounded retry when a read fails. The verdict event reports
+  `lookback_days`, `required_days`, `min_history_days` and `max_missing_days`, so the
+  warm-up depth and any daily gap in the window are visible in the log line and the live
+  events instead of only in the outcome.
 - Publish one `entry_regime.gate.verdict` live event per rebuilt table with the SMA
   parameters, the UTC day, the planning timestamp and the risk-on/risk-off/unavailable
   side counts, so the gate's live state is queryable rather than only greppable.

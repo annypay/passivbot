@@ -25,7 +25,7 @@
 
 | 项 | 看什么 | 何时可关闭 |
 | --- | --- | --- |
-| W1 warm-up | `[regime_gate]` 行里 `risk_off_sides` 在最初 `sma_slow_days + confirm_days + 2` 天内等于交易方向数 | 第一个 risk-on 判决如期出现 |
+| W1 预热与判决 | `[regime_gate] warmup` 行：`lookback_days=60`、`required_days=50`、`history_days_min ≥ required_days`、`missing_days_max=0`；首个 `entry_regime.gate.verdict` 出现在 `bot.ready` 之前 | 首轮即得到 risk-on 判决，且四项深度字段符合预期 |
 | W2 日线证据可用性 | `unavailable=` 保持 0；非 0 表示这些币的新仓被阻断，直到重试成功 | 连续一周没有 unavailable 的币 |
 | W3 verdict 事件 | 每个 UTC 日出现一次 `entry_regime.gate.verdict`，计数合理 | 一周的事件与行情对得上 |
 | W4 阻断是否合理 | 风险关闭日不进场、风险开启日恢复进场，且平仓完全不受影响 | 头两次完整的 regime 切换表现符合文档 |

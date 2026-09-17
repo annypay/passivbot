@@ -141,7 +141,7 @@ from logging_setup import (
     resolve_live_log_file_settings,
     resolve_log_level,
 )
-from entry_regime import regime_flag_for_day
+from entry_regime import DailyCloses, live_lookback_days, regime_flag_for_day
 from utils import (
     MarketIdentifierResolutionError,
     UnknownMarketIdentifier,
@@ -3485,6 +3485,23 @@ class Passivbot:
             if self.stop_signal_received:
                 self._monitor_emit_stop(
                     "startup_aborted", ts=utc_ms(),
+                    payload={"stage": boot_stage, "stop_signal_received": True},
+                )
+                return
+            # Assemble the gate's daily evidence before trading starts, so the first
+            # planning cycle already has a verdict and its depth is operator-visible.
+            boot_stage = "prewarm_entry_regime_gate"
+            try:
+                await self.prewarm_entry_regime_gate()
+            except Exception as e:
+                logging.info(
+                    "[boot] entry-regime gate pre-warm skipped | error_type=%s",
+                    bounded_exception_type(e),
+                )
+            if self.stop_signal_received:
+                self._monitor_emit_stop(
+                    "startup_aborted",
+                    ts=utc_ms(),
                     payload={"stage": boot_stage, "stop_signal_received": True},
                 )
                 return
@@ -17267,13 +17284,14 @@ class Passivbot:
 
     async def _orchestrator_daily_closes(
         self, symbol: str, *, lookback_days: int, now_ms: int
-    ) -> "tuple[list[int], list[float]]":
+    ) -> DailyCloses:
         """Closed UTC daily closes for one symbol, oldest first.
 
         Requests ``timeframe="1d"`` so the exchange owns the day boundary: the
         candlestick manager aligns these buckets to the epoch and caps the range
         at the last finalized bucket, so the series never contains the UTC day
-        that is still forming.
+        that is still forming. A request for more days than the exchange holds comes
+        back shorter, so the caller reads `depth` instead of assuming the ask was met.
         """
         cm = getattr(self, "cm", None)
         getter = getattr(cm, "get_candles", None)
@@ -17306,7 +17324,7 @@ class Passivbot:
         if not rows:
             raise RuntimeError("no finite closed daily closes returned")
         ordered = sorted(rows)
-        return ordered, [rows[ts] for ts in ordered]
+        return DailyCloses(ordered, [rows[ts] for ts in ordered])
 
     @staticmethod
     def _entry_regime_gate_payload(
@@ -17350,6 +17368,7 @@ class Passivbot:
             self._orchestrator_entry_regime_gate_tables = {}
             self._orchestrator_entry_regime_gate_unavailable_symbols = set()
             self._orchestrator_entry_regime_gate_cache = None
+            self._orchestrator_entry_regime_gate_stats = {}
             return
         # A daily verdict cannot change inside a UTC day, so rebuilding the table on
         # every planning cycle would only repeat the same answer.
@@ -17366,6 +17385,7 @@ class Passivbot:
             return
         self._orchestrator_entry_regime_gate_unavailable_symbols = set()
         self._orchestrator_entry_regime_gate_tables = {}
+        self._orchestrator_entry_regime_gate_stats = {}
         approved_by_side = {}
         for pside in ("long", "short"):
             approved_by_side[pside] = self._entry_regime_gate_approved_symbols(
@@ -17374,13 +17394,18 @@ class Passivbot:
         if not any(approved_by_side.values()):
             return
         # The slow SMA is the binding window; the confirmation span needs that many
-        # more completed days before the filter can be defined at all.
-        lookback_days = gate_cfg["slow"] + gate_cfg["confirm_days"] + 2
+        # more completed days before the filter can be defined at all. The request adds
+        # a margin on top of that, so one lagging or missing recent daily candle cannot
+        # leave the slow window undefined and read as risk-off for the whole span.
+        required_days = gate_cfg["slow"] + gate_cfg["confirm_days"]
+        lookback_days = live_lookback_days(gate_cfg["slow"], gate_cfg["confirm_days"])
         tables: dict[str, dict[str, dict]] = {}
         #: Symbols whose daily evidence was assembled. A symbol that failed still lands
         #: in `tables` as an explicit risk-off row, but it must stay out of this set so
         #: the pass is not cached and the next cycle retries the read.
         expected_symbols: set[str] = set()
+        #: Assembled history depth per symbol, for the operator-visible warm-up report.
+        history_days: dict[str, int] = {}
         current_day_start = (int(now_ms) // 86_400_000) * 86_400_000
         for symbol in symbols:
             psides = [
@@ -17391,14 +17416,14 @@ class Passivbot:
             if not self._entry_regime_gate_row_enabled(gate_cfg):
                 continue
             try:
-                day_ts, daily_close = await self._orchestrator_daily_closes(
+                series = await self._orchestrator_daily_closes(
                     symbol, lookback_days=lookback_days, now_ms=now_ms
                 )
                 # The verdict cannot change inside a UTC day, so one boundary at the
                 # start of the current day carries the whole table.
                 flag = regime_flag_for_day(
-                    day_ts,
-                    daily_close,
+                    series.day_ts,
+                    series.closes,
                     now_ms,
                     fast=gate_cfg["fast"],
                     slow=gate_cfg["slow"],
@@ -17420,6 +17445,7 @@ class Passivbot:
                 )
                 continue
             expected_symbols.add(symbol)
+            history_days[symbol] = series.depth
             tables[symbol] = Passivbot._entry_regime_gate_payload(
                 gate_cfg, psides, day_start=current_day_start, flag=bool(flag)
             )
@@ -17440,15 +17466,36 @@ class Passivbot:
                     risk_on += 1
                 else:
                     risk_off += 1
+        # What this pass actually assembled, so an operator (and the boot pre-warm)
+        # can read the warm-up depth without re-fetching the daily series.
+        min_history_days = min(history_days.values()) if history_days else 0
+        max_missing_days = max(
+            (lookback_days + 1 - depth for depth in history_days.values()), default=0
+        )
+        self._orchestrator_entry_regime_gate_stats = {
+            "lookback_days": int(lookback_days),
+            "required_days": int(required_days),
+            "symbol_count": len(tables),
+            "min_history_days": int(min_history_days),
+            "max_missing_days": int(max_missing_days),
+            "risk_on_sides": int(risk_on),
+            "risk_off_sides": int(risk_off),
+            "unavailable_count": len(unavailable),
+        }
         if tables or unavailable:
             logging.info(
                 "[regime_gate] sma=%s/%s confirm_days=%s source=%s symbols=%s "
-                "risk_off_sides=%s unavailable=%s",
+                "lookback_days=%s required_days=%s history_days_min=%s "
+                "missing_days_max=%s risk_off_sides=%s unavailable=%s",
                 gate_cfg["fast"],
                 gate_cfg["slow"],
                 gate_cfg["confirm_days"],
                 getattr(self, "_entry_regime_gate_source", None) or "none",
                 len(tables),
+                lookback_days,
+                required_days,
+                min_history_days,
+                max_missing_days,
                 risk_off,
                 len(unavailable),
             )
@@ -17465,7 +17512,102 @@ class Passivbot:
                     risk_off_sides=int(risk_off),
                     unavailable_count=len(unavailable),
                     unavailable_symbols=sorted(unavailable),
+                    lookback_days=int(lookback_days),
+                    required_days=int(required_days),
+                    min_history_days=int(min_history_days),
+                    max_missing_days=int(max_missing_days),
                 )
+
+    def _entry_regime_gate_prewarm_symbols(self) -> list[str]:
+        """Every symbol the gate can filter, from the runtime's resolved universe.
+
+        The pre-warm runs before the execution loop, so it reads the same resolved set
+        that loop's first cycle reads: a side that trades nothing contributes no symbol,
+        and a runtime that has not resolved a universe yet contributes none rather than a
+        guess. A wider loop universe (forager candidates) still reaches the gate through
+        the planning path.
+        """
+        resolved = getattr(self, "approved_coins_minus_ignored_coins", None)
+        if not isinstance(resolved, dict):
+            return []
+        symbols: set[str] = set()
+        for pside in ("long", "short"):
+            symbols.update(str(symbol) for symbol in (resolved.get(pside) or ()))
+        return sorted(symbols)
+
+    async def prewarm_entry_regime_gate(
+        self, *, symbols: list[str] | None = None
+    ) -> dict:
+        """Assemble the daily evidence once before trading, so cycle one can decide.
+
+        The first planning cycle would fetch the same series on its own, but it would do
+        it while the bot is already trading. Running the pass here, before `bot.ready`,
+        makes the assembled depth operator-visible at startup, absorbs one transient read
+        failure through a bounded retry, and leaves the settled per-UTC-day table that the
+        first cycle then reuses. A failure never aborts startup: the planning path
+        re-publishes the same fail-closed row it would have published anyway.
+        """
+        gate_cfg = self._entry_regime_gate_config()
+        if gate_cfg is None or not self._entry_regime_gate_row_enabled(gate_cfg):
+            return {"enabled": False}
+        target = (
+            list(symbols)
+            if symbols is not None
+            else self._entry_regime_gate_prewarm_symbols()
+        )
+        if not target:
+            logging.debug(
+                "[regime_gate] warmup skipped: no approved symbols resolved yet"
+            )
+            return {"enabled": True, "symbol_count": 0}
+        started_ms = utc_ms()
+        await self._load_orchestrator_entry_regime_gate(
+            target, int(self.get_exchange_time())
+        )
+        unavailable = set(
+            getattr(self, "_orchestrator_entry_regime_gate_unavailable_symbols", set())
+        )
+        if unavailable and not Passivbot._shutdown_requested(self):
+            # A partial pass is deliberately not cached, so one bounded retry here turns a
+            # transient exchange hiccup into a warm start instead of a risk-off first
+            # cycle. The planning path keeps retrying on its own afterwards.
+            await self._sleep_unless_shutdown(
+                2.0, stage="entry_regime_gate_prewarm_retry"
+            )
+            if not Passivbot._shutdown_requested(self):
+                await self._load_orchestrator_entry_regime_gate(
+                    target, int(self.get_exchange_time())
+                )
+                unavailable = set(
+                    getattr(
+                        self,
+                        "_orchestrator_entry_regime_gate_unavailable_symbols",
+                        set(),
+                    )
+                )
+        stats = dict(getattr(self, "_orchestrator_entry_regime_gate_stats", {}) or {})
+        summary = {
+            "enabled": True,
+            "elapsed_ms": max(0, utc_ms() - started_ms),
+            "unavailable": sorted(unavailable),
+            **stats,
+        }
+        summary["unavailable_count"] = len(summary["unavailable"])
+        logging.info(
+            "[regime_gate] warmup lookback_days=%s required_days=%s symbols=%s "
+            "history_days_min=%s missing_days_max=%s risk_on_sides=%s "
+            "risk_off_sides=%s unavailable=%s elapsed_ms=%s",
+            summary.get("lookback_days", 0),
+            summary.get("required_days", 0),
+            summary.get("symbol_count", 0),
+            summary.get("min_history_days", 0),
+            summary.get("max_missing_days", 0),
+            summary.get("risk_on_sides", 0),
+            summary.get("risk_off_sides", 0),
+            len(summary["unavailable"]),
+            summary["elapsed_ms"],
+        )
+        return summary
 
     def _entry_regime_gate_approved_symbols(self, pside: str, symbols: list[str]) -> set[str]:
         """Symbols this side actually trades.
