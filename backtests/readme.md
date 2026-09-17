@@ -52,6 +52,7 @@ repository-relative, so a fresh checkout reproduces the run without editing a ho
 | `binance/hsl_npos1_analysis_2026-09-16` | What the published HSL-enabled trailing-martingale example actually did over its own declared window (2021-04-20 .. 2026-09-12): the rule set traded for 30 days, hit a hard stop on 2021-05-19, and produced no further fills for the remaining 1,942 days. Its deep analysis is the reference for that profile. |
 | `binance/returns_guarded_dd_research_2026-09-16` | Whether the three-year return multiple survives a ~30% drawdown cap: a 48-cell screen over ladder geometry, path-dependent stops, scale-out shape, and a new strictly causal daily-SMA entry-regime gate, plus the measured drawdown/return frontier. |
 | `binance/g4_sma20_50_replay_2026-09-16` | Standalone deep analysis of the published gated profile: replays `trailing_martingale_twel100_ddf060_sma20_50.json` offline over the frozen bundle and reports it next to the un-gated profile and the study cell. |
+| `binance/g4_sma20_50_hsl_on_replay_2026-09-17` | 打开 HSL 的变体重放：同一份冻结配置在当前引擎上跑两次（HSL 关的配对对照 + HSL 开），三列对比（tracked 基线 / 配对对照 / HSL 开）给出 HSL 的运行学、账本代价与「是否降低尾部回撤」的样本内结论。中文 README 见该 study 目录。 |
 
 ## Reproducing the published profiles
 
@@ -99,6 +100,10 @@ bash backtests/binance/returns_guarded_dd_research_2026-09-16/run.sh --cells bes
 # The gated profile's standalone deep analysis, with its own bundle and verifier.
 bash backtests/binance/g4_sma20_50_replay_2026-09-16/run.sh
 bash backtests/binance/g4_sma20_50_replay_2026-09-16/run.sh --verify-only
+
+# HSL variant (paired control + HSL on), with layout check and independent verification
+bash backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/run.sh
+bash backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/run.sh --verify-only
 ```
 
 Every `run.sh` mode runs the frozen study window and the reported contract, so the bundles are

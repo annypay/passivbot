@@ -1,0 +1,174 @@
+{
+  "candidate_config_path": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/g4_sma20_50_hsl_on.config.json",
+  "candidate_config_sha256": "681f54f2387c895d9be5c4ba7febfde90687f64f44a78ee69b9142bbf13c1782",
+  "candidate_id": "g4_sma20_50_hsl_on",
+  "candidate_kind": "hsl_variant_replay",
+  "comparison": {
+    "tracked_baseline_analysis_sha256": "295485faa423d6840decf7d7d1e9e9d17352f794a30d68e0ae704e1519d1c3db",
+    "tracked_baseline_run": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/backtest_results/binance/2026-09-16T11_45_49",
+    "variant_input": "backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/artifacts/variant_input.json",
+    "variant_input_sha256": "2229ce1026d5c58f7915a76ba31da47e7dbbbc5eb7075b39aaacf0f314312c51"
+  },
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "dataset": {
+    "array_dtypes": {
+      "btc_usd_prices": "float64",
+      "hlcvs": "float64",
+      "timestamps": "int64"
+    },
+    "array_shapes": {
+      "btc_usd_prices": [
+        1614529
+      ],
+      "hlcvs": [
+        1614529,
+        40,
+        4
+      ],
+      "timestamps": [
+        1614529
+      ]
+    },
+    "cache_dir": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "cache_dir_label": "binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "cache_hash": "8300950b42789a26",
+    "coin_count": 40,
+    "data_hashes": {
+      "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+      "hlcvs": "4b1ece45d4484a6fa81387b144dfc4282719345d1505a1aeb1def1feec3b93a4",
+      "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+    },
+    "file_bytes_hashes": {
+      "btc_usd_prices": "068cfcfac00902391765aee9029e20301b2e71f685d0484e333819a4cdb39c8c",
+      "hlcvs": "785376ec6944b33b18cbd5d4c73164a684c7474bf1278f6f51048b372f40c258",
+      "timestamps": "22c874c0efd6347e64c3c7bf7a334425756601af1fe451392cfa1f47e4ecd3ce"
+    },
+    "frozen_bundle_label": "binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "hash_convention": "logical NumPy payload via hlcvs_manifest.hash_logical_array; file_bytes hashes the gzip byte stream for provenance only",
+    "manifest_cache_bundle": "binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+    "manifest_hashes": {
+      "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+      "hlcvs": "4b1ece45d4484a6fa81387b144dfc4282719345d1505a1aeb1def1feec3b93a4",
+      "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+    }
+  },
+  "declared_delta": [
+    {
+      "from": false,
+      "path": "bot.long.hsl.enabled",
+      "to": true
+    }
+  ],
+  "engine": {
+    "compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "compiled_source_stamp": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76",
+    "expected_source_fingerprint": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76",
+    "git": {
+      "branch": "codex/g4-hsl-on-replay",
+      "dirty": true,
+      "head": "46917f1cd5273bd80166436859f8a21e57e09b78",
+      "status_porcelain": [
+        "M backtests/readme.md",
+        "?? backtests/binance/g4_sma20_50_hsl_on_replay_2026-09-17/",
+        "?? tests/test_g4_hsl_on_replay.py"
+      ]
+    },
+    "preferred_compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "runtime_module_path": null,
+    "source_fingerprint_matches_compiled_stamp": true,
+    "source_fingerprint_matches_loaded_stamp": false
+  },
+  "engine_note": "The parent bundle was produced by an older engine revision, so this study replays the unchanged config on the current engine as a paired control; the HSL comparison is made between the two runs of this study, and the tracked parent bundle is reported as a third column.",
+  "entry_regime_gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "hsl_block": {
+    "cooldown_minutes_after_red": 2160,
+    "ema_span_minutes": 720.0,
+    "enabled": true,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.15,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "live_only_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "coin"
+  },
+  "source_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "source_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "universe": {
+    "coin_count": 40,
+    "coins": [
+      "AAVE",
+      "ADA",
+      "ALGO",
+      "APT",
+      "ARB",
+      "ASTER",
+      "ATOM",
+      "AVAX",
+      "BCH",
+      "BNB",
+      "BTC",
+      "CC",
+      "DOGE",
+      "DOT",
+      "ENA",
+      "ETH",
+      "FIL",
+      "GRAM",
+      "HBAR",
+      "HYPE",
+      "INJ",
+      "KAS",
+      "LINK",
+      "LTC",
+      "MORPHO",
+      "NEAR",
+      "ONDO",
+      "POL",
+      "RENDER",
+      "SOL",
+      "SUI",
+      "TAO",
+      "TON",
+      "TRX",
+      "UNI",
+      "WLD",
+      "XLM",
+      "XMR",
+      "XRP",
+      "ZEC"
+    ],
+    "exchange": "binance"
+  },
+  "variant": {
+    "description": "the parent g4 config with bot.long.hsl.enabled flipped to true",
+    "hsl_enabled": true,
+    "key": "hsl_on",
+    "label": "hsl_on"
+  },
+  "window": {
+    "end_date": "2026-09-12",
+    "start_date": "2023-09-12"
+  }
+}
