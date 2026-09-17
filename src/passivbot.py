@@ -914,6 +914,9 @@ class Passivbot:
     _emit_rust_orchestrator_called_event = (
         live_event_emitters.emit_rust_orchestrator_called_event
     )
+    _emit_entry_regime_gate_verdict = (
+        live_event_emitters.emit_entry_regime_gate_verdict
+    )
     _emit_rust_orchestrator_returned_event = (
         live_event_emitters.emit_rust_orchestrator_returned_event
     )
@@ -16608,8 +16611,9 @@ class Passivbot:
         The master (`symbol=None`) params always carry a disabled gate: the gate is
         per-symbol evidence, and global params must never encode one symbol's regime.
 
-        The engine does not read this field yet: it is the transport for the verdicts
-        once the per-side flags are wired (see `_load_orchestrator_entry_regime_gate`).
+        The engine reads this table itself when the planning payload carries
+        `regime_eval_ts_ms` (see `_load_orchestrator_entry_regime_gate`), so the same
+        rule serves the backtest and live.
         """
         disabled = {
             "enabled": False,
@@ -17174,23 +17178,45 @@ class Passivbot:
         )
 
 
-    def _entry_regime_gate_config(self) -> dict | None:
-        """Read the declared daily entry-regime gate, or None when absent.
+    def _entry_regime_gate_declaration(self) -> tuple[dict | None, str]:
+        """The declared gate block and where it came from.
 
-        The key lives under ``backtest.`` because that is where it was first
-        implemented and where every recorded evidence bundle reads it from.
-        Moving it would invalidate the reproducibility of those bundles, so the
-        path is deliberate debt, not an oversight.
+        A live config resolves `live.entry_regime_gate` first. The published profile and
+        every recorded evidence bundle state the same block under
+        `backtest.entry_regime_gate`, which the live config loader strips before the bot
+        is built, so that declaration is read back from the raw document. Both spellings
+        describe one gate; the live key wins when a config carries both.
         """
         try:
-            raw = self.config_get(["backtest", "entry_regime_gate"])
+            live_block = self.config_get(["live", "entry_regime_gate"])
         except (KeyError, TypeError):
+            live_block = None
+        if isinstance(live_block, dict) and live_block:
+            return live_block, "live.entry_regime_gate"
+        config = getattr(self, "config", None)
+        if isinstance(config, dict):
+            for key in ("_raw_effective", "_raw"):
+                raw = config.get(key)
+                if not isinstance(raw, dict):
+                    continue
+                declared = (raw.get("backtest") or {}).get("entry_regime_gate")
+                if isinstance(declared, dict) and declared:
+                    return declared, f"{key}:backtest.entry_regime_gate"
+        try:
+            loaded = self.config_get(["backtest", "entry_regime_gate"])
+        except (KeyError, TypeError):
+            return None, ""
+        return loaded, "backtest.entry_regime_gate"
+
+    def _entry_regime_gate_config(self) -> dict | None:
+        """Read the declared daily entry-regime gate, or None when absent."""
+        raw, source = self._entry_regime_gate_declaration()
+        self._entry_regime_gate_source = source or None
+        if raw is None:
             return None
         if not isinstance(raw, dict):
-            raise TypeError(
-                "backtest.entry_regime_gate must be a dict, got "
-                f"{type(raw).__name__}"
-            )
+            raise TypeError(f"{source or 'entry_regime_gate'} must be a dict, got "
+                            f"{type(raw).__name__}")
         # An absent or false `enabled` is the schema template's empty declaration: no
         # gate is configured, so every caller sees None and nothing is filtered.
         if not bool(raw.get("enabled")):
@@ -17199,8 +17225,8 @@ class Passivbot:
         slow = int(raw.get("sma_slow_days", 0) or 0)
         if fast <= 0 or slow <= 0 or fast >= slow:
             raise ValueError(
-                "backtest.entry_regime_gate needs 0 < sma_fast_days < sma_slow_days, "
-                f"got fast={fast} slow={slow}"
+                f"{source or 'entry_regime_gate'} needs 0 < sma_fast_days < "
+                f"sma_slow_days, got fast={fast} slow={slow}"
             )
         gate_mode = str(raw.get("gate_mode", "both") or "both").strip().lower()
         if gate_mode != "both":
@@ -17215,6 +17241,17 @@ class Passivbot:
             "block_initial": bool(raw.get("block_initial", True)),
             "block_reentry": bool(raw.get("block_reentry", True)),
         }
+
+    def _entry_regime_gate_eval_ts_ms(self, now_ms: int) -> int | None:
+        """Timestamp the engine evaluates the gate at, or None without a gate.
+
+        A configured gate makes the engine read the published table at this cycle's
+        instant. Without one the planning payload keeps the no-op default, so the
+        engine never consults a table and an ungated config costs nothing.
+        """
+        if self._entry_regime_gate_config() is None:
+            return None
+        return int(now_ms)
 
     def _entry_regime_gate_row_enabled(self, gate_cfg: dict) -> bool:
         """Whether this configuration consumes the filter at all.
@@ -17271,20 +17308,42 @@ class Passivbot:
         ordered = sorted(rows)
         return ordered, [rows[ts] for ts in ordered]
 
+    @staticmethod
+    def _entry_regime_gate_payload(
+        gate_cfg: dict, psides: list[str], *, day_start: int, flag: bool
+    ) -> dict[str, dict]:
+        """One UTC-day table per side: a single boundary at the day's start.
+
+        `flag = False` is risk-off, and it is also how an unavailable daily series is
+        expressed, so a data failure blocks new risk through exactly the rule the
+        engine applies to a computed risk-off day.
+        """
+        payload = {
+            "enabled": True,
+            "zero_is_on": False,
+            "transition_ts": [int(day_start)],
+            "regime": [1 if flag else 0],
+        }
+        return {
+            pside: dict(
+                payload,
+                block_initial=bool(gate_cfg["block_initial"]),
+                block_reentry=bool(gate_cfg["block_reentry"]),
+            )
+            for pside in psides
+        }
+
     async def _load_orchestrator_entry_regime_gate(
         self, symbols: list[str], now_ms: int
     ) -> None:
         """Publish the daily entry-regime verdict for each approved symbol/side.
 
-        Observability for now, not enforcement. The tables reach Rust through
-        `bot_params.entry_regime_gate`, but the engine reads the gate from
-        `regime_allows_initial_entry` / `regime_allows_reentry`, and only the backtest
-        writes those, so live trades the ungated strategy whatever this method decides.
-        A symbol whose daily evidence cannot be assembled is recorded in
-        `_orchestrator_entry_regime_gate_unavailable_symbols`, which is logged and not
-        yet acted on, and it falls back to a disabled table, which
-        `EntryRegimeGateConfig::is_on` reads as risk-on. Wiring the flags, and deciding
-        that a missing daily series blocks new risk instead, is follow-up work.
+        The engine enforces what this publishes: the planning payload carries
+        `regime_eval_ts_ms`, and the orchestrator evaluates this table at that instant,
+        so live and backtest share one implementation of the rule. A symbol whose daily
+        evidence cannot be assembled gets an explicit risk-off table (fail closed: new
+        risk is blocked rather than silently traded ungated) and stays out of the
+        cached pass, so the next planning cycle retries the read.
         """
         gate_cfg = self._entry_regime_gate_config()
         if gate_cfg is None:
@@ -17318,7 +17377,11 @@ class Passivbot:
         # more completed days before the filter can be defined at all.
         lookback_days = gate_cfg["slow"] + gate_cfg["confirm_days"] + 2
         tables: dict[str, dict[str, dict]] = {}
+        #: Symbols whose daily evidence was assembled. A symbol that failed still lands
+        #: in `tables` as an explicit risk-off row, but it must stay out of this set so
+        #: the pass is not cached and the next cycle retries the read.
         expected_symbols: set[str] = set()
+        current_day_start = (int(now_ms) // 86_400_000) * 86_400_000
         for symbol in symbols:
             psides = [
                 pside for pside in ("long", "short") if symbol in approved_by_side[pside]
@@ -17327,7 +17390,6 @@ class Passivbot:
                 continue
             if not self._entry_regime_gate_row_enabled(gate_cfg):
                 continue
-            expected_symbols.add(symbol)
             try:
                 day_ts, daily_close = await self._orchestrator_daily_closes(
                     symbol, lookback_days=lookback_days, now_ms=now_ms
@@ -17343,51 +17405,67 @@ class Passivbot:
                     confirm_days=gate_cfg["confirm_days"],
                 )
             except Exception as exc:
+                # Fail closed: an explicit risk-off table blocks new risk for this
+                # symbol instead of falling back to the ungated strategy, and the
+                # symbol stays out of `expected_symbols` so the pass is not cached and
+                # the next cycle retries the daily read.
                 self._orchestrator_entry_regime_gate_unavailable_symbols.add(symbol)
                 logging.debug(
                     "[regime_gate] daily evidence unavailable %s error_type=%s",
                     Passivbot._log_symbol(symbol),
                     type(exc).__name__,
                 )
-                continue
-            day_start = (int(now_ms) // 86_400_000) * 86_400_000
-            payload = {
-                "enabled": True,
-                "zero_is_on": False,
-                "transition_ts": [int(day_start)],
-                "regime": [1 if flag else 0],
-            }
-            tables[symbol] = {
-                pside: dict(
-                    payload,
-                    block_initial=bool(gate_cfg["block_initial"]),
-                    block_reentry=bool(gate_cfg["block_reentry"]),
+                tables[symbol] = Passivbot._entry_regime_gate_payload(
+                    gate_cfg, psides, day_start=current_day_start, flag=False
                 )
-                for pside in psides
-            }
+                continue
+            expected_symbols.add(symbol)
+            tables[symbol] = Passivbot._entry_regime_gate_payload(
+                gate_cfg, psides, day_start=current_day_start, flag=bool(flag)
+            )
         self._orchestrator_entry_regime_gate_tables = tables
         # A complete pass is stable for the rest of the UTC day. A partial one is not
         # cached, so a symbol whose candles were transiently unavailable is retried on
         # the next planning cycle instead of staying blocked until midnight.
         if set(tables) == expected_symbols:
             self._orchestrator_entry_regime_gate_cache = cache_key
-        if tables or self._orchestrator_entry_regime_gate_unavailable_symbols:
-            risk_off = sum(
-                1
-                for sides in tables.values()
-                for payload in sides.values()
-                if not payload["regime"][0]
-            )
+        unavailable = self._orchestrator_entry_regime_gate_unavailable_symbols
+        risk_on = 0
+        risk_off = 0
+        for symbol, sides in tables.items():
+            if symbol in unavailable:
+                continue
+            for payload in sides.values():
+                if payload["regime"][0]:
+                    risk_on += 1
+                else:
+                    risk_off += 1
+        if tables or unavailable:
             logging.info(
-                "[regime_gate] sma=%s/%s confirm_days=%s symbols=%s risk_off_sides=%s "
-                "unavailable=%s",
+                "[regime_gate] sma=%s/%s confirm_days=%s source=%s symbols=%s "
+                "risk_off_sides=%s unavailable=%s",
                 gate_cfg["fast"],
                 gate_cfg["slow"],
                 gate_cfg["confirm_days"],
+                getattr(self, "_entry_regime_gate_source", None) or "none",
                 len(tables),
                 risk_off,
-                len(self._orchestrator_entry_regime_gate_unavailable_symbols),
+                len(unavailable),
             )
+            emit_verdict = getattr(self, "_emit_entry_regime_gate_verdict", None)
+            if callable(emit_verdict):
+                emit_verdict(
+                    fast=gate_cfg["fast"],
+                    slow=gate_cfg["slow"],
+                    confirm_days=gate_cfg["confirm_days"],
+                    day_start_ms=int(current_day_start),
+                    planning_ts_ms=int(now_ms),
+                    symbol_count=len(tables),
+                    risk_on_sides=int(risk_on),
+                    risk_off_sides=int(risk_off),
+                    unavailable_count=len(unavailable),
+                    unavailable_symbols=sorted(unavailable),
+                )
 
     def _entry_regime_gate_approved_symbols(self, pside: str, symbols: list[str]) -> set[str]:
         """Symbols this side actually trades.
@@ -19903,9 +19981,10 @@ class Passivbot:
             getattr(self, "_orchestrator_trailing_unavailable_symbols", set())
         )
         market_snapshots = await self._get_orchestrator_market_snapshots(symbols)
-        await self._load_orchestrator_entry_regime_gate(
-            symbols, int(self.get_exchange_time())
-        )
+        # One clock read feeds both the published table and the timestamp the engine
+        # evaluates it at, so a verdict and its instant come from the same pass.
+        gate_now_ms = int(self.get_exchange_time())
+        await self._load_orchestrator_entry_regime_gate(symbols, gate_now_ms)
         self._assert_staged_planner_preconditions(
             include_market_snapshot=True,
             context="rust order calculation",
@@ -19927,6 +20006,7 @@ class Passivbot:
         realized_pnl_cumsum = self._get_realized_pnl_cumsum_stats()
         auto_unstuck_allowed = self._auto_unstuck_configured_live()
         now_ms = int(self.get_exchange_time())
+        regime_eval_ts_ms = self._entry_regime_gate_eval_ts_ms(gate_now_ms)
         fill_increase_timestamps = self._get_last_increase_fill_timestamps(
             symbols, now_ms=now_ms
         )
@@ -20067,6 +20147,7 @@ class Passivbot:
                     ),
                     "next_candle": None,
                     "effective_min_cost": float(effective_min_cost),
+                    "regime_eval_ts_ms": regime_eval_ts_ms,
                     "emas": {
                         "m1": {
                             "close": m1_close_pairs,

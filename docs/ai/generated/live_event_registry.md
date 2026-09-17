@@ -30,6 +30,7 @@ The code-owned registries live in `src/live/event_bus.py`. Payload and emission 
 - `ema.unavailable`
 - `entry.initial_eligibility`
 - `entry.min_effective_cost_blocked`
+- `entry_regime.gate.verdict`
 - `exchange.config_refresh`
 - `exchange.time_sync`
 - `execution.ambiguous`

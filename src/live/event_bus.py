@@ -162,6 +162,7 @@ class EventTypes:
     RUNTIME_STARTED = "runtime.started"
     BOT_STARTED = "bot.started"
     BOT_READY = "bot.ready"
+    ENTRY_REGIME_GATE_VERDICT = "entry_regime.gate.verdict"
     BOT_STARTUP_TIMING = "bot.startup_timing"
     BOT_STOPPING = "bot.stopping"
     BOT_SHUTDOWN_STAGE = "bot.shutdown.stage"

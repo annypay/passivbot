@@ -222,13 +222,13 @@ def test_non_dict_gate_is_rejected():
 # --------------------------------------------------------------------------- #
 
 
-def test_daily_read_requests_closed_utc_days_only():
+async def test_daily_read_requests_closed_utc_days_only():
     bot = make_gate_bot()
     cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     bot.cm = cm
     now = DAY0 + 150 * DAY_MS + 12 * 3_600_000  # midday inside day 150
 
-    day_ts, closes = asyncio.run(
+    day_ts, closes = await (
         bot._orchestrator_daily_closes("BTC", lookback_days=52, now_ms=now)
     )
 
@@ -246,18 +246,18 @@ def test_daily_read_requests_closed_utc_days_only():
     assert len(closes) == len(day_ts)
 
 
-def test_daily_read_is_ordered_oldest_first():
+async def test_daily_read_is_ordered_oldest_first():
     bot = make_gate_bot()
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(120)})
     now = DAY0 + 119 * DAY_MS + 60_000
-    day_ts, closes = asyncio.run(
+    day_ts, closes = await (
         bot._orchestrator_daily_closes("BTC", lookback_days=52, now_ms=now)
     )
     assert day_ts == sorted(day_ts)
     assert closes == sorted(closes)
 
 
-def test_daily_read_rejects_an_unaligned_bucket():
+async def test_daily_read_rejects_an_unaligned_bucket():
     bot = make_gate_bot()
 
     class Misaligned(FakeCandleManager):
@@ -268,54 +268,54 @@ def test_daily_read_rejects_an_unaligned_bucket():
 
     bot.cm = Misaligned({"BTC": rising_then_flat(60)})
     with pytest.raises(RuntimeError, match="not aligned to a UTC day"):
-        asyncio.run(
+        await (
             bot._orchestrator_daily_closes(
                 "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
             )
         )
 
 
-def test_daily_read_requires_an_exchange_backed_manager():
+async def test_daily_read_requires_an_exchange_backed_manager():
     bot = make_gate_bot()
     cm = FakeCandleManager({"BTC": rising_then_flat(60)})
     cm.exchange = None
     bot.cm = cm
     with pytest.raises(RuntimeError, match="exchange-backed"):
-        asyncio.run(
+        await (
             bot._orchestrator_daily_closes(
                 "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
             )
         )
 
 
-def test_daily_read_requires_a_candlestick_manager():
+async def test_daily_read_requires_a_candlestick_manager():
     bot = make_gate_bot()
     bot.cm = None
     with pytest.raises(RuntimeError, match="candlestick manager"):
-        asyncio.run(
+        await (
             bot._orchestrator_daily_closes(
                 "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
             )
         )
 
 
-def test_daily_read_rejects_an_empty_series():
+async def test_daily_read_rejects_an_empty_series():
     bot = make_gate_bot()
     bot.cm = FakeCandleManager({"BTC": []})
     with pytest.raises(RuntimeError, match="no closed daily candles"):
-        asyncio.run(
+        await (
             bot._orchestrator_daily_closes(
                 "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
             )
         )
 
 
-def test_daily_read_skips_non_finite_closes():
+async def test_daily_read_skips_non_finite_closes():
     bot = make_gate_bot()
     closes = rising_then_flat(60)
     closes[10] = float("nan")
     bot.cm = FakeCandleManager({"BTC": closes})
-    day_ts, kept = asyncio.run(
+    day_ts, kept = await (
         bot._orchestrator_daily_closes(
             "BTC", lookback_days=52, now_ms=DAY0 + 60 * DAY_MS
         )
@@ -330,17 +330,17 @@ def test_daily_read_skips_non_finite_closes():
 # --------------------------------------------------------------------------- #
 
 
-def run_publish(bot, symbols, now):
-    asyncio.run(bot._load_orchestrator_entry_regime_gate(symbols, int(now)))
+async def run_publish(bot, symbols, now):
+    await bot._load_orchestrator_entry_regime_gate(symbols, int(now))
     return bot._orchestrator_entry_regime_gate_tables
 
 
-def test_warm_rising_series_publishes_a_risk_on_table():
+async def test_warm_rising_series_publishes_a_risk_on_table():
     bot = make_gate_bot()
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     now = DAY0 + 150 * DAY_MS + 12 * 3_600_000
 
-    tables = run_publish(bot, ["BTC"], now)
+    tables = await run_publish(bot, ["BTC"], now)
 
     payload = tables["BTC"]["long"]
     assert payload["enabled"] is True
@@ -353,67 +353,77 @@ def test_warm_rising_series_publishes_a_risk_on_table():
     assert not bot._orchestrator_entry_regime_gate_unavailable_symbols
 
 
-def test_falling_series_publishes_a_risk_off_table():
+async def test_falling_series_publishes_a_risk_off_table():
     bot = make_gate_bot()
     bot.cm = FakeCandleManager({"BTC": falling_closes(200)})
     now = DAY0 + 150 * DAY_MS + 12 * 3_600_000
 
-    tables = run_publish(bot, ["BTC"], now)
+    tables = await run_publish(bot, ["BTC"], now)
 
     assert tables["BTC"]["long"]["regime"] == [0]
 
 
-def test_table_boundary_is_the_start_of_the_current_utc_day():
+async def test_table_boundary_is_the_start_of_the_current_utc_day():
     bot = make_gate_bot()
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     # One minute after a UTC midnight: the boundary must be that midnight, not "now".
     now = DAY0 + 150 * DAY_MS + 60_000
-    tables = run_publish(bot, ["BTC"], now)
+    tables = await run_publish(bot, ["BTC"], now)
     assert tables["BTC"]["long"]["transition_ts"] == [DAY0 + 150 * DAY_MS]
 
 
-def test_short_arm_absent_from_approved_coins_gets_no_table():
+async def test_short_arm_absent_from_approved_coins_gets_no_table():
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
-    tables = run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
     assert set(tables["BTC"]) == {"long"}
 
 
-def test_unapproved_symbol_gets_no_table_and_no_read():
+async def test_unapproved_symbol_gets_no_table_and_no_read():
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     cm = FakeCandleManager({"ETH": rising_then_flat(200)})
     bot.cm = cm
-    tables = run_publish(bot, ["ETH"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["ETH"], DAY0 + 150 * DAY_MS)
     assert tables == {}
     assert cm.calls == []
 
 
-def test_unavailable_evidence_is_recorded_and_left_ungated():
-    """No table means risk-off in Rust, so a missing series blocks rather than trades."""
+async def test_unavailable_evidence_publishes_an_explicit_risk_off_table():
+    """Fail closed: a missing daily series blocks new risk instead of trading ungated."""
     bot = make_gate_bot(approved_long=["BTC", "ETH"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200), "ETH": []})
-    tables = run_publish(bot, ["BTC", "ETH"], DAY0 + 150 * DAY_MS)
-    assert set(tables) == {"BTC"}
+    tables = await run_publish(bot, ["BTC", "ETH"], DAY0 + 150 * DAY_MS)
+
+    assert set(tables) == {"BTC", "ETH"}
     assert bot._orchestrator_entry_regime_gate_unavailable_symbols == {"ETH"}
+    assert tables["BTC"]["long"]["regime"] == [1]
+    # The unavailable symbol carries a real risk-off row, through the same rule a
+    # computed risk-off day uses, so the engine blocks it.
+    assert tables["ETH"]["long"]["enabled"] is True
+    assert tables["ETH"]["long"]["regime"] == [0]
+    assert tables["ETH"]["long"]["block_initial"] is True
+    assert tables["ETH"]["long"]["block_reentry"] is True
+    # ... and the pass is not cached as settled, so the read is retried next cycle.
+    assert getattr(bot, "_orchestrator_entry_regime_gate_cache", None) is None
 
 
-def test_a_too_short_series_cannot_define_the_filter():
+async def test_a_too_short_series_cannot_define_the_filter():
     """Before the slow window fills there is no evidence, and the verdict is risk-off."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(10)})
-    tables = run_publish(bot, ["BTC"], DAY0 + 10 * DAY_MS)
+    tables = await run_publish(bot, ["BTC"], DAY0 + 10 * DAY_MS)
     assert tables["BTC"]["long"]["regime"] == [0]
 
 
-def test_cold_start_series_is_risk_off_not_an_error():
+async def test_cold_start_series_is_risk_off_not_an_error():
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(2)})
-    tables = run_publish(bot, ["BTC"], DAY0 + 2 * DAY_MS)
+    tables = await run_publish(bot, ["BTC"], DAY0 + 2 * DAY_MS)
     assert tables["BTC"]["long"]["regime"] == [0]
     assert not bot._orchestrator_entry_regime_gate_unavailable_symbols
 
 
-def test_disabled_gate_publishes_nothing_and_reads_nothing():
+async def test_disabled_gate_publishes_nothing_and_reads_nothing():
     bot = make_gate_bot(
         {"enabled": False, "sma_fast_days": 20, "sma_slow_days": 50},
         approved_long=["BTC"],
@@ -421,12 +431,12 @@ def test_disabled_gate_publishes_nothing_and_reads_nothing():
     )
     cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     bot.cm = cm
-    tables = run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
     assert tables == {}
     assert cm.calls == []
 
 
-def test_side_without_block_flags_needs_no_daily_evidence():
+async def test_side_without_block_flags_needs_no_daily_evidence():
     """A side that never consults the regime must not be failed by a missing series."""
     bot = make_gate_bot(
         {
@@ -441,25 +451,26 @@ def test_side_without_block_flags_needs_no_daily_evidence():
     )
     cm = FakeCandleManager({"BTC": []})
     bot.cm = cm
-    tables = run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
     assert tables == {}
     assert cm.calls == []
     assert not bot._orchestrator_entry_regime_gate_unavailable_symbols
 
 
-def test_republish_clears_the_previous_table():
+async def test_republish_replaces_the_previous_table():
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
-    run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
-    assert bot._orchestrator_entry_regime_gate_tables
+    await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    assert bot._orchestrator_entry_regime_gate_tables["BTC"]["long"]["regime"] == [1]
 
     bot.cm = FakeCandleManager({"BTC": []})
-    run_publish(bot, ["BTC"], DAY0 + 151 * DAY_MS)
-    assert bot._orchestrator_entry_regime_gate_tables == {}
+    await run_publish(bot, ["BTC"], DAY0 + 151 * DAY_MS)
+    # The stale risk-on verdict is gone; the symbol now carries an explicit risk-off row.
+    assert bot._orchestrator_entry_regime_gate_tables["BTC"]["long"]["regime"] == [0]
     assert bot._orchestrator_entry_regime_gate_unavailable_symbols == {"BTC"}
 
 
-def test_lookback_covers_the_slow_window_and_the_confirmation_span():
+async def test_lookback_covers_the_slow_window_and_the_confirmation_span():
     bot = make_gate_bot(
         {
             "enabled": True,
@@ -473,7 +484,7 @@ def test_lookback_covers_the_slow_window_and_the_confirmation_span():
     cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     bot.cm = cm
     now = DAY0 + 150 * DAY_MS + 12 * 3_600_000
-    run_publish(bot, ["BTC"], now)
+    await run_publish(bot, ["BTC"], now)
 
     # 30 slow days + 3 confirmation days + 2 spare = 35 days of evidence, and an
     # inclusive [start, end] window of 35 days spans 36 candles. Both bounds end at
@@ -489,11 +500,11 @@ def test_lookback_covers_the_slow_window_and_the_confirmation_span():
 # --------------------------------------------------------------------------- #
 
 
-def test_master_params_never_carry_a_symbol_regime():
+async def test_master_params_never_carry_a_symbol_regime():
     """Global params are shared by every symbol, so they cannot encode one symbol's day."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
-    run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
     assert bot._orchestrator_entry_regime_gate_tables
 
     payload = bot._entry_regime_gate_for_rust("long", None)
@@ -505,11 +516,11 @@ def test_master_params_never_carry_a_symbol_regime():
     }
 
 
-def test_symbol_params_carry_the_published_table():
+async def test_symbol_params_carry_the_published_table():
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     now = DAY0 + 150 * DAY_MS
-    run_publish(bot, ["BTC"], now)
+    await run_publish(bot, ["BTC"], now)
 
     payload = bot._entry_regime_gate_for_rust("long", "BTC")
     assert payload["enabled"] is True
@@ -517,21 +528,21 @@ def test_symbol_params_carry_the_published_table():
     assert payload["regime"] == [1]
 
 
-def test_symbol_without_a_table_reads_as_disabled():
+async def test_symbol_without_a_table_reads_as_disabled():
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
-    run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
 
     payload = bot._entry_regime_gate_for_rust("short", "BTC")
     assert payload["enabled"] is False
     assert payload["transition_ts"] == []
 
 
-def test_panic_plan_clears_a_cached_table():
+async def test_panic_plan_clears_a_cached_table():
     """Panic closes and never opens, so it must not carry a stale regime."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
-    run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
     assert bot._orchestrator_entry_regime_gate_tables
 
     # The panic path clears the cache before building its own input dict.
@@ -606,11 +617,11 @@ def test_bot_params_to_rust_dict_emits_a_disabled_gate_when_absent():
         }
 
 
-def test_emitted_table_satisfies_the_rust_validation_rules():
+async def test_emitted_table_satisfies_the_rust_validation_rules():
     """The shape live emits must survive Rust's `EntryRegimeGateConfig::validate`."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
-    run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
     payload = bot._entry_regime_gate_for_rust("long", "BTC")
 
     assert len(payload["transition_ts"]) == len(payload["regime"])
@@ -622,7 +633,7 @@ def test_emitted_table_satisfies_the_rust_validation_rules():
     assert payload["block_initial"] or payload["block_reentry"]
 
 
-def test_emitted_table_matches_the_shared_read_path():
+async def test_emitted_table_matches_the_shared_read_path():
     """The published table must equal the verdict `src/entry_regime.py` computes."""
     from entry_regime import regime_flag_for_day
 
@@ -630,7 +641,7 @@ def test_emitted_table_matches_the_shared_read_path():
     closes = falling_closes(200)
     bot.cm = FakeCandleManager({"BTC": closes})
     now = DAY0 + 150 * DAY_MS
-    run_publish(bot, ["BTC"], now)
+    await run_publish(bot, ["BTC"], now)
 
     expected = regime_flag_for_day(
         [DAY0 + i * DAY_MS for i in range(150)],
@@ -645,38 +656,142 @@ def test_emitted_table_matches_the_shared_read_path():
     ]
 
 
-def test_table_is_rebuilt_once_per_utc_day():
+async def test_table_is_rebuilt_once_per_utc_day():
     """A daily verdict cannot change inside a day, so the planning path must not refetch."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     bot.cm = cm
     now = DAY0 + 150 * DAY_MS + 3_600_000
 
-    run_publish(bot, ["BTC"], now)
+    await run_publish(bot, ["BTC"], now)
     assert len(cm.calls) == 1
 
-    run_publish(bot, ["BTC"], now + 60_000)
+    await run_publish(bot, ["BTC"], now + 60_000)
     assert len(cm.calls) == 1, "same UTC day must reuse the published table"
 
-    run_publish(bot, ["BTC"], now + DAY_MS)
+    await run_publish(bot, ["BTC"], now + DAY_MS)
     assert len(cm.calls) == 2, "a new UTC day must rebuild the table"
 
 
-def test_a_failed_symbol_retries_on_the_next_cycle():
+async def test_a_failed_symbol_retries_on_the_next_cycle():
     """An unavailable symbol is not cached as a permanent verdict."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     cm = FakeCandleManager({"BTC": []})
     bot.cm = cm
-    run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
     assert bot._orchestrator_entry_regime_gate_unavailable_symbols == {"BTC"}
 
     bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
-    run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS + 60_000)
+    await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS + 60_000)
     assert bot._orchestrator_entry_regime_gate_unavailable_symbols == set()
     assert bot._orchestrator_entry_regime_gate_tables["BTC"]["long"]["regime"] == [1]
 
 
-def test_traded_universe_wins_over_a_backtest_only_universe():
+async def test_gate_verdict_event_reports_the_published_table():
+    bot = make_gate_bot(approved_long=["BTC", "ETH"], approved_short=[])
+    bot.cm = FakeCandleManager(
+        {"BTC": rising_then_flat(200), "ETH": falling_closes(200)}
+    )
+    captured: list[dict] = []
+    bot._emit_entry_regime_gate_verdict = lambda **kwargs: captured.append(kwargs)
+    now = DAY0 + 150 * DAY_MS + 12 * 3_600_000
+
+    await run_publish(bot, ["BTC", "ETH"], now)
+
+    assert len(captured) == 1, "one verdict event per rebuilt table"
+    payload = captured[0]
+    assert payload["fast"] == 20
+    assert payload["slow"] == 50
+    assert payload["confirm_days"] == 0
+    assert payload["day_start_ms"] == now // DAY_MS * DAY_MS
+    assert payload["planning_ts_ms"] == int(now)
+    assert payload["symbol_count"] == 2
+    assert payload["risk_on_sides"] == 1
+    assert payload["risk_off_sides"] == 1
+    assert payload["unavailable_count"] == 0
+
+
+async def test_the_event_reports_unavailable_symbols_separately():
+    bot = make_gate_bot(approved_long=["BTC", "ETH"], approved_short=[])
+    bot.cm = FakeCandleManager({"BTC": rising_then_flat(200), "ETH": []})
+    captured: list[dict] = []
+    bot._emit_entry_regime_gate_verdict = lambda **kwargs: captured.append(kwargs)
+
+    await run_publish(bot, ["BTC", "ETH"], DAY0 + 150 * DAY_MS)
+
+    payload = captured[0]
+    assert payload["unavailable_count"] == 1
+    assert payload["unavailable_symbols"] == ["ETH"]
+    # An unavailable side is reported as unavailable, not as a computed risk-off day.
+    assert payload["risk_on_sides"] == 1
+    assert payload["risk_off_sides"] == 0
+
+
+async def test_no_event_without_a_gate():
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    bot.config["backtest"].pop("entry_regime_gate", None)
+    bot.cm = FakeCandleManager({"BTC": rising_then_flat(200)})
+    captured: list[dict] = []
+    bot._emit_entry_regime_gate_verdict = lambda **kwargs: captured.append(kwargs)
+
+    await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+
+    assert captured == []
+
+
+def test_the_live_key_wins_over_the_backtest_block():
+    bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    bot.config["live"]["entry_regime_gate"] = {
+        "enabled": True,
+        "sma_fast_days": 5,
+        "sma_slow_days": 9,
+    }
+    _, source = bot._entry_regime_gate_declaration()
+    assert source == "live.entry_regime_gate"
+    resolved = bot._entry_regime_gate_config()
+    assert (resolved["fast"], resolved["slow"]) == (5, 9)
+
+
+def test_the_declared_backtest_block_stays_reachable_when_live_strips_it():
+    """A live load removes the whole `backtest` subtree, and the published profile
+    states the gate there, so the declaration has to resolve from the raw document."""
+    bot = Passivbot.__new__(Passivbot)
+    bot.config = {
+        "bot": {"long": {}, "short": {}},
+        "live": {"approved_coins": {"long": ["BTC"], "short": []}},
+        "_raw_effective": {
+            "backtest": {
+                "entry_regime_gate": {
+                    "enabled": True,
+                    "sma_fast_days": 20,
+                    "sma_slow_days": 50,
+                }
+            }
+        },
+    }
+    _, source = bot._entry_regime_gate_declaration()
+    assert source == "_raw_effective:backtest.entry_regime_gate"
+    assert bot._entry_regime_gate_config() == {
+        "fast": 20,
+        "slow": 50,
+        "confirm_days": 0,
+        "block_initial": True,
+        "block_reentry": True,
+    }
+    assert bot._entry_regime_gate_eval_ts_ms(1_700_000_000_000) == 1_700_000_000_000
+
+
+def test_eval_timestamp_is_present_only_for_a_configured_gate():
+    gated = make_gate_bot(approved_long=["BTC"], approved_short=[])
+    assert gated._entry_regime_gate_eval_ts_ms(1_700_000_000_000) == 1_700_000_000_000
+
+    ungated = Passivbot.__new__(Passivbot)
+    ungated.config = _gate_profile_config()
+    ungated.config["backtest"].pop("entry_regime_gate", None)
+    assert ungated._entry_regime_gate_eval_ts_ms(1_700_000_000_000) is None
+
+
+async def test_traded_universe_wins_over_a_backtest_only_universe():
     """`backtest.approved_coins` may be wider; the gate must follow what live trades."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.config["backtest"]["approved_coins"] = {"long": ["BTC", "ETH"], "short": []}
@@ -685,25 +800,25 @@ def test_traded_universe_wins_over_a_backtest_only_universe():
     )
     bot.cm = cm
 
-    tables = run_publish(bot, ["BTC", "ETH"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["BTC", "ETH"], DAY0 + 150 * DAY_MS)
 
     assert set(tables) == {"BTC"}
     assert [call["symbol"] for call in cm.calls] == ["BTC"]
 
 
-def test_backtest_universe_is_used_when_the_traded_universe_is_absent():
+async def test_backtest_universe_is_used_when_the_traded_universe_is_absent():
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     del bot.config["live"]["approved_coins"]
     bot.config["backtest"]["approved_coins"] = {"long": ["BTC"], "short": []}
     cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     bot.cm = cm
 
-    tables = run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
 
     assert set(tables) == {"BTC"}
 
 
-def test_resolved_runtime_universe_wins_over_config_strings():
+async def test_resolved_runtime_universe_wins_over_config_strings():
     """Symbol resolution and `ignored_coins` are already applied to the runtime set."""
     bot = make_gate_bot(approved_long=["BTC", "ETH"], approved_short=[])
     bot.approved_coins_minus_ignored_coins = {"long": {"BTC"}, "short": set()}
@@ -712,32 +827,32 @@ def test_resolved_runtime_universe_wins_over_config_strings():
     )
     bot.cm = cm
 
-    tables = run_publish(bot, ["BTC", "ETH"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["BTC", "ETH"], DAY0 + 150 * DAY_MS)
 
     assert set(tables) == {"BTC"}
     assert [call["symbol"] for call in cm.calls] == ["BTC"]
 
 
-def test_a_settled_empty_side_reads_no_evidence():
+async def test_a_settled_empty_side_reads_no_evidence():
     """A resolved empty set is an answer; only an absent key falls back to config."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     bot.approved_coins_minus_ignored_coins = {"long": set(), "short": set()}
     cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     bot.cm = cm
 
-    tables = run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
 
     assert tables == {}
     assert cm.calls == []
 
 
-def test_an_unresolved_universe_falls_back_to_the_config_list():
+async def test_an_unresolved_universe_falls_back_to_the_config_list():
     """An absent key means the runtime has not resolved a universe yet."""
     bot = make_gate_bot(approved_long=["BTC"], approved_short=[])
     cm = FakeCandleManager({"BTC": rising_then_flat(200)})
     bot.cm = cm
 
-    tables = run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
+    tables = await run_publish(bot, ["BTC"], DAY0 + 150 * DAY_MS)
 
     assert set(tables) == {"BTC"}
 
