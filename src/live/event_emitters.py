@@ -2450,6 +2450,55 @@ def emit_open_orders_snapshot_delta_event(
     )
 
 
+def _emit_entry_regime_gate_verdict_unchecked(
+    bot: Any,
+    *,
+    fast: int,
+    slow: int,
+    confirm_days: int,
+    day_start_ms: int,
+    planning_ts_ms: int,
+    symbol_count: int,
+    risk_on_sides: int,
+    risk_off_sides: int,
+    unavailable_count: int,
+    unavailable_symbols: Any = None,
+    symbol_sample_limit: int = 8,
+) -> None:
+    data = {
+        "sma_fast_days": int(fast),
+        "sma_slow_days": int(slow),
+        "confirm_days": int(confirm_days),
+        "day_start_ms": int(day_start_ms),
+        "planning_ts_ms": int(planning_ts_ms),
+        "symbol_count": int(symbol_count),
+        "risk_on_sides": int(risk_on_sides),
+        "risk_off_sides": int(risk_off_sides),
+        "unavailable_count": int(unavailable_count),
+    }
+    if unavailable_symbols:
+        names = sorted(str(name) for name in unavailable_symbols)
+        data["unavailable_symbols"] = names[: max(0, int(symbol_sample_limit))]
+    bot._emit_live_event(
+        EventTypes.ENTRY_REGIME_GATE_VERDICT,
+        level="info",
+        component="entry_regime_gate",
+        tags=("planning", "gate", "risk", "availability"),
+        cycle_id=current_live_event_cycle_id(bot),
+        data=data,
+    )
+
+
+def emit_entry_regime_gate_verdict(bot: Any, *args: Any, **kwargs: Any) -> None:
+    try:
+        _emit_entry_regime_gate_verdict_unchecked(bot, *args, **kwargs)
+    except Exception as exc:
+        logging.debug(
+            "[regime_gate] verdict event emission failed error_type=%s",
+            type(exc).__name__,
+        )
+
+
 def _emit_rust_orchestrator_called_event_unchecked(
     bot: Any,
     *,
