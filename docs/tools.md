@@ -343,10 +343,16 @@ Monitor commands are documented in detail in [monitor.md](monitor.md). The CLI s
   rule the runtime uses (`src/entry_regime.py`), and reports per approved coin the verdict
   for the current UTC day, the assembled depth against the live warm-up request
   (`live_lookback_days(sma_slow_days, confirm_days) + 1` rows), the missing-day count,
-  and the symbol's `min_cost` / `min_qty`. Use `--coins` for a subset, `--sides` to pick
-  sides, and `--out` to keep the JSON report. A coin whose depth is below
-  `sma_slow_days + confirm_days` reads risk-off in live; a coin whose depth is short
-  because it is newly listed is also what `live.minimum_coin_age_days` filters.
+  the symbol's `min_cost` / `min_qty`, its executable `effective_min_cost` at the current
+  price, and the account balance that coin needs before the live
+  `filter_by_min_effective_cost` admission test passes (`balance * (TWE / n_positions) *
+  (1 + excess allowance) * initial_qty_pct >= effective_min_cost`; the summary reports
+  `min_balance_for_all_coins`). Use `--coins` for a subset, `--sides` to pick sides,
+  `--balance` to see how many coins clear the filter at a given balance, and `--out` to
+  keep the JSON report. A coin whose depth is below `sma_slow_days + confirm_days` reads
+  risk-off in live; a coin whose depth is short because it is newly listed is also what
+  `live.minimum_coin_age_days` filters; and a coin whose threshold is above the account
+  balance is not traded at all while `live.filter_by_min_effective_cost` is true.
 - `passivbot tool live-smoke-report` summarizes local live monitor events and text logs for
   operator smoke-test evidence. Use `--summary` for bounded event groups and log matches, or
   `--brief` for top-level counters suitable for repeated VPS smoke loops. Use

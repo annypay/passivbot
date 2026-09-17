@@ -86,9 +86,10 @@ def falling(n: int, *, start: float = 400.0) -> list[float]:
 
 
 class FakeClient:
-    def __init__(self, markets: dict, series: dict[str, list[list]]):
+    def __init__(self, markets: dict, series: dict[str, list[list]], *, prices: dict | None = None):
         self.markets = markets
         self.series = series
+        self.prices = prices or {}
         self.calls: list[tuple] = []
 
     async def fetch_ohlcv(self, symbol, timeframe="1d", since=None, limit=None):
@@ -99,6 +100,9 @@ class FakeClient:
         if limit:
             data = data[-int(limit):]
         return data
+
+    async def fetch_ticker(self, symbol):
+        return {"last": self.prices.get(symbol, 100.0)}
 
 
 class RaisingClient(FakeClient):
@@ -112,16 +116,18 @@ class RaisingClient(FakeClient):
         return await super().fetch_ohlcv(symbol, timeframe, since, limit)
 
 
-async def run(client, *, config=None, sides=("long",), coins=None) -> dict:
+async def run(client, *, config=None, sides=("long",), coins=None, balance=None) -> dict:
     return await probe.build_report(
         config or CONFIG,
         markets=client.markets,
         fetch_ohlcv=client.fetch_ohlcv,
+        fetch_ticker=client.fetch_ticker,
         now_ms=NOW_MS,
         exchange="binance",
         quote="USDT",
         sides=list(sides),
         coins_override=list(coins) if coins else None,
+        balance=balance,
     )
 
 
@@ -258,3 +264,103 @@ async def test_default_sides_follow_the_approved_lists():
     assert probe.requested_sides(config, "long,short") == ["long", "short"]
     with pytest.raises(ValueError, match="unknown sides"):
         probe.requested_sides(config, "both")
+
+
+# --------------------------------------------------------------------------- #
+# funding math: what balance the live admission filter needs
+# --------------------------------------------------------------------------- #
+
+# The published g4 gate profile's long side, in the shape the loader resolves it.
+G4_LONG_RISK = {
+    "risk": {
+        "n_positions": 7,
+        "total_wallet_exposure_limit": 1.0,
+        "we_excess_allowance_pct": 0.37,
+        "we_excess_allowance_mode": "bounded",
+    },
+    "strategy": {"trailing_martingale": {"entry": {"initial_qty_pct": 0.0081}}},
+}
+
+
+def funding_config(*, min_cost: float = 5.0, filter_enabled: bool = True) -> dict:
+    config = json.loads(json.dumps(CONFIG))
+    config["live"]["strategy_kind"] = "trailing_martingale"
+    config["live"]["filter_by_min_effective_cost"] = filter_enabled
+    config["live"]["approved_coins"] = {"long": ["BTC"], "short": []}
+    config["bot"] = {"long": G4_LONG_RISK, "short": {"risk": {"n_positions": 1, "total_wallet_exposure_limit": 0.0}}}
+    return config
+
+
+def funding_markets(min_cost: float = 5.0, *, qty_step: float = 0.001, min_qty: float = 0.001) -> dict:
+    markets = market("BTC")
+    entry = markets["BTC/USDT:USDT"]
+    entry["limits"] = {"cost": {"min": min_cost}, "amount": {"min": min_qty}}
+    entry["precision"] = {"amount": qty_step, "price": 0.1}
+    entry["contractSize"] = 1.0
+    return markets
+
+
+def test_the_sizing_factor_mirrors_the_live_bounded_allowance():
+    factor = probe.initial_entry_sizing_factor(funding_config(), "long")
+    # (1.0 / 7) * (1 + 0.37) * 0.0081
+    assert factor == pytest.approx((1.0 / 7.0) * 1.37 * 0.0081, rel=1e-12)
+    assert factor == pytest.approx(0.001585285, rel=1e-6)
+
+
+def test_a_disabled_side_has_no_sizing_factor():
+    config = funding_config()
+    assert probe.initial_entry_sizing_factor(config, "short") is None
+
+
+def test_bounded_allowance_cannot_exceed_the_side_total_limit():
+    # base 0.5, total 1.0 -> the allowance is clamped to 1.0 (100%), not the raw 5.0
+    assert probe.effective_we_excess_allowance_pct(
+        base_limit=0.5, raw_pct=5.0, total_limit=1.0, mode="bounded"
+    ) == 1.0
+    assert probe.effective_we_excess_allowance_pct(
+        base_limit=0.5, raw_pct=5.0, total_limit=1.0, mode="legacy_raw"
+    ) == 5.0
+
+
+async def test_min_balance_required_matches_the_admission_test():
+    client = FakeClient(
+        funding_markets(min_cost=5.0),
+        {"BTC/USDT:USDT": rows(rising(90))},
+        prices={"BTC/USDT:USDT": 100.0},
+    )
+    report = await run(client, config=funding_config())
+    row = report["coins"][0]
+    factor = probe.initial_entry_sizing_factor(funding_config(), "long")
+    assert row["min_balance_required"] == pytest.approx(row["effective_min_cost"] / factor)
+    # min_cost 5 at price 100 with qty_step 0.001 -> effective cost 5.0
+    assert row["effective_min_cost"] == pytest.approx(5.0, rel=1e-9)
+    assert row["min_balance_required"] == pytest.approx(3154.0, rel=1e-3)
+    assert report["summary"]["min_balance_for_all_coins"] == pytest.approx(
+        row["min_balance_required"]
+    )
+
+
+async def test_balance_argument_reports_affordability():
+    client = FakeClient(
+        funding_markets(min_cost=5.0),
+        {"BTC/USDT:USDT": rows(rising(90))},
+        prices={"BTC/USDT:USDT": 100.0},
+    )
+    poor = await run(client, config=funding_config(), balance=1000.0)
+    rich = await run(client, config=funding_config(), balance=5000.0)
+    assert poor["coins"][0]["affordable_at_balance"] is False
+    assert poor["summary"]["affordable_coins"] == 0
+    assert rich["coins"][0]["affordable_at_balance"] is True
+    assert rich["summary"]["affordable_coins"] == 1
+
+
+async def test_filter_disabled_is_reported_and_thresholds_stay_informational():
+    client = FakeClient(
+        funding_markets(min_cost=5.0),
+        {"BTC/USDT:USDT": rows(rising(90))},
+        prices={"BTC/USDT:USDT": 100.0},
+    )
+    report = await run(client, config=funding_config(filter_enabled=False), balance=1000.0)
+    assert report["summary"]["filter_by_min_effective_cost"] is False
+    # The threshold is still reported; it just does not govern admission.
+    assert report["coins"][0]["min_balance_required"] > 1000.0

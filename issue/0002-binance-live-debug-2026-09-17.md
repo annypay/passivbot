@@ -36,7 +36,7 @@ Pull request：[#6](https://github.com/annypay/passivbot/pull/6)（本轮的探�
 | 下单 | `market_orders_allowed=false`、TIF=GTC → 纯 maker；`ema_gate_mode=all` |
 | 门控 | 20/50、`confirm_days=0`、`block_initial/reentry=true`；启动预热 60 天（PR #5） |
 | HSL / max_realized_loss_pct | 关闭 / 1（等于关闭） |
-| 初始仓位比例 | `bot.long.strategy.trailing_martingale.entry.initial_qty_pct = 0.0081` |
+| 初始仓位比例 | `bot.long.strategy.trailing_martingale.entry.initial_qty_pct = 0.0081` —— 注意这是**每仓位敞口预算**（`TWE/n_positions=1/7`）的系数，不是余额的系数；实际首单 ≈ 余额的 0.1585%（含 `we_excess_allowance_pct=0.37`） |
 
 ## 阶段 B：公开数据探测（真实网络、**无凭据**）
 
@@ -118,23 +118,53 @@ venv/bin/passivbot live \
 4. 无异常撤单、挂单全为 maker、`n_positions ≤ 7`、总敞口 ≤ 1.0×；
 5. `passivbot tool live-smoke-report --brief --exchange binance --user binance_live` 全绿；无 error 级事件、无并发保护停机。
 
-### 资金需求（需要你决定，方案见下）
+### 资金需求（**已更正**，需要你决定，方案见下）
 
-`initial_qty_pct = 0.0081`（初始敞口 = 余额的 0.81%），所以「首单能否过 min_cost」直接由余额决定：
+> **更正（2026-09-17，同日）**：本节初版给出「620 / 2,500 / 6,200 USDT」是**错的**。当时把首单规模当成了 `余额 × initial_qty_pct`，漏掉了两个乘数：每个仓位的敞口预算 `wallet_exposure_limit = total_wallet_exposure_limit / n_positions`，以及超出额度乘数 `(1 + we_excess_allowance)`。正确的判定式见下，真实数字由探针重算（下表）。初版数字偏小约 7.8 倍，据此入金会导致**实际可交易币数远少于预期**。
 
-| 想覆盖的币 | min_cost | 需要的最低余额 |
+实盘的首单规模与准入门槛（代码位置：`passivbot-rust/src/entries.rs::calc_initial_entry_qty` 与 `src/passivbot.py::effective_min_cost_is_low_enough`）：
+
+```text
+首单成本 = 余额 × (TWE / n_positions) × (1 + 有效超出额度) × initial_qty_pct
+准入判定 = 首单成本 ≥ effective_min_cost[symbol]        # live.filter_by_min_effective_cost=true 时
+```
+
+对 g4 配置：`TWE=1.0`、`n_positions=7`、`we_excess_allowance_pct=0.37`（bounded）、`initial_qty_pct=0.0081`
+→ 乘数 = `(1/7) × 1.37 × 0.0081 = 0.00158529`，即**余额的 0.1585%**。
+
+`effective_min_cost` 不是配置里的 `min_cost`，而是「按当前价、按 qty_step **向上取整后**的可执行最小名义额」，通常高于 `min_cost`（例如 BTC：`min_cost=50`，但 `qty_step=0.001 BTC` → 实际约 **76.3 USDT**）。
+
+用真实币安行情跑出的门槛（2026-09-17，探针命令见下）：
+
+| 余额 | 通过准入的币数 | 说明 |
 | --- | --- | --- |
-| 只要 5 USDT 档（约 35 币） | 5 | ≈ **620 USDT** |
-| 加上 20 USDT 档（ETH/BCH/LINK/LTC） | 20 | ≈ **2,500 USDT** |
-| 加上 BTC | 50 | ≈ **6,200 USDT** |
+| < 3,157 | **0/39** | 低于最便宜的 ALGO（3,157），`filter_by_min_effective_cost` 会把**所有**币剔除，bot 只打一条 "No symbols are approved due to min effective cost too high" 警告，**什么都不交易** |
+| 3,200 | ~5/39 | 只有 ALGO/ARB/KAS/ATOM/DOGE 这类 |
+| 4,000 | 30/39 | 缺 BTC/ETH/LINK/BCH/LTC/AAVE 等 9 个 |
+| 5,000 | 33/39 | |
+| 10,000 | 34/39 | |
+| 13,810 | 38/39 | 只缺 BTC |
+| **48,132** | **39/39** | 全币池（BTC 决定上限） |
 
-余额更小时不会报错，但 `filter_by_min_effective_cost=true` 会**静默**把对应币剔出可交易集合 —— 这会让实盘币池小于 40 币证据口径，必须记录。
+单个币的门槛（前几名）：BTC **48,132**、ETH 13,800、LINK 12,669、BCH 12,645、LTC 12,633、AAVE 7,648、AVAX 4,758、BNB 4,575、UNI 4,264。
 
-三个选项：
+复现命令（公网、无凭据）：
 
-- **(a) 入金 ≥ 6,200 USDT**：最接近 g4 证据的 40 币口径，推荐。
-- **(b) 入金 1,000–2,500 USDT**：接受 BTC（可能还有部分 20 USDT 档币）被跳过，币池约 30–39 币，属可接受的偏离但要写进记录。
-- **(c) 按小资金放大 `initial_qty_pct` 等仓位参数**：这是**改策略**，等于放弃 g4 证据的仓位口径，不建议直接上实盘；若要，须重新回测+深度分析再上线。
+```bash
+passivbot tool entry-regime-probe \
+  backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json \
+  --balance 20000 --out /tmp/dsh-live/b3_probe_funding.json
+# 每币输出 effective_min_cost / min_balance_required / affordable_at_balance，
+# 汇总输出 min_balance_for_all_coins 与 affordable_coins=N/40
+```
+
+三个选项（按更正后的数字）：
+
+- **(a) 入金 ≥ 48,200 USDT**：39/39 全币池，最接近 g4 证据口径，推荐。
+- **(b) 入金 13,800–20,000 USDT**：38/39，仅 BTC 被跳过（BTC 的 qty_step 门槛最高）。
+- **(c) 入金 4,000–5,000 USDT**：30–33 币，缺的是 min_cost 20 档与 AAVE；偏离证据口径较大，需要写进记录并接受。
+- **不足 3,157 USDT 不要启动**：不会"少交易几个币"，而是**完全不会交易**。
+- 任何放大 `initial_qty_pct`（或提高 `n_positions` 之外的其他仓位参数）来适配小资金的做法都等于**改策略**，须重新回测 + 深度分析，不建议直接上实盘。
 
 ## 阶段 D 冒烟：零余额启动（未成交，风险为零）
 

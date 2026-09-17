@@ -14,7 +14,11 @@ since the latest release tag; these features may already be available when insta
 - Add `passivbot tool entry-regime-probe`, a read-only public market-data probe that
   reports the live entry-regime verdict per approved coin before a live start, together
   with the assembled daily-history depth, the missing-day count and each symbol's
-  `min_cost` / `min_qty`. It needs no API keys and never contacts a private endpoint.
+  `min_cost` / `min_qty`. It also reports the balance each coin needs before the live
+  `filter_by_min_effective_cost` admission test passes — `balance * (TWE / n_positions) *
+  (1 + excess allowance) * initial_qty_pct >= effective_min_cost` — plus
+  `min_balance_for_all_coins`, and `--balance` counts how many coins clear the filter at a
+  given balance. It needs no API keys and never contacts a private endpoint.
 - Enforce the entry-regime gate in live trading. The planning payload now carries
   `regime_eval_ts_ms`, and the Rust orchestrator evaluates the published daily table at
   that instant, which is the same code path the backtest drives with each bar's
