@@ -54,6 +54,7 @@ repository-relative, so a fresh checkout reproduces the run without editing a ho
 | `binance/g4_sma20_50_replay_2026-09-16` | Standalone deep analysis of the published gated profile: replays `trailing_martingale_twel100_ddf060_sma20_50.json` offline over the frozen bundle and reports it next to the un-gated profile and the study cell. |
 | `binance/g4_sma20_50_hsl_on_replay_2026-09-17` | 打开 HSL 的变体重放：同一份冻结配置在当前引擎上跑两次（HSL 关的配对对照 + HSL 开），三列对比（tracked 基线 / 配对对照 / HSL 开）给出 HSL 的运行学、账本代价与「是否降低尾部回撤」的样本内结论。中文 README 见该 study 目录。 |
 | `binance/g4_tail_risk_research_2026-09-17` | 尾部风险（“一波带走”）研究：把同一份冻结 g4 配置在原生 3 年、5.4 年历史压力腿与两条合成崩塌情景上逐 arm 重放（HSL coin/pside/unified、结构性降杠杆、暴露强制回收、实现亏损闸门），给出单币/多币归零的损失上界、事件窗口压力表、熔断代价与预注册判据 J1–J4 的裁决。中文 README 与 `tail_risk_analysis.md` 见该 study 目录。 |
+| `binance/g4_twe300_10k_replay_2026-09-17` | TWE 3.0 / 10,000 USDT 重跑：把发布 g4 门控 profile 的总暴露上限提到 3.0、起始资金降到 10k，在原生 3 年与 5.4 年历史压力腿上逐 arm 重放（含 unified red=0.10 硬底线、we_excess_allowance_pct=0 与终止式变体），给出强平事实、资本/杠杆/强平几何、冲击矩阵与 10k 实盘准入附录。中文 README 与 `twe300_10k_analysis.md` 见该 study 目录。 |
 
 ## Reproducing the published profiles
 
@@ -111,6 +112,13 @@ bash backtests/binance/g4_tail_risk_research_2026-09-17/run.sh
 bash backtests/binance/g4_tail_risk_research_2026-09-17/run.sh --verify-only
 bash backtests/binance/g4_tail_risk_research_2026-09-17/run.sh --variant unified_r10__ext
 venv/bin/python -m pytest tests/test_g4_tail_risk_research.py -q
+
+# TWE 3.0 / 10,000 USDT replay: 9 arms over two legs, hard-floor and structural variants,
+# per-arm deep analyses plus the cross-arm answer (liquidation geometry and survival).
+bash backtests/binance/g4_twe300_10k_replay_2026-09-17/run.sh
+bash backtests/binance/g4_twe300_10k_replay_2026-09-17/run.sh --verify-only
+bash backtests/binance/g4_twe300_10k_replay_2026-09-17/run.sh --variant twe300_10k__ext
+venv/bin/python -m pytest tests/test_g4_twe300_10k_replay.py -q
 ```
 
 Every `run.sh` mode runs the frozen study window and the reported contract, so the bundles are

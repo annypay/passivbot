@@ -1,0 +1,236 @@
+{
+  "candidate_config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe100_10k__ext.config.json",
+  "candidate_config_sha256": "511497a9563fab952f3dc4337125ab0dc4b04d5c48daca92abe02b5f54b70fa2",
+  "candidate_id": "g4_twe300_10k_twe100_10k__ext",
+  "candidate_kind": "twe_scale_arm_replay",
+  "capital": {
+    "parent_starting_balance": 100000,
+    "scale_vs_parent": 0.1,
+    "starting_balance": 10000.0,
+    "starting_balance_path": "backtest.starting_balance"
+  },
+  "comparison": {
+    "reference_arms": {
+      "ref_published_3y": {
+        "analysis_sha256": "295485faa423d6840decf7d7d1e9e9d17352f794a30d68e0ae704e1519d1c3db",
+        "run_dir": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/backtest_results/binance/2026-09-16T11_45_49"
+      },
+      "ref_tailrisk_off_ext": {
+        "analysis_sha256": "4c15d68890600ebd96f3fafa32ad066a91fcb92866b2dcdb549f070bfc939ac6",
+        "run_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__ext/backtest_results/binance_off__ext/binance/2026-09-17T06_40_45"
+      }
+    },
+    "variant_input": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/variant_input.json",
+    "variant_input_sha256": "b0dc481fcaabc961429eb4f8449ca073324194cd293d4dee7e8a3c3bbe4495f3"
+  },
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "dataset": {
+    "array_dtypes": {
+      "btc_usd_prices": "float64",
+      "timestamps": "int64"
+    },
+    "array_shapes": {
+      "btc_usd_prices": [
+        2875969
+      ],
+      "timestamps": [
+        2875969
+      ]
+    },
+    "cache_dir": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "cache_dir_label": "binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "cache_hash": "a02b6ae1c140f2b7",
+    "coin_count": 40,
+    "data_hashes": {
+      "btc_usd_prices": "e651362acab94666eac27835b4c7e94b38a979d0b20f304b889737f717157a36",
+      "timestamps": "15a4c238bc6f54c4bb9ef29b012a9e311d80f5b28d5d3478363cfa57a5b13920"
+    },
+    "declared_window": [
+      "2021-04-20",
+      "2026-09-13"
+    ],
+    "file_bytes_hashes": {
+      "btc_usd_prices": "5ea77e057cad271fdf8d770fccf3bbd246db1c915858658df207d9bb313f82b2",
+      "hlcvs": "4971ec478a4d897eb425e22e18ccf0b454ceeccd84b0bf4412b2488206f53a5f",
+      "timestamps": "5eba0802d17eeac7a0124bd52c4d655ebd846feda3dc931e544290d6fbe5fed4"
+    },
+    "frozen_bundle_label": "binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "full_array_hash": false,
+    "hash_convention": "logical NumPy payload via hlcvs_manifest.hash_logical_array; file_bytes hashes the gzip byte stream for provenance only",
+    "key": "ext",
+    "leg": "ext",
+    "manifest_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+    "manifest_hashes": {
+      "btc_usd_prices": "e651362acab94666eac27835b4c7e94b38a979d0b20f304b889737f717157a36",
+      "hlcvs": "a5a3a50b5ded74c62f27441132f565e400398fa09f954a468726f4ccfe782dd6",
+      "timestamps": "15a4c238bc6f54c4bb9ef29b012a9e311d80f5b28d5d3478363cfa57a5b13920"
+    },
+    "manifest_pinned_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+    "manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+    "override_mode": "dataset",
+    "synthetic": false
+  },
+  "declared_delta": [
+    {
+      "from": 100000,
+      "path": "backtest.starting_balance",
+      "to": 10000
+    }
+  ],
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "engine": {
+    "compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "compiled_source_stamp": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76",
+    "expected_source_fingerprint": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76",
+    "git": {
+      "branch": "codex/g4-twe300-10k-replay",
+      "dirty": true,
+      "head": "d98d1e62fd9b8f0e4a3e7fa2f1b61d4681fd3bdc",
+      "status_porcelain": [
+        "?? backtests/binance/g4_twe300_10k_replay_2026-09-17/",
+        "?? tests/test_g4_twe300_10k_replay.py"
+      ]
+    },
+    "preferred_compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "runtime_module_path": null,
+    "source_fingerprint_matches_compiled_stamp": true,
+    "source_fingerprint_matches_loaded_stamp": false
+  },
+  "engine_note": "Every arm of this study runs on the same engine revision and the same execution and cost contract; the reference arms were produced by the same engine revision earlier, which is what makes the columns comparable.",
+  "entry_regime_gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "exposure_caps": {
+    "n_positions": 7.0,
+    "per_slot_cap": 0.19571428571428573,
+    "total_wallet_exposure_limit": 1.0,
+    "we_excess_allowance_pct": 0.37
+  },
+  "hsl_block": {
+    "cooldown_minutes_after_red": 2160,
+    "ema_span_minutes": 720.0,
+    "enabled": false,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.15,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "liquidation": {
+    "days_to_liquidation": 1971.9583333333333,
+    "floor_usd": 500.0,
+    "last_equity_usd": 32369.371,
+    "last_sample_utc": "2026-09-12 23:01:00",
+    "liquidated": false,
+    "peak_equity_usd": 32395.8,
+    "problems": [],
+    "starting_balance": 10000.0
+  },
+  "live_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "coin"
+  },
+  "risk_block": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 1,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.37
+  },
+  "runtime_flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "source_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "source_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "universe": {
+    "coin_count": 40,
+    "coins": [
+      "AAVE",
+      "ADA",
+      "ALGO",
+      "APT",
+      "ARB",
+      "ASTER",
+      "ATOM",
+      "AVAX",
+      "BCH",
+      "BNB",
+      "BTC",
+      "CC",
+      "DOGE",
+      "DOT",
+      "ENA",
+      "ETH",
+      "FIL",
+      "GRAM",
+      "HBAR",
+      "HYPE",
+      "INJ",
+      "KAS",
+      "LINK",
+      "LTC",
+      "MORPHO",
+      "NEAR",
+      "ONDO",
+      "POL",
+      "RENDER",
+      "SOL",
+      "SUI",
+      "TAO",
+      "TON",
+      "TRX",
+      "UNI",
+      "WLD",
+      "XLM",
+      "XMR",
+      "XRP",
+      "ZEC"
+    ],
+    "exchange": "binance"
+  },
+  "variant": {
+    "dataset": "ext",
+    "description": "规模对照：5.4 年历史压力腿",
+    "hsl_enabled": false,
+    "key": "twe100_10k__ext",
+    "leg": "ext",
+    "lever": "twe100_10k",
+    "lever_label": "10,000 USDT / TWE 1.0（规模对照）",
+    "per_slot_cap": 0.19571428571428573,
+    "starting_balance": 10000.0,
+    "synthetic": false,
+    "total_wallet_exposure_limit": 1.0
+  },
+  "window": {
+    "effective_end_date": "2026-09-12T23:59:00Z",
+    "effective_start_date": "2021-04-20T00:01:00Z",
+    "end_date": "2026-09-13",
+    "start_date": "2021-04-20"
+  }
+}

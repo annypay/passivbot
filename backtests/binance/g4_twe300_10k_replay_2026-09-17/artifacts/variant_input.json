@@ -1,0 +1,778 @@
+{
+  "arms": [
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe100_10k__3y/backtest_results/binance_twe100_10k__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe100_10k__3y",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe100_10k__3y.config.json",
+      "config_sha256": "a6df75187d6fc56c862f1180351568b1e1f9f0772ed3ec5e235bb6a967bf608f",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        }
+      ],
+      "description": "规模对照：10,000 USDT + 发布参数（TWE 1.0，HSL 关）",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe100_10k__3y/execution_audit.csv",
+      "key": "twe100_10k__3y",
+      "leg": "3y",
+      "lever": "twe100_10k",
+      "lever_hypothesis": "仓位按余额等比缩放，差异只应来自最小下单量/步长取整与费用占比",
+      "lever_label": "10,000 USDT / TWE 1.0（规模对照）",
+      "lever_question": "把起始资金从 100k 降到 10k、其余不动，成绩会变多少？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.19571428571428573,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 1.0,
+      "we_excess_allowance_pct": 0.37
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__3y/backtest_results/binance_twe300_10k__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__3y",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe300_10k__3y.config.json",
+      "config_sha256": "0f1a5d2246683831de83f97e99c1cf6226218192a6b595597b18781931cf3b58",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        }
+      ],
+      "description": "本次请求：10,000 USDT + TWE 3.0（HSL 关）",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__3y/execution_audit.csv",
+      "key": "twe300_10k__3y",
+      "leg": "3y",
+      "lever": "twe300_10k",
+      "lever_hypothesis": "单槽上界升到 0.5871；原生窗可能只表现为更深的回撤，历史压力腿很可能触发强平",
+      "lever_label": "10,000 USDT / TWE 3.0（本次请求）",
+      "lever_question": "三倍总暴露在本地历史上会不会被强平？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5871428571428572,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.37
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_floor__3y/backtest_results/binance_twe300_10k_floor__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_floor__3y",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe300_10k_floor__3y.config.json",
+      "config_sha256": "6e09b893c4e35eeaf1d70e0f72665a52c4377b7425fe4768696102d63fd23415",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        }
+      ],
+      "description": "TWE 3.0 + 硬底线：HSL unified、red_threshold=0.10",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_floor__3y/execution_audit.csv",
+      "key": "twe300_10k_floor__3y",
+      "leg": "3y",
+      "lever": "twe300_10k_floor",
+      "lever_hypothesis": "满仓时约 −3.3% 行情即触发，能显著压低最差回撤，但频繁停牌会切掉复利",
+      "lever_label": "TWE 3.0 + unified red=0.10（硬底线）",
+      "lever_question": "账户级熔断能否在 TWE 3.0 下封住尾部、代价多少？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5871428571428572,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.37
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__3y/backtest_results/binance_twe300_10k_allowance0__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__3y",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe300_10k_allowance0__3y.config.json",
+      "config_sha256": "53f0b02353b9039c07a02e9ab753c92560fd1738241f4acdf54818da4fcc3e68",
+      "dataset": "3y",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 3.0 + 取消单槽超额（单币上界 0.5871→0.4286）",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__3y/execution_audit.csv",
+      "key": "twe300_10k_allowance0__3y",
+      "leg": "3y",
+      "lever": "twe300_10k_allowance0",
+      "lever_hypothesis": "单币上界 0.5871→0.4286，尾部降低但代价小于熔断",
+      "lever_label": "TWE 3.0 + we_excess_allowance_pct=0",
+      "lever_question": "不加熔断、只削单槽超额，能否更便宜地压低尾部？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe100_10k__ext/backtest_results/binance_twe100_10k__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe100_10k__ext",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe100_10k__ext.config.json",
+      "config_sha256": "511497a9563fab952f3dc4337125ab0dc4b04d5c48daca92abe02b5f54b70fa2",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        }
+      ],
+      "description": "规模对照：5.4 年历史压力腿",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe100_10k__ext/execution_audit.csv",
+      "key": "twe100_10k__ext",
+      "leg": "ext",
+      "lever": "twe100_10k",
+      "lever_hypothesis": "仓位按余额等比缩放，差异只应来自最小下单量/步长取整与费用占比",
+      "lever_label": "10,000 USDT / TWE 1.0（规模对照）",
+      "lever_question": "把起始资金从 100k 降到 10k、其余不动，成绩会变多少？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.19571428571428573,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 1.0,
+      "we_excess_allowance_pct": 0.37
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__ext/backtest_results/binance_twe300_10k__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__ext",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe300_10k__ext.config.json",
+      "config_sha256": "7d253d0b8b068193f485463096b4e9bfbcc1b42e5590e628b47f725a3bb329ee",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        }
+      ],
+      "description": "TWE 3.0：5.4 年历史压力腿",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__ext/execution_audit.csv",
+      "key": "twe300_10k__ext",
+      "leg": "ext",
+      "lever": "twe300_10k",
+      "lever_hypothesis": "单槽上界升到 0.5871；原生窗可能只表现为更深的回撤，历史压力腿很可能触发强平",
+      "lever_label": "10,000 USDT / TWE 3.0（本次请求）",
+      "lever_question": "三倍总暴露在本地历史上会不会被强平？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5871428571428572,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.37
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_floor__ext/backtest_results/binance_twe300_10k_floor__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_floor__ext",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe300_10k_floor__ext.config.json",
+      "config_sha256": "a534158a69a42b456dbcafc4346002c4604c66e3a137ad01f3dc95c066c661fd",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        }
+      ],
+      "description": "TWE 3.0 + unified red=0.10：5.4 年历史压力腿",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_floor__ext/execution_audit.csv",
+      "key": "twe300_10k_floor__ext",
+      "leg": "ext",
+      "lever": "twe300_10k_floor",
+      "lever_hypothesis": "满仓时约 −3.3% 行情即触发，能显著压低最差回撤，但频繁停牌会切掉复利",
+      "lever_label": "TWE 3.0 + unified red=0.10（硬底线）",
+      "lever_question": "账户级熔断能否在 TWE 3.0 下封住尾部、代价多少？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5871428571428572,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.37
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__ext/backtest_results/binance_twe300_10k_allowance0__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__ext",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe300_10k_allowance0__ext.config.json",
+      "config_sha256": "9d6a770c9d462d0c57e43483703ef018357919551f5e1cf5d52efc01a075fc4c",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 3.0 + we_excess_allowance_pct=0：5.4 年历史压力腿",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__ext/execution_audit.csv",
+      "key": "twe300_10k_allowance0__ext",
+      "leg": "ext",
+      "lever": "twe300_10k_allowance0",
+      "lever_hypothesis": "单币上界 0.5871→0.4286，尾部降低但代价小于熔断",
+      "lever_label": "TWE 3.0 + we_excess_allowance_pct=0",
+      "lever_question": "不加熔断、只削单槽超额，能否更便宜地压低尾部？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_never__ext/backtest_results/binance_twe300_10k_never__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_never__ext",
+      "config_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/g4_twe300_10k_never__ext.config.json",
+      "config_sha256": "010ded63c782138c1fbd57d0f139a945d4af6ecd0347c5eda67d2b0010bb6488",
+      "dataset": "ext",
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.1
+        },
+        {
+          "from": "threshold",
+          "path": "bot.long.hsl.restart_after_red_policy",
+          "to": "never"
+        }
+      ],
+      "description": "TWE 3.0 + 硬底线且触发后永久停止：5.4 年历史压力腿",
+      "execution_audit_path": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_never__ext/execution_audit.csv",
+      "key": "twe300_10k_never__ext",
+      "leg": "ext",
+      "lever": "twe300_10k_never",
+      "lever_hypothesis": "一次触发即永久离线，上限最清晰、复利代价最大",
+      "lever_label": "TWE 3.0 + unified red=0.10 + restart=never（终止式）",
+      "lever_question": "把硬底线做成永久停机，是否值得？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5871428571428572,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.37
+    }
+  ],
+  "capital_contract": {
+    "arm_starting_balance": 10000,
+    "note": "backtest.starting_balance 初始化模拟账户，并驱动所有按余额缩放的仓位大小（passivbot-rust/src/backtest.rs: balance.usd_cash_wallet = starting_balance）",
+    "parent_starting_balance": 100000,
+    "starting_balance_path": "backtest.starting_balance"
+  },
+  "coin_count": 40,
+  "coins": [
+    "AAVE",
+    "ADA",
+    "ALGO",
+    "APT",
+    "ARB",
+    "ASTER",
+    "ATOM",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "CC",
+    "DOGE",
+    "DOT",
+    "ENA",
+    "ETH",
+    "FIL",
+    "GRAM",
+    "HBAR",
+    "HYPE",
+    "INJ",
+    "KAS",
+    "LINK",
+    "LTC",
+    "MORPHO",
+    "NEAR",
+    "ONDO",
+    "POL",
+    "RENDER",
+    "SOL",
+    "SUI",
+    "TAO",
+    "TON",
+    "TRX",
+    "UNI",
+    "WLD",
+    "XLM",
+    "XMR",
+    "XRP",
+    "ZEC"
+  ],
+  "comparison_metric_groups": {
+    "回撤与恢复": [
+      "drawdown_worst_strategy_eq",
+      "drawdown_worst_mean_1pct_strategy_eq",
+      "strategy_eq_recovery_days_max",
+      "peak_recovery_days_strategy_eq",
+      "strategy_eq_underwater_pct_mean"
+    ],
+    "尾部形状": [
+      "expected_shortfall_1pct_strategy_eq",
+      "omega_ratio_strategy_eq",
+      "sterling_ratio_strategy_eq",
+      "loss_profit_ratio"
+    ],
+    "收益": [
+      "gain_strategy_eq",
+      "adg_strategy_eq",
+      "mdg_strategy_eq"
+    ],
+    "暴露与结构": [
+      "total_wallet_exposure_max",
+      "total_wallet_exposure_mean",
+      "exposure_mean_ratio_usd",
+      "high_exposure_days_max_long",
+      "fills_count",
+      "fills_count_close",
+      "fills_active_symbols_count"
+    ],
+    "生存": [
+      "liquidated",
+      "n_days",
+      "backtest_completion_ratio"
+    ]
+  },
+  "context_live_hsl_keys": [
+    "hsl_position_during_cooldown_policy"
+  ],
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "datasets": [
+    {
+      "key": "3y",
+      "leg": "3y",
+      "manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+      "manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+      "note": "the profile's native bundle",
+      "override_mode": null,
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+      "present": true,
+      "synthetic": false,
+      "window": [
+        "2023-09-12",
+        "2026-09-12"
+      ]
+    },
+    {
+      "key": "ext",
+      "leg": "ext",
+      "manifest_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+      "manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "note": "dataset override serves the bundle's own requested window",
+      "override_mode": "dataset",
+      "path": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "present": true,
+      "synthetic": false,
+      "window": [
+        "2021-04-20",
+        "2026-09-13"
+      ]
+    }
+  ],
+  "decision_rules": [
+    {
+      "id": "J1",
+      "rule": "TWE 3.0 基线在两条腿上是否被强平（liquidated=true）⇒ 是则判定“该杠杆在本地历史范围内不可实盘”，并给出从起始资金到强平的存活天数。"
+    },
+    {
+      "id": "J2",
+      "rule": "硬底线（unified red=0.10）是否把最差回撤压到基线的 60% 以下、且不触发强平 ⇒ 同时给出 ΔCAGR（pp/年）作为代价。"
+    },
+    {
+      "id": "J3",
+      "rule": "10k 规模对照（TWE 1.0）与发布基线（100k）的全期最差回撤/CAGR 差异 ≤ 1pp ⇒ 判定资金规模效应可忽略；否则量化它。"
+    },
+    {
+      "id": "J4",
+      "rule": "we_excess_allowance_pct=0 在同样不发生强平的前提下，最差回撤低于硬底线 arm ⇒ 推荐结构性方案而非熔断。"
+    },
+    {
+      "id": "J5",
+      "rule": "终止式 arm（restart=never）的终值低于硬底线 arm 的 50% ⇒ 判定它不适合作为默认硬底线，仅作为人工决策后的最后一档。"
+    }
+  ],
+  "event_rule": {
+    "benchmark": "BTC",
+    "labels": [
+      [
+        "2021-05 中国挖矿禁令/五月崩盘（闸门预热期，仅参考）",
+        "2021-05-01",
+        "2021-06-15"
+      ],
+      [
+        "2022-05 LUNA/UST 崩盘与三箭传染",
+        "2022-05-01",
+        "2022-07-05"
+      ],
+      [
+        "2022-11 FTX 崩盘",
+        "2022-11-01",
+        "2023-01-10"
+      ],
+      [
+        "2023-08 基线起点回撤",
+        "2023-08-15",
+        "2023-10-31"
+      ],
+      [
+        "2024-08 日元套息平仓",
+        "2024-07-25",
+        "2024-09-15"
+      ],
+      [
+        "2025-02 关税冲击与山寨下跌",
+        "2025-01-25",
+        "2025-05-05"
+      ],
+      [
+        "2025-10 闪崩（历史最大清算）",
+        "2025-10-01",
+        "2025-11-20"
+      ],
+      [
+        "2026 近端窗口",
+        "2026-05-15",
+        "2026-09-13"
+      ]
+    ],
+    "lookback_days": 7,
+    "min_gap_days": 30,
+    "threshold": -0.15
+  },
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "gate_mode": "both",
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "honesty_boundaries": [
+    "历史未崩不等于未来安全；结论只在两条冻结腿与既有执行/成本契约的范围内成立。",
+    "扩展腿 2021-04-20 起交易、2022 年之前只有 22 个币有数据，且币池是活到 2026 年的当前top40，存在幸存者偏差；早期月份受闸门预热影响，2021-05 事件只能作旁证。",
+    "引擎的强平线是“权益 ≤ 起始资金 × liquidation_threshold(0.05)”，触发后回测在该根 K 线终止；它是模型的地板，不等同于真实交易所的分层维持保证金，也未计入强平费用与滑点。",
+    "引擎不模拟保证金/杠杆占用：TWE 3.0 在实盘需要约 30% 初始保证金（10 倍杠杆），分层维持保证金可能让真实强平早于模型地板。",
+    "HSL 触发指标为 min(raw, EMA)，对一天内完成并反弹的闪崩天然迟钝，不能当作插针保险。",
+    "回测不含真实资金费率、流动性枯竭下的滑点、API 断连与交易所/稳定币对手方风险。"
+  ],
+  "hsl_block": {
+    "cooldown_minutes_after_red": 2160.0,
+    "ema_span_minutes": 720.0,
+    "enabled": false,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.15,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "hsl_metrics": [
+    "hard_stop_triggers",
+    "hard_stop_triggers_long",
+    "hard_stop_triggers_per_year",
+    "hard_stop_restarts",
+    "hard_stop_restarts_long",
+    "hard_stop_time_in_yellow_pct",
+    "hard_stop_time_in_orange_pct",
+    "hard_stop_time_in_red_pct",
+    "hard_stop_duration_minutes_mean",
+    "hard_stop_duration_minutes_max",
+    "hard_stop_flatten_time_minutes_mean",
+    "hard_stop_trigger_drawdown_mean",
+    "hard_stop_panic_close_loss_sum",
+    "hard_stop_panic_close_loss_max",
+    "hard_stop_panic_close_loss_drawdown_pct_min",
+    "hard_stop_panic_close_loss_drawdown_pct_mean",
+    "hard_stop_panic_close_loss_drawdown_pct_max",
+    "hard_stop_post_restart_retrigger_pct",
+    "hard_stop_halt_to_restart_equity_loss_pct"
+  ],
+  "levers": [
+    {
+      "hypothesis": "仓位按余额等比缩放，差异只应来自最小下单量/步长取整与费用占比",
+      "key": "twe100_10k",
+      "label": "10,000 USDT / TWE 1.0（规模对照）",
+      "question": "把起始资金从 100k 降到 10k、其余不动，成绩会变多少？"
+    },
+    {
+      "hypothesis": "单槽上界升到 0.5871；原生窗可能只表现为更深的回撤，历史压力腿很可能触发强平",
+      "key": "twe300_10k",
+      "label": "10,000 USDT / TWE 3.0（本次请求）",
+      "question": "三倍总暴露在本地历史上会不会被强平？"
+    },
+    {
+      "hypothesis": "满仓时约 −3.3% 行情即触发，能显著压低最差回撤，但频繁停牌会切掉复利",
+      "key": "twe300_10k_floor",
+      "label": "TWE 3.0 + unified red=0.10（硬底线）",
+      "question": "账户级熔断能否在 TWE 3.0 下封住尾部、代价多少？"
+    },
+    {
+      "hypothesis": "单币上界 0.5871→0.4286，尾部降低但代价小于熔断",
+      "key": "twe300_10k_allowance0",
+      "label": "TWE 3.0 + we_excess_allowance_pct=0",
+      "question": "不加熔断、只削单槽超额，能否更便宜地压低尾部？"
+    },
+    {
+      "hypothesis": "一次触发即永久离线，上限最清晰、复利代价最大",
+      "key": "twe300_10k_never",
+      "label": "TWE 3.0 + unified red=0.10 + restart=never（终止式）",
+      "question": "把硬底线做成永久停机，是否值得？"
+    }
+  ],
+  "liquidation_contract": {
+    "floor_fraction_of_start": 0.05,
+    "note": "引擎在 权益 ≤ 起始资金 × threshold 时置 liquidated=true、把末值钉在地板并跳出回测循环（passivbot-rust/src/backtest.rs: check_and_apply_liquidation）",
+    "threshold": 0.05,
+    "threshold_path": "backtest.liquidation_threshold"
+  },
+  "live_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "coin"
+  },
+  "modelled_live_hsl_keys": [
+    "hsl_signal_mode"
+  ],
+  "panic_fill_marker": "panic",
+  "parent_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "parent_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "parent_max_realized_loss_pct": 1,
+  "parent_profile_input": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/profile_input.json",
+  "parent_profile_input_sha256": "1e6e8c61811e303297e1e72365fd5dad48a05aaddf42c75b8f89265eaf8778ce",
+  "parent_risk": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 1.0,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.37
+  },
+  "parent_study": "backtests/binance/g4_sma20_50_replay_2026-09-16",
+  "prior_study": "backtests/binance/g4_tail_risk_research_2026-09-17",
+  "reference_arms": [
+    {
+      "analysis_sha256": "295485faa423d6840decf7d7d1e9e9d17352f794a30d68e0ae704e1519d1c3db",
+      "key": "ref_published_3y",
+      "label": "published g4 profile, 100k / TWE 1.0, 3y",
+      "leg": "3y",
+      "role": "the published profile's own tracked evidence (100,000 USDT, TWE 1.0)",
+      "run_dir": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/backtest_results/binance/2026-09-16T11_45_49"
+    },
+    {
+      "analysis_sha256": "4c15d68890600ebd96f3fafa32ad066a91fcb92866b2dcdb549f070bfc939ac6",
+      "key": "ref_tailrisk_off_ext",
+      "label": "published g4 profile, 100k / TWE 1.0, 5.4y",
+      "leg": "ext",
+      "role": "the tail-risk study's 5.4-year control at the published settings",
+      "run_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/off__ext/backtest_results/binance_off__ext/binance/2026-09-17T06_40_45"
+    }
+  ],
+  "reference_report": "backtests/binance/2026-09-14T03_25_14/annual_analysis.md",
+  "report_convention": "docs/ai/runbooks/strategy_report.md",
+  "reused_arm_keys": [],
+  "run_order": [
+    "twe100_10k__3y",
+    "twe300_10k__3y",
+    "twe300_10k_floor__3y",
+    "twe300_10k_allowance0__3y",
+    "twe100_10k__ext",
+    "twe300_10k__ext",
+    "twe300_10k_floor__ext",
+    "twe300_10k_allowance0__ext",
+    "twe300_10k_never__ext"
+  ],
+  "shock_levels": [
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0
+  ],
+  "study": "backtests/binance/g4_twe300_10k_replay_2026-09-17"
+}
