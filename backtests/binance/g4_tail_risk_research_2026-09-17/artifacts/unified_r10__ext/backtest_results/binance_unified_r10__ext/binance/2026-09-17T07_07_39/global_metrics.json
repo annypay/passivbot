@@ -1,0 +1,162 @@
+{
+  "analysis_sha256": "f61320b33854e186bdd557ee8a8ff5fcd836308cb8c73bf0878f0247ff98231c",
+  "backtest_elapsed_s": 91.5332612991333,
+  "config_sha256": "9725eb42c45203d63c026b6b772e2b36e648d3ce3bdc155c7d682e67f4e9f06c",
+  "dataset": {
+    "array_dtypes": {
+      "btc_usd_prices": "float64",
+      "timestamps": "int64"
+    },
+    "array_shapes": {
+      "btc_usd_prices": [
+        2875969
+      ],
+      "timestamps": [
+        2875969
+      ]
+    },
+    "cache_dir": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "cache_dir_label": "binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "cache_hash": "a02b6ae1c140f2b7",
+    "coin_count": 40,
+    "data_hashes": {
+      "btc_usd_prices": "e651362acab94666eac27835b4c7e94b38a979d0b20f304b889737f717157a36",
+      "timestamps": "15a4c238bc6f54c4bb9ef29b012a9e311d80f5b28d5d3478363cfa57a5b13920"
+    },
+    "declared_window": [
+      "2021-04-20",
+      "2026-09-13"
+    ],
+    "file_bytes_hashes": {
+      "btc_usd_prices": "5ea77e057cad271fdf8d770fccf3bbd246db1c915858658df207d9bb313f82b2",
+      "hlcvs": "4971ec478a4d897eb425e22e18ccf0b454ceeccd84b0bf4412b2488206f53a5f",
+      "timestamps": "5eba0802d17eeac7a0124bd52c4d655ebd846feda3dc931e544290d6fbe5fed4"
+    },
+    "frozen_bundle_label": "binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "full_array_hash": false,
+    "hash_convention": "logical NumPy payload via hlcvs_manifest.hash_logical_array; file_bytes hashes the gzip byte stream for provenance only",
+    "key": "ext",
+    "leg": "ext",
+    "manifest_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+    "manifest_hashes": {
+      "btc_usd_prices": "e651362acab94666eac27835b4c7e94b38a979d0b20f304b889737f717157a36",
+      "hlcvs": "a5a3a50b5ded74c62f27441132f565e400398fa09f954a468726f4ccfe782dd6",
+      "timestamps": "15a4c238bc6f54c4bb9ef29b012a9e311d80f5b28d5d3478363cfa57a5b13920"
+    },
+    "manifest_pinned_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+    "manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+    "override_mode": "dataset",
+    "synthetic": false
+  },
+  "declared_delta": [
+    {
+      "from": false,
+      "path": "bot.long.hsl.enabled",
+      "to": true
+    },
+    {
+      "from": "coin",
+      "path": "live.hsl_signal_mode",
+      "to": "unified"
+    },
+    {
+      "from": 0.15,
+      "path": "bot.long.hsl.red_threshold",
+      "to": 0.1
+    }
+  ],
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "engine": {
+    "compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "compiled_source_stamp": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76",
+    "error": null,
+    "module_loaded": false,
+    "module_name": "passivbot_rust",
+    "pid": 812345,
+    "preferred_compiled_mtime": 1789608593.8090339,
+    "preferred_compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "preferred_compiled_sha256": "d9c407662fa93e97d5ddeb506961bf80d8b001e3e1e716d763d0122718c181fa",
+    "runtime_matches_preferred": false,
+    "runtime_module_mtime": null,
+    "runtime_module_path": null,
+    "runtime_module_sha256": null,
+    "runtime_module_source_stamp": null,
+    "source_fingerprint": "70c3ecda8aad9cafe40b80ea75cf52cb5cd730ae8d8d17340c3b2b8d6b2d1a76"
+  },
+  "entry_regime_gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "environment": {
+    "executable": "python",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "execution_audit_rows": 45646,
+  "generated_at_unix_s": 1789628867.979645,
+  "git": {
+    "branch": "codex/g4-tail-risk-research",
+    "dirty": true,
+    "head": "2017489adbebf5286701445edf71647aeac71bdf",
+    "status_porcelain": [
+      "M backtests/readme.md",
+      "?? backtests/binance/g4_tail_risk_research_2026-09-17/",
+      "?? issue/0003-g4-tail-risk-and-wipeout-2026-09-17.md",
+      "?? tests/test_g4_tail_risk_research.py"
+    ]
+  },
+  "hsl_long": {
+    "cooldown_minutes_after_red": 2160,
+    "ema_span_minutes": 720.0,
+    "enabled": true,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.1,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "leg": "ext",
+  "lever": "unified_r10",
+  "live_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "unified"
+  },
+  "live_max_realized_loss_pct": 1,
+  "parent_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "parent_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "risk_long": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 1,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.37
+  },
+  "run_base_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__ext/backtest_results/binance_unified_r10__ext",
+  "run_dir": "backtests/binance/g4_tail_risk_research_2026-09-17/artifacts/unified_r10__ext/backtest_results/binance_unified_r10__ext/binance/2026-09-17T07_07_39",
+  "run_dir_name": "2026-09-17T07_07_39",
+  "runtime_flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "synthetic": false,
+  "variant": "unified_r10__ext",
+  "variant_description": "HSL 账户级熔断 red=0.10：5.4 年压力腿",
+  "variant_label": "HSL unified red=0.10"
+}

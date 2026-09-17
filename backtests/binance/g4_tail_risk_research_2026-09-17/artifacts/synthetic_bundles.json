@@ -1,0 +1,126 @@
+{
+  "bundles": {
+    "synth_a": {
+      "file_hashes": {
+        "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+        "hlcvs": "b57a426d1218f78b67a9d1dc49f1138ae20881d7a7d720289fa5c27ce4e79582",
+        "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+      },
+      "key": "synth_a",
+      "label": "单币崩塌（合成 A，孤立事件）",
+      "manifest_config_hash": "4353a7a5e0d6ee69ca8c5ba353197a12c0aeafd5da850e9ee7397f96e64a16f1",
+      "manifest_sha256": "f455a7f1436fc019442cb045af5fd00c55ab32354eefcd347eb4b3164ab4701a",
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_a",
+      "synthetic": true,
+      "targets": [
+        "AAVE"
+      ],
+      "transform": {
+        "collapse_days": 3,
+        "declared_window": [
+          "2023-09-12",
+          "2026-09-12"
+        ],
+        "end_multiple": 0.005,
+        "hold_days": 14,
+        "kind": "synthetic_price_path_collapse",
+        "price_columns_scaled": "high, low, close (volume, timestamps, benchmark unchanged)",
+        "source_bundle": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+        "source_manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+        "source_manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+        "targets": [
+          {
+            "coin": "AAVE",
+            "collapse_rows": 4320,
+            "end_multiple": 0.005,
+            "exposure_at_injection_usd": 24057.339637513393,
+            "first_price": 93.56999969482422,
+            "hold_rows": 20160,
+            "injection_start_ms": 1713025320000,
+            "injection_start_utc": "2024-04-13T16:22:00Z",
+            "max_abs_wallet_exposure_at_fill": 0.1971152332179137,
+            "start_row": 345430,
+            "trough_price": 0.4084000015258789
+          }
+        ]
+      }
+    },
+    "synth_b": {
+      "file_hashes": {
+        "btc_usd_prices": "ef52994f20ee9adc3876adef2a1aaa60247d1a0b64ca29f4a32e9c9594312a6e",
+        "hlcvs": "60d338c4d964cf716ee779ef4736cc46236595203d734b9c7c6b0336c59226c9",
+        "timestamps": "303be2288bca6a3a5af8687e5388f743e2042470ead5e7ec761d4e50a71c0edb"
+      },
+      "key": "synth_b",
+      "label": "三币先后崩塌（合成 B，每次以该币自身峰值敞口时点为起点）",
+      "manifest_config_hash": "fa1b8b5aa30ed2c9c71e190dfa0361e8ad0040d0137d96120fcd9a97f37188c5",
+      "manifest_sha256": "f89e9ce20d82d4036673ff497d56ad2b78f0a7510a9780f39bd4b45e69ba20b9",
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_b",
+      "synthetic": true,
+      "targets": [
+        "AAVE",
+        "WLD",
+        "INJ"
+      ],
+      "transform": {
+        "collapse_days": 3,
+        "declared_window": [
+          "2023-09-12",
+          "2026-09-12"
+        ],
+        "end_multiple": 0.005,
+        "hold_days": 14,
+        "kind": "synthetic_price_path_collapse",
+        "price_columns_scaled": "high, low, close (volume, timestamps, benchmark unchanged)",
+        "source_bundle": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+        "source_manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+        "source_manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+        "targets": [
+          {
+            "coin": "AAVE",
+            "collapse_rows": 4320,
+            "end_multiple": 0.005,
+            "exposure_at_injection_usd": 24057.339637513393,
+            "first_price": 93.56999969482422,
+            "hold_rows": 20160,
+            "injection_start_ms": 1713025320000,
+            "injection_start_utc": "2024-04-13T16:22:00Z",
+            "max_abs_wallet_exposure_at_fill": 0.1971152332179137,
+            "start_row": 345430,
+            "trough_price": 0.4084000015258789
+          },
+          {
+            "coin": "WLD",
+            "collapse_rows": 4320,
+            "end_multiple": 0.005,
+            "exposure_at_injection_usd": 22378.986599999997,
+            "first_price": 6.253600120544434,
+            "hold_rows": 20160,
+            "injection_start_ms": 1709690460000,
+            "injection_start_utc": "2024-03-06T02:01:00Z",
+            "max_abs_wallet_exposure_at_fill": 0.1957413712940006,
+            "start_row": 289849,
+            "trough_price": 0.040401000976562504
+          },
+          {
+            "coin": "INJ",
+            "collapse_rows": 4320,
+            "end_multiple": 0.005,
+            "exposure_at_injection_usd": 24365.59375479313,
+            "first_price": 19.93199920654297,
+            "hold_rows": 20160,
+            "injection_start_ms": 1718720400000,
+            "injection_start_utc": "2024-06-18T14:20:00Z",
+            "max_abs_wallet_exposure_at_fill": 0.1957205656536647,
+            "start_row": 440348,
+            "trough_price": 0.10772500038146973
+          }
+        ]
+      }
+    }
+  },
+  "note": "派生 bundle 是本地、可重建的合成数据；它们不出现在任何真实数据结论里，报告必须标注“合成”。",
+  "source_bundle": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+  "source_manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+  "study": "backtests/binance/g4_tail_risk_research_2026-09-17"
+}
