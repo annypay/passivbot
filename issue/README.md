@@ -19,7 +19,7 @@
 | 编号 | 主题 | 状态 | 相关 PR | 最后更新 |
 | --- | --- | --- | --- | --- |
 | `0000-session-log-2026-09-16.md` | 会话日志：研究证据、两个已发布 profile、以及改变门控实盘说法的审计 | 历史存档 | #1、#2、#3 | 2026-09-17 |
-| `0001-entry-regime-gate-live-wiring.md` | 入场择时门控接入实盘：单点求值、缺证据 fail-closed、verdict 事件、离线 dry run | 进行中 | #3（stack 在 #2 之上） | 2026-09-17 |
+| `0001-entry-regime-gate-live-wiring.md` | 入场择时门控接入实盘：单点求值、缺证据 fail-closed、verdict 事件、离线 dry run、预热 60 天 | 进行中 | #3、#5（stack 在 #2 之上） | 2026-09-17 |
 
 ## 稳定前观察看板
 

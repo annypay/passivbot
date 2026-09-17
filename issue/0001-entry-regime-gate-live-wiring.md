@@ -3,7 +3,7 @@
 状态：进行中（接线已落地，等待实盘头几周）
 分支：`codex/entry-regime-gate-live-wiring`
 Base：`codex/entry-regime-gate-and-gated-profile`（PR #2）
-Pull request：[#3](https://github.com/annypay/passivbot/pull/3)
+Pull request：[#3](https://github.com/annypay/passivbot/pull/3)、[#5](https://github.com/annypay/passivbot/pull/5)（预热 60 天与深度字段）
 撰写者：2026-09-16/17 的 agent 会话
 
 ## 为什么有这份记录
@@ -49,6 +49,7 @@ Pull request：[#3](https://github.com/annypay/passivbot/pull/3)
 | 分支 | `codex/entry-regime-gate-live-wiring` |
 | 撰写时 head | `8cc058afe`（其后紧接本记录的中文版重写提交） |
 | Pull request | [#3](https://github.com/annypay/passivbot/pull/3)（base：`codex/entry-regime-gate-and-gated-profile`） |
+| 预热补充 PR | [#5](https://github.com/annypay/passivbot/pull/5)（base：`codex/entry-regime-gate-live-wiring`）——60 天取数深度、启动预取与四个深度字段，见下方 2026-09-17 段 |
 | 父 PR | #2（门控、profile、证据）——合并它才能有干净的回退故事 |
 
 ## 撰写时的验证结果
