@@ -329,6 +329,21 @@ return the original order object sequence without retaining exception messages, 
 class names, URLs, credentials, tokens, or tracebacks. Fetch parameters, missing-price handling,
 complete-price sorting, reconciliation, planning, and trading behavior remain unchanged.
 
+## Entry-Regime Gate Verdict
+
+The planning path publishes one verdict per rebuilt gate table, so a live run records
+what the gate decided and on which evidence:
+
+- `entry_regime.gate.verdict` reports `sma_fast_days`, `sma_slow_days`, `confirm_days`,
+  `day_start_ms` (the UTC day the verdict belongs to), `planning_ts_ms` (the exchange
+  timestamp the engine evaluates the table at), `symbol_count`, `risk_on_sides`,
+  `risk_off_sides`, `unavailable_count`, and a bounded `unavailable_symbols` sample.
+- The side counts exclude symbols whose daily evidence could not be assembled: those are
+  reported through `unavailable_count` alone, and each of them carries an explicit
+  risk-off table, so `risk_off_sides` counts computed risk-off days only.
+- A configuration without a gate publishes nothing, and the table is rebuilt at most
+  once per UTC day.
+
 ## Rust Orchestrator Returned Events
 
 Failed `rust_orchestrator.returned` events retain their existing timing, input hash, cycle and

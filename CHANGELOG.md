@@ -6,17 +6,34 @@ since the latest release tag; these features may already be available when insta
 
 ## Unreleased
 
+- Enforce the entry-regime gate in live trading. The planning payload now carries
+  `regime_eval_ts_ms`, and the Rust orchestrator evaluates the published daily table at
+  that instant, which is the same code path the backtest drives with each bar's
+  timestamp. Before this, live computed and logged the table while the engine read flags
+  only the backtest ever wrote, so live traded the ungated strategy.
+- Let live reach the declaration. `live.entry_regime_gate` is now a declared,
+  partially-open config key, and a live config resolves it first; when only the
+  `backtest.entry_regime_gate` block is present — which is where the published profile and
+  every tracked evidence bundle state it, and which the live config loader strips — the
+  declaration is read back from the raw document. Before this, a gate declared where the
+  published profile states it never reached the bot at all.
+- Fail closed when the daily evidence is missing. A symbol whose closed daily series
+  cannot be assembled now carries an explicit risk-off row for the UTC day, so new risk
+  is blocked rather than silently traded ungated, and the read is retried on the next
+  planning cycle. Until the slow window has completed days behind it, that same rule
+  means no new positions, so a fresh live start of the 20/50 profile waits about 52 days.
+- Publish one `entry_regime.gate.verdict` live event per rebuilt table with the SMA
+  parameters, the UTC day, the planning timestamp and the risk-on/risk-off/unavailable
+  side counts, so the gate's live state is queryable rather than only greppable.
+
 - Add an opt-in, strictly causal entry-regime gate for exact Rust backtests,
   `backtest.entry_regime_gate`. It replays a precomputed daily simple-moving-average
   crossover as a pure timestamp lookup and may only *block* entries: closes, panic,
   and auto-unstuck are untouched, and an absent or disabled block is a no-op. The
   table is built from **completed** UTC days only, so a bar can never read its own
-  day's close. The live planning path already reads closed 1-day candles from the
-  candlestick manager and records one verdict per symbol and side, but the engine does
-  not consume it yet: the per-side flags the Rust orchestrator reads are written by the
-  backtest only, so live currently trades the ungated strategy. Wiring those flags, and
-  with them what a missing daily series means, is follow-up work; the key is a
-  backtest filter until then.
+  day's close. The live planning path reads closed 1-day candles from the candlestick
+  manager and records one verdict per symbol and side, and the engine enforces it (see
+  the entries above); until that wiring the key was a backtest filter only.
 - Keep `backtest.entry_regime_gate` through config hydration and sanitizing. A
   `backtest.*` key the schema template does not declare is dropped when a config is
   rebuilt from the template, so a gated config run through the normal config pipeline
