@@ -2,6 +2,7 @@
 
 状态：**进行中，停在阶段 C（余额为 0，无法进入实盘启动）**
 分支：`codex/binance-live-debug`（基于 `codex/entry-regime-gate-warmup`，即 PR #5）
+Pull request：[#6](https://github.com/annypay/passivbot/pull/6)（本轮的探针工具、代理修复与本记录）
 实盘策略：`backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json`（公共证据文件，运行期间**零改动**，账号用 `-u` 覆盖）
 运行账号：`binance_live`（账户名与密钥只存在于 `api-keys.json`，该文件被 `.gitignore:423` 忽略；**本记录永不含密钥**）
 运行环境：本机 WSL，tmux 会话 `pblive`，入口 `passivbot live <config> -u <account>`（与 README 第 6/7 步、容器契约一致）
