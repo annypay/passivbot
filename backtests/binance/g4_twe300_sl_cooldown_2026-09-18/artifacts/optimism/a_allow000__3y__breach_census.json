@@ -1,0 +1,166 @@
+{
+  "arm": "a_allow000__3y",
+  "candles_source": {
+    "cache_dir_label": "binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+    "channel_order": "high,low,close,volume",
+    "coins": 40,
+    "hlcvs_gz_gb": 0.838
+  },
+  "coins": [
+    "AAVE",
+    "ADA",
+    "ALGO",
+    "APT",
+    "ARB",
+    "ASTER",
+    "ATOM",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "DOGE",
+    "DOT",
+    "ENA",
+    "ETH",
+    "FIL",
+    "HBAR",
+    "HYPE",
+    "INJ",
+    "KAS",
+    "LINK",
+    "LTC",
+    "MORPHO",
+    "NEAR",
+    "ONDO",
+    "POL",
+    "RENDER",
+    "SOL",
+    "SUI",
+    "TAO",
+    "TON",
+    "UNI",
+    "WLD",
+    "XLM",
+    "XMR",
+    "XRP",
+    "ZEC"
+  ],
+  "cooldowns": [
+    1440.0,
+    2880.0
+  ],
+  "episodes_measured": 418,
+  "levels": [
+    0.1,
+    0.15,
+    0.2,
+    0.25
+  ],
+  "method": "对每个止损位报告两个冷却口径（默认 24h 与 48h）：触发次数、触发后冷却窗口内收盘价回到该位之上的比例（= 「止损卖在低点」）、继续下跌中位数、冷却到期价相对该位的中位数。蜡烛与跌破定义由 candle_excursion.py 提供，本工具只驱动它两次并按键对齐。",
+  "rows": [
+    {
+      "cd1440": {
+        "breached_episodes_net_positive_pct": 79.41,
+        "breaches": 68,
+        "good_exit_share_pct": 67.65,
+        "median_close_at_expiry_vs_level_pct": 0.039269,
+        "median_further_drop_pct": 0.088403,
+        "recovered_above_level_within_cooldown_pct": 100.0,
+        "share_close_at_expiry_below_level_pct": 23.53,
+        "share_of_episodes_pct": 16.27,
+        "spike_exit_share_pct": 14.71
+      },
+      "cd2880": {
+        "breached_episodes_net_positive_pct": 79.41,
+        "breaches": 68,
+        "good_exit_share_pct": 72.06,
+        "median_close_at_expiry_vs_level_pct": 0.053795,
+        "median_further_drop_pct": 0.113118,
+        "recovered_above_level_within_cooldown_pct": 100.0,
+        "share_close_at_expiry_below_level_pct": 35.29,
+        "share_of_episodes_pct": 16.27,
+        "spike_exit_share_pct": 10.29
+      },
+      "level_pct": 0.1
+    },
+    {
+      "cd1440": {
+        "breached_episodes_net_positive_pct": 81.08,
+        "breaches": 37,
+        "good_exit_share_pct": 70.27,
+        "median_close_at_expiry_vs_level_pct": 0.09841,
+        "median_further_drop_pct": 0.090316,
+        "recovered_above_level_within_cooldown_pct": 100.0,
+        "share_close_at_expiry_below_level_pct": 24.32,
+        "share_of_episodes_pct": 8.85,
+        "spike_exit_share_pct": 13.51
+      },
+      "cd2880": {
+        "breached_episodes_net_positive_pct": 81.08,
+        "breaches": 37,
+        "good_exit_share_pct": 78.38,
+        "median_close_at_expiry_vs_level_pct": 0.162747,
+        "median_further_drop_pct": 0.094869,
+        "recovered_above_level_within_cooldown_pct": 100.0,
+        "share_close_at_expiry_below_level_pct": 10.81,
+        "share_of_episodes_pct": 8.85,
+        "spike_exit_share_pct": 13.51
+      },
+      "level_pct": 0.15
+    },
+    {
+      "cd1440": {
+        "breached_episodes_net_positive_pct": 80.0,
+        "breaches": 25,
+        "good_exit_share_pct": 40.0,
+        "median_close_at_expiry_vs_level_pct": 0.152439,
+        "median_further_drop_pct": 0.041407,
+        "recovered_above_level_within_cooldown_pct": 100.0,
+        "share_close_at_expiry_below_level_pct": 4.0,
+        "share_of_episodes_pct": 5.98,
+        "spike_exit_share_pct": 16.0
+      },
+      "cd2880": {
+        "breached_episodes_net_positive_pct": 80.0,
+        "breaches": 25,
+        "good_exit_share_pct": 52.0,
+        "median_close_at_expiry_vs_level_pct": 0.193611,
+        "median_further_drop_pct": 0.051633,
+        "recovered_above_level_within_cooldown_pct": 100.0,
+        "share_close_at_expiry_below_level_pct": 0.0,
+        "share_of_episodes_pct": 5.98,
+        "spike_exit_share_pct": 12.0
+      },
+      "level_pct": 0.2
+    },
+    {
+      "cd1440": {
+        "breached_episodes_net_positive_pct": 55.56,
+        "breaches": 9,
+        "good_exit_share_pct": 55.56,
+        "median_close_at_expiry_vs_level_pct": 0.22243,
+        "median_further_drop_pct": 0.077872,
+        "recovered_above_level_within_cooldown_pct": 100.0,
+        "share_close_at_expiry_below_level_pct": 0.0,
+        "share_of_episodes_pct": 2.15,
+        "spike_exit_share_pct": 22.22
+      },
+      "cd2880": {
+        "breached_episodes_net_positive_pct": 55.56,
+        "breaches": 9,
+        "good_exit_share_pct": 55.56,
+        "median_close_at_expiry_vs_level_pct": 0.260563,
+        "median_further_drop_pct": 0.077872,
+        "recovered_above_level_within_cooldown_pct": 100.0,
+        "share_close_at_expiry_below_level_pct": 0.0,
+        "share_of_episodes_pct": 2.15,
+        "spike_exit_share_pct": 22.22
+      },
+      "level_pct": 0.25
+    }
+  ],
+  "thresholds": {
+    "good_exit_further_drop": 0.05,
+    "spike_exit_further_drop": 0.02
+  }
+}

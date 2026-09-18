@@ -711,7 +711,13 @@ def analyse(*, out: Path, strict: bool, top_n: int) -> int:
         )
     print("\nverdicts:")
     for item in verdicts:
-        state = {True: "PASS", False: "FAIL", None: "N/A "}[item["pass"]]
+        if item["pass"] is True:
+            state = "PASS"
+        elif item["pass"] is False:
+            state = "FAIL"
+        else:
+            # No threshold was declared (S7): the numbers are the deliverable, not a pass/fail.
+            state = "INFO" if item["observed"] is not None else "N/A "
         print(f"  {item['id']} {state} threshold={item['threshold']}")
         print(f"      observed={json.dumps(item['observed'], ensure_ascii=False)}")
     print(f"\nwrote {spec.relative(out)}")

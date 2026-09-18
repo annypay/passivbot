@@ -8,6 +8,9 @@
 | --- | --- |
 | `variant_spec.py` | 唯一事实来源：冻结父配置、派生路径、五条腿的数据集 pin、三个对照 run 的 pin、六个臂的声明 |
 | `sl_replay.py` | 驱动器：`build` / `run` / `identity` / `analyse` 四个子命令 |
+| `default_off_identity.py` | 约定入口：转发到 `sl_replay.py identity`（上一轮同名工具的等价物） |
+| `verify_variant_report.py` | 约定入口：转发到 `sl_replay.py analyse`（独立复算，只读 run 目录） |
+| `breach_census.py` | 把 `candle_excursion.py` 跑两遍（默认 24h 与 48h 冷却），对齐输出"跌破后是否回到该位之上"的对照表 |
 | `candle_source.py` `episode_ledger.py` `candle_excursion.py` `sl_counterfactual.py` | Phase A 的证据工具（见 `../optimism_audit.md`），不参与回放 |
 | `README.md` | 本文件 |
 
@@ -18,7 +21,9 @@
 作者、没有搜索阶段，因此把四道闸门收进一个 `sl_replay.py` 的四个子命令：闸门与被闸的对象放在一起，
 比分散在四个文件里更难被绕过。功能上没有减少——`build` 做上一轮 `build_variant_config.py` 的全部
 门禁，`identity` 等价于 `default_off_identity.py`，`analyse` 等价于 `verify_variant_report.py` 的
-独立复算（它只读 run 目录，不读 `build` 阶段的中间产物）。**未交付**：上一轮的
+独立复算（它只读 run 目录，不读 `build` 阶段的中间产物）。上一轮的两个工具名保留为转发入口，避免
+读者按名字找不到东西。此外 Phase A 的"跌破普查"与"最大浮亏"合并在 `candle_excursion.py` 里
+（同一趟 bundle 扫描同时算出两者），24h/48h 对照由 `breach_census.py` 驱动。**未交付**：上一轮的
 `generate_annual_report.py`（年报渲染）与 `event_windows.py`（基准事件窗口表）；本轮的判定不依赖
 它们，README 在此显式记为 PENDING，而不是静默通过。
 
