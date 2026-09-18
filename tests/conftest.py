@@ -66,53 +66,112 @@ def _install_passivbot_rust_stub():
     stub.calc_min_entry_qty = lambda *args, **kwargs: 0.0
     stub.calc_min_entry_qty_py = stub.calc_min_entry_qty
 
-    def _hsl_no_restart_triggered(
-        restart_after_red_policy, drawdown_raw, drawdown_ema, no_restart_drawdown_threshold
+    def _hsl_no_restart_evaluation(
+        restart_after_red_policy,
+        drawdown_raw,
+        drawdown_ema,
+        no_restart_drawdown_threshold,
+        realized_loss_pct=0.0,
+        realized_loss_budget_pct=0.0,
     ):
-        # Mirrors ehsl::no_restart_triggered exactly (max(raw, ema) contract).
+        # Mirrors ehsl::evaluate_no_restart exactly (max(raw, ema) contract plus the
+        # cumulative realized-loss basis, compare-then-reason).
+        realized_loss_pct = float(realized_loss_pct)
+        realized_loss_budget_pct = float(realized_loss_budget_pct)
+        if not math.isfinite(realized_loss_pct) or realized_loss_pct < 0.0:
+            raise ValueError("realized_loss_pct must be finite and >= 0")
+        if not math.isfinite(realized_loss_budget_pct) or not (
+            0.0 <= realized_loss_budget_pct <= 1.0
+        ):
+            raise ValueError("realized_loss_budget_pct must be finite and within [0, 1]")
         if restart_after_red_policy == "always":
-            return False
+            return False, "none"
         if restart_after_red_policy == "threshold":
-            return max(float(drawdown_raw), float(drawdown_ema)) >= float(
+            if max(float(drawdown_raw), float(drawdown_ema)) >= float(
                 no_restart_drawdown_threshold
-            )
+            ):
+                return True, "drawdown"
+            if (
+                realized_loss_budget_pct > 0.0
+                and realized_loss_pct + 1e-12 >= realized_loss_budget_pct
+            ):
+                return True, "realized_loss"
+            return False, "none"
         if restart_after_red_policy == "never":
-            return True
+            return True, "policy_never"
         raise ValueError(
             "hsl_restart_after_red_policy must be one of always, threshold, never; "
             f"got {restart_after_red_policy!r}"
         )
 
+    def _hsl_no_restart_triggered(
+        restart_after_red_policy, drawdown_raw, drawdown_ema, no_restart_drawdown_threshold
+    ):
+        # Mirrors ehsl::no_restart_triggered exactly (max(raw, ema) contract).
+        latched, _reason = _hsl_no_restart_evaluation(
+            restart_after_red_policy,
+            drawdown_raw,
+            drawdown_ema,
+            no_restart_drawdown_threshold,
+        )
+        return latched
+
     stub.hsl_no_restart_triggered = _hsl_no_restart_triggered
 
-    def _hsl_coin_drawdown_signal(
-        *, balance, n_positions, peak_realized, last_realized, current_upnl
+    def _hsl_validate_halt_ladder(halt_ladder_minutes):
+        # Mirrors ehsl::validate_halt_ladder exactly (bounded, finite, non-negative).
+        ladder = [float(minutes) for minutes in halt_ladder_minutes]
+        if len(ladder) > 32:
+            raise ValueError(
+                "halt_ladder_minutes must have at most 32 entries, "
+                f"got {len(ladder)}"
+            )
+        for index, minutes in enumerate(ladder):
+            if not math.isfinite(minutes) or minutes < 0.0:
+                raise ValueError(
+                    f"halt_ladder_minutes[{index}] must be finite and >= 0, got {minutes}"
+                )
+
+    stub.hsl_validate_halt_ladder = _hsl_validate_halt_ladder
+
+    def _hsl_ladder_halt_minutes(strikes, halt_ladder_minutes, fallback_minutes):
+        # Mirrors ehsl::LadderCycle::halt_minutes (rungs saturate at the last entry).
+        if not halt_ladder_minutes:
+            return float(fallback_minutes)
+        _hsl_validate_halt_ladder(halt_ladder_minutes)
+        index = min(max(int(strikes), 1), len(halt_ladder_minutes)) - 1
+        return float(halt_ladder_minutes[index])
+
+    def _hsl_ladder_cycle_observe(
+        *, equity, realized_pnl, strikes, peak_equity, realized_pnl_peak
     ):
-        balance = float(balance)
-        n_positions = int(n_positions)
-        peak_realized = float(peak_realized)
-        last_realized = float(last_realized)
-        current_upnl = float(current_upnl)
-        if not math.isfinite(balance) or balance <= 0.0:
-            raise ValueError("balance must be finite and > 0")
-        if n_positions <= 0:
-            raise ValueError("n_positions must be > 0")
-        for name, value in (
-            ("peak_realized", peak_realized),
-            ("last_realized", last_realized),
-            ("current_upnl", current_upnl),
-        ):
-            if not math.isfinite(value):
-                raise ValueError(f"{name} must be finite")
-        slot_budget = balance / n_positions
-        drawdown_usd = max(0.0, peak_realized - (last_realized + current_upnl))
+        # Mirrors ehsl::LadderCycle::observe exactly.
+        equity = float(equity)
+        realized_pnl = float(realized_pnl)
+        strikes = int(strikes)
+        peak_equity = float(peak_equity)
+        realized_pnl_peak = float(realized_pnl_peak)
+        if not 0 <= strikes < 2**32:
+            raise OverflowError("strikes must fit in u32")
+        if not math.isfinite(equity) or equity <= 0.0:
+            raise ValueError("ladder cycle equity must be finite and > 0")
+        if not math.isfinite(realized_pnl):
+            raise ValueError("ladder cycle realized_pnl must be finite")
+        if peak_equity <= 0.0 or equity >= peak_equity:
+            return {
+                "reset": True,
+                "strikes": 0,
+                "peak_equity": equity,
+                "realized_pnl_peak": realized_pnl,
+            }
         return {
-            "slot_budget": slot_budget,
-            "drawdown_usd": drawdown_usd,
-            "drawdown_raw": drawdown_usd / slot_budget,
+            "reset": False,
+            "strikes": strikes,
+            "peak_equity": peak_equity,
+            "realized_pnl_peak": max(realized_pnl_peak, realized_pnl),
         }
 
-    stub.hsl_coin_drawdown_signal = _hsl_coin_drawdown_signal
+    stub.hsl_ladder_cycle_observe = _hsl_ladder_cycle_observe
 
     def _hsl_red_episode_finalization(
         *,
@@ -125,7 +184,15 @@ def _install_passivbot_rust_stub():
         red_threshold,
         no_restart_drawdown_threshold,
         cooldown_minutes_after_red,
+        halt_ladder_minutes=None,
+        ladder_strikes=0,
+        ladder_peak_equity=0.0,
+        ladder_realized_pnl_peak=0.0,
+        realized_pnl_now=0.0,
+        realized_loss_budget_pct=0.0,
     ):
+        halt_ladder_minutes = list(halt_ladder_minutes or [])
+        _hsl_validate_halt_ladder(halt_ladder_minutes)
         if not (0.0 < float(red_threshold) <= float(no_restart_drawdown_threshold) <= 1.0):
             raise ValueError(
                 "no_restart_drawdown_threshold must satisfy red_threshold <= threshold <= 1"
@@ -136,24 +203,45 @@ def _install_passivbot_rust_stub():
             float(stop_equity),
         )
         raw = max(0.0, 1.0 - float(stop_equity) / peak)
-        no_restart = _hsl_no_restart_triggered(
+        # The strike is registered inside the transition; the ladder never wraps.
+        strikes_after = min(int(ladder_strikes) + 1, 2**32 - 1)
+        halt_minutes = _hsl_ladder_halt_minutes(
+            strikes_after, halt_ladder_minutes, cooldown_minutes_after_red
+        )
+        ladder_peak_equity = float(ladder_peak_equity)
+        ladder_realized_pnl_peak = float(ladder_realized_pnl_peak)
+        realized_pnl_now = float(realized_pnl_now)
+        realized_loss_pct = 0.0
+        if ladder_peak_equity > 0.0:
+            realized_loss_pct = max(
+                0.0, ladder_realized_pnl_peak - realized_pnl_now
+            ) / ladder_peak_equity
+        latched, no_restart_reason = _hsl_no_restart_evaluation(
             restart_after_red_policy,
             raw,
             drawdown_ema,
             no_restart_drawdown_threshold,
+            realized_loss_pct,
+            realized_loss_budget_pct,
         )
         cooldown_until_ms = None
-        if not no_restart and float(cooldown_minutes_after_red) > 0.0:
-            cooldown_ms = max(1, round(float(cooldown_minutes_after_red) * 60_000.0))
+        if not latched and halt_minutes > 0.0:
+            cooldown_ms = max(1, round(halt_minutes * 60_000.0))
             cooldown_until_ms = int(stop_timestamp_ms) + int(cooldown_ms)
         return {
             "no_restart_peak_strategy_equity": peak,
             "no_restart_drawdown_raw": raw,
-            "no_restart_latched": no_restart,
+            "no_restart_latched": latched,
+            "no_restart_reason": no_restart_reason,
+            "realized_loss_pct": realized_loss_pct,
+            "halt_minutes": halt_minutes,
+            "ladder_strikes": strikes_after,
+            "ladder_peak_equity": ladder_peak_equity,
+            "ladder_realized_pnl_peak": ladder_realized_pnl_peak,
             "cooldown_until_ms": cooldown_until_ms,
             "disposition": (
                 "no_restart"
-                if no_restart
+                if latched
                 else "cooldown"
                 if cooldown_until_ms is not None
                 else "halted_no_cooldown"
