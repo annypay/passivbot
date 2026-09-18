@@ -1,0 +1,161 @@
+// Fake-live halt-ladder scenario: two RED halts in one scope (long BTC).
+//
+// Run it with an override config that enables the ladder, e.g.:
+//   bot.long.hsl.halt_ladder_minutes = [720, 1440]
+//   bot.long.hsl.cooldown_minutes_after_red = 240   (ladder-disabled fallback)
+//   bot.long.hsl.red_threshold = 0.05
+//   live.pnls_max_lookback_days = 1.0               (the cooldown-elapsed replay must
+//                                                    still cover the first halt when it
+//                                                    rebuilds the ladder cycle)
+//   live.approved_coins.long = ["BTC/USDT:USDT"]     (so the scope can re-enter after
+//                                                    the first cooldown resumes trading)
+// tests/test_run_fake_live.py::test_fake_live_halt_ladder_escalates_second_red_stop
+// runs exactly that config against this file and enforces the assertions below.
+//
+// Timeline (all times 2026-01-01, the boot position is long 5 @ 100 with balance 200):
+//   02:00  price 100 -> 94: drawdown 15% >= red_threshold 5% -> first RED halt
+//   04:00  flat confirmations complete -> first halt finalized: 720 minutes
+//   14:00  (02:00 + 12h) cooldown elapsed; trading resumes and re-enters at 94
+//   14:08  price 94 -> 80 with the re-entry on the book: second RED halt
+//   14:10  second halt finalized: next ladder rung, 1440 minutes, ladder_strikes=2
+{
+  name: hsl_long_halt_ladder
+  exchange: fake
+  boot_index: 1
+  run_initial_cycle: false
+  account: {
+    balance: 200.0
+    positions: [
+      {
+        symbol: "BTC/USDT:USDT"
+        position_side: long
+        qty: 5.0
+        price: 100.0
+      }
+    ]
+    fills: [
+      {
+        id: "10"
+        order: "10"
+        timestamp: "2026-01-01T00:00:00Z"
+        symbol: "BTC/USDT:USDT"
+        position_side: long
+        side: buy
+        amount: 5.0
+        price: 80.0
+        pnl: 0.0
+        clientOrderId: initial_entry_boot
+      }
+      {
+        id: "11"
+        order: "11"
+        timestamp: "2026-01-01T00:01:00Z"
+        symbol: "BTC/USDT:USDT"
+        position_side: long
+        side: sell
+        amount: 5.0
+        price: 100.0
+        pnl: 100.0
+        reduceOnly: true
+        clientOrderId: initial_take_profit_boot
+        info: {startPosition: "5.0"}
+      }
+      {
+        id: "12"
+        order: "12"
+        timestamp: "2026-01-01T00:01:00Z"
+        symbol: "BTC/USDT:USDT"
+        position_side: long
+        side: buy
+        amount: 5.0
+        price: 100.0
+        pnl: 0.0
+        clientOrderId: reentry_boot
+        info: {startPosition: "0.0"}
+      }
+    ]
+  }
+  symbols: {
+    "BTC/USDT:USDT": {
+      price_step: 0.1
+      qty_step: 0.001
+      min_qty: 0.001
+      min_cost: 5.0
+      maker_fee: 0.0
+      taker_fee: 0.0
+    }
+  }
+  replay: {
+    symbols: {
+      "BTC/USDT:USDT": {
+        // Hourly candles carry the 12h cooldown; the dense 1m tail keeps the close
+        // EMA fresh so the scope can re-enter as soon as trading resumes.
+        candles: [
+          ["2026-01-01T00:00:00Z", 100.0, 100.5, 99.5, 100.0, 10.0]
+          ["2026-01-01T01:00:00Z", 100.0, 100.2, 99.8, 100.0, 9.0]
+          ["2026-01-01T02:00:00Z", 100.0, 100.0, 93.5, 94.0, 12.0]
+          ["2026-01-01T03:00:00Z", 94.0, 94.5, 93.8, 94.0, 11.0]
+          ["2026-01-01T04:00:00Z", 94.0, 94.2, 93.9, 94.0, 8.0]
+          ["2026-01-01T05:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T06:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T07:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T08:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T09:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T10:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T11:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T12:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T13:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T13:59:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T14:00:00Z", 94.0, 94.1, 93.9, 94.0, 8.0]
+          ["2026-01-01T14:01:00Z", 93.4, 93.6, 93.2, 93.4, 8.0]
+          ["2026-01-01T14:02:00Z", 93.4, 93.6, 93.2, 93.4, 8.0]
+          ["2026-01-01T14:03:00Z", 92.0, 92.2, 91.8, 92.0, 8.0]
+          ["2026-01-01T14:04:00Z", 90.0, 90.2, 89.8, 90.0, 9.0]
+          ["2026-01-01T14:05:00Z", 88.0, 88.2, 87.8, 88.0, 9.0]
+          ["2026-01-01T14:06:00Z", 85.0, 85.2, 84.8, 85.0, 10.0]
+          ["2026-01-01T14:07:00Z", 82.0, 82.2, 81.8, 82.0, 11.0]
+          ["2026-01-01T14:08:00Z", 80.0, 80.2, 79.8, 80.0, 12.0]
+          ["2026-01-01T14:09:00Z", 80.0, 80.2, 79.8, 80.0, 11.0]
+          ["2026-01-01T14:10:00Z", 80.0, 80.1, 79.9, 80.0, 8.0]
+          ["2026-01-01T14:11:00Z", 80.0, 80.1, 79.9, 80.0, 8.0]
+          ["2026-01-01T14:12:00Z", 80.0, 80.1, 79.9, 80.0, 8.0]
+        ]
+      }
+    }
+  }
+  assertions: {
+    fill_count: 6
+    final_balance: 157.344
+    last_prices: {
+      "BTC/USDT:USDT": 80.0
+    }
+    final_positions: {
+      "BTC/USDT:USDT|long": 0.0
+    }
+    // The scenario ends on the second halt: ladder rung 2 (1440 minutes), strike 2.
+    hsl_paths: {
+      long.halted: true
+      long.no_restart_latched: false
+      long.ladder_strikes: 2
+      long.cooldown_until_ms: 1767362880000
+      long.last_stop_event.stop_event_timestamp_ms: 1767276480000
+      long.last_stop_event.halt_minutes: 1440.0
+      long.last_stop_event.ladder_strikes: 2
+      long.last_stop_event.no_restart_reason: "none"
+      long.last_stop_event.cooldown_until_ms: 1767362880000
+      long.last_stop_event.halt_ladder_minutes.0: 720.0
+      long.last_stop_event.halt_ladder_minutes.1: 1440.0
+      long.last_stop_event.realized_loss_budget_pct: 0.0
+    }
+    summary_paths: {
+      step_count: 26
+      last.step_index: 27
+    }
+    log_contains: [
+      "ladder=720/1440"
+      "rl-budget=0"
+      "RED stop finalized (auto-restart eligible)"
+      "RED cooldown elapsed; trading resumed"
+    ]
+  }
+}

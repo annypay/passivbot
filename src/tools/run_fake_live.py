@@ -231,6 +231,9 @@ def _extract_hsl_trace(bot) -> Dict[str, dict]:
             ),
             "last_metrics": state.get("last_metrics"),
             "last_stop_event": state.get("last_stop_event"),
+            "ladder_strikes": state.get("ladder_strikes"),
+            "ladder_peak_equity": state.get("ladder_peak_equity"),
+            "ladder_realized_pnl_peak": state.get("ladder_realized_pnl_peak"),
         }
     return trace
 

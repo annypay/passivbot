@@ -198,6 +198,8 @@ def test_hsl_startup_preview_reports_flat_hsl_config(tmp_path):
         "cooldown_minutes_after_red": 45,
         "no_restart_drawdown_threshold": 0.20,
         "ema_span_minutes": 120,
+        "halt_ladder_minutes": None,
+        "realized_loss_budget_pct": None,
         "tier_ratios": {"yellow": 0.5, "orange": 0.8},
         "orange_tier_mode": "tp_only",
         "panic_close_order_type": "limit",

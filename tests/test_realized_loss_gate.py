@@ -1075,6 +1075,8 @@ class TestPrepBacktestArgsMaxRealizedLossPct:
             "hsl_ema_span_minutes": 60.0,
             "hsl_cooldown_minutes_after_red": 0.0,
             "hsl_no_restart_drawdown_threshold": 1.0,
+            "hsl_halt_ladder_minutes": [],
+            "hsl_realized_loss_budget_pct": 0.0,
             "hsl_tier_ratios": {"yellow": 0.5, "orange": 0.75},
             "hsl_orange_tier_mode": "tp_only_with_active_entry_cancellation",
             "hsl_panic_close_order_type": "market",
@@ -1158,6 +1160,8 @@ class TestPrepBacktestArgsEquityHardStopLoss:
             "hsl_ema_span_minutes": 60.0,
             "hsl_cooldown_minutes_after_red": 0.0,
             "hsl_no_restart_drawdown_threshold": 1.0,
+            "hsl_halt_ladder_minutes": [],
+            "hsl_realized_loss_budget_pct": 0.0,
             "hsl_tier_ratios": {"yellow": 0.5, "orange": 0.75},
             "hsl_orange_tier_mode": "tp_only_with_active_entry_cancellation",
             "hsl_panic_close_order_type": "market",
@@ -1211,6 +1215,12 @@ class TestPrepBacktestArgsEquityHardStopLoss:
                 "tier_ratios": deepcopy(config["bot"]["long"]["hsl_tier_ratios"]),
                 "orange_tier_mode": str(config["bot"]["long"]["hsl_orange_tier_mode"]),
                 "panic_close_order_type": str(config["bot"]["long"]["hsl_panic_close_order_type"]),
+                "halt_ladder_minutes": list(
+                    config["bot"]["long"]["hsl_halt_ladder_minutes"]
+                ),
+                "realized_loss_budget_pct": float(
+                    config["bot"]["long"]["hsl_realized_loss_budget_pct"]
+                ),
             }
             for key, value in hard_stop_block.items():
                 if key == "tier_ratios" and isinstance(value, dict):
@@ -1229,6 +1239,12 @@ class TestPrepBacktestArgsEquityHardStopLoss:
             config["bot"]["long"]["hsl_tier_ratios"] = merged["tier_ratios"]
             config["bot"]["long"]["hsl_orange_tier_mode"] = merged["orange_tier_mode"]
             config["bot"]["long"]["hsl_panic_close_order_type"] = merged["panic_close_order_type"]
+            config["bot"]["long"]["hsl_halt_ladder_minutes"] = list(
+                merged["halt_ladder_minutes"]
+            )
+            config["bot"]["long"]["hsl_realized_loss_budget_pct"] = merged[
+                "realized_loss_budget_pct"
+            ]
         return config
 
     def _make_mss(self):
@@ -1269,6 +1285,8 @@ class TestPrepBacktestArgsEquityHardStopLoss:
                 "tier_ratios": {"yellow": 0.55, "orange": 0.8},
                 "orange_tier_mode": "graceful_stop",
                 "panic_close_order_type": "limit",
+                "halt_ladder_minutes": [720.0, 1440.0],
+                "realized_loss_budget_pct": 0.15,
             }
         )
         _, _, _, bp = prep_backtest_args(config, self._make_mss(), "binance")
@@ -1282,6 +1300,25 @@ class TestPrepBacktestArgsEquityHardStopLoss:
         assert hs["tier_ratios"]["orange"] == pytest.approx(0.8)
         assert hs["orange_tier_mode"] == "graceful_stop"
         assert hs["panic_close_order_type"] == "limit"
+
+    def test_ladder_and_budget_resolve_for_backtest_config(self):
+        from backtest import _resolve_backtest_hsl_configs
+
+        config = self._make_config(
+            {
+                "enabled": True,
+                "red_threshold": 0.3,
+                "halt_ladder_minutes": [720.0, 1440.0],
+                "realized_loss_budget_pct": 0.15,
+            }
+        )
+
+        long_cfg, short_cfg = _resolve_backtest_hsl_configs(config)
+
+        assert long_cfg["halt_ladder_minutes"] == [720.0, 1440.0]
+        assert long_cfg["realized_loss_budget_pct"] == pytest.approx(0.15)
+        assert short_cfg["halt_ladder_minutes"] == []
+        assert short_cfg["realized_loss_budget_pct"] == pytest.approx(0.0)
 
     def test_invalid_tier_ratios_raise(self):
         config = self._make_config(

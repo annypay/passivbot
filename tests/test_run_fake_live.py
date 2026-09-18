@@ -27,6 +27,7 @@ from tools.run_fake_live import (
     _load_run_artifacts,
     _prime_fake_candles,
     _prime_fake_fill_cache,
+    _run_fake_case,
     _run_fake_bot,
     _summarize_remote_calls,
 )
@@ -498,6 +499,8 @@ def test_bot_params_to_rust_dict_includes_hsl_fields():
                 "hsl_tier_ratios": {"yellow": 0.5, "orange": 0.75},
                 "hsl_orange_tier_mode": "tp_only_with_active_entry_cancellation",
                 "hsl_panic_close_order_type": "market",
+                "hsl_halt_ladder_minutes": [],
+                "hsl_realized_loss_budget_pct": 0.0,
                 "n_positions": 1.0,
                 "total_wallet_exposure_limit": 5.0,
                 "wallet_exposure_limit": 5.0,
@@ -531,6 +534,8 @@ def test_bot_params_to_rust_dict_includes_hsl_fields():
     assert out["hsl_restart_after_red_policy"] == "threshold"
     assert out["hsl_orange_tier_mode"] == "tp_only_with_active_entry_cancellation"
     assert out["hsl_panic_close_order_type"] == "market"
+    assert out["hsl_halt_ladder_minutes"] == []
+    assert out["hsl_realized_loss_budget_pct"] == pytest.approx(0.0)
     assert out["risk_twel_enforcer_policy"] == "reduce_portfolio"
     assert out["risk_we_excess_allowance_mode"] == "legacy_raw"
     assert "entry_grid_inflation_enabled" not in out
@@ -591,6 +596,8 @@ def test_bot_params_to_rust_dict_ignores_removed_entry_grid_inflation_flag():
                         "hsl_tier_ratios": {"yellow": 0.5, "orange": 0.75},
                         "hsl_orange_tier_mode": "tp_only_with_active_entry_cancellation",
                         "hsl_panic_close_order_type": "market",
+                        "hsl_halt_ladder_minutes": [],
+                        "hsl_realized_loss_budget_pct": 0.0,
                         "n_positions": 1.0,
                         "total_wallet_exposure_limit": 5.0,
                         "wallet_exposure_limit": 5.0,
@@ -1087,6 +1094,138 @@ async def test_documented_hsl_restart_scenario_runs_unmodified(tmp_path, monkeyp
         assert restart_fill_evidence
     finally:
         _cleanup_fake_user_state(user)
+
+
+HALT_LADDER_SCENARIO = REPO_ROOT / "scenarios" / "fake_live" / "hsl_long_halt_ladder.hjson"
+HALT_LADDER_SYMBOL = "BTC/USDT:USDT"
+
+
+def _halt_ladder_config(*, ladder, cooldown_minutes, user):
+    """The live config the checked-in halt-ladder scenario is documented against."""
+    cfg = load_config(str(REPO_ROOT / "configs" / "fake_live_hsl_btc.hjson"), verbose=False)
+    cfg["live"]["hsl_signal_mode"] = "pside"
+    # The cooldown-elapsed replay rebuilds the ladder cycle from fill history, so the
+    # pnl lookback must still cover the first halt when trading resumes.
+    cfg["live"]["pnls_max_lookback_days"] = 1.0
+    cfg["live"]["user"] = user
+    approved = {"long": [HALT_LADDER_SYMBOL], "short": []}
+    cfg["live"]["approved_coins"] = dict(approved)
+    cfg.setdefault("_coins_sources", {})["approved_coins"] = dict(approved)
+    long_cfg = cfg["bot"]["long"]
+    long_cfg["hsl_red_threshold"] = 0.05
+    long_cfg.setdefault("hsl", {})["red_threshold"] = 0.05
+    long_cfg["hsl_cooldown_minutes_after_red"] = float(cooldown_minutes)
+    long_cfg.setdefault("hsl", {})["cooldown_minutes_after_red"] = float(cooldown_minutes)
+    long_cfg["hsl_halt_ladder_minutes"] = list(ladder)
+    long_cfg.setdefault("hsl", {})["halt_ladder_minutes"] = list(ladder)
+    long_cfg["hsl_realized_loss_budget_pct"] = 0.0
+    long_cfg.setdefault("hsl", {})["realized_loss_budget_pct"] = 0.0
+    return cfg
+
+
+def _finalized_halt_payloads(run_dir):
+    """In-order (stop_event, cooldown_until_ms) of every finalized halt in a run."""
+    halts = []
+    seen = set()
+    for snapshot_path in sorted(Path(run_dir, "snapshots").glob("step_*.json")):
+        trace = json.loads(snapshot_path.read_text(encoding="utf-8"))["hsl_trace"]["long"]
+        stop_event = trace.get("last_stop_event")
+        if not trace["halted"] or not isinstance(stop_event, dict):
+            continue
+        key = (stop_event.get("stop_event_timestamp_ms"), stop_event.get("halt_minutes"))
+        if key in seen:
+            continue
+        seen.add(key)
+        halts.append((stop_event, trace["cooldown_until_ms"]))
+    return halts
+
+
+async def _run_halt_ladder_scenario(tmp_path, *, ladder, cooldown_minutes, tag):
+    """Run the checked-in halt-ladder scenario and return its finalized halts."""
+    import passivbot_rust as pbr
+
+    if getattr(pbr, "__is_stub__", False):
+        pytest.skip("requires real passivbot_rust extension")
+
+    user = f"fake_hsl_halt_ladder_{tag}_{tmp_path.name}"
+    _cleanup_fake_user_state(user)
+    config_path = tmp_path / f"fake_live_halt_ladder_{tag}.json"
+    config_path.write_text(
+        json.dumps(
+            _halt_ladder_config(ladder=ladder, cooldown_minutes=cooldown_minutes, user=user)
+        ),
+        encoding="utf-8",
+    )
+    scenario = hjson.loads(HALT_LADDER_SCENARIO.read_text(encoding="utf-8"))
+    if not ladder:
+        # The checked-in assertions encode the ladder rungs; the disabled-ladder case
+        # asserts the flat fallback instead.
+        scenario.pop("assertions", None)
+    scenario_path = tmp_path / f"{tag}_{HALT_LADDER_SCENARIO.name}"
+    scenario_path.write_text(hjson.dumps(scenario), encoding="utf-8")
+    # `_async_main` configures logging before running; without it pytest's WARNING
+    # root level would drop the INFO startup/cooldown records the scenario asserts.
+    run_fake_live_module.configure_logging(debug=1)
+    try:
+        run_dir = await _run_fake_case(
+            config_path=str(config_path),
+            scenario_path=str(scenario_path),
+            user=user,
+            max_steps=None,
+            output_dir=tmp_path / f"run_{tag}",
+            log_level=1,
+            snapshot_each_step=True,
+            enforce_assertions=True,
+        )
+    finally:
+        _cleanup_fake_user_state(user)
+    return _finalized_halt_payloads(run_dir)
+
+
+@pytest.mark.asyncio
+@pytest.mark.fake_live
+async def test_fake_live_halt_ladder_escalates_second_red_stop(tmp_path):
+    """Two RED stops in one scope: 12h first rung, 24h second rung, strikes persisted.
+
+    The scenario's own assertions (fill count, final balance, final halt payload and
+    cooldown deadline, startup/log fragments) are enforced by the runner; this test
+    additionally walks the per-step snapshots so the *first* halt is checked too.
+    """
+    halts = await _run_halt_ladder_scenario(
+        tmp_path, ladder=[720.0, 1440.0], cooldown_minutes=240.0, tag="ladder"
+    )
+
+    assert [stop["halt_minutes"] for stop, _ in halts] == [720.0, 1440.0]
+    assert [stop["ladder_strikes"] for stop, _ in halts] == [1, 2]
+
+    first_stop, first_cooldown = halts[0]
+    assert first_cooldown == first_stop["stop_event_timestamp_ms"] + 720 * 60_000
+    assert first_stop["no_restart_reason"] == "none"
+    assert first_stop["halt_ladder_minutes"] == [720.0, 1440.0]
+    assert first_stop["realized_loss_budget_pct"] == pytest.approx(0.0)
+
+    second_stop, second_cooldown = halts[1]
+    assert second_cooldown == second_stop["stop_event_timestamp_ms"] + 1440 * 60_000
+    assert second_cooldown == 1767362880000
+    assert second_stop["no_restart_reason"] == "none"
+    # The cumulative realized giveback is reported even while the budget is disabled.
+    assert second_stop["realized_loss_pct"] == pytest.approx(0.15)
+
+
+@pytest.mark.asyncio
+@pytest.mark.fake_live
+async def test_fake_live_empty_halt_ladder_keeps_flat_cooldown(tmp_path):
+    """An empty ladder is 'disabled', not a zero-length cooldown: the flat value is used."""
+    halts = await _run_halt_ladder_scenario(
+        tmp_path, ladder=[], cooldown_minutes=240.0, tag="flat"
+    )
+
+    assert len(halts) == 2
+    for stop_event, cooldown_until_ms in halts:
+        assert stop_event["halt_ladder_minutes"] == []
+        assert stop_event["halt_minutes"] == pytest.approx(240.0)
+        # Bit-identical to the pre-ladder contract: stop timestamp + flat cooldown.
+        assert cooldown_until_ms == stop_event["stop_event_timestamp_ms"] + 240 * 60_000
 
 
 @pytest.mark.asyncio
