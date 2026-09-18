@@ -1,0 +1,5422 @@
+{
+  "arms": [
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__3y/backtest_results/binance_a_allow000__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000__3y.config.json",
+      "config_sha256": "e241b1191e07a9583c73c38a01d390ac28940c2a8d7e470cf83f6012d632174f",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0 + 守护｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow000__3y",
+      "leg": "3y",
+      "lever": "a_allow000",
+      "lever_hypothesis": "单币敞口与单币归零上界下降、峰值总暴露更均匀；代价可能是收益与在场币数",
+      "lever_label": "占用纪律：allowance=0（单币不得超过均分额度）+ 守护",
+      "lever_question": "不让任何币占用空槽的额度，能否在不牺牲生存的前提下把尾部压下来？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__ext/backtest_results/binance_a_allow000__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000__ext.config.json",
+      "config_sha256": "8e637dd32bc4ccb71abbb50bbbada360dbf34e953291e13692a8390d8deeea1b",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0 + 守护｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow000__ext",
+      "leg": "ext",
+      "lever": "a_allow000",
+      "lever_hypothesis": "单币敞口与单币归零上界下降、峰值总暴露更均匀；代价可能是收益与在场币数",
+      "lever_label": "占用纪律：allowance=0（单币不得超过均分额度）+ 守护",
+      "lever_question": "不让任何币占用空槽的额度，能否在不牺牲生存的前提下把尾部压下来？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__pre/backtest_results/binance_a_allow000__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000__pre.config.json",
+      "config_sha256": "90b076e1763edc7cdbf469a973656f94a2e6bd51913de080046210003db8877f",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0 + 守护｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow000__pre",
+      "leg": "pre",
+      "lever": "a_allow000",
+      "lever_hypothesis": "单币敞口与单币归零上界下降、峰值总暴露更均匀；代价可能是收益与在场币数",
+      "lever_label": "占用纪律：allowance=0（单币不得超过均分额度）+ 守护",
+      "lever_question": "不让任何币占用空槽的额度，能否在不牺牲生存的前提下把尾部压下来？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow010__3y/backtest_results/binance_a_allow010__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow010__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow010__3y.config.json",
+      "config_sha256": "845ae0545a0c64e1c8b052e83b724cd21000ab86846ebaea70429e73b80db550",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.1,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.1
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0.10 + 守护｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow010__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow010__3y",
+      "leg": "3y",
+      "lever": "a_allow010",
+      "lever_hypothesis": "介于 0 与 0.37 之间，用来画出“占用纪律”的边际曲线",
+      "lever_label": "占用纪律中间档：allowance=0.10 + 守护",
+      "lever_question": "allowance 从 0.37 收到 0.10 能拿到多少尾部改善？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.4714285714285714,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.1
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow010__ext/backtest_results/binance_a_allow010__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow010__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow010__ext.config.json",
+      "config_sha256": "02a692e342a3677dcc99e2bf04b9abeee146b93d138a3b282cfbc447ffb7b3d9",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.1,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.1
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0.10 + 守护｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow010__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow010__ext",
+      "leg": "ext",
+      "lever": "a_allow010",
+      "lever_hypothesis": "介于 0 与 0.37 之间，用来画出“占用纪律”的边际曲线",
+      "lever_label": "占用纪律中间档：allowance=0.10 + 守护",
+      "lever_question": "allowance 从 0.37 收到 0.10 能拿到多少尾部改善？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.4714285714285714,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.1
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow020__3y/backtest_results/binance_a_allow020__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow020__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow020__3y.config.json",
+      "config_sha256": "53c1f4457b4f4af4b8a8ef7cdd3733797201eb8c9713932211fdeec01e295fcb",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.2,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.2
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0.20 + 守护｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow020__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow020__3y",
+      "leg": "3y",
+      "lever": "a_allow020",
+      "lever_hypothesis": "若 0.20 与 0 的关键读数接近，则不必收到 0",
+      "lever_label": "占用纪律中间档：allowance=0.20 + 守护",
+      "lever_question": "allowance 收到 0.20 是否已经足够？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5142857142857142,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.2
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow020__ext/backtest_results/binance_a_allow020__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow020__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow020__ext.config.json",
+      "config_sha256": "e62012bcc9fcdcd689f22a7e7e007c290f9ceca3d42dae005876249c83f22c5a",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.2,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.2
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0.20 + 守护｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow020__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow020__ext",
+      "leg": "ext",
+      "lever": "a_allow020",
+      "lever_hypothesis": "若 0.20 与 0 的关键读数接近，则不必收到 0",
+      "lever_label": "占用纪律中间档：allowance=0.20 + 守护",
+      "lever_question": "allowance 收到 0.20 是否已经足够？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5142857142857142,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.2
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow037__pre/backtest_results/binance_a_allow037__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow037__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow037__pre.config.json",
+      "config_sha256": "aff24a21808dc70946a09cc05771fa337cabc5a80277793f0af9a6ae8ca99da7",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.37,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0.37（上一轮形状）｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow037__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow037__pre",
+      "leg": "pre",
+      "lever": "a_allow037",
+      "lever_hypothesis": "这是 pre 腿唯一的基准列；3y/ext 用上一轮钉住的控制臂",
+      "lever_label": "样本外腿基准：allowance=0.37 + 守护（与上一轮同形）",
+      "lever_question": "样本外窗口上，上一轮的守护形状本身表现如何？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5871428571428572,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.37
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__3y/backtest_results/binance_a_allow000_twe250__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000_twe250__3y.config.json",
+      "config_sha256": "b8dd956533b87b6fb5b49d1cd2ab40b529b80d7d252d732873f20a34c9d55738",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.5
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 2.5 + allowance=0 + 守护｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow000_twe250__3y",
+      "leg": "3y",
+      "lever": "a_allow000_twe250",
+      "lever_hypothesis": "到强平地板距离从约 −33% 放大到 −40%，但收益按比例下降",
+      "lever_label": "结构降杠杆：TWE 2.5 + allowance=0 + 守护",
+      "lever_question": "占用纪律之外再降 0.5 倍杠杆，能否用更小代价买到同样的生存？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.35714285714285715,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.5,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__ext/backtest_results/binance_a_allow000_twe250__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000_twe250__ext.config.json",
+      "config_sha256": "c3077a07c0fc7dfc5f773bab9a64203715c188fadab23df75e4f9acdf21ae807",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.5
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 2.5 + allowance=0 + 守护｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow000_twe250__ext",
+      "leg": "ext",
+      "lever": "a_allow000_twe250",
+      "lever_hypothesis": "到强平地板距离从约 −33% 放大到 −40%，但收益按比例下降",
+      "lever_label": "结构降杠杆：TWE 2.5 + allowance=0 + 守护",
+      "lever_question": "占用纪律之外再降 0.5 倍杠杆，能否用更小代价买到同样的生存？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.35714285714285715,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.5,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__pre/backtest_results/binance_a_allow000_twe250__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000_twe250__pre.config.json",
+      "config_sha256": "6f5b121b63f62f905e8249c19aa121d85557f548f4215fafc9cda08afcfeaaf1",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.5
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 2.5 + allowance=0 + 守护｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow000_twe250__pre",
+      "leg": "pre",
+      "lever": "a_allow000_twe250",
+      "lever_hypothesis": "到强平地板距离从约 −33% 放大到 −40%，但收益按比例下降",
+      "lever_label": "结构降杠杆：TWE 2.5 + allowance=0 + 守护",
+      "lever_question": "占用纪律之外再降 0.5 倍杠杆，能否用更小代价买到同样的生存？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.35714285714285715,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.5,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe200__3y/backtest_results/binance_a_allow000_twe200__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe200__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000_twe200__3y.config.json",
+      "config_sha256": "8dc74e8664e3a5de41233af3a8f7ac0dd550c3e045622e0e7311959a6674a82f",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 2.0 + allowance=0 + 守护｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe200__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow000_twe200__3y",
+      "leg": "3y",
+      "lever": "a_allow000_twe200",
+      "lever_hypothesis": "回撤显著收敛；测出“每 1pp 回撤放弃多少终值”的另一端",
+      "lever_label": "结构降杠杆：TWE 2.0 + allowance=0 + 守护",
+      "lever_question": "TWE 2.0 是否已经进入“回撤可接受”的区域？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.2857142857142857,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe200__ext/backtest_results/binance_a_allow000_twe200__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe200__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000_twe200__ext.config.json",
+      "config_sha256": "559585935a27e25eb960bc3cd3db2877172b2e7fd46ec0c87fc3d4d381cac710",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 2.0 + allowance=0 + 守护｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe200__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "a_allow000_twe200__ext",
+      "leg": "ext",
+      "lever": "a_allow000_twe200",
+      "lever_hypothesis": "回撤显著收敛；测出“每 1pp 回撤放弃多少终值”的另一端",
+      "lever_label": "结构降杠杆：TWE 2.0 + allowance=0 + 守护",
+      "lever_question": "TWE 2.0 是否已经进入“回撤可接受”的区域？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.2857142857142857,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "A",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__3y/backtest_results/binance_b_cool24__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool24__3y.config.json",
+      "config_sha256": "e4b06debe557d1b61284ce1959848c5ec19901effd25d4469a72083938151ef0",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 1440.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 24H｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 1440.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 24H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool24__3y",
+      "leg": "3y",
+      "lever": "b_cool24",
+      "lever_hypothesis": "上一轮在 allowance=0.37 下 24H 更差；本轮检验是否被集中度掩盖",
+      "lever_label": "冷却档位 24H（allowance=0 + 守护）",
+      "lever_question": "把停机从 12H 拉到 24H，在低集中度几何下是否更安全？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__ext/backtest_results/binance_b_cool24__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool24__ext.config.json",
+      "config_sha256": "cf66476e164c97645cce34a040af5b67615a31eaf583573faaa0a2e5d233c292",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 1440.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 24H｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 1440.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 24H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool24__ext",
+      "leg": "ext",
+      "lever": "b_cool24",
+      "lever_hypothesis": "上一轮在 allowance=0.37 下 24H 更差；本轮检验是否被集中度掩盖",
+      "lever_label": "冷却档位 24H（allowance=0 + 守护）",
+      "lever_question": "把停机从 12H 拉到 24H，在低集中度几何下是否更安全？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__pre/backtest_results/binance_b_cool24__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool24__pre.config.json",
+      "config_sha256": "fead4ea5b172ed8da304cc3bae16de6020cce8a82dc4c38cdb9a652ddad5d2c6",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 1440.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 24H｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 1440.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 24H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool24__pre",
+      "leg": "pre",
+      "lever": "b_cool24",
+      "lever_hypothesis": "上一轮在 allowance=0.37 下 24H 更差；本轮检验是否被集中度掩盖",
+      "lever_label": "冷却档位 24H（allowance=0 + 守护）",
+      "lever_question": "把停机从 12H 拉到 24H，在低集中度几何下是否更安全？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__3y/backtest_results/binance_b_cool48__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool48__3y.config.json",
+      "config_sha256": "aef919b63a6e5560907bf07395419953c597bb14405f7d684e558083248a05d8",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 48H｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 48H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool48__3y",
+      "leg": "3y",
+      "lever": "b_cool48",
+      "lever_hypothesis": "档位越高，离场时间越长；用于为下一轮引擎级阶梯定中间档",
+      "lever_label": "冷却档位 48H（allowance=0 + 守护）",
+      "lever_question": "48H 档是否开始出现“错过反弹”的代价？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__ext/backtest_results/binance_b_cool48__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool48__ext.config.json",
+      "config_sha256": "eb70cc7f30ca0e5fce5eab9f21c5222411a057913f4c77ca44c9fc0d0dd07622",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 48H｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 48H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool48__ext",
+      "leg": "ext",
+      "lever": "b_cool48",
+      "lever_hypothesis": "档位越高，离场时间越长；用于为下一轮引擎级阶梯定中间档",
+      "lever_label": "冷却档位 48H（allowance=0 + 守护）",
+      "lever_question": "48H 档是否开始出现“错过反弹”的代价？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__pre/backtest_results/binance_b_cool48__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool48__pre.config.json",
+      "config_sha256": "9c502b775f62250b02083183262650cb5a6fa2caa89935930ab3d2500a137b9a",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 48H｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 48H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool48__pre",
+      "leg": "pre",
+      "lever": "b_cool48",
+      "lever_hypothesis": "档位越高，离场时间越长；用于为下一轮引擎级阶梯定中间档",
+      "lever_label": "冷却档位 48H（allowance=0 + 守护）",
+      "lever_question": "48H 档是否开始出现“错过反弹”的代价？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__3y/backtest_results/binance_b_cool72__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool72__3y.config.json",
+      "config_sha256": "8f2f257344f52e60d42a218716a52c0116d4f793bb0fbf533662a4a9a09bee00",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 4320.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 72H｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 4320.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 72H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool72__3y",
+      "leg": "3y",
+      "lever": "b_cool72",
+      "lever_hypothesis": "若 72H 明显更好，则阶梯的最高档应设在 72H 附近",
+      "lever_label": "冷却档位 72H（allowance=0 + 守护）",
+      "lever_question": "72H 档能否挡住 2021-05 的第二波？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__ext/backtest_results/binance_b_cool72__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool72__ext.config.json",
+      "config_sha256": "01f7b547a84c30a4926ea180761fdbc0814945364a51342269e698850d61c3de",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 4320.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 72H｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 4320.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 72H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool72__ext",
+      "leg": "ext",
+      "lever": "b_cool72",
+      "lever_hypothesis": "若 72H 明显更好，则阶梯的最高档应设在 72H 附近",
+      "lever_label": "冷却档位 72H（allowance=0 + 守护）",
+      "lever_question": "72H 档能否挡住 2021-05 的第二波？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__pre/backtest_results/binance_b_cool72__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_cool72__pre.config.json",
+      "config_sha256": "d8037963fd8c0eb87d4946bfc4c775e248ad806068a776ad57779c4005b26358",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 4320.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 72H｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 4320.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 72H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_cool72__pre",
+      "leg": "pre",
+      "lever": "b_cool72",
+      "lever_hypothesis": "若 72H 明显更好，则阶梯的最高档应设在 72H 附近",
+      "lever_label": "冷却档位 72H（allowance=0 + 守护）",
+      "lever_question": "72H 档能否挡住 2021-05 的第二波？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term055__3y/backtest_results/binance_b_term055__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term055__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_term055__3y.config.json",
+      "config_sha256": "6fa5349ea21e7a7104f119d237704818ae18ff96bacf9d1ccf20fa8ae8c0b2a8",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 1,
+          "path": "bot.long.hsl.no_restart_drawdown_threshold",
+          "to": 0.55
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 累计 0.55 永久停机｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term055__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 0.55,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟，累计 0.55 永久停机）",
+      "key": "b_term055__3y",
+      "leg": "3y",
+      "lever": "b_term055",
+      "lever_hypothesis": "阈值高于单次确认回撤 ⇒ 不再首击锁存；但累计回撤仍可能很快触及",
+      "lever_label": "累计二档：no_restart 0.55（allowance=0 + 守护）",
+      "lever_question": "把永久停机阈值设在一次急跌确认回撤（≈0.47）之上，能否只关停真正恶化的账户？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term055__ext/backtest_results/binance_b_term055__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term055__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_term055__ext.config.json",
+      "config_sha256": "9bcf10cf3cb84d78e7b98869fa2dcc21cdf957a380e44b4d9481760e60dd6448",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 1,
+          "path": "bot.long.hsl.no_restart_drawdown_threshold",
+          "to": 0.55
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 累计 0.55 永久停机｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term055__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 0.55,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟，累计 0.55 永久停机）",
+      "key": "b_term055__ext",
+      "leg": "ext",
+      "lever": "b_term055",
+      "lever_hypothesis": "阈值高于单次确认回撤 ⇒ 不再首击锁存；但累计回撤仍可能很快触及",
+      "lever_label": "累计二档：no_restart 0.55（allowance=0 + 守护）",
+      "lever_question": "把永久停机阈值设在一次急跌确认回撤（≈0.47）之上，能否只关停真正恶化的账户？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term070__3y/backtest_results/binance_b_term070__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term070__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_term070__3y.config.json",
+      "config_sha256": "ca51beb8d226e59e86eba2fe931c49b3eb975769f6e16f034a79d41b96192570",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 1,
+          "path": "bot.long.hsl.no_restart_drawdown_threshold",
+          "to": 0.7
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 累计 0.70 永久停机｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term070__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 0.7,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟，累计 0.70 永久停机）",
+      "key": "b_term070__3y",
+      "leg": "3y",
+      "lever": "b_term070",
+      "lever_hypothesis": "若 0.70 从不触发，则累计二档在本样本上没有可测效果，应改用已实现亏损口径",
+      "lever_label": "累计二档：no_restart 0.70（allowance=0 + 守护）",
+      "lever_question": "阈值再抬高到 0.70，是否等价于“几乎不锁存”？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term070__ext/backtest_results/binance_b_term070__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term070__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_term070__ext.config.json",
+      "config_sha256": "e624004db32332226e5ba63610d1f37b97b793a0cdb2bd8deb16c4d576b5c10b",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 1,
+          "path": "bot.long.hsl.no_restart_drawdown_threshold",
+          "to": 0.7
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 累计 0.70 永久停机｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term070__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 0.7,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟，累计 0.70 永久停机）",
+      "key": "b_term070__ext",
+      "leg": "ext",
+      "lever": "b_term070",
+      "lever_hypothesis": "若 0.70 从不触发，则累计二档在本样本上没有可测效果，应改用已实现亏损口径",
+      "lever_label": "累计二档：no_restart 0.70（allowance=0 + 守护）",
+      "lever_question": "阈值再抬高到 0.70，是否等价于“几乎不锁存”？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_lossgate050__3y/backtest_results/binance_b_lossgate050__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_lossgate050__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_lossgate050__3y.config.json",
+      "config_sha256": "9aa9e678a434aa9db2de381f57bddd4f184aa2dfc5874e06006a010fdc53c911",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        },
+        {
+          "from": 1,
+          "path": "live.max_realized_loss_pct",
+          "to": 0.5
+        }
+      ],
+      "description": "allowance=0 + 实现亏损刹车 0.50｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_lossgate050__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_lossgate050__3y",
+      "leg": "3y",
+      "lever": "b_lossgate050",
+      "lever_hypothesis": "它拦截非 panic 的亏损平仓（panic 豁免），可能减少底部割肉，也可能把仓位留到更差",
+      "lever_label": "实现亏损刹车：live.max_realized_loss_pct=0.50（allowance=0 + 守护）",
+      "lever_question": "在守护之上再加一层“不再兑现更深亏损”的闸门，是帮忙还是变成扛单？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_lossgate050__ext/backtest_results/binance_b_lossgate050__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_lossgate050__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_lossgate050__ext.config.json",
+      "config_sha256": "809708e6f3638710ef68808fdb13b84704a83aa2211f456426e62ee26392bcb6",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        },
+        {
+          "from": 1,
+          "path": "live.max_realized_loss_pct",
+          "to": 0.5
+        }
+      ],
+      "description": "allowance=0 + 实现亏损刹车 0.50｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_lossgate050__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_lossgate050__ext",
+      "leg": "ext",
+      "lever": "b_lossgate050",
+      "lever_hypothesis": "它拦截非 panic 的亏损平仓（panic 豁免），可能减少底部割肉，也可能把仓位留到更差",
+      "lever_label": "实现亏损刹车：live.max_realized_loss_pct=0.50（allowance=0 + 守护）",
+      "lever_question": "在守护之上再加一层“不再兑现更深亏损”的闸门，是帮忙还是变成扛单？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_ema15__3y/backtest_results/binance_b_ema15__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_ema15__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_ema15__3y.config.json",
+      "config_sha256": "60763d3b97d08e0f36025012fcfa0c7ad07d0045b8cf6df10ca206f38c3989f5",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 15.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + EMA 15 分钟｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_ema15__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 15.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 15 分钟）",
+      "key": "b_ema15__3y",
+      "leg": "3y",
+      "lever": "b_ema15",
+      "lever_hypothesis": "更快触发更早离场；代价是更多假信号与更高离场频率",
+      "lever_label": "触发速度：EMA 15 分钟（allowance=0 + 守护）",
+      "lever_question": "低集中度几何下，“触发要快”还是必要条件吗？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_ema15__ext/backtest_results/binance_b_ema15__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_ema15__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_ema15__ext.config.json",
+      "config_sha256": "e3d3d189da574e7e64862990daaade7e3a0937e636a8236ac85ae3a4ec0a16e2",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 15.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + EMA 15 分钟｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_ema15__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 15.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.15000000000000002,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.2,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.1
+      },
+      "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 15 分钟）",
+      "key": "b_ema15__ext",
+      "leg": "ext",
+      "lever": "b_ema15",
+      "lever_hypothesis": "更快触发更早离场；代价是更多假信号与更高离场频率",
+      "lever_label": "触发速度：EMA 15 分钟（allowance=0 + 守护）",
+      "lever_question": "低集中度几何下，“触发要快”还是必要条件吗？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__3y/backtest_results/binance_b_red015__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_red015__3y.config.json",
+      "config_sha256": "6e07f4a11e9e43004929cf57349ff23074b35f25c415e768300f424e7cfbec8a",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + RED 0.15（更早熔断）｜原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.11249999999999999,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.15,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.075
+      },
+      "guard_label": "unified：0.15 清仓+停 12H（橙 0.11 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_red015__3y",
+      "leg": "3y",
+      "lever": "b_red015",
+      "lever_hypothesis": "更早清仓减少最大回撤，但把更多浮亏变成实亏",
+      "lever_label": "更早熔断：RED 0.15（allowance=0 + 守护）",
+      "lever_question": "把熔断线从 20% 提前到 15%，是否比占用纪律更划算？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__ext/backtest_results/binance_b_red015__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_b_red015__ext.config.json",
+      "config_sha256": "00c8ec938881a2ca2e75f30cd7f6d14207382371c9659d27c9477d2e5aa07551",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.0,
+      "declared_n_positions": 7.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + RED 0.15（更早熔断）｜全历史腿（2021-04-20 → 2026-09-13）",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.11249999999999999,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.15,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.075
+      },
+      "guard_label": "unified：0.15 清仓+停 12H（橙 0.11 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "b_red015__ext",
+      "leg": "ext",
+      "lever": "b_red015",
+      "lever_hypothesis": "更早清仓减少最大回撤，但把更多浮亏变成实亏",
+      "lever_label": "更早熔断：RED 0.15（allowance=0 + 守护）",
+      "lever_question": "把熔断线从 20% 提前到 15%，是否比占用纪律更划算？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.42857142857142855,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "B",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_pct": 0.0
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__3y/backtest_results/binance_c1__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c1__3y.config.json",
+      "config_sha256": "6652924a8ffa73a6e0ce1091e741f0c87ff47123016d5292e4bef459f9e3fe75",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.21,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.8
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.21
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.3
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 75.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 4320.0
+        }
+      ],
+      "description": "搜索候选（max_adg）：TWE 2.80 / allowance 0.21 / n_pos 6 / RED 0.30 / EMA 75 / 停 72H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 4320.0,
+        "ema_span_minutes": 75.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.22499999999999998,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.3,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.15
+      },
+      "guard_label": "unified：0.30 清仓+停 72H（橙 0.22 停加仓，7 天窗口，EMA 75 分钟）",
+      "key": "c1__3y",
+      "leg": "3y",
+      "lever": "c1",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（max_adg）：TWE 2.80 / 槽位 6 / 占用余量 0.21",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5646666666666665,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.8,
+      "we_excess_allowance_pct": 0.21
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__ext/backtest_results/binance_c1__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c1__ext.config.json",
+      "config_sha256": "9ee01a8b9543b9c15722c3a8a460c57dbae43809d49b33ff9867dca14fa01415",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.21,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.8
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.21
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.3
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 75.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 4320.0
+        }
+      ],
+      "description": "搜索候选（max_adg）：TWE 2.80 / allowance 0.21 / n_pos 6 / RED 0.30 / EMA 75 / 停 72H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 4320.0,
+        "ema_span_minutes": 75.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.22499999999999998,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.3,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.15
+      },
+      "guard_label": "unified：0.30 清仓+停 72H（橙 0.22 停加仓，7 天窗口，EMA 75 分钟）",
+      "key": "c1__ext",
+      "leg": "ext",
+      "lever": "c1",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（max_adg）：TWE 2.80 / 槽位 6 / 占用余量 0.21",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5646666666666665,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.8,
+      "we_excess_allowance_pct": 0.21
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__pre/backtest_results/binance_c1__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c1__pre.config.json",
+      "config_sha256": "81bdfa9f0c7a4dd4a81c29439286df414c71f5c2aa62983520840f0f60683541",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.21,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.8
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.21
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.3
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 75.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 4320.0
+        }
+      ],
+      "description": "搜索候选（max_adg）：TWE 2.80 / allowance 0.21 / n_pos 6 / RED 0.30 / EMA 75 / 停 72H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 4320.0,
+        "ema_span_minutes": 75.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.22499999999999998,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.3,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.15
+      },
+      "guard_label": "unified：0.30 清仓+停 72H（橙 0.22 停加仓，7 天窗口，EMA 75 分钟）",
+      "key": "c1__pre",
+      "leg": "pre",
+      "lever": "c1",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（max_adg）：TWE 2.80 / 槽位 6 / 占用余量 0.21",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.5646666666666665,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.8,
+      "we_excess_allowance_pct": 0.21
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__3y/backtest_results/binance_c2__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c2__3y.config.json",
+      "config_sha256": "e917b82771568dd76bad4a58b511848f4b478a05b14a4f6c36881744356a4e03",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.06,
+      "declared_n_positions": 10.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.1
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 10
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.06
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.34
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 15.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        }
+      ],
+      "description": "搜索候选（min_dd）：TWE 2.10 / allowance 0.06 / n_pos 10 / RED 0.34 / EMA 15 / 停 48H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 15.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.255,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.34,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.17
+      },
+      "guard_label": "unified：0.34 清仓+停 48H（橙 0.26 停加仓，7 天窗口，EMA 15 分钟）",
+      "key": "c2__3y",
+      "leg": "3y",
+      "lever": "c2",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（min_dd）：TWE 2.10 / 槽位 10 / 占用余量 0.06",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.22260000000000002,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.1,
+      "we_excess_allowance_pct": 0.06
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__ext/backtest_results/binance_c2__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c2__ext.config.json",
+      "config_sha256": "2a049e5be55b3472e8fac18016246cac2e02873befb50b954d03b1ebcda91f70",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.06,
+      "declared_n_positions": 10.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.1
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 10
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.06
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.34
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 15.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        }
+      ],
+      "description": "搜索候选（min_dd）：TWE 2.10 / allowance 0.06 / n_pos 10 / RED 0.34 / EMA 15 / 停 48H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 15.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.255,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.34,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.17
+      },
+      "guard_label": "unified：0.34 清仓+停 48H（橙 0.26 停加仓，7 天窗口，EMA 15 分钟）",
+      "key": "c2__ext",
+      "leg": "ext",
+      "lever": "c2",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（min_dd）：TWE 2.10 / 槽位 10 / 占用余量 0.06",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.22260000000000002,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.1,
+      "we_excess_allowance_pct": 0.06
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__pre/backtest_results/binance_c2__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c2__pre.config.json",
+      "config_sha256": "41665dfe4b112fa4d5cec5da4880ebdf470c44a3ac599c5cbb6c8bb740020897",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.06,
+      "declared_n_positions": 10.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.1
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 10
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.06
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.34
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 15.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        }
+      ],
+      "description": "搜索候选（min_dd）：TWE 2.10 / allowance 0.06 / n_pos 10 / RED 0.34 / EMA 15 / 停 48H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 15.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.255,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.34,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.17
+      },
+      "guard_label": "unified：0.34 清仓+停 48H（橙 0.26 停加仓，7 天窗口，EMA 15 分钟）",
+      "key": "c2__pre",
+      "leg": "pre",
+      "lever": "c2",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（min_dd）：TWE 2.10 / 槽位 10 / 占用余量 0.06",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.22260000000000002,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.1,
+      "we_excess_allowance_pct": 0.06
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__3y/backtest_results/binance_c3__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c3__3y.config.json",
+      "config_sha256": "87b69e10c174ce85c5192d7fdc52b9a02fc0c879ee21bd78b78174fe68050b86",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.21,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.4
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.21
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.23
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        }
+      ],
+      "description": "搜索候选（fill）：TWE 2.40 / allowance 0.21 / n_pos 6 / RED 0.23 / EMA 60 / 停 12H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.17250000000000001,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.23,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.115
+      },
+      "guard_label": "unified：0.23 清仓+停 12H（橙 0.17 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "c3__3y",
+      "leg": "3y",
+      "lever": "c3",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（fill）：TWE 2.40 / 槽位 6 / 占用余量 0.21",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.48399999999999993,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.4,
+      "we_excess_allowance_pct": 0.21
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__ext/backtest_results/binance_c3__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c3__ext.config.json",
+      "config_sha256": "a37e533f013bf34e4c8178220eb9f4963c38a4d2804c99afe81083f70b1afe35",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.21,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.4
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.21
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.23
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        }
+      ],
+      "description": "搜索候选（fill）：TWE 2.40 / allowance 0.21 / n_pos 6 / RED 0.23 / EMA 60 / 停 12H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.17250000000000001,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.23,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.115
+      },
+      "guard_label": "unified：0.23 清仓+停 12H（橙 0.17 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "c3__ext",
+      "leg": "ext",
+      "lever": "c3",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（fill）：TWE 2.40 / 槽位 6 / 占用余量 0.21",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.48399999999999993,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.4,
+      "we_excess_allowance_pct": 0.21
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__pre/backtest_results/binance_c3__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c3__pre.config.json",
+      "config_sha256": "8f76162a47cc21f5da3541f06a08c8a4bdf3246630ed1c9d6e4391f697e723f3",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.21,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.4
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.21
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.23
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        }
+      ],
+      "description": "搜索候选（fill）：TWE 2.40 / allowance 0.21 / n_pos 6 / RED 0.23 / EMA 60 / 停 12H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 720.0,
+        "ema_span_minutes": 60.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.17250000000000001,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.23,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.115
+      },
+      "guard_label": "unified：0.23 清仓+停 12H（橙 0.17 停加仓，7 天窗口，EMA 60 分钟）",
+      "key": "c3__pre",
+      "leg": "pre",
+      "lever": "c3",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（fill）：TWE 2.40 / 槽位 6 / 占用余量 0.21",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.48399999999999993,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.4,
+      "we_excess_allowance_pct": 0.21
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__3y/backtest_results/binance_c4__3y",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__3y",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c4__3y.config.json",
+      "config_sha256": "c501e62640b3f969e07841993ffe85cdd699808b6f96f88130c987bcc479ac5c",
+      "dataset": "3y",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.22,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.25
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.22
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.34
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 120.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        }
+      ],
+      "description": "搜索候选（fill）：TWE 2.25 / allowance 0.22 / n_pos 6 / RED 0.34 / EMA 120 / 停 48H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__3y/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 120.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.255,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.34,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.17
+      },
+      "guard_label": "unified：0.34 清仓+停 48H（橙 0.26 停加仓，7 天窗口，EMA 120 分钟）",
+      "key": "c4__3y",
+      "leg": "3y",
+      "lever": "c4",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（fill）：TWE 2.25 / 槽位 6 / 占用余量 0.22",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.4575,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.25,
+      "we_excess_allowance_pct": 0.22
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__ext/backtest_results/binance_c4__ext",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__ext",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c4__ext.config.json",
+      "config_sha256": "81a6ae6dd7027c88bd8096130caaedc9faaa012385340f083b968737ea853de7",
+      "dataset": "ext",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.22,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.25
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.22
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.34
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 120.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        }
+      ],
+      "description": "搜索候选（fill）：TWE 2.25 / allowance 0.22 / n_pos 6 / RED 0.34 / EMA 120 / 停 48H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__ext/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 120.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.255,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.34,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.17
+      },
+      "guard_label": "unified：0.34 清仓+停 48H（橙 0.26 停加仓，7 天窗口，EMA 120 分钟）",
+      "key": "c4__ext",
+      "leg": "ext",
+      "lever": "c4",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（fill）：TWE 2.25 / 槽位 6 / 占用余量 0.22",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.4575,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.25,
+      "we_excess_allowance_pct": 0.22
+    },
+    {
+      "base_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__pre/backtest_results/binance_c4__pre",
+      "bundle_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__pre",
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_c4__pre.config.json",
+      "config_sha256": "4f4dde59e2b3e8a091d0ce6831c9db0be2973492c90b319d63678fc7ea1752af",
+      "dataset": "pre",
+      "declared_allowance_mode": "bounded",
+      "declared_allowance_pct": 0.22,
+      "declared_n_positions": 6.0,
+      "declared_plot_groups": [
+        "coin_fills"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.25
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.22
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.34
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 120.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        }
+      ],
+      "description": "搜索候选（fill）：TWE 2.25 / allowance 0.22 / n_pos 6 / RED 0.34 / EMA 120 / 停 48H",
+      "execution_audit_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__pre/execution_audit.csv",
+      "guard": {
+        "cooldown_minutes_after_red": 2880.0,
+        "ema_span_minutes": 120.0,
+        "enabled": true,
+        "lookback_days": 7.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "orange_ratio": 0.75,
+        "orange_threshold": 0.255,
+        "panic_close_order_type": "limit",
+        "red_threshold": 0.34,
+        "restart_after_red_policy": "threshold",
+        "scope": "unified",
+        "yellow_ratio": 0.5,
+        "yellow_threshold": 0.17
+      },
+      "guard_label": "unified：0.34 清仓+停 48H（橙 0.26 停加仓，7 天窗口，EMA 120 分钟）",
+      "key": "c4__pre",
+      "leg": "pre",
+      "lever": "c4",
+      "lever_hypothesis": "搜索窗内的最优点不一定在崩盘腿上更优——这正是样本外验收窗要回答的问题",
+      "lever_label": "搜索候选（fill）：TWE 2.25 / 槽位 6 / 占用余量 0.22",
+      "lever_question": "优化器在搜索窗里选出的风险几何点，在样本外腿上是否仍然成立？",
+      "liquidation_floor_usd": 500.0,
+      "per_slot_cap": 0.4575,
+      "reused": false,
+      "runtime_flags": [
+        "--disable_plotting",
+        "coin_fills"
+      ],
+      "stage": "C",
+      "starting_balance": 10000.0,
+      "synthetic": false,
+      "total_wallet_exposure_limit": 2.25,
+      "we_excess_allowance_pct": 0.22
+    }
+  ],
+  "capital_contract": {
+    "arm_starting_balance": 10000,
+    "note": "backtest.starting_balance 初始化模拟账户，并驱动所有按余额缩放的仓位大小（passivbot-rust/src/backtest.rs: balance.usd_cash_wallet = starting_balance）",
+    "parent_starting_balance": 100000,
+    "starting_balance_path": "backtest.starting_balance"
+  },
+  "coin_count": 40,
+  "coins": [
+    "AAVE",
+    "ADA",
+    "ALGO",
+    "APT",
+    "ARB",
+    "ASTER",
+    "ATOM",
+    "AVAX",
+    "BCH",
+    "BNB",
+    "BTC",
+    "CC",
+    "DOGE",
+    "DOT",
+    "ENA",
+    "ETH",
+    "FIL",
+    "GRAM",
+    "HBAR",
+    "HYPE",
+    "INJ",
+    "KAS",
+    "LINK",
+    "LTC",
+    "MORPHO",
+    "NEAR",
+    "ONDO",
+    "POL",
+    "RENDER",
+    "SOL",
+    "SUI",
+    "TAO",
+    "TON",
+    "TRX",
+    "UNI",
+    "WLD",
+    "XLM",
+    "XMR",
+    "XRP",
+    "ZEC"
+  ],
+  "comparison_metric_groups": {
+    "回撤与恢复": [
+      "drawdown_worst_strategy_eq",
+      "drawdown_worst_mean_1pct_strategy_eq",
+      "strategy_eq_recovery_days_max",
+      "peak_recovery_days_strategy_eq",
+      "strategy_eq_underwater_pct_mean"
+    ],
+    "尾部形状": [
+      "expected_shortfall_1pct_strategy_eq",
+      "omega_ratio_strategy_eq",
+      "sterling_ratio_strategy_eq",
+      "loss_profit_ratio"
+    ],
+    "收益": [
+      "gain_strategy_eq",
+      "adg_strategy_eq",
+      "mdg_strategy_eq"
+    ],
+    "暴露与结构": [
+      "total_wallet_exposure_max",
+      "total_wallet_exposure_mean",
+      "exposure_mean_ratio_usd",
+      "high_exposure_days_max_long",
+      "fills_count",
+      "fills_count_close",
+      "fills_active_symbols_count"
+    ],
+    "生存": [
+      "liquidated",
+      "n_days",
+      "backtest_completion_ratio"
+    ]
+  },
+  "context_live_hsl_keys": [
+    "hsl_position_during_cooldown_policy"
+  ],
+  "control_arms": [
+    {
+      "analysis_sha256": "58d65d52312db205e544f97b9bbabd944455d141f8001b5df80f3503a208aec4",
+      "key": "twe300_10k__3y",
+      "label": "10k / TWE 3.0, 无守护, 3y",
+      "leg": "3y",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__3y/backtest_results/binance_twe300_10k__3y/binance/2026-09-17T08_18_53"
+    },
+    {
+      "analysis_sha256": "72be330e8d5cb14ba261447eb51c7509c40c81868ba82c06623e172313495331",
+      "key": "twe300_10k__ext",
+      "label": "10k / TWE 3.0, 无守护, 5.4y（2021-05-19 强平）",
+      "leg": "ext",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__ext/backtest_results/binance_twe300_10k__ext/binance/2026-09-17T08_25_04"
+    },
+    {
+      "analysis_sha256": "c7a55dfc92989ef0f4527e710103b406face13bf968780587230649e153eb482",
+      "key": "twe300_10k_allowance0__3y",
+      "label": "10k / TWE 3.0 + allowance=0, 无守护, 3y",
+      "leg": "3y",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__3y/backtest_results/binance_twe300_10k_allowance0__3y/binance/2026-09-17T08_23_12"
+    },
+    {
+      "analysis_sha256": "c07aa89ceefa8d68e0932e425a3a8e823053a1cfe820da263904325d9be4c3aa",
+      "key": "twe300_10k_allowance0__ext",
+      "label": "10k / TWE 3.0 + allowance=0, 无守护, 5.4y",
+      "leg": "ext",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__ext/backtest_results/binance_twe300_10k_allowance0__ext/binance/2026-09-17T08_32_07"
+    },
+    {
+      "analysis_sha256": "f6b9fdb9ac1b0a83c36cffb9e4dbf6216ee0162b47f8a2ee57d65ec73ed9e223",
+      "key": "g_user12h__3y",
+      "label": "10k / TWE 3.0 + 账户守护（unified 0.20 / EMA60 / 停 12H）, 3y",
+      "leg": "3y",
+      "run_dir": "backtests/binance/g4_twe300_account_guard_2026-09-17/artifacts/g_user12h__3y/backtest_results/binance_g_user12h__3y/binance/2026-09-17T09_22_55"
+    },
+    {
+      "analysis_sha256": "25f6cb32768f274273851bdb34e88e2f917d4093b6a9be155a1981c424d0d00d",
+      "key": "g_user12h__ext",
+      "label": "10k / TWE 3.0 + 账户守护（unified 0.20 / EMA60 / 停 12H）, 5.4y",
+      "leg": "ext",
+      "run_dir": "backtests/binance/g4_twe300_account_guard_2026-09-17/artifacts/g_user12h__ext/backtest_results/binance_g_user12h__ext/binance/2026-09-17T09_36_13"
+    }
+  ],
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "datasets": [
+    {
+      "key": "3y",
+      "leg": "3y",
+      "manifest_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+      "manifest_sha256": "2c300e499577c2c75fac1009656780705854f1d7f90a7ffbf51cf657feca7366",
+      "note": "the profile's native bundle",
+      "override_mode": null,
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26",
+      "present": true,
+      "synthetic": false,
+      "window": [
+        "2023-09-12",
+        "2026-09-12"
+      ]
+    },
+    {
+      "key": "ext",
+      "leg": "ext",
+      "manifest_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+      "manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "note": "dataset override serves the bundle's own requested window",
+      "override_mode": "dataset",
+      "path": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "present": true,
+      "synthetic": false,
+      "window": [
+        "2021-04-20",
+        "2026-09-13"
+      ]
+    },
+    {
+      "key": "pre",
+      "leg": "pre",
+      "manifest_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+      "manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "note": "out-of-sample leg: the long bundle clipped before the search window starts",
+      "override_mode": "intersection",
+      "path": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "present": true,
+      "synthetic": false,
+      "window": [
+        "2021-04-20",
+        "2023-09-11"
+      ]
+    }
+  ],
+  "decision_rules": [
+    {
+      "id": "J1",
+      "rule": "占用纪律有效性：`a_allow000__ext` 与守护基准 `g_user12h__ext` 相比，终值不低于其 80%、最差回撤不更高、单币归零上界与峰值单币敞口都更低 ⇒ 判定“占用纪律有效”；任一条不满足 ⇒ 判定无效并写明是哪一条。"
+    },
+    {
+      "id": "J2",
+      "rule": "占用×杠杆：在 `a_allow000*` 家族中，用**样本外 pre 腿**的“存活 + 终值/回撤”最优点作为推荐结构设定，并给出“每避免 1pp 回撤放弃多少终值”；若 pre 腿全部强平 ⇒ 判定结构档位需要继续下调，推荐值取 ext 腿最优点并标注它未经样本外确认。"
+    },
+    {
+      "id": "J3",
+      "rule": "冷却档位（为下一轮引擎阶梯定档）：若 24H/48H/72H 中任一档在 ext 腿的终值与最差回撤都不差于 12H、且 pre 腿不更差 ⇒ 判定“加长冷却值得做”并给出最优档；否则判定“冷却时长不是收益杠杆，阶梯只剩风险塑形理由”，下一轮阶梯的最高档仍取证据支持的上限。"
+    },
+    {
+      "id": "J4",
+      "rule": "累计二档：`b_term055` / `b_term070` 中任一在 ≥1 条腿上 `terminal_halt_count ≥ 1` 且终局窗口之前 `halt_count ≥ 2`（即没有首击锁存）、存活腿终值不低于 12H ⇒ 判定二档有效；若再次首击锁存 ⇒ 判定证伪，永久停机应改用已实现亏损口径。"
+    },
+    {
+      "id": "J5",
+      "rule": "搜索：至少一个冻结候选在 ext 腿终值 ≥ 7.8552×（守护基准）且 pre 腿未强平、最差回撤 ≤ 50% ⇒ 判定“搜索找到优于手写守护的点”；否则判定“搜索未找到更优点”，并说明是搜索预算、参数域还是目标函数的问题。"
+    },
+    {
+      "id": "J6",
+      "rule": "结构 vs 熔断：用 2×2（无守护/守护 × allowance 0.37/0）分解“每放弃 1 单位终值买到多少回撤与生存改善”，给出首选杠杆，并判定两者是叠加还是冗余（冗余 = 同时使用不优于单独使用）。"
+    }
+  ],
+  "event_rule": {
+    "benchmark": "BTC",
+    "labels": [
+      [
+        "2021-05 中国挖矿禁令/五月崩盘（闸门预热期，仅参考）",
+        "2021-05-01",
+        "2021-06-15"
+      ],
+      [
+        "2022-05 LUNA/UST 崩盘与三箭传染",
+        "2022-05-01",
+        "2022-07-05"
+      ],
+      [
+        "2022-11 FTX 崩盘",
+        "2022-11-01",
+        "2023-01-10"
+      ],
+      [
+        "2023-08 基线起点回撤",
+        "2023-08-15",
+        "2023-10-31"
+      ],
+      [
+        "2024-08 日元套息平仓",
+        "2024-07-25",
+        "2024-09-15"
+      ],
+      [
+        "2025-02 关税冲击与山寨下跌",
+        "2025-01-25",
+        "2025-05-05"
+      ],
+      [
+        "2025-10 闪崩（历史最大清算）",
+        "2025-10-01",
+        "2025-11-20"
+      ],
+      [
+        "2026 近端窗口",
+        "2026-05-15",
+        "2026-09-13"
+      ]
+    ],
+    "lookback_days": 7,
+    "min_gap_days": 30,
+    "threshold": -0.15
+  },
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "gate_mode": "both",
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "geometry_contract": {
+    "allowance_grid": [
+      0.0,
+      0.1,
+      0.2,
+      0.37
+    ],
+    "artifact": "risk_geometry.json",
+    "artifact_fields": [
+      "per_slot_cap",
+      "effective_allowance_pct",
+      "peak_total_exposure",
+      "mean_total_exposure",
+      "peak_coin_exposure",
+      "top3_exposure",
+      "peak_coin_share_of_peak_total",
+      "active_coins_mean",
+      "active_coins_peak",
+      "empty_slot_time_share",
+      "time_with_any_position_share",
+      "liquidation_shock_at_peak",
+      "single_coin_wipeout_bound"
+    ],
+    "mapping_table": [
+      {
+        "config": "bot.long.risk.we_excess_allowance_pct = 0",
+        "engine": "单币上限 = TWE / n_positions × (1 + allowance)",
+        "note": "allowance>0 时单币可以吃掉空槽的额度；=0 时每个币只有自己的均分额度",
+        "request": "不去占用空槽的额度"
+      },
+      {
+        "config": "total_wallet_exposure_limit ∈ {3.0, 2.5, 2.0}",
+        "engine": "总暴露上限 / 槽位预算",
+        "note": "结构性降杠杆：到强平地板的距离随暴露上限线性放大",
+        "request": "同等杠杆下降低尾部"
+      },
+      {
+        "config": "cooldown_minutes_after_red ∈ {720, 1440, 2880, 4320}",
+        "engine": "停机时长是单一常量（阶梯需引擎改动）",
+        "note": "本轮用固定档位对比为下一轮引擎级阶梯定档；累计阈值二档见 no_restart_drawdown_threshold",
+        "request": "冷却阶梯要接在冷却时长上"
+      },
+      {
+        "config": "restart_after_red_policy=threshold + no_restart_drawdown_threshold ∈ {0.55, 0.70}",
+        "engine": "跨重启持久峰值回撤锁存（平仓确认时用 max(raw, EMA) 判定）",
+        "note": "阈值必须高于一次急跌的确认回撤（上一轮实测 ≈0.47），否则第一次触发就永久关停",
+        "request": "累计口径的第二级"
+      },
+      {
+        "config": "live.max_realized_loss_pct = 0.50",
+        "engine": "全局实现亏损闸门（拦截非 panic 的亏损平仓；panic 豁免）",
+        "note": "引擎不导出拦截计数，因此该臂只报终值/回撤/成交差异，并声明测量局限",
+        "request": "用已实现亏损而不是浮亏尖峰"
+      }
+    ],
+    "note": "单币上限 = TWE / n_positions × (1 + effective allowance)；bounded 模式把 effective allowance 夹到 min(raw, n_positions − 1)，本研究的取值域内 raw 就是生效值",
+    "parent_allowance_pct": 0.37,
+    "parent_n_positions": 7,
+    "paths": [
+      "bot.long.risk.total_wallet_exposure_limit",
+      "bot.long.risk.n_positions",
+      "bot.long.risk.we_excess_allowance_pct",
+      "bot.long.risk.we_excess_allowance_mode",
+      "live.max_realized_loss_pct"
+    ],
+    "slot_share": "total_wallet_exposure_limit / n_positions"
+  },
+  "guard_contract": {
+    "lookback_days": 7.0,
+    "lookback_path": "live.pnls_max_lookback_days",
+    "mapping_table": [
+      {
+        "config": "live.hsl_signal_mode=unified + bot.long.hsl.enabled=true",
+        "engine": "unified 作用域",
+        "note": "backtest 直接读取 live.hsl_signal_mode（src/backtest.py）",
+        "request": "账户级"
+      },
+      {
+        "config": "live.pnls_max_lookback_days=7.0",
+        "engine": "滚动峰值窗口 7 天",
+        "note": "分母 = 窗口内最高策略权益；含已实现亏损，比“纯浮亏”更保守",
+        "request": "一周内"
+      },
+      {
+        "config": "bot.long.hsl.red_threshold=0.20",
+        "engine": "RED 阈值 20%",
+        "note": "触发指标 min(raw, EMA)；引擎硬约束 red <= no_restart <= 1.0",
+        "request": "浮亏 20%"
+      },
+      {
+        "config": "bot.long.hsl.ema_span_minutes=60",
+        "engine": "快速 EMA",
+        "note": "默认 720 分钟正是上一轮“0 次触发就被强平”的原因",
+        "request": "立即反应"
+      },
+      {
+        "config": "bot.long.hsl.cooldown_minutes_after_red=720 或 1440",
+        "engine": "停机时长（单一常量）",
+        "note": "阶梯本身不可表达；近似见 restart_after_red_policy=threshold + no_restart_drawdown_threshold",
+        "request": "熔断 12H / 升级 24H"
+      },
+      {
+        "config": "无需配置",
+        "engine": "episode 结束后滚动峰值清空",
+        "note": "第二次触发天然以停机后的剩余权益为峰值基准（rolling_peak_strategy_pnl.clear()）",
+        "request": "第二次按剩余余额再算 20%"
+      }
+    ],
+    "note": "本轮沿用上一轮验证过的守护形状（unified / 20% / EMA60 / 停 12H），把改动集中在暴露几何与冷却档位；冷却阶梯本身需要引擎改动，设计见 account_guard_design.md",
+    "paths": [
+      "bot.long.hsl.enabled",
+      "bot.long.hsl.red_threshold",
+      "bot.long.hsl.ema_span_minutes",
+      "bot.long.hsl.cooldown_minutes_after_red",
+      "bot.long.hsl.no_restart_drawdown_threshold",
+      "bot.long.hsl.restart_after_red_policy",
+      "bot.long.hsl.tier_ratios.yellow",
+      "bot.long.hsl.tier_ratios.orange",
+      "bot.long.hsl.orange_tier_mode",
+      "bot.long.hsl.panic_close_order_type"
+    ],
+    "tier_semantics": {
+      "orange": "整个作用域进入 TpOnly：不产生任何新入场（含加仓），只走止盈路径",
+      "red": "先 Panic 平掉整个作用域，再停机 cooldown_minutes_after_red",
+      "yellow": "仅遥测（不改变交易模式）"
+    }
+  },
+  "honesty_boundaries": [
+    "搜索是**样本内**的：参数只在原生 3 年窗（2023-09-12 → 2026-09-12）上搜索，任何“更优”结论都必须由样本外 pre 腿（2021-04-20 → 2023-09-11）与 ext 腿确认；看到样本外结果后不得再搜索（预注册）。",
+    "任何账户级止损都挡不住“超过到强平距离”的跳空：满仓 TWE 3.0 到地板只有约 −31.8%、TWE 2.5 约 −40%、TWE 2.0 约 −50%（随暴露峰值变化），所以结构性上限仍是唯一确定性的尾部防线。",
+    "引擎的冷却时长是单一常量，无法表达“第 N 次触发停更久”的阶梯；本轮用固定档位（12/24/48/72H）为下一轮引擎级阶梯定档，阶梯本身需要独立 PR（Rust + 实盘重建契约 + 测试）。",
+    "`no_restart_drawdown_threshold` 的锁存判定发生在**平仓确认那一刻**、用 `max(raw, EMA)`；上一轮实测一次急跌的确认回撤约 0.47，因此 0.40 会在首击锁死。本轮只测 0.55/0.70，并在报告里核对是否出现首击锁存。",
+    "`live.max_realized_loss_pct < 1` 会拦截**非 panic** 的亏损平仓（panic 豁免，`orchestrator.rs::close_passes_realized_loss_gate`），但 backtest 不导出拦截计数，因此该臂只能报终值/回撤/成交差异，机制归因属于未测量部分。",
+    "占用几何（在场的币数、空槽时间占比）由成交账本重建，时间权重基于成交时间戳的分段积分，采样分辨率是两笔成交之间的间隔，不是逐分钟；报告给出推导口径。",
+    "历史范围有限：币池是活到 2026 年的当前 top40（幸存者偏差），长腿 2021-04-20 起交易、当时仅 22 个币有数据；样本外腿只有 2.4 年、5.4 年腿一共只有 5 次守护触发，涉及触发次数的结论必须标注样本量。",
+    "未建模：真实资金费率、滑点枯竭、API 断连、交易所/稳定币对手方风险；引擎不模拟保证金占用。"
+  ],
+  "hsl_block": {
+    "cooldown_minutes_after_red": 2160.0,
+    "ema_span_minutes": 720.0,
+    "enabled": false,
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "red_threshold": 0.15,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "hsl_metrics": [
+    "hard_stop_triggers",
+    "hard_stop_triggers_long",
+    "hard_stop_triggers_per_year",
+    "hard_stop_restarts",
+    "hard_stop_restarts_long",
+    "hard_stop_time_in_yellow_pct",
+    "hard_stop_time_in_orange_pct",
+    "hard_stop_time_in_red_pct",
+    "hard_stop_duration_minutes_mean",
+    "hard_stop_duration_minutes_max",
+    "hard_stop_flatten_time_minutes_mean",
+    "hard_stop_trigger_drawdown_mean",
+    "hard_stop_panic_close_loss_sum",
+    "hard_stop_panic_close_loss_max",
+    "hard_stop_panic_close_loss_drawdown_pct_min",
+    "hard_stop_panic_close_loss_drawdown_pct_mean",
+    "hard_stop_panic_close_loss_drawdown_pct_max",
+    "hard_stop_post_restart_retrigger_pct",
+    "hard_stop_halt_to_restart_equity_loss_pct"
+  ],
+  "legs": [
+    {
+      "key": "3y",
+      "role": "搜索窗（样本内）",
+      "title": "原生搜索窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "window": [
+        "2023-09-12",
+        "2026-09-12"
+      ]
+    },
+    {
+      "key": "ext",
+      "role": "全历史",
+      "title": "全历史腿（2021-04-20 → 2026-09-13）",
+      "window": [
+        "2021-04-20",
+        "2026-09-13"
+      ]
+    },
+    {
+      "key": "pre",
+      "role": "样本外",
+      "title": "样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "window": [
+        "2021-04-20",
+        "2023-09-11"
+      ]
+    }
+  ],
+  "levers": [
+    {
+      "hypothesis": "单币敞口与单币归零上界下降、峰值总暴露更均匀；代价可能是收益与在场币数",
+      "key": "a_allow000",
+      "label": "占用纪律：allowance=0（单币不得超过均分额度）+ 守护",
+      "question": "不让任何币占用空槽的额度，能否在不牺牲生存的前提下把尾部压下来？"
+    },
+    {
+      "hypothesis": "介于 0 与 0.37 之间，用来画出“占用纪律”的边际曲线",
+      "key": "a_allow010",
+      "label": "占用纪律中间档：allowance=0.10 + 守护",
+      "question": "allowance 从 0.37 收到 0.10 能拿到多少尾部改善？"
+    },
+    {
+      "hypothesis": "若 0.20 与 0 的关键读数接近，则不必收到 0",
+      "key": "a_allow020",
+      "label": "占用纪律中间档：allowance=0.20 + 守护",
+      "question": "allowance 收到 0.20 是否已经足够？"
+    },
+    {
+      "hypothesis": "这是 pre 腿唯一的基准列；3y/ext 用上一轮钉住的控制臂",
+      "key": "a_allow037",
+      "label": "样本外腿基准：allowance=0.37 + 守护（与上一轮同形）",
+      "question": "样本外窗口上，上一轮的守护形状本身表现如何？"
+    },
+    {
+      "hypothesis": "到强平地板距离从约 −33% 放大到 −40%，但收益按比例下降",
+      "key": "a_allow000_twe250",
+      "label": "结构降杠杆：TWE 2.5 + allowance=0 + 守护",
+      "question": "占用纪律之外再降 0.5 倍杠杆，能否用更小代价买到同样的生存？"
+    },
+    {
+      "hypothesis": "回撤显著收敛；测出“每 1pp 回撤放弃多少终值”的另一端",
+      "key": "a_allow000_twe200",
+      "label": "结构降杠杆：TWE 2.0 + allowance=0 + 守护",
+      "question": "TWE 2.0 是否已经进入“回撤可接受”的区域？"
+    },
+    {
+      "hypothesis": "上一轮在 allowance=0.37 下 24H 更差；本轮检验是否被集中度掩盖",
+      "key": "b_cool24",
+      "label": "冷却档位 24H（allowance=0 + 守护）",
+      "question": "把停机从 12H 拉到 24H，在低集中度几何下是否更安全？"
+    },
+    {
+      "hypothesis": "档位越高，离场时间越长；用于为下一轮引擎级阶梯定中间档",
+      "key": "b_cool48",
+      "label": "冷却档位 48H（allowance=0 + 守护）",
+      "question": "48H 档是否开始出现“错过反弹”的代价？"
+    },
+    {
+      "hypothesis": "若 72H 明显更好，则阶梯的最高档应设在 72H 附近",
+      "key": "b_cool72",
+      "label": "冷却档位 72H（allowance=0 + 守护）",
+      "question": "72H 档能否挡住 2021-05 的第二波？"
+    },
+    {
+      "hypothesis": "阈值高于单次确认回撤 ⇒ 不再首击锁存；但累计回撤仍可能很快触及",
+      "key": "b_term055",
+      "label": "累计二档：no_restart 0.55（allowance=0 + 守护）",
+      "question": "把永久停机阈值设在一次急跌确认回撤（≈0.47）之上，能否只关停真正恶化的账户？"
+    },
+    {
+      "hypothesis": "若 0.70 从不触发，则累计二档在本样本上没有可测效果，应改用已实现亏损口径",
+      "key": "b_term070",
+      "label": "累计二档：no_restart 0.70（allowance=0 + 守护）",
+      "question": "阈值再抬高到 0.70，是否等价于“几乎不锁存”？"
+    },
+    {
+      "hypothesis": "它拦截非 panic 的亏损平仓（panic 豁免），可能减少底部割肉，也可能把仓位留到更差",
+      "key": "b_lossgate050",
+      "label": "实现亏损刹车：live.max_realized_loss_pct=0.50（allowance=0 + 守护）",
+      "question": "在守护之上再加一层“不再兑现更深亏损”的闸门，是帮忙还是变成扛单？"
+    },
+    {
+      "hypothesis": "更快触发更早离场；代价是更多假信号与更高离场频率",
+      "key": "b_ema15",
+      "label": "触发速度：EMA 15 分钟（allowance=0 + 守护）",
+      "question": "低集中度几何下，“触发要快”还是必要条件吗？"
+    },
+    {
+      "hypothesis": "更早清仓减少最大回撤，但把更多浮亏变成实亏",
+      "key": "b_red015",
+      "label": "更早熔断：RED 0.15（allowance=0 + 守护）",
+      "question": "把熔断线从 20% 提前到 15%，是否比占用纪律更划算？"
+    }
+  ],
+  "liquidation_contract": {
+    "floor_fraction_of_start": 0.05,
+    "note": "引擎在 权益 ≤ 起始资金 × threshold 时置 liquidated=true、把末值钉在地板并跳出回测循环（passivbot-rust/src/backtest.rs: check_and_apply_liquidation）",
+    "threshold": 0.05,
+    "threshold_path": "backtest.liquidation_threshold"
+  },
+  "live_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "coin"
+  },
+  "modelled_live_hsl_keys": [
+    "hsl_signal_mode"
+  ],
+  "panic_fill_marker": "panic",
+  "parent_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "parent_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "parent_max_realized_loss_pct": 1,
+  "parent_profile_input": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/profile_input.json",
+  "parent_profile_input_sha256": "1e6e8c61811e303297e1e72365fd5dad48a05aaddf42c75b8f89265eaf8778ce",
+  "parent_risk": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 1.0,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.37
+  },
+  "parent_study": "backtests/binance/g4_sma20_50_replay_2026-09-16",
+  "prior_study": "backtests/binance/g4_tail_risk_research_2026-09-17",
+  "reference_arms": [
+    {
+      "analysis_sha256": "58d65d52312db205e544f97b9bbabd944455d141f8001b5df80f3503a208aec4",
+      "key": "twe300_10k__3y",
+      "label": "10k / TWE 3.0, 无守护, 3y",
+      "leg": "3y",
+      "role": "无守护的 TWE 3.0 臂：守护买到的生存与放弃的收益都以它为基准",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__3y/backtest_results/binance_twe300_10k__3y/binance/2026-09-17T08_18_53"
+    },
+    {
+      "analysis_sha256": "72be330e8d5cb14ba261447eb51c7509c40c81868ba82c06623e172313495331",
+      "key": "twe300_10k__ext",
+      "label": "10k / TWE 3.0, 无守护, 5.4y（2021-05-19 强平）",
+      "leg": "ext",
+      "role": "无守护臂在 5.4 年腿上被强平，是本轮所有生存结论的对照",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__ext/backtest_results/binance_twe300_10k__ext/binance/2026-09-17T08_25_04"
+    },
+    {
+      "analysis_sha256": "c7a55dfc92989ef0f4527e710103b406face13bf968780587230649e153eb482",
+      "key": "twe300_10k_allowance0__3y",
+      "label": "10k / TWE 3.0 + allowance=0, 无守护, 3y",
+      "leg": "3y",
+      "role": "结构性去风险单独使用的 3 年腿读数：2×2 分解里“只改占用纪律”的那一格",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__3y/backtest_results/binance_twe300_10k_allowance0__3y/binance/2026-09-17T08_23_12"
+    },
+    {
+      "analysis_sha256": "c07aa89ceefa8d68e0932e425a3a8e823053a1cfe820da263904325d9be4c3aa",
+      "key": "twe300_10k_allowance0__ext",
+      "label": "10k / TWE 3.0 + allowance=0, 无守护, 5.4y",
+      "leg": "ext",
+      "role": "结构性去风险单独使用就活下来了（14.29×、最差回撤 92.22%）：2×2 分解里“只改占用纪律”的那一格，也是“结构与熔断谁更值”的对照",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__ext/backtest_results/binance_twe300_10k_allowance0__ext/binance/2026-09-17T08_32_07"
+    },
+    {
+      "analysis_sha256": "f6b9fdb9ac1b0a83c36cffb9e4dbf6216ee0162b47f8a2ee57d65ec73ed9e223",
+      "key": "g_user12h__3y",
+      "label": "10k / TWE 3.0 + 账户守护（unified 0.20 / EMA60 / 停 12H）, 3y",
+      "leg": "3y",
+      "role": "上一轮验证过的守护直译版：本轮的结构性改动必须与它比较（收益代价 vs 生存）",
+      "run_dir": "backtests/binance/g4_twe300_account_guard_2026-09-17/artifacts/g_user12h__3y/backtest_results/binance_g_user12h__3y/binance/2026-09-17T09_22_55"
+    },
+    {
+      "analysis_sha256": "25f6cb32768f274273851bdb34e88e2f917d4093b6a9be155a1981c424d0d00d",
+      "key": "g_user12h__ext",
+      "label": "10k / TWE 3.0 + 账户守护（unified 0.20 / EMA60 / 停 12H）, 5.4y",
+      "leg": "ext",
+      "role": "守护基准：ext 腿 7.8552× / 最差回撤 62.40%，本轮要回答能否用结构换到更好的点",
+      "run_dir": "backtests/binance/g4_twe300_account_guard_2026-09-17/artifacts/g_user12h__ext/backtest_results/binance_g_user12h__ext/binance/2026-09-17T09_36_13"
+    }
+  ],
+  "reference_control_by_leg": {
+    "3y": "twe300_10k__3y",
+    "ext": "twe300_10k__ext",
+    "pre": "a_allow037__pre"
+  },
+  "reference_kinds": {
+    "guard": [
+      "g_user12h__3y",
+      "g_user12h__ext"
+    ],
+    "no_guard": [
+      "twe300_10k__3y",
+      "twe300_10k__ext"
+    ],
+    "no_guard_allow0": [
+      "twe300_10k_allowance0__3y",
+      "twe300_10k_allowance0__ext"
+    ]
+  },
+  "reference_report": "backtests/binance/2026-09-14T03_25_14/annual_analysis.md",
+  "report_convention": "docs/ai/runbooks/strategy_report.md",
+  "reused_arm_keys": [],
+  "run_order": [
+    "a_allow000__3y",
+    "a_allow000__ext",
+    "a_allow000__pre",
+    "a_allow010__3y",
+    "a_allow010__ext",
+    "a_allow020__3y",
+    "a_allow020__ext",
+    "a_allow037__pre",
+    "a_allow000_twe250__3y",
+    "a_allow000_twe250__ext",
+    "a_allow000_twe250__pre",
+    "a_allow000_twe200__3y",
+    "a_allow000_twe200__ext",
+    "b_cool24__3y",
+    "b_cool24__ext",
+    "b_cool24__pre",
+    "b_cool48__3y",
+    "b_cool48__ext",
+    "b_cool48__pre",
+    "b_cool72__3y",
+    "b_cool72__ext",
+    "b_cool72__pre",
+    "b_term055__3y",
+    "b_term055__ext",
+    "b_term070__3y",
+    "b_term070__ext",
+    "b_lossgate050__3y",
+    "b_lossgate050__ext",
+    "b_ema15__3y",
+    "b_ema15__ext",
+    "b_red015__3y",
+    "b_red015__ext",
+    "c1__3y",
+    "c1__ext",
+    "c1__pre",
+    "c2__3y",
+    "c2__ext",
+    "c2__pre",
+    "c3__3y",
+    "c3__ext",
+    "c3__pre",
+    "c4__3y",
+    "c4__ext",
+    "c4__pre"
+  ],
+  "search_contract": {
+    "backend": "pymoo",
+    "bound_leaves": {
+      "hsl_cooldown_minutes_after_red": [
+        720.0,
+        4320.0,
+        720.0
+      ],
+      "hsl_ema_span_minutes": [
+        15.0,
+        120.0,
+        15.0
+      ],
+      "hsl_red_threshold": [
+        0.15,
+        0.35,
+        0.01
+      ],
+      "n_positions": [
+        5.0,
+        10.0,
+        1.0
+      ],
+      "total_wallet_exposure_limit": [
+        2.0,
+        3.0,
+        0.05
+      ],
+      "we_excess_allowance_pct": [
+        0.0,
+        0.37,
+        0.01
+      ]
+    },
+    "bounds": {
+      "long": {
+        "hsl": {
+          "cooldown_minutes_after_red": [
+            720,
+            4320,
+            720
+          ],
+          "ema_span_minutes": [
+            15,
+            120,
+            15
+          ],
+          "red_threshold": [
+            0.15,
+            0.35,
+            0.01
+          ]
+        },
+        "risk": {
+          "n_positions": [
+            5,
+            10,
+            1
+          ],
+          "total_wallet_exposure_limit": [
+            2.0,
+            3.0,
+            0.05
+          ],
+          "we_excess_allowance_pct": [
+            0.0,
+            0.37,
+            0.01
+          ]
+        }
+      }
+    },
+    "candidate_legs": [
+      "3y",
+      "ext",
+      "pre"
+    ],
+    "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search.config.json",
+    "fallback_cells": [
+      {
+        "hsl_cooldown_minutes_after_red": 720.0,
+        "hsl_ema_span_minutes": 60.0,
+        "hsl_red_threshold": 0.2,
+        "n_positions": 7,
+        "total_wallet_exposure_limit": 2.5,
+        "we_excess_allowance_pct": 0.15
+      },
+      {
+        "hsl_cooldown_minutes_after_red": 720.0,
+        "hsl_ema_span_minutes": 60.0,
+        "hsl_red_threshold": 0.2,
+        "n_positions": 7,
+        "total_wallet_exposure_limit": 2.0,
+        "we_excess_allowance_pct": 0.15
+      },
+      {
+        "hsl_cooldown_minutes_after_red": 720.0,
+        "hsl_ema_span_minutes": 60.0,
+        "hsl_red_threshold": 0.2,
+        "n_positions": 7,
+        "total_wallet_exposure_limit": 2.5,
+        "we_excess_allowance_pct": 0.37
+      },
+      {
+        "hsl_cooldown_minutes_after_red": 720.0,
+        "hsl_ema_span_minutes": 60.0,
+        "hsl_red_threshold": 0.2,
+        "n_positions": 7,
+        "total_wallet_exposure_limit": 2.0,
+        "we_excess_allowance_pct": 0.37
+      },
+      {
+        "hsl_cooldown_minutes_after_red": 1440.0,
+        "hsl_ema_span_minutes": 60.0,
+        "hsl_red_threshold": 0.2,
+        "n_positions": 10,
+        "total_wallet_exposure_limit": 3.0,
+        "we_excess_allowance_pct": 0.0
+      },
+      {
+        "hsl_cooldown_minutes_after_red": 1440.0,
+        "hsl_ema_span_minutes": 60.0,
+        "hsl_red_threshold": 0.2,
+        "n_positions": 10,
+        "total_wallet_exposure_limit": 2.5,
+        "we_excess_allowance_pct": 0.0
+      }
+    ],
+    "fine_tune_params": [
+      "bot.long.risk.total_wallet_exposure_limit",
+      "bot.long.risk.n_positions",
+      "bot.long.risk.we_excess_allowance_pct",
+      "bot.long.hsl.red_threshold",
+      "bot.long.hsl.ema_span_minutes",
+      "bot.long.hsl.cooldown_minutes_after_red"
+    ],
+    "fixed_params": [
+      "long_forager_score_weights_ema_readiness",
+      "long_forager_score_weights_volatility",
+      "long_forager_score_weights_volume",
+      "long_forager_volatility_ema_span_1m",
+      "long_forager_volume_drop_pct",
+      "long_forager_volume_ema_span_1m",
+      "long_unstuck_close_pct",
+      "long_unstuck_ema_dist",
+      "long_unstuck_ema_span_0",
+      "long_unstuck_ema_span_1",
+      "long_unstuck_loss_allowance_pct",
+      "long_unstuck_threshold",
+      "long_risk_entry_cooldown_minutes",
+      "long_risk_position_exposure_enforcer_threshold",
+      "long_risk_total_exposure_enforcer_threshold"
+    ],
+    "iters": 1024,
+    "limits": [
+      {
+        "enabled": true,
+        "metric": "drawdown_worst_strategy_eq",
+        "penalize_if": "greater_than",
+        "value": 0.6
+      },
+      {
+        "enabled": true,
+        "metric": "backtest_completion_ratio",
+        "penalize_if": "less_than",
+        "value": 0.99
+      }
+    ],
+    "n_cpus": 2,
+    "param_paths": {
+      "hsl_cooldown_minutes_after_red": "bot.long.hsl.cooldown_minutes_after_red",
+      "hsl_ema_span_minutes": "bot.long.hsl.ema_span_minutes",
+      "hsl_red_threshold": "bot.long.hsl.red_threshold",
+      "n_positions": "bot.long.risk.n_positions",
+      "total_wallet_exposure_limit": "bot.long.risk.total_wallet_exposure_limit",
+      "we_excess_allowance_pct": "bot.long.risk.we_excess_allowance_pct"
+    },
+    "pick": {
+      "completion_min": 0.99,
+      "drawdown_max": 0.5,
+      "max_candidates": 6
+    },
+    "population_size": 64,
+    "record_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search_record.json",
+    "results_root": "optimize_results",
+    "scoring": [
+      {
+        "goal": "max",
+        "metric": "adg_strategy_eq"
+      },
+      {
+        "goal": "min",
+        "metric": "drawdown_worst_strategy_eq"
+      }
+    ],
+    "seed": 20260917,
+    "selection_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search_selection.json",
+    "smoke_iters": 16,
+    "smoke_n_cpus": 2,
+    "smoke_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search_smoke.json",
+    "wider_runtime_overrides": {
+      "note": "优化器默认把两侧 restart_after_red_policy 固定为 always（optimize.fixed_runtime_overrides），本轮保留该默认并在记录里声明"
+    }
+  },
+  "search_leg": "3y",
+  "search_selection": {
+    "path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search_selection.json",
+    "search": {
+      "backend": "pymoo",
+      "bounds": {
+        "hsl_cooldown_minutes_after_red": [
+          720.0,
+          4320.0,
+          720.0
+        ],
+        "hsl_ema_span_minutes": [
+          15.0,
+          120.0,
+          15.0
+        ],
+        "hsl_red_threshold": [
+          0.15,
+          0.35,
+          0.01
+        ],
+        "n_positions": [
+          5.0,
+          10.0,
+          1.0
+        ],
+        "total_wallet_exposure_limit": [
+          2.0,
+          3.0,
+          0.05
+        ],
+        "we_excess_allowance_pct": [
+          0.0,
+          0.37,
+          0.01
+        ]
+      },
+      "candidate_legs": [
+        "3y",
+        "ext",
+        "pre"
+      ],
+      "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search/config.json",
+      "config_sha256": "883c34c545eb31f2b82ff8417538fed755752b855ee672623efe845329b95b0e",
+      "contract_declared_in": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/variant_input.json",
+      "elapsed_s": null,
+      "fine_tune_params": [
+        "bot.long.risk.total_wallet_exposure_limit",
+        "bot.long.risk.n_positions",
+        "bot.long.risk.we_excess_allowance_pct",
+        "bot.long.hsl.red_threshold",
+        "bot.long.hsl.ema_span_minutes",
+        "bot.long.hsl.cooldown_minutes_after_red"
+      ],
+      "fixed_params": [
+        "long_forager_score_weights_ema_readiness",
+        "long_forager_score_weights_volatility",
+        "long_forager_score_weights_volume",
+        "long_forager_volatility_ema_span_1m",
+        "long_forager_volume_drop_pct",
+        "long_forager_volume_ema_span_1m",
+        "long_unstuck_close_pct",
+        "long_unstuck_ema_dist",
+        "long_unstuck_ema_span_0",
+        "long_unstuck_ema_span_1",
+        "long_unstuck_loss_allowance_pct",
+        "long_unstuck_threshold",
+        "long_risk_entry_cooldown_minutes",
+        "long_risk_position_exposure_enforcer_threshold",
+        "long_risk_total_exposure_enforcer_threshold"
+      ],
+      "iters": 1024,
+      "limits": [
+        {
+          "enabled": true,
+          "metric": "drawdown_worst_strategy_eq",
+          "penalize_if": "greater_than",
+          "value": 0.6
+        },
+        {
+          "enabled": true,
+          "metric": "backtest_completion_ratio",
+          "penalize_if": "less_than",
+          "value": 0.99
+        }
+      ],
+      "log_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search/optimize.log",
+      "n_cpus": 2,
+      "pareto_summary": {
+        "best_adg": 0.001797745644869897,
+        "best_drawdown": 0.14438049496574373,
+        "liquidated": 0,
+        "pareto_candidates": 8
+      },
+      "peak_rss_mb": null,
+      "pick": {
+        "completion_min": 0.99,
+        "drawdown_max": 0.5,
+        "max_candidates": 6
+      },
+      "population_size": 64,
+      "results_dir": "optimize_results/2026-09-17T11_27_42_binance_1096days_40_coins_d2a338b5",
+      "scoring": [
+        {
+          "goal": "max",
+          "metric": "adg_strategy_eq"
+        },
+        {
+          "goal": "min",
+          "metric": "drawdown_worst_strategy_eq"
+        }
+      ],
+      "search_leg": "3y",
+      "seed": 20260917
+    },
+    "selected": [
+      {
+        "lever": "c1",
+        "metrics": {
+          "adg_strategy_eq": 0.001797745644869897,
+          "backtest_completion_ratio": 1.0,
+          "drawdown_worst_strategy_eq": 0.25014117981359607,
+          "liquidated": false
+        },
+        "parameters": {
+          "hsl_cooldown_minutes_after_red": 4320.0,
+          "hsl_ema_span_minutes": 75.0,
+          "hsl_red_threshold": 0.3,
+          "n_positions": 6,
+          "total_wallet_exposure_limit": 2.8,
+          "we_excess_allowance_pct": 0.21
+        },
+        "pareto_path": "optimize_results/2026-09-17T11_27_42_binance_1096days_40_coins_d2a338b5/pareto/0ef47947cbbc7407b71200508cdaa4300e876ef0713c4a8e3f7794f6f6e3976f.json",
+        "pareto_sha256": "e15e45b074dc3f73e0f772630bd9a1d1f2faaebc807e08f90254b18204b1dc08",
+        "selection_kind": "max_adg"
+      },
+      {
+        "lever": "c2",
+        "metrics": {
+          "adg_strategy_eq": 0.0008863287409532905,
+          "backtest_completion_ratio": 1.0,
+          "drawdown_worst_strategy_eq": 0.14438049496574373,
+          "liquidated": false
+        },
+        "parameters": {
+          "hsl_cooldown_minutes_after_red": 2880.0,
+          "hsl_ema_span_minutes": 15.0,
+          "hsl_red_threshold": 0.34,
+          "n_positions": 10,
+          "total_wallet_exposure_limit": 2.1,
+          "we_excess_allowance_pct": 0.06
+        },
+        "pareto_path": "optimize_results/2026-09-17T11_27_42_binance_1096days_40_coins_d2a338b5/pareto/3a531606b8bf363c8816bc0f84b9728d53e4379b8ac1e8598d8962f359c2fc20.json",
+        "pareto_sha256": "ee492bc9ce97e1a8bedc5d67aa730eaf7d7e86d1e2b874a4890a970b8c02a018",
+        "selection_kind": "min_dd"
+      },
+      {
+        "lever": "c3",
+        "metrics": {
+          "adg_strategy_eq": 0.0015378252583535534,
+          "backtest_completion_ratio": 1.0,
+          "drawdown_worst_strategy_eq": 0.21425678790234023,
+          "liquidated": false
+        },
+        "parameters": {
+          "hsl_cooldown_minutes_after_red": 720.0,
+          "hsl_ema_span_minutes": 60.0,
+          "hsl_red_threshold": 0.23,
+          "n_positions": 6,
+          "total_wallet_exposure_limit": 2.4,
+          "we_excess_allowance_pct": 0.21
+        },
+        "pareto_path": "optimize_results/2026-09-17T11_27_42_binance_1096days_40_coins_d2a338b5/pareto/48d8aff8a44b8c906b7281ed6c5833a8f2d15017bd9a8811f17acb2552433ca5.json",
+        "pareto_sha256": "1fd8afd34ea9cbad19bc836b5bbbafa309596292375d97f33c3099e9860f3c49",
+        "selection_kind": "fill"
+      },
+      {
+        "lever": "c4",
+        "metrics": {
+          "adg_strategy_eq": 0.0014638279451324454,
+          "backtest_completion_ratio": 1.0,
+          "drawdown_worst_strategy_eq": 0.20247044329530792,
+          "liquidated": false
+        },
+        "parameters": {
+          "hsl_cooldown_minutes_after_red": 2880.0,
+          "hsl_ema_span_minutes": 120.0,
+          "hsl_red_threshold": 0.34,
+          "n_positions": 6,
+          "total_wallet_exposure_limit": 2.25,
+          "we_excess_allowance_pct": 0.22
+        },
+        "pareto_path": "optimize_results/2026-09-17T11_27_42_binance_1096days_40_coins_d2a338b5/pareto/c6001e4cd21007a5c6ee8a55aaaab6f9b7d737857836474ed6bdef44c9f4a875.json",
+        "pareto_sha256": "3f8ab8a421f298b168b1404e8674407a0747d215023ac1e84e37c8d5905cf450",
+        "selection_kind": "fill"
+      }
+    ],
+    "sha256": "04b50b488b13b5e4ceec2d0cc755a6357042a677e23e9aa418208c1f014a9289"
+  },
+  "shock_levels": [
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0
+  ],
+  "study": "backtests/binance/g4_twe300_risk_optimization_2026-09-17"
+}

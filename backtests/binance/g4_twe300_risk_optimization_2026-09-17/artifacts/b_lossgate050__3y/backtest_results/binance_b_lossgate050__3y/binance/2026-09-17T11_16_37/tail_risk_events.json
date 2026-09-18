@@ -1,0 +1,207 @@
+{
+  "arm": "b_lossgate050__3y",
+  "benchmark": {
+    "count": 4,
+    "episodes": [
+      {
+        "breach_end": "2024-08-07",
+        "breach_start": "2024-08-04",
+        "drop_pct": 0.2094509426926432,
+        "key": "2024-08-04",
+        "label": "2024-08 日元套息平仓",
+        "trough": "2024-09-06"
+      },
+      {
+        "breach_end": "2025-03-09",
+        "breach_start": "2025-03-09",
+        "drop_pct": 0.19023950712564752,
+        "key": "2025-03-09",
+        "label": "2025-02 关税冲击与山寨下跌",
+        "trough": "2025-04-08"
+      },
+      {
+        "breach_end": "2026-02-06",
+        "breach_start": "2026-02-03",
+        "drop_pct": 0.29568785535650177,
+        "key": "2026-02-03",
+        "label": "未标注事件",
+        "trough": "2026-02-05"
+      },
+      {
+        "breach_end": "2026-06-07",
+        "breach_start": "2026-06-05",
+        "drop_pct": 0.20649959222185665,
+        "key": "2026-06-05",
+        "label": "2026 近端窗口",
+        "trough": "2026-06-30"
+      }
+    ]
+  },
+  "events": [
+    {
+      "benchmark_drop_pct": 0.2094509426926432,
+      "benchmark_trough": "2024-09-06",
+      "breach_end": "2024-08-07",
+      "breach_start": "2024-08-04",
+      "days_to_recovery": 2.25,
+      "days_to_trough": 4.791666666666667,
+      "event": "2024-08-04",
+      "fees_usd": -9.549509517999999,
+      "fills": 245,
+      "label": "2024-08 日元套息平仓",
+      "max_drawdown": 0.024533988842909804,
+      "panic_fills": 0,
+      "panic_loss_usd": 0.0,
+      "realized_pnl_usd": 110.54213000000111,
+      "samples": 170,
+      "synthetic": false,
+      "twe_peak": 0.8611436289065942,
+      "underwater_days": 7.041666666666667,
+      "window_end": "2024-08-04",
+      "window_return": 0.006770256340125069,
+      "window_start": "2024-07-28"
+    },
+    {
+      "benchmark_drop_pct": 0.19023950712564752,
+      "benchmark_trough": "2025-04-08",
+      "breach_end": "2025-03-09",
+      "breach_start": "2025-03-09",
+      "days_to_recovery": 0.041666666666666664,
+      "days_to_trough": 0.625,
+      "event": "2025-03-09",
+      "fees_usd": -0.15899544599999998,
+      "fills": 4,
+      "label": "2025-02 关税冲击与山寨下跌",
+      "max_drawdown": 0.0002876557575968164,
+      "panic_fills": 0,
+      "panic_loss_usd": 0.0,
+      "realized_pnl_usd": 5.797830000000019,
+      "samples": 17,
+      "synthetic": false,
+      "twe_peak": 0.0173171896470542,
+      "underwater_days": 0.6666666666666666,
+      "window_end": "2025-03-02",
+      "window_return": 0.00025381622646980517,
+      "window_start": "2025-03-02"
+    },
+    {
+      "benchmark_drop_pct": 0.29568785535650177,
+      "benchmark_trough": "2026-02-05",
+      "breach_end": "2026-02-06",
+      "breach_start": "2026-02-03",
+      "days_to_recovery": 0.0,
+      "days_to_trough": 0.0,
+      "event": "2026-02-03",
+      "fees_usd": 0.0,
+      "fills": 0,
+      "label": "未标注事件",
+      "max_drawdown": 0.0,
+      "panic_fills": 0,
+      "panic_loss_usd": 0.0,
+      "realized_pnl_usd": 0.0,
+      "samples": 1,
+      "synthetic": false,
+      "twe_peak": null,
+      "underwater_days": 0.0,
+      "window_end": "2026-01-28",
+      "window_return": 3.4481194137736537e-06,
+      "window_start": "2026-01-28"
+    },
+    {
+      "benchmark_drop_pct": 0.20649959222185665,
+      "benchmark_trough": "2026-06-30",
+      "breach_end": "2026-06-07",
+      "breach_start": "2026-06-05",
+      "days_to_recovery": 1.9583333333333333,
+      "days_to_trough": 0.041666666666666664,
+      "event": "2026-06-05",
+      "fees_usd": -8.582557285,
+      "fills": 90,
+      "label": "2026 近端窗口",
+      "max_drawdown": 0.007173417982752839,
+      "panic_fills": 0,
+      "panic_loss_usd": 0.0,
+      "realized_pnl_usd": 4.850272869298215,
+      "samples": 49,
+      "synthetic": false,
+      "twe_peak": 0.3874288526480277,
+      "underwater_days": 2.0,
+      "window_end": "2026-06-01",
+      "window_return": 0.007489135504681554,
+      "window_start": "2026-05-30"
+    }
+  ],
+  "full_window": {
+    "days_to_trough": 1.0833333333333333,
+    "end": "2026-09-11T23:01:00+00:00",
+    "end_value": 47535.734,
+    "gain": 3.7535733999999996,
+    "max_drawdown": 0.20099583396674248,
+    "peak_before_trough_ts": "2026-06-04T17:01:00+00:00",
+    "samples": 26304,
+    "start": "2023-09-12T00:01:00+00:00",
+    "start_value": 10000.0,
+    "trough_ts": "2026-06-05T19:01:00+00:00",
+    "twe_peak_at_fills": 1.6829492622803774
+  },
+  "ledger": {
+    "fills_count": 28550,
+    "maker_fills": 28550,
+    "panic_coins": [],
+    "panic_fees_usd": 0.0,
+    "panic_fills": 0,
+    "panic_loss_usd": 0.0,
+    "taker_fills": 0
+  },
+  "leg": "3y",
+  "rule": {
+    "benchmark": "BTC",
+    "labels": [
+      [
+        "2021-05 中国挖矿禁令/五月崩盘（闸门预热期，仅参考）",
+        "2021-05-01",
+        "2021-06-15"
+      ],
+      [
+        "2022-05 LUNA/UST 崩盘与三箭传染",
+        "2022-05-01",
+        "2022-07-05"
+      ],
+      [
+        "2022-11 FTX 崩盘",
+        "2022-11-01",
+        "2023-01-10"
+      ],
+      [
+        "2023-08 基线起点回撤",
+        "2023-08-15",
+        "2023-10-31"
+      ],
+      [
+        "2024-08 日元套息平仓",
+        "2024-07-25",
+        "2024-09-15"
+      ],
+      [
+        "2025-02 关税冲击与山寨下跌",
+        "2025-01-25",
+        "2025-05-05"
+      ],
+      [
+        "2025-10 闪崩（历史最大清算）",
+        "2025-10-01",
+        "2025-11-20"
+      ],
+      [
+        "2026 近端窗口",
+        "2026-05-15",
+        "2026-09-13"
+      ]
+    ],
+    "lookback_days": 7,
+    "measurement": "事件窗口 = 基准事件前高点到该 arm 自身策略权益恢复原高点（最长 180 天）；回撤基于 balance_and_equity.csv.gz 的采样分辨率",
+    "min_gap_days": 30,
+    "threshold": -0.15
+  },
+  "synthetic": false
+}

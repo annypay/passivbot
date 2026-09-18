@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python",
+    "src/optimize.py",
+    "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search/config.json",
+    "--optimize.iters",
+    "16",
+    "--optimize.n_cpus",
+    "2",
+    "--optimize.population_size",
+    "8",
+    "--fine-tune-params",
+    "bot.long.risk.total_wallet_exposure_limit,bot.long.risk.n_positions,bot.long.risk.we_excess_allowance_pct,bot.long.hsl.red_threshold,bot.long.hsl.ema_span_minutes,bot.long.hsl.cooldown_minutes_after_red"
+  ],
+  "config_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search/config.json",
+  "config_sha256": "89c4370d796624c34e8b2050027679843363f51a4ebbdce03043925e0e282e59",
+  "created_dirs": [
+    "2026-09-17T11_26_48_binance_1096days_40_coins_592975af"
+  ],
+  "elapsed_s": 23.89774203300476,
+  "generated_at_unix_s": 1789644415.8035753,
+  "iters": 16,
+  "log_path": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/search/smoke.log",
+  "log_sha256": "bade4d1e247b40fa79518149b91ed98ad90591e5102d962ced76a2597411fc3d",
+  "mode": "smoke",
+  "n_cpus": 2,
+  "note": "冒烟测：只用于测量墙钟时间与峰值 RSS，不产出搜索候选（因此不会冻结任何 C 臂）",
+  "offline_gate_problems": [],
+  "peak_rss_mb": 6196.44921875,
+  "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "python": "3.12.14",
+  "results_dir": "optimize_results/2026-09-17T11_26_48_binance_1096days_40_coins_592975af",
+  "returncode": 1
+}
