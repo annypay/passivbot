@@ -2894,9 +2894,36 @@ def prep_backtest_args(
                 raise ValueError(
                     f"{path_prefix}.panic_close_order_type must be one of {{market, limit}}"
                 )
+            halt_ladder_minutes: list[float] = []
+            for index, rung in enumerate(cfg.get("halt_ladder_minutes") or []):
+                if isinstance(rung, bool) or not isinstance(rung, (int, float)):
+                    raise TypeError(
+                        f"{path_prefix}.halt_ladder_minutes[{index}] must be a number"
+                    )
+                value = float(rung)
+                if not math.isfinite(value) or value < 0.0:
+                    raise ValueError(
+                        f"{path_prefix}.halt_ladder_minutes[{index}] must be finite and >= 0"
+                    )
+                halt_ladder_minutes.append(value)
+            # Mirrors `passivbot_rust`'s `MAX_HALT_LADDER_MINUTES`; Rust stays authoritative.
+            if len(halt_ladder_minutes) > 32:
+                raise ValueError(
+                    f"{path_prefix}.halt_ladder_minutes must have at most 32 entries"
+                )
+            realized_loss_budget_pct = float(cfg.get("realized_loss_budget_pct") or 0.0)
+            if not (
+                math.isfinite(realized_loss_budget_pct)
+                and 0.0 <= realized_loss_budget_pct <= 1.0
+            ):
+                raise ValueError(
+                    f"{path_prefix}.realized_loss_budget_pct must satisfy 0.0 <= x <= 1.0"
+                )
             return {
                 "enabled": enabled,
                 "signal_mode": hsl_signal_mode,
+                "halt_ladder_minutes": halt_ladder_minutes,
+                "realized_loss_budget_pct": realized_loss_budget_pct,
                 "red_threshold": red_threshold,
                 "ema_span_minutes": ema_span_minutes,
                 "cooldown_minutes_after_red": cooldown_minutes_after_red,

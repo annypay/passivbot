@@ -260,6 +260,10 @@ Each `pside` has the same HSL parameter set:
    - both bases are compared only while `hsl_restart_after_red_policy = "threshold"`;
      `always` and `never` keep their existing meaning as the single authoritative
      switch
+   - the optimization/GPU proxy models neither this key nor `hsl_halt_ladder_minutes`: a
+     per-coin override of either one is refused there on purpose rather than silently
+     ignored, and neither may be placed in an optimize bound. Live and the backtest honour
+     them
    - the basis that latched is reported as `no_restart_reason` in the halt event,
      the latch payload and `hsl-startup-preview`
 8. `hsl_tier_ratios.yellow`

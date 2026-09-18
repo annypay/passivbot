@@ -204,6 +204,11 @@ GPU/金属代理路径（`src/optimization/gpu/*`）**不动**，代价必须写
 - 新增的两个分析指标（`hard_stop_ladder_strikes_max`、`hard_stop_realized_loss_halt_pct_max`）
   只出现在**精确后端**的 `analysis.json` 里，不进 GPU 指标注册表（该注册表有一致性测试，
   且代理不产出这两个量）。引用它们时必须说明来源是精确重放。
+- **逐币覆盖（`coin_overrides`）在 CPU 面完整、在代理面被拒**：两个键列在
+  `CONDITIONAL_HSL_OVERRIDE_PATHS` 里（注册表完整性有测试钉住），因此实盘/回测的逐币覆盖可用；
+  但 `_validate_gpu_coin_overrides` 对这两个叶子**故意报错**而不是静默忽略——优化器如果接受了
+  一个它不建模的覆盖，就会在"以为在评估阶梯策略"的情况下评估平面冷却策略。该豁免写在
+  `tests/optimization/test_gpu_backend.py` 的 parity 用例里，并写明原因。
 
 ## 6. 测试矩阵
 
