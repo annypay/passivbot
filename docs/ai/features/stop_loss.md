@@ -38,8 +38,10 @@ sides of the bridge.
    (`is_close_order_type`), a protective reducer (`is_protective_close_reducer`), and all
    position-increasing orders for that symbol-side are dropped in the same decision.
 3. **Mode gate.** Not emitted in `TradingMode::Panic` (the panic close already flattens the scope)
-   and not in `TradingMode::Manual` (the operator owns the position). Entry eligibility, entry gating
-   and strategy-input availability do not suppress it.
+   and not in `TradingMode::Manual` (the operator owns the position). Operational caveat: a position
+   side whose `total_wallet_exposure_limit` or `n_positions` is `0` resolves to `Manual`, so it gets
+   no stop-loss order either — fund the side's budget if the stop is meant to be armed on it. Entry
+   eligibility, entry gating and strategy-input availability do not suppress the stop.
 4. **Fill tier.** `order_type = "market"` routes the order through the market execution path (taker
    fee plus `backtest.market_order_slippage_pct`) independently of `backtest.market_orders_allowed`,
    which governs strategy orders. `order_type = "limit"` rests at the stop level and fills only if
