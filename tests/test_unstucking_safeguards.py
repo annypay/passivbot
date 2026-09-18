@@ -122,24 +122,112 @@ def _make_mock_pbr():
 
     module.get_strategy_kinds = _get_strategy_kinds
 
-    def _hsl_no_restart_triggered(
-        restart_after_red_policy, drawdown_raw, drawdown_ema, no_restart_drawdown_threshold
+    def _hsl_evaluate_no_restart(
+        restart_after_red_policy,
+        drawdown_raw,
+        drawdown_ema,
+        no_restart_drawdown_threshold,
+        realized_loss_pct=0.0,
+        realized_loss_budget_pct=0.0,
     ):
-        # Mirrors ehsl::no_restart_triggered exactly (max(raw, ema) contract).
+        # Mirrors ehsl::evaluate_no_restart exactly: the drawdown basis is tested
+        # first, then the cumulative realized-loss budget, then the reason is named.
+        realized_loss_pct = float(realized_loss_pct)
+        realized_loss_budget_pct = float(realized_loss_budget_pct)
+        if not math.isfinite(realized_loss_pct) or realized_loss_pct < 0.0:
+            raise ValueError("realized_loss_pct must be finite and >= 0")
+        if not math.isfinite(realized_loss_budget_pct) or not (
+            0.0 <= realized_loss_budget_pct <= 1.0
+        ):
+            raise ValueError("realized_loss_budget_pct must be finite and within [0, 1]")
         if restart_after_red_policy == "always":
-            return False
+            return False, "none"
         if restart_after_red_policy == "threshold":
-            return max(float(drawdown_raw), float(drawdown_ema)) >= float(
+            if max(float(drawdown_raw), float(drawdown_ema)) >= float(
                 no_restart_drawdown_threshold
-            )
+            ):
+                return True, "drawdown"
+            if (
+                realized_loss_budget_pct > 0.0
+                and realized_loss_pct + 1e-12 >= realized_loss_budget_pct
+            ):
+                return True, "realized_loss"
+            return False, "none"
         if restart_after_red_policy == "never":
-            return True
+            return True, "policy_never"
         raise ValueError(
             "hsl_restart_after_red_policy must be one of always, threshold, never; "
             f"got {restart_after_red_policy!r}"
         )
 
+    def _hsl_no_restart_triggered(
+        restart_after_red_policy, drawdown_raw, drawdown_ema, no_restart_drawdown_threshold
+    ):
+        # Mirrors ehsl::no_restart_triggered exactly (max(raw, ema) contract).
+        latched, _reason = _hsl_evaluate_no_restart(
+            restart_after_red_policy,
+            drawdown_raw,
+            drawdown_ema,
+            no_restart_drawdown_threshold,
+        )
+        return latched
+
     module.hsl_no_restart_triggered = _hsl_no_restart_triggered
+
+    def _hsl_validate_halt_ladder(halt_ladder_minutes):
+        # Mirrors ehsl::validate_halt_ladder exactly (bounded, finite, non-negative).
+        ladder = [float(minutes) for minutes in halt_ladder_minutes]
+        if len(ladder) > 32:
+            raise ValueError(
+                "halt_ladder_minutes must have at most 32 entries, " f"got {len(ladder)}"
+            )
+        for index, minutes in enumerate(ladder):
+            if not math.isfinite(minutes) or minutes < 0.0:
+                raise ValueError(
+                    f"halt_ladder_minutes[{index}] must be finite and >= 0, got {minutes}"
+                )
+
+    module.hsl_validate_halt_ladder = _hsl_validate_halt_ladder
+
+    def _hsl_ladder_halt_minutes(strikes, halt_ladder_minutes, fallback_minutes):
+        # Mirrors ehsl::LadderCycle::halt_minutes: rungs saturate at the last entry
+        # and an empty ladder keeps the flat cooldown.
+        if not halt_ladder_minutes:
+            return float(fallback_minutes)
+        _hsl_validate_halt_ladder(halt_ladder_minutes)
+        index = min(max(int(strikes), 1), len(halt_ladder_minutes)) - 1
+        return float(halt_ladder_minutes[index])
+
+    def _hsl_ladder_cycle_observe(
+        *, equity, realized_pnl, strikes, peak_equity, realized_pnl_peak
+    ):
+        # Mirrors ehsl::LadderCycle::observe exactly.
+        equity = float(equity)
+        realized_pnl = float(realized_pnl)
+        strikes = int(strikes)
+        peak_equity = float(peak_equity)
+        realized_pnl_peak = float(realized_pnl_peak)
+        if not 0 <= strikes < 2**32:
+            raise OverflowError("strikes must fit in u32")
+        if not math.isfinite(equity) or equity <= 0.0:
+            raise ValueError("ladder cycle equity must be finite and > 0")
+        if not math.isfinite(realized_pnl):
+            raise ValueError("ladder cycle realized_pnl must be finite")
+        if peak_equity <= 0.0 or equity >= peak_equity:
+            return {
+                "reset": True,
+                "strikes": 0,
+                "peak_equity": equity,
+                "realized_pnl_peak": realized_pnl,
+            }
+        return {
+            "reset": False,
+            "strikes": strikes,
+            "peak_equity": peak_equity,
+            "realized_pnl_peak": max(realized_pnl_peak, realized_pnl),
+        }
+
+    module.hsl_ladder_cycle_observe = _hsl_ladder_cycle_observe
 
     def _hsl_red_episode_finalization(
         *,
@@ -152,10 +240,21 @@ def _make_mock_pbr():
         red_threshold,
         no_restart_drawdown_threshold,
         cooldown_minutes_after_red,
+        halt_ladder_minutes=None,
+        ladder_strikes=0,
+        ladder_peak_equity=0.0,
+        ladder_realized_pnl_peak=0.0,
+        realized_pnl_now=0.0,
+        realized_loss_budget_pct=0.0,
     ):
         u64_max = (1 << 64) - 1
+        u32_max = (1 << 32) - 1
+        halt_ladder_minutes = list(halt_ladder_minutes or [])
+        _hsl_validate_halt_ladder(halt_ladder_minutes)
         if not isinstance(stop_timestamp_ms, int) or not 0 <= stop_timestamp_ms <= u64_max:
             raise OverflowError("stop_timestamp_ms must fit in u64")
+        if not isinstance(ladder_strikes, int) or not 0 <= ladder_strikes <= u32_max:
+            raise OverflowError("ladder_strikes must fit in u32")
         values = (
             float(stop_equity),
             float(stop_peak_strategy_equity),
@@ -164,6 +263,10 @@ def _make_mock_pbr():
             float(red_threshold),
             float(no_restart_drawdown_threshold),
             float(cooldown_minutes_after_red),
+            float(ladder_peak_equity),
+            float(ladder_realized_pnl_peak),
+            float(realized_pnl_now),
+            float(realized_loss_budget_pct),
         )
         if not all(math.isfinite(value) for value in values):
             raise ValueError("HSL red episode finalization inputs must be finite")
@@ -187,17 +290,33 @@ def _make_mock_pbr():
             stop_equity,
         )
         raw = max(0.0, 1.0 - stop_equity / peak)
-        no_restart = _hsl_no_restart_triggered(
+        # The strike is registered inside the transition (saturating u32 add), and the
+        # returned cycle is what the caller persists for the next halt.
+        strikes_after = min(ladder_strikes + 1, u32_max)
+        halt_minutes = _hsl_ladder_halt_minutes(
+            strikes_after, halt_ladder_minutes, cooldown_minutes_after_red
+        )
+        realized_loss_pct = 0.0
+        if ladder_peak_equity > 0.0:
+            realized_loss_pct = max(
+                0.0, ladder_realized_pnl_peak - realized_pnl_now
+            ) / ladder_peak_equity
+        no_restart, no_restart_reason = _hsl_evaluate_no_restart(
             restart_after_red_policy,
             raw,
             drawdown_ema,
             no_restart_drawdown_threshold,
+            realized_loss_pct,
+            realized_loss_budget_pct,
         )
         cooldown_until_ms = None
-        if not no_restart and cooldown_minutes_after_red > 0.0:
-            cooldown_ms_f64 = cooldown_minutes_after_red * 60_000.0
+        if not no_restart and halt_minutes > 0.0:
+            cooldown_ms_f64 = halt_minutes * 60_000.0
             if not math.isfinite(cooldown_ms_f64) or cooldown_ms_f64 > float(u64_max):
-                raise ValueError("cooldown_minutes_after_red is too large")
+                raise ValueError(
+                    f"halt cooldown of {halt_minutes} minutes is too large "
+                    "to express as milliseconds"
+                )
             cooldown_ms_f64 = math.floor(cooldown_ms_f64 + 0.5)
             # Rust's positive float-to-u64 cast saturates, as does the timestamp add.
             cooldown_ms = max(1, min(u64_max, int(cooldown_ms_f64)))
@@ -206,6 +325,12 @@ def _make_mock_pbr():
             "no_restart_peak_strategy_equity": peak,
             "no_restart_drawdown_raw": raw,
             "no_restart_latched": no_restart,
+            "no_restart_reason": no_restart_reason,
+            "realized_loss_pct": realized_loss_pct,
+            "halt_minutes": halt_minutes,
+            "ladder_strikes": strikes_after,
+            "ladder_peak_equity": ladder_peak_equity,
+            "ladder_realized_pnl_peak": ladder_realized_pnl_peak,
             "cooldown_until_ms": cooldown_until_ms,
             "disposition": (
                 "no_restart"
@@ -674,6 +799,34 @@ def mock_pbr(monkeypatch):
     monkeypatch.setattr(passivbot, "pbr", stub_module, raising=False)
 
 
+def _hsl_side_config_defaults(**overrides) -> dict:
+    """The full parsed `self.hsl[pside]` shape, including ladder and budget keys."""
+    cfg = {
+        "enabled": False,
+        "red_threshold": 0.25,
+        "ema_span_minutes": 60.0,
+        "cooldown_minutes_after_red": 0.0,
+        "no_restart_drawdown_threshold": 1.0,
+        "restart_after_red_policy": "threshold",
+        "tier_ratios": {"yellow": 0.5, "orange": 0.75},
+        "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+        "panic_close_order_type": "market",
+        "halt_ladder_minutes": [],
+        "realized_loss_budget_pct": 0.0,
+    }
+    cfg.update(overrides)
+    return cfg
+
+
+def _hsl_ladder_state_defaults() -> dict:
+    """The ladder-cycle keys of the dict returned by `_equity_hard_stop_make_state`."""
+    return {
+        "ladder_strikes": 0,
+        "ladder_peak_equity": 0.0,
+        "ladder_realized_pnl_peak": 0.0,
+    }
+
+
 def _red_episode_finalization_kwargs(**overrides):
     kwargs = {
         "restart_after_red_policy": "always",
@@ -685,6 +838,12 @@ def _red_episode_finalization_kwargs(**overrides):
         "red_threshold": 0.05,
         "no_restart_drawdown_threshold": 0.2,
         "cooldown_minutes_after_red": 1.0,
+        "halt_ladder_minutes": [],
+        "ladder_strikes": 0,
+        "ladder_peak_equity": 0.0,
+        "ladder_realized_pnl_peak": 0.0,
+        "realized_pnl_now": 0.0,
+        "realized_loss_budget_pct": 0.0,
     }
     kwargs.update(overrides)
     return kwargs
@@ -701,7 +860,7 @@ def test_mock_hsl_red_episode_finalization_rejects_negative_drawdown_ema():
 def test_mock_hsl_red_episode_finalization_rejects_oversized_cooldown(cooldown_minutes):
     fn = _make_mock_pbr().hsl_red_episode_finalization
 
-    with pytest.raises(ValueError, match="cooldown_minutes_after_red is too large"):
+    with pytest.raises(ValueError, match="too large to express as milliseconds"):
         fn(**_red_episode_finalization_kwargs(cooldown_minutes_after_red=cooldown_minutes))
 
 
@@ -713,6 +872,139 @@ def test_mock_hsl_red_episode_finalization_saturates_cooldown_deadline():
 
     assert result["cooldown_until_ms"] == u64_max
     assert result["disposition"] == "cooldown"
+
+
+@pytest.mark.parametrize(
+    "ladder",
+    [
+        [-1.0],
+        [720.0, float("nan")],
+        [float("inf")],
+        [720.0] * 33,
+    ],
+)
+def test_mock_hsl_validate_halt_ladder_rejects_malformed_ladders(ladder):
+    fn = _make_mock_pbr().hsl_validate_halt_ladder
+
+    with pytest.raises(ValueError, match="halt_ladder_minutes"):
+        fn(ladder)
+
+
+@pytest.mark.parametrize("ladder", [[], [0.0], [720.0, 1440.0], [720.0] * 32])
+def test_mock_hsl_validate_halt_ladder_accepts_bounded_ladders(ladder):
+    fn = _make_mock_pbr().hsl_validate_halt_ladder
+
+    assert fn(ladder) is None
+
+
+def test_mock_hsl_ladder_cycle_observe_matches_rust_contract():
+    fn = _make_mock_pbr().hsl_ladder_cycle_observe
+
+    assert fn(equity=100.0, realized_pnl=0.0, strikes=3, peak_equity=0.0, realized_pnl_peak=0.0) == {
+        "reset": True,
+        "strikes": 0,
+        "peak_equity": 100.0,
+        "realized_pnl_peak": 0.0,
+    }
+    assert fn(
+        equity=90.0, realized_pnl=-4.0, strikes=2, peak_equity=100.0, realized_pnl_peak=1.0
+    ) == {
+        "reset": False,
+        "strikes": 2,
+        "peak_equity": 100.0,
+        "realized_pnl_peak": 1.0,
+    }
+    # Regaining the cycle peak is what clears the strike count.
+    recovered = fn(
+        equity=100.0, realized_pnl=-4.0, strikes=2, peak_equity=100.0, realized_pnl_peak=1.0
+    )
+    assert recovered["reset"] is True
+    assert recovered["strikes"] == 0
+    assert recovered["peak_equity"] == pytest.approx(100.0)
+
+    with pytest.raises(ValueError, match="ladder cycle equity must be finite and > 0"):
+        fn(equity=0.0, realized_pnl=0.0, strikes=0, peak_equity=0.0, realized_pnl_peak=0.0)
+    with pytest.raises(ValueError, match="ladder cycle realized_pnl must be finite"):
+        fn(
+            equity=100.0,
+            realized_pnl=float("nan"),
+            strikes=0,
+            peak_equity=100.0,
+            realized_pnl_peak=0.0,
+        )
+
+
+def test_mock_hsl_red_episode_finalization_advances_ladder_then_saturates():
+    fn = _make_mock_pbr().hsl_red_episode_finalization
+    ladder = [720.0, 1440.0]
+
+    for strikes, rung in ((1, 720.0), (2, 1440.0), (3, 1440.0)):
+        result = fn(
+            **_red_episode_finalization_kwargs(
+                halt_ladder_minutes=ladder,
+                ladder_strikes=strikes - 1,
+                stop_timestamp_ms=100_000,
+            )
+        )
+
+        assert result["halt_minutes"] == pytest.approx(rung)
+        assert result["ladder_strikes"] == strikes
+        assert result["cooldown_until_ms"] == 100_000 + int(round(rung * 60_000))
+        assert result["disposition"] == "cooldown"
+
+
+def test_mock_hsl_red_episode_finalization_empty_ladder_keeps_flat_cooldown():
+    fn = _make_mock_pbr().hsl_red_episode_finalization
+
+    result = fn(
+        **_red_episode_finalization_kwargs(
+            cooldown_minutes_after_red=5.0,
+            halt_ladder_minutes=[],
+            ladder_strikes=7,
+            stop_timestamp_ms=100_000,
+        )
+    )
+
+    assert result["halt_minutes"] == pytest.approx(5.0)
+    assert result["ladder_strikes"] == 8
+    assert result["cooldown_until_ms"] == 100_000 + 300_000
+
+
+def test_mock_hsl_red_episode_finalization_realized_loss_basis():
+    fn = _make_mock_pbr().hsl_red_episode_finalization
+    shared = {
+        "restart_after_red_policy": "threshold",
+        "halt_ladder_minutes": [720.0],
+        "ladder_peak_equity": 1000.0,
+        "ladder_realized_pnl_peak": 0.0,
+        "realized_loss_budget_pct": 0.10,
+    }
+
+    below = fn(**_red_episode_finalization_kwargs(realized_pnl_now=-90.0, **shared))
+    assert below["realized_loss_pct"] == pytest.approx(0.09)
+    assert below["no_restart_latched"] is False
+    assert below["no_restart_reason"] == "none"
+
+    at_budget = fn(**_red_episode_finalization_kwargs(realized_pnl_now=-100.0, **shared))
+    assert at_budget["realized_loss_pct"] == pytest.approx(0.10)
+    assert at_budget["no_restart_latched"] is True
+    assert at_budget["no_restart_reason"] == "realized_loss"
+    assert at_budget["cooldown_until_ms"] is None
+    assert at_budget["disposition"] == "no_restart"
+
+    inert = fn(
+        **_red_episode_finalization_kwargs(
+            restart_after_red_policy="threshold",
+            realized_pnl_now=-900.0,
+            halt_ladder_minutes=[720.0],
+            ladder_peak_equity=1000.0,
+            ladder_realized_pnl_peak=0.0,
+            realized_loss_budget_pct=0.0,
+        )
+    )
+    assert inert["realized_loss_pct"] == pytest.approx(0.9)
+    assert inert["no_restart_latched"] is False
+    assert inert["no_restart_reason"] == "none"
 
 
 def _dummy_config():
@@ -792,18 +1084,10 @@ def _make_dummy_bot(config, *, last_price=100.0):
             self.effective_min_cost = {}
             self.coin_overrides = {}
             self.ignored_coins = {"long": set(), "short": set()}
-            hsl_cfg = {
-                "enabled": False,
-                "red_threshold": 0.25,
-                "ema_span_minutes": 60.0,
-                "cooldown_minutes_after_red": 0.0,
-                "no_restart_drawdown_threshold": 1.0,
-                "restart_after_red_policy": "threshold",
-                "tier_ratios": {"yellow": 0.5, "orange": 0.75},
-                "orange_tier_mode": "tp_only_with_active_entry_cancellation",
-                "panic_close_order_type": "market",
+            self.hsl = {
+                "long": _hsl_side_config_defaults(),
+                "short": _hsl_side_config_defaults(),
             }
-            self.hsl = {"long": dict(hsl_cfg), "short": dict(hsl_cfg)}
             self._equity_hard_stop = {
                 pside: {
                     "runtime": pbr.EquityHardStopRuntime(),
@@ -825,6 +1109,7 @@ def _make_dummy_bot(config, *, last_price=100.0):
                     "last_cooldown_intervention_log_ms": 0,
                     "cooldown_unresolved_residue": False,
                     "pnl_reset_timestamp_ms": None,
+                    **_hsl_ladder_state_defaults(),
                 }
                 for pside in ("long", "short")
             }
@@ -865,6 +1150,8 @@ def _make_dummy_bot(config, *, last_price=100.0):
                 "unstuck_threshold": 0.0,
                 "unstuck_close_pct": 0.0,
                 "unstuck_ema_dist": 0.0,
+                "hsl_halt_ladder_minutes": [],
+                "hsl_realized_loss_budget_pct": 0.0,
             }
             self._bot_value_defaults = {
                 "n_positions": 0,
@@ -874,6 +1161,8 @@ def _make_dummy_bot(config, *, last_price=100.0):
                 "hsl_restart_after_red_policy": "threshold",
                 "hsl_orange_tier_mode": "tp_only_with_active_entry_cancellation",
                 "hsl_panic_close_order_type": "limit",
+                "hsl_halt_ladder_minutes": [],
+                "hsl_realized_loss_budget_pct": 0.0,
                 "filter_volume_ema_span_1m": 0.0,
                 "filter_volatility_ema_span_1m": 0.0,
                 "forager_volume_drop_pct": 0.0,

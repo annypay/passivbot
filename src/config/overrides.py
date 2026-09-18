@@ -70,9 +70,11 @@ CONDITIONAL_HSL_OVERRIDE_PATHS = frozenset(
         "hsl.cooldown_minutes_after_red",
         "hsl.ema_span_minutes",
         "hsl.enabled",
+        "hsl.halt_ladder_minutes",
         "hsl.no_restart_drawdown_threshold",
         "hsl.orange_tier_mode",
         "hsl.panic_close_order_type",
+        "hsl.realized_loss_budget_pct",
         "hsl.red_threshold",
         "hsl.restart_after_red_policy",
         "hsl.tier_ratios.orange",
@@ -454,6 +456,19 @@ def _validate_patch_leaf_types(
                         raise ValueError(f"{display_path} has invalid mode {value!r}") from exc
             elif not isinstance(reference, str):
                 raise TypeError(f"{display_path} must be numeric or boolean, not a string")
+            continue
+        if isinstance(value, (list, tuple)):
+            # `hsl.halt_ladder_minutes` is the first list-valued leaf on this surface: it is a
+            # list of minute rungs, and the reference has to be a list too.
+            if not isinstance(reference, (list, tuple)):
+                raise TypeError(
+                    f"{display_path} must be a scalar value; got {type(value).__name__}"
+                )
+            for index, item in enumerate(value):
+                if isinstance(item, bool) or not isinstance(item, (int, float)):
+                    raise TypeError(f"{display_path}[{index}] must be numeric")
+                if not math.isfinite(float(item)):
+                    raise ValueError(f"{display_path}[{index}] must be finite")
             continue
         raise TypeError(
             f"{display_path} must be a scalar value; got {type(value).__name__}"

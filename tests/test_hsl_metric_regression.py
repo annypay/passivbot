@@ -58,6 +58,9 @@ def _make_bot(signal_mode, *, n_positions=4.0, red_threshold=0.2):
         "restart_after_red_policy": "threshold",
         "orange_tier_mode": "tp_only_with_active_entry_cancellation",
         "panic_close_order_type": "market",
+        # Both default to disabled; a configured arm carries a ladder and/or a budget.
+        "halt_ladder_minutes": [],
+        "realized_loss_budget_pct": 0.0,
     }
     bot.hsl = {"long": dict(side_cfg), "short": dict(side_cfg)}
     bot._equity_hard_stop = {
@@ -310,6 +313,13 @@ def test_red_episode_finalization_uses_rust_owned_persistent_peak_and_deadline()
     assert out["cooldown_until_ms"] == 425_500
     assert out["disposition"] == "cooldown"
     assert state["no_restart_peak_strategy_equity"] == pytest.approx(120.0)
+    # Default-off contract: an empty ladder keeps `cooldown_minutes_after_red`, the strike is
+    # still counted, the realized basis stays inert and no reason is reported.
+    assert out["halt_minutes"] == pytest.approx(5.0)
+    assert out["ladder_strikes"] == 1
+    assert out["realized_loss_pct"] == pytest.approx(0.0)
+    assert out["no_restart_reason"] == "none"
+    assert state["ladder_strikes"] == 1
 
 
 def test_red_tier_score_is_min_of_raw_and_ema():

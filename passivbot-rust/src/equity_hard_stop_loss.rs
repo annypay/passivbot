@@ -94,6 +94,99 @@ pub struct HardStopStep {
     pub elapsed_minutes: u64,
 }
 
+/// Upper bound on `hsl.halt_ladder_minutes`. A ladder is bounded state, not a schedule.
+pub const MAX_HALT_LADDER_MINUTES: usize = 32;
+
+/// Reject a malformed per-strike cooldown ladder before it can reach a halt decision.
+pub fn validate_halt_ladder(ladder: &[f64]) -> Result<(), String> {
+    if ladder.len() > MAX_HALT_LADDER_MINUTES {
+        return Err(format!(
+            "halt_ladder_minutes must have at most {MAX_HALT_LADDER_MINUTES} entries, got {}",
+            ladder.len()
+        ));
+    }
+    for (index, minutes) in ladder.iter().enumerate() {
+        if !minutes.is_finite() || *minutes < 0.0 {
+            return Err(format!(
+                "halt_ladder_minutes[{index}] must be finite and >= 0, got {minutes}"
+            ));
+        }
+    }
+    Ok(())
+}
+
+/// Persistent state of one cooldown-ladder cycle: how many RED halts have already
+/// happened since the scope last regained its pre-strike equity peak, plus the two
+/// cumulative references the realized-loss budget is measured from.
+///
+/// The cycle deliberately outlives a single HSL episode. HSL resets its drawdown
+/// tracker after every proven episode end (invariant 1), so a cycle keyed on
+/// `drawdown_raw == 0` would clear itself at the very flatten that registers the
+/// strike. The cycle therefore carries its own peak instead of borrowing the
+/// per-episode one.
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+pub struct LadderCycle {
+    pub strikes: u32,
+    pub peak_equity: f64,
+    pub realized_pnl_peak: f64,
+}
+
+impl LadderCycle {
+    /// Observe one strategy-equity / realized-PnL sample.
+    ///
+    /// Returns `true` when the sample started a new cycle, i.e. the scope's equity
+    /// regained the cycle peak (the "pre-strike peak" of the design contract). While
+    /// the peak holds, strikes accumulate across episodes; the realized-PnL peak
+    /// keeps ratcheting so the budget measures cumulative giveback, not a per-episode
+    /// rate.
+    pub fn observe(&mut self, equity: f64, realized_pnl: f64) -> Result<bool, String> {
+        if !equity.is_finite() || equity <= 0.0 {
+            return Err("ladder cycle equity must be finite and > 0".to_string());
+        }
+        if !realized_pnl.is_finite() {
+            return Err("ladder cycle realized_pnl must be finite".to_string());
+        }
+        if self.peak_equity <= 0.0 || equity >= self.peak_equity {
+            self.strikes = 0;
+            self.peak_equity = equity;
+            self.realized_pnl_peak = realized_pnl;
+            return Ok(true);
+        }
+        self.realized_pnl_peak = self.realized_pnl_peak.max(realized_pnl);
+        Ok(false)
+    }
+
+    /// Register a finalized RED halt and return the 1-based strike index.
+    pub fn register_strike(&mut self) -> u32 {
+        self.strikes = self.strikes.saturating_add(1);
+        self.strikes
+    }
+
+    /// Cooldown for the pending strike. Rungs saturate at the last entry: a ladder
+    /// never wraps and never skips. An empty ladder keeps today's flat cooldown.
+    pub fn halt_minutes(&self, ladder: &[f64], fallback_minutes: f64) -> Result<f64, String> {
+        if ladder.is_empty() {
+            return Ok(fallback_minutes);
+        }
+        validate_halt_ladder(ladder)?;
+        let index = (self.strikes.max(1) as usize - 1).min(ladder.len() - 1);
+        Ok(ladder[index])
+    }
+
+    /// Cumulative realized giveback of this cycle, as a share of the equity the
+    /// cycle started from. Only realized events move the numerator; the mark-to-market
+    /// path cannot.
+    pub fn realized_loss_pct(&self, realized_pnl_now: f64) -> Result<f64, String> {
+        if !realized_pnl_now.is_finite() {
+            return Err("realized_pnl_now must be finite".to_string());
+        }
+        if !(self.peak_equity > 0.0) {
+            return Ok(0.0);
+        }
+        Ok((self.realized_pnl_peak - realized_pnl_now).max(0.0) / self.peak_equity)
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct RollingPeakTracker {
     peaks: VecDeque<(u64, f64)>,
@@ -200,22 +293,88 @@ pub fn coin_drawdown_signal(
     })
 }
 
+/// Why a permanent no-restart halt latched, so logs, latch payloads and
+/// `hsl-startup-preview` can tell the two bases apart.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum NoRestartReason {
+    None,
+    PolicyNever,
+    Drawdown,
+    RealizedLoss,
+}
+
+impl NoRestartReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::None => "none",
+            Self::PolicyNever => "policy_never",
+            Self::Drawdown => "drawdown",
+            Self::RealizedLoss => "realized_loss",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct NoRestartEvaluation {
+    pub latched: bool,
+    pub reason: NoRestartReason,
+}
+
 /// Whether the permanent no-restart halt trips for a finalized RED stop.
 ///
-/// Contract (fable audit plan, clarified 2026-07-06): the no-restart trigger
-/// is conservative and uses `max(drawdown_raw, drawdown_ema)` so it catches
-/// either catastrophic instantaneous damage or sustained smoothed damage,
-/// while the RED/panic-now tier score stays `min(raw, ema)`.
-pub fn no_restart_triggered(
+/// Contract (fable audit plan, clarified 2026-07-06): the instantaneous rule is
+/// conservative and uses `max(drawdown_raw, drawdown_ema)` so it catches either
+/// catastrophic instantaneous damage or sustained smoothed damage, while the
+/// RED/panic-now tier score stays `min(raw, ema)`.
+///
+/// `realized_loss_budget_pct > 0` adds a second, mark-to-market-free basis: the
+/// cumulative realized giveback of the current ladder cycle, measured against the
+/// equity that cycle started from (see `LadderCycle`). Both bases are compared only
+/// when the policy is `threshold`; `always` and `never` keep their existing meaning
+/// as the single authoritative switch.
+pub fn evaluate_no_restart(
     restart_after_red_policy: &str,
     drawdown_raw: f64,
     drawdown_ema: f64,
     no_restart_drawdown_threshold: f64,
-) -> Result<bool, String> {
+    realized_loss_pct: f64,
+    realized_loss_budget_pct: f64,
+) -> Result<NoRestartEvaluation, String> {
+    if !realized_loss_pct.is_finite() || realized_loss_pct < 0.0 {
+        return Err("realized_loss_pct must be finite and >= 0".to_string());
+    }
+    if !realized_loss_budget_pct.is_finite() || !(0.0..=1.0).contains(&realized_loss_budget_pct) {
+        return Err("realized_loss_budget_pct must be finite and within [0, 1]".to_string());
+    }
     match restart_after_red_policy {
-        "always" => Ok(false),
-        "threshold" => Ok(drawdown_raw.max(drawdown_ema) >= no_restart_drawdown_threshold),
-        "never" => Ok(true),
+        "always" => Ok(NoRestartEvaluation {
+            latched: false,
+            reason: NoRestartReason::None,
+        }),
+        "threshold" => {
+            if drawdown_raw.max(drawdown_ema) >= no_restart_drawdown_threshold {
+                Ok(NoRestartEvaluation {
+                    latched: true,
+                    reason: NoRestartReason::Drawdown,
+                })
+            } else if realized_loss_budget_pct > 0.0
+                && realized_loss_pct + 1e-12 >= realized_loss_budget_pct
+            {
+                Ok(NoRestartEvaluation {
+                    latched: true,
+                    reason: NoRestartReason::RealizedLoss,
+                })
+            } else {
+                Ok(NoRestartEvaluation {
+                    latched: false,
+                    reason: NoRestartReason::None,
+                })
+            }
+        }
+        "never" => Ok(NoRestartEvaluation {
+            latched: true,
+            reason: NoRestartReason::PolicyNever,
+        }),
         raw => Err(format!(
             "hsl_restart_after_red_policy must be one of always, threshold, never; got {:?}",
             raw
@@ -223,12 +382,38 @@ pub fn no_restart_triggered(
     }
 }
 
+/// Narrow convenience wrapper for callers that only evaluate the instantaneous
+/// drawdown rule (`hsl_no_restart_triggered`).
+pub fn no_restart_triggered(
+    restart_after_red_policy: &str,
+    drawdown_raw: f64,
+    drawdown_ema: f64,
+    no_restart_drawdown_threshold: f64,
+) -> Result<bool, String> {
+    Ok(evaluate_no_restart(
+        restart_after_red_policy,
+        drawdown_raw,
+        drawdown_ema,
+        no_restart_drawdown_threshold,
+        0.0,
+        0.0,
+    )?
+    .latched)
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct RedEpisodeFinalization {
     pub no_restart_peak_strategy_equity: f64,
     pub no_restart_drawdown_raw: f64,
     pub no_restart_latched: bool,
+    pub no_restart_reason: NoRestartReason,
+    /// Cumulative realized giveback of the ladder cycle at this finalization.
+    pub realized_loss_pct: f64,
     pub cooldown_until_ms: Option<u64>,
+    /// Cooldown this strike actually selected, after ladder saturation.
+    pub halt_minutes: f64,
+    /// Cycle state after this strike; the caller persists it for the next finalization.
+    pub ladder: LadderCycle,
     pub disposition: RedEpisodeDisposition,
 }
 
@@ -249,6 +434,30 @@ impl RedEpisodeDisposition {
     }
 }
 
+/// Everything one finalized RED episode needs to pick its cooldown and decide
+/// whether the halt is terminal. Grouped so adding a basis cannot silently shift a
+/// positional argument.
+#[derive(Debug, Clone, Copy)]
+pub struct RedEpisodeFinalizationContext<'a> {
+    pub restart_after_red_policy: &'a str,
+    pub stop_timestamp_ms: u64,
+    pub stop_equity: f64,
+    pub stop_peak_strategy_equity: f64,
+    pub previous_no_restart_peak_strategy_equity: f64,
+    pub drawdown_ema: f64,
+    pub red_threshold: f64,
+    pub no_restart_drawdown_threshold: f64,
+    pub cooldown_minutes_after_red: f64,
+    /// Per-strike cooldown ladder. Empty keeps `cooldown_minutes_after_red`.
+    pub halt_ladder_minutes: &'a [f64],
+    /// Ladder cycle *before* this strike; the strike is registered inside.
+    pub ladder: LadderCycle,
+    /// Scope cumulative realized PnL at this finalization.
+    pub realized_pnl_now: f64,
+    /// Cumulative realized-loss budget; `0.0` disables the basis.
+    pub realized_loss_budget_pct: f64,
+}
+
 /// Evaluate the state transition after a RED episode has fully flattened.
 ///
 /// The caller owns exchange/history proof and supplies the previous
@@ -257,16 +466,24 @@ impl RedEpisodeDisposition {
 /// to milliseconds with a canonical 1 ms floor; bar backtests observe the
 /// exact deadline on their next available sample instead of redefining it.
 pub fn evaluate_red_episode_finalization(
-    restart_after_red_policy: &str,
-    stop_timestamp_ms: u64,
-    stop_equity: f64,
-    stop_peak_strategy_equity: f64,
-    previous_no_restart_peak_strategy_equity: f64,
-    drawdown_ema: f64,
-    red_threshold: f64,
-    no_restart_drawdown_threshold: f64,
-    cooldown_minutes_after_red: f64,
+    ctx: RedEpisodeFinalizationContext<'_>,
 ) -> Result<RedEpisodeFinalization, String> {
+    let RedEpisodeFinalizationContext {
+        restart_after_red_policy,
+        stop_timestamp_ms,
+        stop_equity,
+        stop_peak_strategy_equity,
+        previous_no_restart_peak_strategy_equity,
+        drawdown_ema,
+        red_threshold,
+        no_restart_drawdown_threshold,
+        cooldown_minutes_after_red,
+        halt_ladder_minutes,
+        ladder: previous_ladder,
+        realized_pnl_now,
+        realized_loss_budget_pct,
+    } = ctx;
+    validate_halt_ladder(halt_ladder_minutes)?;
     if !stop_equity.is_finite() || stop_equity <= 0.0 {
         return Err("stop_equity must be finite and > 0".to_string());
     }
@@ -304,18 +521,30 @@ pub fn evaluate_red_episode_finalization(
         .max(stop_equity);
     let no_restart_drawdown_raw =
         (1.0 - stop_equity / no_restart_peak_strategy_equity.max(f64::EPSILON)).max(0.0);
-    let no_restart_latched = no_restart_triggered(
+
+    let mut ladder = previous_ladder;
+    let strike_index = ladder.register_strike();
+    debug_assert_eq!(strike_index, ladder.strikes);
+    let halt_minutes = ladder.halt_minutes(halt_ladder_minutes, cooldown_minutes_after_red)?;
+    let realized_loss_pct = ladder.realized_loss_pct(realized_pnl_now)?;
+
+    let no_restart = evaluate_no_restart(
         restart_after_red_policy,
         no_restart_drawdown_raw,
         drawdown_ema,
         no_restart_drawdown_threshold,
+        realized_loss_pct,
+        realized_loss_budget_pct,
     )?;
-    let cooldown_until_ms = if no_restart_latched || cooldown_minutes_after_red <= 0.0 {
+    let no_restart_latched = no_restart.latched;
+    let cooldown_until_ms = if no_restart_latched || halt_minutes <= 0.0 {
         None
     } else {
-        let cooldown_ms_f64 = (cooldown_minutes_after_red * 60_000.0).round();
+        let cooldown_ms_f64 = (halt_minutes * 60_000.0).round();
         if !cooldown_ms_f64.is_finite() || cooldown_ms_f64 > u64::MAX as f64 {
-            return Err("cooldown_minutes_after_red is too large".to_string());
+            return Err(format!(
+                "halt cooldown of {halt_minutes} minutes is too large to express as milliseconds"
+            ));
         }
         let cooldown_ms = (cooldown_ms_f64 as u64).max(1);
         Some(stop_timestamp_ms.saturating_add(cooldown_ms))
@@ -332,9 +561,45 @@ pub fn evaluate_red_episode_finalization(
         no_restart_peak_strategy_equity,
         no_restart_drawdown_raw,
         no_restart_latched,
+        no_restart_reason: no_restart.reason,
+        realized_loss_pct,
         cooldown_until_ms,
+        halt_minutes,
+        ladder,
         disposition,
     })
+}
+
+/// Convenience builder keeping the pre-ladder call shape readable in tests and
+/// callers that never use the new bases.
+#[allow(dead_code)]
+#[allow(clippy::too_many_arguments)]
+pub fn red_episode_finalization_context<'a>(
+    restart_after_red_policy: &'a str,
+    stop_timestamp_ms: u64,
+    stop_equity: f64,
+    stop_peak_strategy_equity: f64,
+    previous_no_restart_peak_strategy_equity: f64,
+    drawdown_ema: f64,
+    red_threshold: f64,
+    no_restart_drawdown_threshold: f64,
+    cooldown_minutes_after_red: f64,
+) -> RedEpisodeFinalizationContext<'a> {
+    RedEpisodeFinalizationContext {
+        restart_after_red_policy,
+        stop_timestamp_ms,
+        stop_equity,
+        stop_peak_strategy_equity,
+        previous_no_restart_peak_strategy_equity,
+        drawdown_ema,
+        red_threshold,
+        no_restart_drawdown_threshold,
+        cooldown_minutes_after_red,
+        halt_ladder_minutes: &[],
+        ladder: LadderCycle::default(),
+        realized_pnl_now: 0.0,
+        realized_loss_budget_pct: 0.0,
+    }
 }
 
 #[allow(dead_code)] // Kept as a convenience helper for callers that want internal peak tracking.
@@ -384,7 +649,13 @@ pub fn step_with_peak_strategy_equity_latch(
     latch_red: bool,
 ) -> Result<HardStopStep, String> {
     step_with_peak_strategy_equity_at_boundary(
-        state, config, equity, peak_strategy_equity, timestamp_ms, latch_red, false,
+        state,
+        config,
+        equity,
+        peak_strategy_equity,
+        timestamp_ms,
+        latch_red,
+        false,
     )
 }
 
@@ -540,35 +811,39 @@ mod tests {
         step_with_peak_strategy_equity_latch(&mut state, config, 1.0, 1.0, 60_000, false).unwrap();
         let first = step_with_peak_strategy_equity_at_boundary(
             &mut state, config, 0.8, 1.0, 90_000, false, true,
-        ).unwrap();
+        )
+        .unwrap();
         assert!((first.drawdown_ema - 0.1).abs() < 1e-12);
         let second = step_with_peak_strategy_equity_at_boundary(
             &mut state, config, 0.6, 1.0, 95_000, false, true,
-        ).unwrap();
+        )
+        .unwrap();
         // Replace alpha*raw (0.2), rather than compound another step (0.25).
         assert!((second.drawdown_raw - 0.4).abs() < 1e-12);
         assert!((second.drawdown_ema - 0.2).abs() < 1e-12);
         assert_eq!(second.elapsed_minutes, 0);
         assert!(second.red_active_now);
         assert!(state.red_seen_in_episode);
-        let polling = step_with_peak_strategy_equity_latch(
-            &mut state, config, 1.0, 1.0, 96_000, false,
-        ).unwrap();
+        let polling =
+            step_with_peak_strategy_equity_latch(&mut state, config, 1.0, 1.0, 96_000, false)
+                .unwrap();
         assert_eq!(polling.drawdown_raw, second.drawdown_raw);
         assert_eq!(polling.drawdown_ema, second.drawdown_ema);
         let recovered = step_with_peak_strategy_equity_at_boundary(
             &mut state, config, 1.0, 1.0, 97_000, false, true,
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(recovered.drawdown_ema, 0.0);
         assert!(!recovered.red_active_now);
         assert!(state.red_seen_in_episode);
-        let normal = step_with_peak_strategy_equity_latch(
-            &mut state, config, 0.8, 1.0, 120_000, false,
-        ).unwrap();
+        let normal =
+            step_with_peak_strategy_equity_latch(&mut state, config, 0.8, 1.0, 120_000, false)
+                .unwrap();
         assert!((normal.drawdown_ema - 0.1).abs() < 1e-12);
         let boundary = step_with_peak_strategy_equity_at_boundary(
             &mut state, config, 0.6, 1.0, 125_000, false, true,
-        ).unwrap();
+        )
+        .unwrap();
         assert!((boundary.drawdown_ema - 0.2).abs() < 1e-12);
     }
 
@@ -661,7 +936,7 @@ mod tests {
 
     #[test]
     fn red_episode_finalization_uses_persistent_peak_and_fill_timestamp() {
-        let out = evaluate_red_episode_finalization(
+        let out = evaluate_red_episode_finalization(red_episode_finalization_context(
             "threshold",
             125_500,
             70.0,
@@ -671,15 +946,17 @@ mod tests {
             0.20,
             0.25,
             5.0,
-        )
+        ))
         .unwrap();
         assert!((out.no_restart_peak_strategy_equity - 100.0).abs() < 1e-12);
         assert!((out.no_restart_drawdown_raw - 0.30).abs() < 1e-12);
         assert!(out.no_restart_latched);
+        assert_eq!(out.no_restart_reason, NoRestartReason::Drawdown);
         assert_eq!(out.cooldown_until_ms, None);
         assert_eq!(out.disposition, RedEpisodeDisposition::NoRestart);
+        assert_eq!(out.ladder.strikes, 1);
 
-        let restartable = evaluate_red_episode_finalization(
+        let restartable = evaluate_red_episode_finalization(red_episode_finalization_context(
             "threshold",
             125_500,
             90.0,
@@ -689,76 +966,219 @@ mod tests {
             0.20,
             0.25,
             5.0,
-        )
+        ))
         .unwrap();
         assert!(!restartable.no_restart_latched);
+        assert_eq!(restartable.no_restart_reason, NoRestartReason::None);
         assert_eq!(restartable.cooldown_until_ms, Some(425_500));
         assert_eq!(restartable.disposition, RedEpisodeDisposition::Cooldown);
     }
 
     #[test]
     fn red_episode_finalization_honors_policy_and_canonical_minimum() {
-        let always = evaluate_red_episode_finalization(
+        let always = evaluate_red_episode_finalization(red_episode_finalization_context(
             "always", 1_000, 1.0, 1.0, 0.0, 1.0, 0.25, 0.5, 0.000_001,
-        )
+        ))
         .unwrap();
         assert!(!always.no_restart_latched);
         assert_eq!(always.cooldown_until_ms, Some(1_001));
 
-        let halted_no_cooldown =
-            evaluate_red_episode_finalization("always", 1_000, 1.0, 1.0, 0.0, 0.0, 0.25, 0.5, 0.0)
-                .unwrap();
+        let halted_no_cooldown = evaluate_red_episode_finalization(
+            red_episode_finalization_context("always", 1_000, 1.0, 1.0, 0.0, 0.0, 0.25, 0.5, 0.0),
+        )
+        .unwrap();
         assert_eq!(
             halted_no_cooldown.disposition,
             RedEpisodeDisposition::HaltedNoCooldown
         );
         assert_eq!(halted_no_cooldown.cooldown_until_ms, None);
 
-        let never =
-            evaluate_red_episode_finalization("never", 1_000, 1.0, 1.0, 0.0, 0.0, 0.25, 0.5, 5.0)
-                .unwrap();
+        let never = evaluate_red_episode_finalization(red_episode_finalization_context(
+            "never", 1_000, 1.0, 1.0, 0.0, 0.0, 0.25, 0.5, 5.0,
+        ))
+        .unwrap();
         assert!(never.no_restart_latched);
+        assert_eq!(never.no_restart_reason, NoRestartReason::PolicyNever);
         assert_eq!(never.cooldown_until_ms, None);
     }
 
     #[test]
     fn red_episode_finalization_rejects_invalid_inputs() {
-        assert!(evaluate_red_episode_finalization(
-            "threshold",
-            1_000,
-            0.0,
-            1.0,
-            0.0,
-            0.0,
-            0.25,
-            0.5,
-            5.0,
-        )
-        .is_err());
-        assert!(evaluate_red_episode_finalization(
-            "threshold",
-            1_000,
-            1.0,
-            1.0,
-            0.0,
-            f64::NAN,
-            0.25,
-            0.5,
-            5.0,
-        )
-        .is_err());
-        assert!(evaluate_red_episode_finalization(
-            "sometimes",
-            1_000,
-            1.0,
-            1.0,
-            0.0,
-            0.0,
-            0.25,
-            0.5,
-            5.0,
-        )
-        .is_err());
+        assert!(
+            evaluate_red_episode_finalization(red_episode_finalization_context(
+                "threshold",
+                1_000,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.25,
+                0.5,
+                5.0,
+            ))
+            .is_err()
+        );
+        assert!(
+            evaluate_red_episode_finalization(red_episode_finalization_context(
+                "threshold",
+                1_000,
+                1.0,
+                1.0,
+                0.0,
+                f64::NAN,
+                0.25,
+                0.5,
+                5.0,
+            ))
+            .is_err()
+        );
+        assert!(
+            evaluate_red_episode_finalization(red_episode_finalization_context(
+                "sometimes",
+                1_000,
+                1.0,
+                1.0,
+                0.0,
+                0.0,
+                0.25,
+                0.5,
+                5.0,
+            ))
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn halt_ladder_saturates_and_keeps_flat_cooldown_when_disabled() {
+        let mut cycle = LadderCycle::default();
+        assert!((cycle.halt_minutes(&[], 720.0).unwrap() - 720.0).abs() < 1e-12);
+        let ladder = [720.0, 1440.0];
+        for expected in [720.0, 1440.0, 1440.0, 1440.0] {
+            cycle.register_strike();
+            assert!((cycle.halt_minutes(&ladder, 5.0).unwrap() - expected).abs() < 1e-12);
+        }
+        assert_eq!(cycle.strikes, 4);
+        // A zero rung means "no cooldown", not "disabled ladder".
+        assert!((cycle.halt_minutes(&[0.0], 720.0).unwrap()).abs() < 1e-12);
+        assert!(validate_halt_ladder(&[720.0, -1.0]).is_err());
+        assert!(validate_halt_ladder(&[f64::NAN]).is_err());
+        assert!(validate_halt_ladder(&vec![720.0; MAX_HALT_LADDER_MINUTES + 1]).is_err());
+    }
+
+    #[test]
+    fn ladder_cycle_resets_only_when_equity_regains_the_cycle_peak() {
+        let mut cycle = LadderCycle::default();
+        assert!(cycle.observe(1_000.0, 0.0).unwrap());
+        cycle.register_strike();
+        assert_eq!(cycle.strikes, 1);
+        // A losing sample keeps the cycle: strikes survive the episode reset that
+        // HSL performs at every flatten.
+        assert!(!cycle.observe(800.0, -50.0).unwrap());
+        cycle.register_strike();
+        assert_eq!(cycle.strikes, 2);
+        // Regaining the pre-strike peak starts a new cycle.
+        assert!(cycle.observe(1_000.0, 10.0).unwrap());
+        assert_eq!(cycle.strikes, 0);
+        assert!((cycle.peak_equity - 1_000.0).abs() < 1e-12);
+    }
+
+    #[test]
+    fn realized_loss_basis_is_cumulative_and_mark_to_market_free() {
+        let mut cycle = LadderCycle::default();
+        cycle.observe(1_000.0, 200.0).unwrap();
+        // A deep unrealized wick does not move the realized basis at all.
+        assert!((cycle.realized_loss_pct(200.0).unwrap()).abs() < 1e-12);
+        // Two realized losses accumulate against the cycle-start equity.
+        assert!((cycle.realized_loss_pct(150.0).unwrap() - 0.05).abs() < 1e-12);
+        assert!((cycle.realized_loss_pct(80.0).unwrap() - 0.12).abs() < 1e-12);
+        // A new realized high ratchets the peak, and giveback is measured from it.
+        cycle.observe(900.0, 260.0).unwrap();
+        assert!((cycle.realized_loss_pct(260.0).unwrap()).abs() < 1e-12);
+        assert!((cycle.realized_loss_pct(210.0).unwrap() - 0.05).abs() < 1e-12);
+        assert!(cycle.realized_loss_pct(f64::NAN).is_err());
+    }
+
+    #[test]
+    fn realized_loss_budget_only_latches_under_threshold_policy() {
+        let budget = evaluate_no_restart("threshold", 0.0, 0.0, 1.0, 0.30, 0.30).unwrap();
+        assert!(budget.latched);
+        assert_eq!(budget.reason, NoRestartReason::RealizedLoss);
+        let below = evaluate_no_restart("threshold", 0.0, 0.0, 1.0, 0.29, 0.30).unwrap();
+        assert!(!below.latched);
+        assert_eq!(below.reason, NoRestartReason::None);
+        // Disabled budget reproduces the historical drawdown-only decision.
+        let disabled = evaluate_no_restart("threshold", 0.0, 0.0, 1.0, 0.99, 0.0).unwrap();
+        assert!(!disabled.latched);
+        let drawdown_wins = evaluate_no_restart("threshold", 0.5, 0.0, 0.4, 0.99, 0.30).unwrap();
+        assert_eq!(drawdown_wins.reason, NoRestartReason::Drawdown);
+        assert!(
+            !evaluate_no_restart("always", 0.9, 0.9, 0.1, 0.9, 0.30)
+                .unwrap()
+                .latched
+        );
+        assert_eq!(
+            evaluate_no_restart("never", 0.0, 0.0, 1.0, 0.0, 0.0)
+                .unwrap()
+                .reason,
+            NoRestartReason::PolicyNever
+        );
+        assert!(evaluate_no_restart("threshold", 0.0, 0.0, 1.0, 0.0, 1.5).is_err());
+    }
+
+    #[test]
+    fn ladder_is_applied_at_finalization_and_returned_for_persistence() {
+        let out = evaluate_red_episode_finalization(RedEpisodeFinalizationContext {
+            restart_after_red_policy: "threshold",
+            stop_timestamp_ms: 1_000,
+            stop_equity: 900.0,
+            stop_peak_strategy_equity: 1_000.0,
+            previous_no_restart_peak_strategy_equity: 0.0,
+            drawdown_ema: 0.05,
+            red_threshold: 0.15,
+            no_restart_drawdown_threshold: 0.5,
+            cooldown_minutes_after_red: 5.0,
+            halt_ladder_minutes: &[720.0, 1440.0],
+            ladder: LadderCycle {
+                strikes: 1,
+                peak_equity: 1_000.0,
+                realized_pnl_peak: 200.0,
+            },
+            realized_pnl_now: 120.0,
+            realized_loss_budget_pct: 0.30,
+        })
+        .unwrap();
+        assert_eq!(out.ladder.strikes, 2);
+        assert!((out.halt_minutes - 1440.0).abs() < 1e-12);
+        assert_eq!(out.cooldown_until_ms, Some(1_000 + 1_440 * 60_000));
+        assert_eq!(out.disposition, RedEpisodeDisposition::Cooldown);
+        assert!((out.realized_loss_pct - 0.08).abs() < 1e-12);
+        assert!(!out.no_restart_latched);
+
+        // A terminal strike still reports the rung it would have used.
+        let terminal = evaluate_red_episode_finalization(RedEpisodeFinalizationContext {
+            restart_after_red_policy: "threshold",
+            stop_timestamp_ms: 1_000,
+            stop_equity: 900.0,
+            stop_peak_strategy_equity: 1_000.0,
+            previous_no_restart_peak_strategy_equity: 0.0,
+            drawdown_ema: 0.05,
+            red_threshold: 0.15,
+            no_restart_drawdown_threshold: 1.0,
+            cooldown_minutes_after_red: 5.0,
+            halt_ladder_minutes: &[720.0, 1440.0],
+            ladder: LadderCycle {
+                strikes: 1,
+                peak_equity: 1_000.0,
+                realized_pnl_peak: 200.0,
+            },
+            realized_pnl_now: 100.0,
+            realized_loss_budget_pct: 0.10,
+        })
+        .unwrap();
+        assert!(terminal.no_restart_latched);
+        assert_eq!(terminal.no_restart_reason, NoRestartReason::RealizedLoss);
+        assert_eq!(terminal.cooldown_until_ms, None);
+        assert_eq!(terminal.disposition, RedEpisodeDisposition::NoRestart);
     }
 
     fn cfg() -> HardStopConfig {

@@ -6,6 +6,27 @@ since the latest release tag; these features may already be available when insta
 
 ## Unreleased
 
+- Make the permanent HSL halt survivable to configure. The terminal
+  `hsl_no_restart_drawdown_threshold` comparison is taken at the instant the panic flatten is
+  confirmed, so on a fast crash it fires on an unrealized wick: measured on the historical legs,
+  every threshold below roughly 0.77 latched on the first or second halt and left the account
+  permanently flat. `bot.<pside>.hsl.realized_loss_budget_pct` adds a mark-to-market-free basis
+  that latches on the ladder cycle's cumulative realized giveback instead, and the halt event now
+  reports which basis fired as `no_restart_reason`. Default `0`, so existing behaviour is unchanged.
+  Note what the budget does *not* buy: it is only checked when a halt finalizes, so the measured
+  giveback at the latch can be far above the budget (0.30 latched at 0.674), and a 0.30 budget
+  permanently halted an account that would otherwise have recovered. It fixes the attribution, not
+  the cost of a permanent halt - calibrate the budget deliberately.
+- Add `bot.<pside>.hsl.halt_ladder_minutes`, a per-strike cooldown ladder (empty by default). The
+  1st, 2nd, ... RED halt in a ladder cycle waits the corresponding entry before auto-restart is
+  allowed, saturating at the last one; the cycle clears only when the scope's strategy equity
+  regains the peak the cycle started from, and it is rebuilt from fill history at restart. It stays
+  off until requested, and no setting is a measured improvement: on the historical legs the ladder
+  changed terminal value by +0.24% (full history) and -0.43% (out-of-sample window) with a
+  bit-identical worst drawdown, and the first rung's 12H-vs-24H choice gave opposite answers on the
+  two legs. `24H` is the documented upper bound, `[720, 1440]` an example rather than a
+  recommendation.
+
 - Let the live bot's own CCXT clients inherit a proxy from the environment. `HTTP_PROXY`
   and `HTTPS_PROXY` were already honoured by `utils.load_ccxt_instance` (the research and
   downloader clients) and documented in the README, but the live REST and websocket

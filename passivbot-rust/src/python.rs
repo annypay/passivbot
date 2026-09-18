@@ -28,10 +28,9 @@ use crate::trailing::{
 };
 use crate::types::{Analysis, OrderType};
 use crate::types::{
-    BacktestParams, BotParams, BotParamsPair, CoinMeta, EMABands, Equities,
+    BacktestParams, BotParams, BotParamsPair, CoinMeta, EMABands, EntryRegimeGateConfig, Equities,
     EquityHardStopLossConfig, EquityHardStopLossTierRatios, ExchangeParams, ForagerScoreWeights,
-    EntryRegimeGateConfig, HlcvsBundle, HlcvsMeta, OrderBook, Position,
-    RuntimeOrderContext, StateParams,
+    HlcvsBundle, HlcvsMeta, OrderBook, Position, RuntimeOrderContext, StateParams,
     StrategyParamsPairValue, TrailingPriceBundle, TwelEnforcerPolicy, WalletExposureBrakeConfig,
     WeExcessAllowanceMode,
 };
@@ -573,6 +572,42 @@ pub fn hsl_coin_drawdown_signal(
     Ok(out.unbind())
 }
 
+/// Validate a configured per-strike cooldown ladder before it reaches a halt decision.
+#[pyfunction]
+pub fn hsl_validate_halt_ladder(halt_ladder_minutes: Vec<f64>) -> PyResult<()> {
+    ehsl::validate_halt_ladder(&halt_ladder_minutes).map_err(PyValueError::new_err)
+}
+
+/// Advance one cooldown-ladder cycle with a live sample.
+///
+/// Rust owns the rule; Python only persists the returned triple. `reset` reports that the
+/// sample regained the cycle peak, which is when the strike count returns to zero.
+#[pyfunction]
+#[pyo3(signature = (*, equity, realized_pnl, strikes, peak_equity, realized_pnl_peak))]
+pub fn hsl_ladder_cycle_observe(
+    py: Python<'_>,
+    equity: f64,
+    realized_pnl: f64,
+    strikes: u32,
+    peak_equity: f64,
+    realized_pnl_peak: f64,
+) -> PyResult<Py<PyDict>> {
+    let mut cycle = ehsl::LadderCycle {
+        strikes,
+        peak_equity,
+        realized_pnl_peak,
+    };
+    let reset = cycle
+        .observe(equity, realized_pnl)
+        .map_err(PyValueError::new_err)?;
+    let out = PyDict::new_bound(py);
+    out.set_item("reset", reset)?;
+    out.set_item("strikes", cycle.strikes)?;
+    out.set_item("peak_equity", cycle.peak_equity)?;
+    out.set_item("realized_pnl_peak", cycle.realized_pnl_peak)?;
+    Ok(out.unbind())
+}
+
 #[pyfunction]
 #[pyo3(signature = (
     *,
@@ -584,8 +619,15 @@ pub fn hsl_coin_drawdown_signal(
     drawdown_ema,
     red_threshold,
     no_restart_drawdown_threshold,
-    cooldown_minutes_after_red
+    cooldown_minutes_after_red,
+    halt_ladder_minutes = None,
+    ladder_strikes = 0,
+    ladder_peak_equity = 0.0,
+    ladder_realized_pnl_peak = 0.0,
+    realized_pnl_now = 0.0,
+    realized_loss_budget_pct = 0.0
 ))]
+#[allow(clippy::too_many_arguments)]
 pub fn hsl_red_episode_finalization(
     py: Python<'_>,
     restart_after_red_policy: &str,
@@ -597,8 +639,15 @@ pub fn hsl_red_episode_finalization(
     red_threshold: f64,
     no_restart_drawdown_threshold: f64,
     cooldown_minutes_after_red: f64,
+    halt_ladder_minutes: Option<Vec<f64>>,
+    ladder_strikes: u32,
+    ladder_peak_equity: f64,
+    ladder_realized_pnl_peak: f64,
+    realized_pnl_now: f64,
+    realized_loss_budget_pct: f64,
 ) -> PyResult<Py<PyDict>> {
-    let result = ehsl::evaluate_red_episode_finalization(
+    let halt_ladder_minutes = halt_ladder_minutes.unwrap_or_default();
+    let result = ehsl::evaluate_red_episode_finalization(ehsl::RedEpisodeFinalizationContext {
         restart_after_red_policy,
         stop_timestamp_ms,
         stop_equity,
@@ -608,7 +657,15 @@ pub fn hsl_red_episode_finalization(
         red_threshold,
         no_restart_drawdown_threshold,
         cooldown_minutes_after_red,
-    )
+        halt_ladder_minutes: halt_ladder_minutes.as_slice(),
+        ladder: ehsl::LadderCycle {
+            strikes: ladder_strikes,
+            peak_equity: ladder_peak_equity,
+            realized_pnl_peak: ladder_realized_pnl_peak,
+        },
+        realized_pnl_now,
+        realized_loss_budget_pct,
+    })
     .map_err(PyValueError::new_err)?;
     let out = PyDict::new_bound(py);
     out.set_item(
@@ -617,7 +674,13 @@ pub fn hsl_red_episode_finalization(
     )?;
     out.set_item("no_restart_drawdown_raw", result.no_restart_drawdown_raw)?;
     out.set_item("no_restart_latched", result.no_restart_latched)?;
+    out.set_item("no_restart_reason", result.no_restart_reason.as_str())?;
+    out.set_item("realized_loss_pct", result.realized_loss_pct)?;
     out.set_item("cooldown_until_ms", result.cooldown_until_ms)?;
+    out.set_item("halt_minutes", result.halt_minutes)?;
+    out.set_item("ladder_strikes", result.ladder.strikes)?;
+    out.set_item("ladder_peak_equity", result.ladder.peak_equity)?;
+    out.set_item("ladder_realized_pnl_peak", result.ladder.realized_pnl_peak)?;
     out.set_item("disposition", result.disposition.as_str())?;
     Ok(out.unbind())
 }
@@ -1658,6 +1721,8 @@ fn run_backtest_core<'py>(
             hs.panic_close_loss_drawdown_pct_max;
         analysis_usd.hard_stop_flatten_time_minutes_mean = hs.flatten_time_minutes_mean;
         analysis_usd.hard_stop_post_restart_retrigger_pct = hs.post_restart_retrigger_pct;
+        analysis_usd.hard_stop_ladder_strikes_max = hs.ladder_strikes_max;
+        analysis_usd.hard_stop_realized_loss_halt_pct_max = hs.realized_loss_halt_pct_max;
         analysis_usd.drawdown_worst_strategy_eq = strategy.overall.drawdown_worst_strategy_eq;
         analysis_usd.drawdown_worst_strategy_eq_long = strategy.long.drawdown_worst_strategy_eq;
         analysis_usd.drawdown_worst_strategy_eq_short = strategy.short.drawdown_worst_strategy_eq;
@@ -1759,6 +1824,8 @@ fn run_backtest_core<'py>(
             hs.panic_close_loss_drawdown_pct_max;
         analysis_btc.hard_stop_flatten_time_minutes_mean = hs.flatten_time_minutes_mean;
         analysis_btc.hard_stop_post_restart_retrigger_pct = hs.post_restart_retrigger_pct;
+        analysis_btc.hard_stop_ladder_strikes_max = hs.ladder_strikes_max;
+        analysis_btc.hard_stop_realized_loss_halt_pct_max = hs.realized_loss_halt_pct_max;
         analysis_btc.drawdown_worst_strategy_eq = strategy.overall.drawdown_worst_strategy_eq;
         analysis_btc.drawdown_worst_strategy_eq_long = strategy.long.drawdown_worst_strategy_eq;
         analysis_btc.drawdown_worst_strategy_eq_short = strategy.short.drawdown_worst_strategy_eq;
@@ -2075,6 +2142,8 @@ fn backtest_params_from_dict(dict: &PyDict) -> PyResult<BacktestParams> {
             },
             orange_tier_mode: extract_value(cfg, "orange_tier_mode")?,
             panic_close_order_type: extract_value(cfg, "panic_close_order_type")?,
+            halt_ladder_minutes: extract_optional_f64_vec(cfg, "halt_ladder_minutes")?,
+            realized_loss_budget_pct: extract_optional_f64(cfg, "realized_loss_budget_pct")?,
         })
     };
     let hard_stop_cfg = parse_hsl_cfg(dict, "equity_hard_stop_loss")?;
@@ -2158,9 +2227,9 @@ fn backtest_params_from_dict(dict: &PyDict) -> PyResult<BacktestParams> {
         dynamic_wel_by_tradability: extract_value(dict, "dynamic_wel_by_tradability")?,
         wallet_exposure_brake: match dict.get_item("wallet_exposure_brake")? {
             Some(item) if !item.is_none() => {
-                let sub = item.downcast::<PyDict>().map_err(|_| {
-                    PyValueError::new_err("wallet_exposure_brake must be a dict")
-                })?;
+                let sub = item
+                    .downcast::<PyDict>()
+                    .map_err(|_| PyValueError::new_err("wallet_exposure_brake must be a dict"))?;
                 let config = WalletExposureBrakeConfig {
                     enabled: sub
                         .get_item("enabled")?
@@ -2518,6 +2587,13 @@ fn entry_regime_gate_from_dict(dict: &PyDict) -> PyResult<EntryRegimeGateConfig>
     Ok(gate)
 }
 
+fn extract_optional_f64_vec(dict: &PyDict, key: &str) -> PyResult<Vec<f64>> {
+    Ok(match dict.get_item(key)? {
+        Some(item) => item.extract::<Vec<f64>>()?,
+        None => Vec::new(),
+    })
+}
+
 fn extract_optional_u64_vec(dict: &PyDict, key: &str) -> PyResult<Vec<u64>> {
     match dict.get_item(key)? {
         Some(item) => item.extract::<Vec<u64>>().map_err(|err| {
@@ -2566,6 +2642,10 @@ fn bot_params_from_dict(dict: &PyDict) -> PyResult<BotParams> {
     let hsl_tier_ratio_orange: f64 = extract_value(hsl_tier_ratios, "orange")?;
     let hsl_orange_tier_mode: String = extract_value(dict, "hsl_orange_tier_mode")?;
     let hsl_panic_close_order_type: String = extract_value(dict, "hsl_panic_close_order_type")?;
+    let hsl_halt_ladder_minutes: Vec<f64> =
+        extract_optional_f64_vec(dict, "hsl_halt_ladder_minutes")?;
+    let hsl_realized_loss_budget_pct: f64 =
+        extract_optional_f64(dict, "hsl_realized_loss_budget_pct")?;
     // Callers resolve live fixed denominators before building orchestrator input.
     // Preserve zero here: per-symbol zero is the explicit side-disable sentinel.
     let wallet_exposure_limit = wallet_exposure_limit_raw;
@@ -2649,6 +2729,8 @@ fn bot_params_from_dict(dict: &PyDict) -> PyResult<BotParams> {
         hsl_tier_ratio_orange,
         hsl_orange_tier_mode,
         hsl_panic_close_order_type,
+        hsl_halt_ladder_minutes,
+        hsl_realized_loss_budget_pct,
         risk_entry_cooldown_minutes: extract_optional_f64(dict, "risk_entry_cooldown_minutes")?,
         n_positions,
         total_wallet_exposure_limit,

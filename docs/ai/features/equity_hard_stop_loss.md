@@ -36,6 +36,13 @@ HSL drawdown state is scoped by `live.hsl_signal_mode`:
 6. Restart reconstruction uses exchange state, fill/PnL history, candles where required, config, and
    current time. Local latch files are diagnostics, not authority. Restart always reconstructs from
    authoritative exchange-derived inputs; no persisted replay state participates in the decision.
+   The cooldown-ladder cycle (`bot.<pside>.hsl.halt_ladder_minutes`) and the cumulative realized-loss
+   basis (`bot.<pside>.hsl.realized_loss_budget_pct`) are reconstructed from that same tape and equity
+   series: the strike count is the number of RED halts confirmed since the scope last regained the
+   equity peak its cycle started from, the cycle peak is the running maximum of the scope strategy
+   equity over the same window as the persistent no-restart peak, and the realized reference is the
+   running maximum of the scope's realized PnL over that window. An in-process runtime reset preserves
+   the cycle exactly like `no_restart_peak_strategy_equity`; only a full state reset clears it.
    Live normal interventions and cooldown expiry use that same reconstruction before releasing a
    halt, retaining entry fees and losses before the next observation. A proven RED stop follows the
    same restart rules regardless of closing order type; terminal no-restart takes precedence.

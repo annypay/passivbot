@@ -450,6 +450,10 @@ def _normalize_minimum_span(
     )
 
 
+#: Mirrors `passivbot_rust`'s `MAX_HALT_LADDER_MINUTES`; the Rust validator stays authoritative.
+MAX_HSL_HALT_LADDER_MINUTES = 32
+
+
 def _validate_ratio(
     value,
     *,
@@ -549,6 +553,45 @@ def normalize_hsl_risk_unstuck_numerics(
                     no_restart,
                     red_threshold,
                 )
+        halt_ladder_raw = get_grouped_bot_value(bot_side, "hsl_halt_ladder_minutes")
+        if isinstance(halt_ladder_raw, (str, bytes)) or not isinstance(
+            halt_ladder_raw, (list, tuple)
+        ):
+            raise TypeError(
+                f"{hsl_path}.halt_ladder_minutes must be a list of minutes, got "
+                f"{type(halt_ladder_raw).__name__}"
+            )
+        if len(halt_ladder_raw) > MAX_HSL_HALT_LADDER_MINUTES:
+            raise ValueError(
+                f"{hsl_path}.halt_ladder_minutes must have at most "
+                f"{MAX_HSL_HALT_LADDER_MINUTES} entries, got {len(halt_ladder_raw)}"
+            )
+        halt_ladder_minutes = [
+            _validate_ratio(
+                entry,
+                path=f"{hsl_path}.halt_ladder_minutes[{index}]",
+            )
+            for index, entry in enumerate(halt_ladder_raw)
+        ]
+        _set_grouped_bot_value(
+            result,
+            pside=pside,
+            flat_key="hsl_halt_ladder_minutes",
+            value=halt_ladder_minutes,
+            tracker=None,
+        )
+        realized_loss_budget_pct = _validate_ratio(
+            get_grouped_bot_value(bot_side, "hsl_realized_loss_budget_pct"),
+            path=f"{hsl_path}.realized_loss_budget_pct",
+            max_value=1.0,
+        )
+        _set_grouped_bot_value(
+            result,
+            pside=pside,
+            flat_key="hsl_realized_loss_budget_pct",
+            value=realized_loss_budget_pct,
+            tracker=None,
+        )
         _validate_ratio(
             get_grouped_bot_value(bot_side, "hsl_cooldown_minutes_after_red"),
             path=f"{hsl_path}.cooldown_minutes_after_red",

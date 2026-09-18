@@ -3706,8 +3706,19 @@ def test_gpu_coin_override_policy_covers_cpu_backtest_effective_allowlist(
         "risk.position_exposure_enforcer_enabled",
         "risk.position_exposure_enforcer_threshold",
     }
+    # The proxy models neither the per-strike cooldown ladder nor the realized-loss halt basis:
+    # both are episode-finalization state, not per-sample risk geometry. They stay on the CPU's
+    # overridable surface so the registry is complete, and `_validate_gpu_coin_overrides` refuses
+    # such a patch on purpose for every strategy kind - silently ignoring it would score a
+    # different strategy. The exemption is therefore not tied to `ema_anchor`.
+    proxy_unmodelled = {
+        "hsl.halt_ladder_minutes",
+        "hsl.realized_loss_budget_pct",
+    }
 
     for dotted_path in sorted(OVERRIDABLE_SHARED_BOT_PATHS):
+        if dotted_path in proxy_unmodelled:
+            continue
         if strategy_kind == "ema_anchor" and dotted_path in exact_inapplicable:
             continue
         path = tuple(dotted_path.split("."))

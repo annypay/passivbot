@@ -16813,6 +16813,13 @@ class Passivbot:
                 "no_restart_drawdown_threshold": float(
                     self.bot_value(pside, "hsl_no_restart_drawdown_threshold")
                 ),
+                "halt_ladder_minutes": [
+                    float(minutes)
+                    for minutes in self.bot_value(pside, "hsl_halt_ladder_minutes")
+                ],
+                "realized_loss_budget_pct": float(
+                    self.bot_value(pside, "hsl_realized_loss_budget_pct")
+                ),
                 "restart_after_red_policy": self.bot_value(
                     pside, "hsl_restart_after_red_policy"
                 ),
@@ -16842,6 +16849,12 @@ class Passivbot:
                 ),
                 "hsl_no_restart_drawdown_threshold": float(
                     hsl_cfg["no_restart_drawdown_threshold"]
+                ),
+                "hsl_halt_ladder_minutes": [
+                    float(minutes) for minutes in hsl_cfg["halt_ladder_minutes"]
+                ],
+                "hsl_realized_loss_budget_pct": float(
+                    hsl_cfg["realized_loss_budget_pct"]
                 ),
                 "hsl_restart_after_red_policy": normalize_hsl_restart_after_red_policy(
                     hsl_cfg["restart_after_red_policy"],

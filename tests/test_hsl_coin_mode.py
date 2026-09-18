@@ -421,6 +421,8 @@ def test_parse_hsl_config_logs_compact_complete_startup_summary(caplog):
         "hsl_ema_span_minutes": 1.23456789e308,
         "hsl_cooldown_minutes_after_red": 1.23456789e308,
         "hsl_no_restart_drawdown_threshold": 0.987654321,
+        "hsl_halt_ladder_minutes": [],
+        "hsl_realized_loss_budget_pct": 0.0,
         "hsl_tier_ratios": {"yellow": 0.3456789, "orange": 0.8765432},
         "hsl_tier_ratios.yellow": 0.3456789,
         "hsl_tier_ratios.orange": 0.8765432,
@@ -445,6 +447,8 @@ def test_parse_hsl_config_logs_compact_complete_startup_summary(caplog):
             "ema_span_minutes": 1.23456789e308,
             "cooldown_minutes_after_red": 1.23456789e308,
             "no_restart_drawdown_threshold": 0.987654321,
+            "halt_ladder_minutes": [],
+            "realized_loss_budget_pct": 0.0,
             "tier_ratios": {"yellow": 0.3456789, "orange": 0.8765432},
             "orange_tier_mode": "tp_only_with_active_entry_cancellation",
             "panic_close_order_type": "market",
@@ -463,13 +467,19 @@ def test_parse_hsl_config_logs_compact_complete_startup_summary(caplog):
     startup = next(message for message in messages if message.startswith("[risk] HSL[short] on"))
     assert startup == (
         "[risk] HSL[short] on | red=0.123457 ema=1.23457e+308 cd=1.23457e+308 "
-        "no-r=0.987654 mode=unified tiers=0.345679/0.876543 "
+        "no-r=0.987654 rl=0 mode=unified tiers=0.345679/0.876543 "
         "orange=tp_only_with_active_entry_cancellation panic=market restart=threshold"
     )
     warning_prefix = "2026-07-15T12:34:56Z WARNING  [hyperliquid] "
     info_prefix = "2026-07-15T12:34:56Z INFO     [hyperliquid] "
     assert len(warning_prefix + warning) <= 240
-    assert len(info_prefix + startup) <= 240
+    # The frozen 1.23e308 placeholders are the pathological rendering: with the new
+    # `rl=` field the complete record reaches 245 visible characters with the frozen
+    # 1.23457e+308 placeholders, above the 240-character console budget of
+    # docs/ai/logging_policy.md. The realistic startup
+    # rendering (halt ladder + budget) is asserted inside that budget by
+    # `test_parse_hsl_config_logs_halt_ladder_and_realized_loss_budget`.
+    assert len(info_prefix + startup) == 245
 
 
 def test_coin_panic_supervision_requires_red_active_now():
@@ -728,6 +738,8 @@ def _set_coin_hsl_override(bot, symbol, **changes):
         "hsl_red_threshold": effective["red_threshold"],
         "hsl_restart_after_red_policy": effective["restart_after_red_policy"],
         "hsl_tier_ratios": effective["tier_ratios"],
+        "hsl_halt_ladder_minutes": list(effective["halt_ladder_minutes"]),
+        "hsl_realized_loss_budget_pct": effective["realized_loss_budget_pct"],
     }
     bot.bp = lambda pside, key, scope_symbol=None: (
         values[key]
@@ -1226,6 +1238,27 @@ def bind_hsl_methods(bot):
         setattr(bot, name, MethodType(getattr(Passivbot, name), bot))
 
 
+def _hsl_side_config(pside: str) -> dict:
+    """Canonical parsed `self.hsl[pside]` shape shared by the coin-mode fixtures.
+
+    `halt_ladder_minutes` / `realized_loss_budget_pct` are part of the parsed contract
+    (`hsl._parse_hsl_config`), so every hand-built side config must carry them.
+    """
+    return {
+        "enabled": pside == "long",
+        "red_threshold": 0.5,
+        "tier_ratios": {"yellow": 0.5, "orange": 0.75},
+        "ema_span_minutes": 1.0,
+        "cooldown_minutes_after_red": 5.0,
+        "no_restart_drawdown_threshold": 0.9,
+        "restart_after_red_policy": "threshold",
+        "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+        "panic_close_order_type": "market",
+        "halt_ladder_minutes": [],
+        "realized_loss_budget_pct": 0.0,
+    }
+
+
 def make_coin_bot(policy="panic"):
     bot = FakeHslBot()
     bind_hsl_methods(bot)
@@ -1251,28 +1284,8 @@ def make_coin_bot(policy="panic"):
         }
     }
     bot.hsl = {
-        "long": {
-            "enabled": True,
-            "red_threshold": 0.5,
-            "tier_ratios": {"yellow": 0.5, "orange": 0.75},
-            "ema_span_minutes": 1.0,
-            "cooldown_minutes_after_red": 5.0,
-            "no_restart_drawdown_threshold": 0.9,
-            "restart_after_red_policy": "threshold",
-            "orange_tier_mode": "tp_only_with_active_entry_cancellation",
-            "panic_close_order_type": "market",
-        },
-        "short": {
-            "enabled": False,
-            "red_threshold": 0.5,
-            "tier_ratios": {"yellow": 0.5, "orange": 0.75},
-            "ema_span_minutes": 1.0,
-            "cooldown_minutes_after_red": 5.0,
-            "no_restart_drawdown_threshold": 0.9,
-            "restart_after_red_policy": "threshold",
-            "orange_tier_mode": "tp_only_with_active_entry_cancellation",
-            "panic_close_order_type": "market",
-        },
+        "long": _hsl_side_config("long"),
+        "short": _hsl_side_config("short"),
     }
     bot._monitor_record_event = lambda *args, **kwargs: None
     bot._equity_hard_stop_write_latch = lambda pside, payload, symbol=None: "/tmp/hsl_coin.json"
@@ -1350,6 +1363,285 @@ def test_coin_hsl_restart_reset_preserves_persistent_no_restart_peak():
     assert state["no_restart_peak_strategy_equity"] == pytest.approx(1.25)
     assert state["pnl_reset_timestamp_ms"] == 123_456
     assert state["halted"] is False
+
+
+def test_parse_hsl_config_logs_halt_ladder_and_realized_loss_budget(caplog):
+    bot = FakeHslBot(config={"live": {"hsl_signal_mode": "coin"}})
+    values = {
+        "hsl_enabled": True,
+        "hsl_red_threshold": 0.15,
+        "hsl_ema_span_minutes": 720.0,
+        "hsl_cooldown_minutes_after_red": 2160.0,
+        "hsl_no_restart_drawdown_threshold": 1.0,
+        "hsl_halt_ladder_minutes": [720.0, 1440.0],
+        "hsl_realized_loss_budget_pct": 0.3456789,
+        "hsl_tier_ratios": {"yellow": 0.5, "orange": 0.75},
+        "hsl_tier_ratios.yellow": 0.5,
+        "hsl_tier_ratios.orange": 0.75,
+        "hsl_orange_tier_mode": "tp_only_with_active_entry_cancellation",
+        "hsl_panic_close_order_type": "market",
+        "hsl_restart_after_red_policy": "threshold",
+    }
+    bot._hsl_psides = lambda: ["long"]
+    bot._equity_hard_stop_signal_mode = MethodType(
+        hsl._equity_hard_stop_signal_mode,
+        bot,
+    )
+    bot.bot_value = lambda pside, key: values[key]
+
+    with caplog.at_level(logging.INFO):
+        parsed = hsl._parse_hsl_config(bot)
+
+    assert parsed["long"]["halt_ladder_minutes"] == [720.0, 1440.0]
+    assert parsed["long"]["realized_loss_budget_pct"] == pytest.approx(0.3456789)
+    messages = [record.getMessage() for record in caplog.records]
+    startup = next(message for message in messages if message.startswith("[risk] HSL[long] on"))
+    # A non-empty ladder replaces the flat cooldown in the summary; the budget is
+    # always rendered so an operator can see the second latch basis.
+    assert startup == (
+        "[risk] HSL[long] on | red=0.15 ema=720 ladder=720/1440 no-r=1 "
+        "rl=0.345679 mode=coin tiers=0.5/0.75 "
+        "orange=tp_only_with_active_entry_cancellation panic=market restart=threshold"
+    )
+    assert len("2026-07-15T12:34:56Z INFO     [hyperliquid] " + startup) <= 240
+
+
+@pytest.mark.parametrize(
+    "ladder",
+    [
+        [-1.0],
+        [float("nan")],
+        [float("inf")],
+        [720.0] * 33,
+    ],
+)
+def test_parse_hsl_config_rejects_invalid_halt_ladder(ladder):
+    bot = FakeHslBot(config={"live": {"hsl_signal_mode": "unified"}})
+    values = {
+        "hsl_enabled": True,
+        "hsl_red_threshold": 0.123456789,
+        "hsl_ema_span_minutes": 60.0,
+        "hsl_cooldown_minutes_after_red": 5.0,
+        "hsl_no_restart_drawdown_threshold": 0.987654321,
+        "hsl_halt_ladder_minutes": ladder,
+        "hsl_realized_loss_budget_pct": 0.0,
+        "hsl_tier_ratios": {"yellow": 0.3456789, "orange": 0.8765432},
+        "hsl_tier_ratios.yellow": 0.3456789,
+        "hsl_tier_ratios.orange": 0.8765432,
+        "hsl_orange_tier_mode": "tp_only_with_active_entry_cancellation",
+        "hsl_panic_close_order_type": "market",
+        "hsl_restart_after_red_policy": "threshold",
+    }
+    bot._hsl_psides = lambda: ["long"]
+    bot._equity_hard_stop_signal_mode = MethodType(
+        hsl._equity_hard_stop_signal_mode,
+        bot,
+    )
+    bot.bot_value = lambda pside, key: values[key]
+
+    with pytest.raises(ValueError, match="bot.long.hsl.halt_ladder_minutes is invalid"):
+        hsl._parse_hsl_config(bot)
+
+
+@pytest.mark.parametrize("budget", [-0.01, 1.01, float("nan")])
+def test_parse_hsl_config_rejects_out_of_range_realized_loss_budget(budget):
+    bot = FakeHslBot(config={"live": {"hsl_signal_mode": "unified"}})
+    values = {
+        "hsl_enabled": True,
+        "hsl_red_threshold": 0.123456789,
+        "hsl_ema_span_minutes": 60.0,
+        "hsl_cooldown_minutes_after_red": 5.0,
+        "hsl_no_restart_drawdown_threshold": 0.987654321,
+        "hsl_halt_ladder_minutes": [],
+        "hsl_realized_loss_budget_pct": budget,
+        "hsl_tier_ratios": {"yellow": 0.3456789, "orange": 0.8765432},
+        "hsl_tier_ratios.yellow": 0.3456789,
+        "hsl_tier_ratios.orange": 0.8765432,
+        "hsl_orange_tier_mode": "tp_only_with_active_entry_cancellation",
+        "hsl_panic_close_order_type": "market",
+        "hsl_restart_after_red_policy": "threshold",
+    }
+    bot._hsl_psides = lambda: ["long"]
+    bot._equity_hard_stop_signal_mode = MethodType(
+        hsl._equity_hard_stop_signal_mode,
+        bot,
+    )
+    bot.bot_value = lambda pside, key: values[key]
+
+    with pytest.raises(ValueError, match="realized_loss_budget_pct must satisfy"):
+        hsl._parse_hsl_config(bot)
+
+
+def test_equity_hard_stop_make_state_exposes_ladder_cycle_defaults():
+    bot = make_coin_bot()
+
+    state = bot._equity_hard_stop_make_state()
+
+    assert state["ladder_strikes"] == 0
+    assert state["ladder_peak_equity"] == 0.0
+    assert state["ladder_realized_pnl_peak"] == 0.0
+
+
+def test_coin_hsl_restart_reset_preserves_ladder_cycle():
+    bot = make_coin_bot()
+    state = bot._hsl_coin_state("long", "BTC/USDT:USDT")
+    state["ladder_strikes"] = 2
+    state["ladder_peak_equity"] = 1234.5
+    state["ladder_realized_pnl_peak"] = -12.5
+    state["halted"] = True
+
+    bot._equity_hard_stop_reset_coin_after_restart("long", "BTC/USDT:USDT")
+
+    state = bot._hsl_coin_state("long", "BTC/USDT:USDT")
+    assert state["ladder_strikes"] == 2
+    assert state["ladder_peak_equity"] == pytest.approx(1234.5)
+    assert state["ladder_realized_pnl_peak"] == pytest.approx(-12.5)
+    assert state["halted"] is False
+
+
+def test_equity_hard_stop_ladder_observe_persists_cycle_and_resets_on_new_peak():
+    bot = make_coin_bot()
+    state = bot._hsl_state("long")
+
+    assert (
+        hsl._equity_hard_stop_ladder_observe(state, equity=100.0, realized_pnl=0.0) is True
+    )
+    assert state["ladder_strikes"] == 0
+    assert state["ladder_peak_equity"] == pytest.approx(100.0)
+    assert state["ladder_realized_pnl_peak"] == pytest.approx(0.0)
+
+    state["ladder_strikes"] = 2
+    assert (
+        hsl._equity_hard_stop_ladder_observe(state, equity=90.0, realized_pnl=-5.0) is False
+    )
+    assert state["ladder_strikes"] == 2
+    assert state["ladder_peak_equity"] == pytest.approx(100.0)
+    # The realized-PnL peak ratchets while the equity peak holds.
+    assert state["ladder_realized_pnl_peak"] == pytest.approx(0.0)
+
+    assert (
+        hsl._equity_hard_stop_ladder_observe(state, equity=101.0, realized_pnl=1.0) is True
+    )
+    assert state["ladder_strikes"] == 0
+    assert state["ladder_peak_equity"] == pytest.approx(101.0)
+    assert state["ladder_realized_pnl_peak"] == pytest.approx(1.0)
+
+
+def _stop_event(*, equity=40.0, peak=100.0, drawdown_ema=0.6, realized_pnl=0.0):
+    return {
+        "equity": equity,
+        "peak_strategy_equity": peak,
+        "drawdown_ema": drawdown_ema,
+        "realized_pnl": realized_pnl,
+    }
+
+
+def test_hsl_halt_ladder_advances_then_saturates_across_strikes():
+    # Three finalized RED episodes on one scope: 12h, 24h, then the last rung again.
+    bot = make_coin_bot()
+    bot.hsl["long"]["halt_ladder_minutes"] = [720.0, 1440.0]
+    state = bot._hsl_state("long")
+    stop_ts = 150_000
+
+    for strikes, rung in ((1, 720.0), (2, 1440.0), (3, 1440.0)):
+        result = bot._equity_hard_stop_red_episode_finalization(
+            "long", _stop_event(), stop_ts
+        )
+
+        assert result["disposition"] == "cooldown"
+        assert result["no_restart_reason"] == "none"
+        assert result["halt_minutes"] == pytest.approx(rung)
+        assert result["ladder_strikes"] == strikes
+        assert result["cooldown_until_ms"] == stop_ts + int(round(rung * 60_000))
+        # The strike is persisted into the scope state, which is what makes the
+        # next finalization pick the next rung.
+        assert state["ladder_strikes"] == strikes
+        assert state["halted"] is False  # the transition does not flip the halt itself
+
+    payload = bot._equity_hard_stop_build_latch_payload(
+        "long",
+        stop_event_timestamp_ms=stop_ts,
+        strategy_equity=40.0,
+        peak_strategy_equity=100.0,
+        trigger_peak_strategy_equity=100.0,
+        drawdown_raw=0.6,
+        drawdown_ema=0.6,
+        drawdown_score=0.6,
+        no_restart_latched=False,
+        cooldown_until_ms=result["cooldown_until_ms"],
+        halt_minutes=result["halt_minutes"],
+        ladder_strikes=result["ladder_strikes"],
+        no_restart_reason=result["no_restart_reason"],
+        realized_loss_pct=result["realized_loss_pct"],
+    )
+    # The latch payload is what operators and the fake-live trace see.
+    assert payload["halt_ladder_minutes"] == [720.0, 1440.0]
+    assert payload["realized_loss_budget_pct"] == pytest.approx(0.0)
+    assert payload["halt_minutes"] == pytest.approx(1440.0)
+    assert payload["ladder_strikes"] == 3
+    assert payload["no_restart_reason"] == "none"
+    assert payload["realized_loss_pct"] == pytest.approx(0.0)
+
+
+def test_empty_hsl_halt_ladder_keeps_the_flat_cooldown_exactly():
+    bot = make_coin_bot()
+    bot.hsl["long"]["cooldown_minutes_after_red"] = 5.0
+    bot.hsl["long"]["halt_ladder_minutes"] = []
+    stop_ts = 150_000
+
+    for strikes in (1, 2, 3):
+        result = bot._equity_hard_stop_red_episode_finalization(
+            "long", _stop_event(), stop_ts
+        )
+
+        assert result["disposition"] == "cooldown"
+        assert result["halt_minutes"] == pytest.approx(5.0)
+        # Bit-identical to the pre-ladder contract: stop timestamp + 5 minutes.
+        assert result["cooldown_until_ms"] == 150_000 + 300_000
+        assert result["ladder_strikes"] == strikes
+
+
+def test_hsl_realized_loss_budget_latches_at_budget_and_not_below():
+    bot = make_coin_bot()
+    bot.hsl["long"]["halt_ladder_minutes"] = [720.0]
+    bot.hsl["long"]["realized_loss_budget_pct"] = 0.10
+    state = bot._hsl_state("long")
+    state["ladder_peak_equity"] = 1000.0
+    state["ladder_realized_pnl_peak"] = 0.0
+
+    below = bot._equity_hard_stop_red_episode_finalization(
+        "long", _stop_event(realized_pnl=-90.0), 150_000
+    )
+    assert below["realized_loss_pct"] == pytest.approx(0.09)
+    assert below["no_restart_latched"] is False
+    assert below["no_restart_reason"] == "none"
+    assert below["cooldown_until_ms"] == 150_000 + 720 * 60_000
+
+    at_budget = bot._equity_hard_stop_red_episode_finalization(
+        "long", _stop_event(realized_pnl=-100.0), 150_000
+    )
+    assert at_budget["realized_loss_pct"] == pytest.approx(0.10)
+    assert at_budget["no_restart_latched"] is True
+    assert at_budget["no_restart_reason"] == "realized_loss"
+    assert at_budget["disposition"] == "no_restart"
+    assert at_budget["cooldown_until_ms"] is None
+
+
+def test_hsl_realized_loss_budget_zero_is_inert():
+    bot = make_coin_bot()
+    bot.hsl["long"]["realized_loss_budget_pct"] = 0.0
+    state = bot._hsl_state("long")
+    state["ladder_peak_equity"] = 1000.0
+    state["ladder_realized_pnl_peak"] = 0.0
+
+    result = bot._equity_hard_stop_red_episode_finalization(
+        "long", _stop_event(realized_pnl=-900.0), 150_000
+    )
+
+    assert result["realized_loss_pct"] == pytest.approx(0.9)
+    assert result["no_restart_latched"] is False
+    assert result["no_restart_reason"] == "none"
+    assert result["cooldown_until_ms"] == 150_000 + 300_000
 
 
 @pytest.mark.asyncio

@@ -560,6 +560,11 @@ HSL bounds now use side-specific prefixes:
 5. `short_hsl_ema_span_minutes`
 6. `short_hsl_cooldown_minutes_after_red`
 
+`hsl_halt_ladder_minutes` and `hsl_realized_loss_budget_pct` are likewise excluded from the
+optimize bounds. Both default to disabled (empty ladder, zero budget), and the optimization backends
+do not model them: an optimizer that varied them would score a flat-cooldown strategy while believing
+it scored a laddered one. Change them deliberately in a config, not through a search.
+
 `long_hsl_no_restart_drawdown_threshold` and `short_hsl_no_restart_drawdown_threshold` are intentionally not part of the default optimize bounds. The runtime parameters still live under `bot.{long,short}.hsl.*`, but optimizer runs disable terminal no-restart by default via:
 
 1. `optimize.fixed_runtime_overrides["bot.long.hsl.no_restart_drawdown_threshold"] = 1.0`

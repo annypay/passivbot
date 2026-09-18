@@ -49,6 +49,12 @@ def test_red_episode_finalization_binding_returns_explicit_disposition():
         "no_restart_peak_strategy_equity": pytest.approx(120.0),
         "no_restart_drawdown_raw": pytest.approx(0.25),
         "no_restart_latched": False,
+        "no_restart_reason": "none",
+        "realized_loss_pct": pytest.approx(0.0),
+        "halt_minutes": pytest.approx(5.0),
+        "ladder_strikes": 1,
+        "ladder_peak_equity": pytest.approx(0.0),
+        "ladder_realized_pnl_peak": pytest.approx(0.0),
         "cooldown_until_ms": 425_500,
         "disposition": "cooldown",
     }
@@ -261,3 +267,158 @@ def test_equity_hard_stop_runtime_same_minute_replay_red_can_latch_current_sampl
     assert current_red["tier"] == "red"
     assert current_red["red_latched"] is True
     assert runtime.red_latched() is True
+
+
+@pytest.mark.skipif(
+    pbr is None or pbr_is_stub,
+    reason="passivbot_rust extension not available",
+)
+def test_hsl_validate_halt_ladder_binding_accepts_disabled_and_valid_ladders():
+    assert pbr.hsl_validate_halt_ladder([]) is None
+    assert pbr.hsl_validate_halt_ladder([720.0, 1440.0]) is None
+    # A zero rung means "no cooldown", not "ladder disabled".
+    assert pbr.hsl_validate_halt_ladder([0.0]) is None
+    assert pbr.hsl_validate_halt_ladder([720.0] * 32) is None
+
+
+@pytest.mark.skipif(
+    pbr is None or pbr_is_stub,
+    reason="passivbot_rust extension not available",
+)
+@pytest.mark.parametrize(
+    "ladder",
+    [
+        [-1.0],
+        [720.0, float("nan")],
+        [float("inf")],
+        [720.0] * 33,
+    ],
+)
+def test_hsl_validate_halt_ladder_binding_rejects_invalid_ladders(ladder):
+    with pytest.raises(ValueError):
+        pbr.hsl_validate_halt_ladder(ladder)
+
+
+@pytest.mark.skipif(
+    pbr is None or pbr_is_stub,
+    reason="passivbot_rust extension not available",
+)
+def test_hsl_ladder_cycle_observe_binding_matches_contract():
+    started = pbr.hsl_ladder_cycle_observe(
+        equity=100.0,
+        realized_pnl=0.0,
+        strikes=3,
+        peak_equity=0.0,
+        realized_pnl_peak=0.0,
+    )
+    assert started == {
+        "reset": True,
+        "strikes": 0,
+        "peak_equity": pytest.approx(100.0),
+        "realized_pnl_peak": pytest.approx(0.0),
+    }
+
+    holding = pbr.hsl_ladder_cycle_observe(
+        equity=90.0,
+        realized_pnl=-4.0,
+        strikes=2,
+        peak_equity=100.0,
+        realized_pnl_peak=1.0,
+    )
+    assert holding == {
+        "reset": False,
+        "strikes": 2,
+        "peak_equity": pytest.approx(100.0),
+        "realized_pnl_peak": pytest.approx(1.0),
+    }
+
+    ratcheted = pbr.hsl_ladder_cycle_observe(
+        equity=95.0,
+        realized_pnl=3.0,
+        strikes=2,
+        peak_equity=100.0,
+        realized_pnl_peak=1.0,
+    )
+    assert ratcheted["reset"] is False
+    assert ratcheted["realized_pnl_peak"] == pytest.approx(3.0)
+
+    with pytest.raises(ValueError):
+        pbr.hsl_ladder_cycle_observe(
+            equity=0.0,
+            realized_pnl=0.0,
+            strikes=0,
+            peak_equity=0.0,
+            realized_pnl_peak=0.0,
+        )
+    with pytest.raises(ValueError):
+        pbr.hsl_ladder_cycle_observe(
+            equity=100.0,
+            realized_pnl=float("nan"),
+            strikes=0,
+            peak_equity=100.0,
+            realized_pnl_peak=0.0,
+        )
+
+
+@pytest.mark.skipif(
+    pbr is None or pbr_is_stub,
+    reason="passivbot_rust extension not available",
+)
+def test_hsl_red_episode_finalization_binding_applies_ladder_and_loss_basis():
+    out = pbr.hsl_red_episode_finalization(
+        restart_after_red_policy="threshold",
+        stop_timestamp_ms=200_000,
+        stop_equity=90.0,
+        stop_peak_strategy_equity=100.0,
+        previous_no_restart_peak_strategy_equity=100.0,
+        drawdown_ema=0.05,
+        red_threshold=0.20,
+        no_restart_drawdown_threshold=0.90,
+        cooldown_minutes_after_red=5.0,
+        halt_ladder_minutes=[720.0, 1440.0],
+        ladder_strikes=1,
+        ladder_peak_equity=1000.0,
+        ladder_realized_pnl_peak=0.0,
+        realized_pnl_now=-100.0,
+        realized_loss_budget_pct=0.10,
+    )
+
+    assert out["halt_minutes"] == pytest.approx(1440.0)
+    assert out["ladder_strikes"] == 2
+    assert out["ladder_peak_equity"] == pytest.approx(1000.0)
+    assert out["ladder_realized_pnl_peak"] == pytest.approx(0.0)
+    assert out["realized_loss_pct"] == pytest.approx(0.10)
+    assert out["no_restart_reason"] == "realized_loss"
+    assert out["no_restart_latched"] is True
+    assert out["cooldown_until_ms"] is None
+    assert out["disposition"] == "no_restart"
+
+
+@pytest.mark.skipif(
+    pbr is None or pbr_is_stub,
+    reason="passivbot_rust extension not available",
+)
+def test_hsl_red_episode_finalization_binding_empty_ladder_keeps_flat_cooldown():
+    out = pbr.hsl_red_episode_finalization(
+        restart_after_red_policy="threshold",
+        stop_timestamp_ms=200_000,
+        stop_equity=90.0,
+        stop_peak_strategy_equity=100.0,
+        previous_no_restart_peak_strategy_equity=100.0,
+        drawdown_ema=0.05,
+        red_threshold=0.20,
+        no_restart_drawdown_threshold=0.90,
+        cooldown_minutes_after_red=5.0,
+        halt_ladder_minutes=[],
+        ladder_strikes=4,
+        ladder_peak_equity=0.0,
+        ladder_realized_pnl_peak=0.0,
+        realized_pnl_now=0.0,
+        realized_loss_budget_pct=0.0,
+    )
+
+    assert out["halt_minutes"] == pytest.approx(5.0)
+    assert out["cooldown_until_ms"] == 500_000
+    assert out["ladder_strikes"] == 5
+    assert out["realized_loss_pct"] == pytest.approx(0.0)
+    assert out["no_restart_reason"] == "none"

@@ -32,9 +32,11 @@ def _get_shared_bot_defaults():
                 "cooldown_minutes_after_red": 2160.0,
                 "ema_span_minutes": 720.0,
                 "enabled": False,
+                "halt_ladder_minutes": [],
                 "no_restart_drawdown_threshold": 1,
                 "orange_tier_mode": "tp_only_with_active_entry_cancellation",
                 "panic_close_order_type": "limit",
+                "realized_loss_budget_pct": 0.0,
                 "red_threshold": 0.15,
                 "restart_after_red_policy": "threshold",
                 "tier_ratios": {
@@ -85,9 +87,11 @@ def _get_shared_bot_defaults():
                 "cooldown_minutes_after_red": 1.0,
                 "ema_span_minutes": 1.0,
                 "enabled": False,
+                "halt_ladder_minutes": [],
                 "no_restart_drawdown_threshold": 1,
                 "orange_tier_mode": "tp_only_with_active_entry_cancellation",
                 "panic_close_order_type": "limit",
+                "realized_loss_budget_pct": 0.0,
                 "red_threshold": 0.01,
                 "restart_after_red_policy": "threshold",
                 "tier_ratios": {
