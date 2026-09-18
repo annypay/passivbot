@@ -1,0 +1,213 @@
+{
+  "arm": "c4__ext",
+  "arm_dir": "2026-09-18T00_15_17",
+  "cap_overshoot_fill": {
+    "balance_usd": 5355.159888452022,
+    "cap": 0.4575,
+    "coin": "AAVE",
+    "excess_pct": 0.010941023693140206,
+    "price": 339.83,
+    "qty": 0.1,
+    "timestamp": "2021-05-21 20:51:00+00:00",
+    "type": "entry_trailing_cropped_long",
+    "wallet_exposure": 0.4625055183396117
+  },
+  "cross_check_problems": [],
+  "declared": {
+    "effective_allowance_pct": 0.22,
+    "liquidation_threshold": 0.05,
+    "n_positions": 6.0,
+    "per_slot_cap": 0.4575,
+    "slot_share": 0.375,
+    "source": "config.json",
+    "starting_balance": 10000.0,
+    "total_wallet_exposure_limit": 2.25,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.22
+  },
+  "declared_allowance_pct": 0.22,
+  "declared_n_positions": 6.0,
+  "declared_twe": 2.25,
+  "leg": "ext",
+  "method": "几何读数全部来自本 arm 的成交账本、权益序列与冻结配置：单槽上限用引擎的 bounded 模式公式（min(raw, TWE/(TWE/n) − 1)）；在场币数按成交时间戳分段做时间加权，窗口取权益序列首末采样（未持仓的时间计入分母）；单币归零上界 = 单币峰值敞口。单槽上限是“下单规划时”的约束，成交时的 wallet_exposure 会因为盯市漂移与交易所最小下单量（额度被裁到 0 时仍会成交最小可交易数量）而略高于上限，因此该不变量用 5% 的执行余量校验，实际超出比例与造成它的那笔成交记在 observed.per_slot_cap_excess_pct 与 cap_overshoot_fill。",
+  "observed": {
+    "active_coins_mean": 2.5208559596002282,
+    "active_coins_peak": 6.0,
+    "empty_slot_time_share": 0.5798573400666286,
+    "fills_count": 40483,
+    "liquidation_shock_at_peak": 0.40727535352410077,
+    "mean_total_exposure": 0.06302138817181178,
+    "occupancy_segments": 38441,
+    "peak_coin_exposure": 0.4625055183396117,
+    "peak_coin_share_of_peak_total": 0.20555834123754044,
+    "peak_exposure_balance_usd": 5978.57712323802,
+    "peak_total_exposure": 2.2499963541014694,
+    "per_slot_cap": 0.4575,
+    "per_slot_cap_excess_pct": 0.010941023693140237,
+    "position_minutes": 2436707.0,
+    "single_coin_wipeout_bound": 0.4625055183396117,
+    "time_with_any_position_share": 0.8581102401025489,
+    "top3_exposure": 1.381090357589474,
+    "window_minutes": 2839620.0
+  },
+  "per_coin": [
+    [
+      "AAVE",
+      0.4625055183396117
+    ],
+    [
+      "LTC",
+      0.4594415917459766
+    ],
+    [
+      "AVAX",
+      0.4591432475038857
+    ],
+    [
+      "ETH",
+      0.4583387749221958
+    ],
+    [
+      "LINK",
+      0.4582635226540551
+    ],
+    [
+      "NEAR",
+      0.4579588708102018
+    ],
+    [
+      "ADA",
+      0.4575829288218693
+    ],
+    [
+      "INJ",
+      0.4575334107577591
+    ],
+    [
+      "FIL",
+      0.4575242658496997
+    ],
+    [
+      "HBAR",
+      0.4575196565741655
+    ],
+    [
+      "ONDO",
+      0.4575172652947477
+    ],
+    [
+      "SOL",
+      0.4575141578781251
+    ],
+    [
+      "TAO",
+      0.4575134517540268
+    ],
+    [
+      "WLD",
+      0.457513157310672
+    ],
+    [
+      "DOGE",
+      0.457513058216237
+    ],
+    [
+      "ZEC",
+      0.4575126926579482
+    ],
+    [
+      "HYPE",
+      0.4575094183764616
+    ],
+    [
+      "ENA",
+      0.4575093761603249
+    ],
+    [
+      "ALGO",
+      0.4575081935494653
+    ],
+    [
+      "APT",
+      0.4575081909127816
+    ],
+    [
+      "XRP",
+      0.4575069877801755
+    ],
+    [
+      "ATOM",
+      0.4575008087156165
+    ],
+    [
+      "XMR",
+      0.4575005014640563
+    ],
+    [
+      "XLM",
+      0.4574953679841446
+    ],
+    [
+      "BNB",
+      0.457473175176199
+    ],
+    [
+      "UNI",
+      0.4574636026230553
+    ],
+    [
+      "POL",
+      0.4478451149360902
+    ],
+    [
+      "DOT",
+      0.4236237939114661
+    ],
+    [
+      "KAS",
+      0.326057630884146
+    ],
+    [
+      "ARB",
+      0.2852891797176408
+    ],
+    [
+      "SUI",
+      0.2845567077694839
+    ],
+    [
+      "BCH",
+      0.2795377917714655
+    ],
+    [
+      "RENDER",
+      0.1811107603678512
+    ],
+    [
+      "TRX",
+      0.1801180904297064
+    ],
+    [
+      "TON",
+      0.1798851078614223
+    ],
+    [
+      "BTC",
+      0.1770291978989297
+    ],
+    [
+      "MORPHO",
+      0.1146345755958255
+    ],
+    [
+      "ASTER",
+      0.0730089823262935
+    ],
+    [
+      "CC",
+      0.0459468713624415
+    ]
+  ],
+  "per_slot_cap": 0.4575,
+  "stage": "C"
+}

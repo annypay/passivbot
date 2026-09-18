@@ -56,6 +56,7 @@ repository-relative, so a fresh checkout reproduces the run without editing a ho
 | `binance/g4_tail_risk_research_2026-09-17` | 尾部风险（“一波带走”）研究：把同一份冻结 g4 配置在原生 3 年、5.4 年历史压力腿与两条合成崩塌情景上逐 arm 重放（HSL coin/pside/unified、结构性降杠杆、暴露强制回收、实现亏损闸门），给出单币/多币归零的损失上界、事件窗口压力表、熔断代价与预注册判据 J1–J4 的裁决。中文 README 与 `tail_risk_analysis.md` 见该 study 目录。 |
 | `binance/g4_twe300_10k_replay_2026-09-17` | TWE 3.0 / 10,000 USDT 重跑：把发布 g4 门控 profile 的总暴露上限提到 3.0、起始资金降到 10k，在原生 3 年与 5.4 年历史压力腿上逐 arm 重放（含 unified red=0.10 硬底线、we_excess_allowance_pct=0 与终止式变体），给出强平事实、资本/杠杆/强平几何、冲击矩阵与 10k 实盘准入附录。中文 README 与 `twe300_10k_analysis.md` 见该 study 目录。 |
 | `binance/g4_twe300_account_guard_2026-09-17` | 账户级守护实测：同一份 TWE 3.0 / 10k 配置加一层账户级熔断（一周 −20% ⇒ 停 12H；第二次按剩余余额 ⇒ 停 24H）与三条对照（只停加仓的软刹车、纯 ORANGE、慢 EMA 反证）在原生 3 年与 5.4 年历史压力腿上逐 arm 重放，给出“强平 → 生存”的实测代价、逐次停机与复牌表现、终局锁存陷阱与预注册判据 J1–J5 的裁决。中文 README 与 `account_guard_analysis.md` 见该 study 目录。 |
+| `binance/g4_twe300_risk_optimization_2026-09-17` | 风险几何优化：占用纪律（`we_excess_allowance_pct=0`，单币不得超过均分额度）、冷却档位（12/24/48/72H）、累计二档与实现亏损刹车，加上一次“只搜风险几何、钉死 alpha”的 pymoo 参数搜索；三条腿重放（原生 3 年搜索窗、5.4 年全历史、以及用 `intersection` override切出的 2021-04→2023-09 样本外验收窗），给出占用/暴露几何读数、搜索选择轨迹与预注册判据 J1–J6 的裁决。中文 README 与 `risk_geometry_analysis.md` 见该 study 目录。 |
 
 ## Reproducing the published profiles
 
@@ -127,6 +128,17 @@ bash backtests/binance/g4_twe300_account_guard_2026-09-17/run.sh
 bash backtests/binance/g4_twe300_account_guard_2026-09-17/run.sh --verify-only
 bash backtests/binance/g4_twe300_account_guard_2026-09-17/run.sh --variant g_user12h__ext
 venv/bin/python -m pytest tests/test_g4_twe300_account_guard.py -q
+
+# TWE 3.0 risk geometry: occupancy discipline, cooldown rungs and a risk-only parameter
+# search validated on an out-of-sample window that the search never sees.
+bash backtests/binance/g4_twe300_risk_optimization_2026-09-17/run.sh
+bash backtests/binance/g4_twe300_risk_optimization_2026-09-17/run.sh --stage A
+bash backtests/binance/g4_twe300_risk_optimization_2026-09-17/run.sh --leg pre
+bash backtests/binance/g4_twe300_risk_optimization_2026-09-17/run.sh --verify-only
+# the search itself (existing pymoo optimizer, only the six declared risk dimensions)
+bash backtests/binance/g4_twe300_risk_optimization_2026-09-17/run.sh --search-smoke
+bash backtests/binance/g4_twe300_risk_optimization_2026-09-17/run.sh --search
+venv/bin/python -m pytest tests/test_g4_twe300_risk_optimization.py -q
 ```
 
 Every `run.sh` mode runs the frozen study window and the reported contract, so the bundles are

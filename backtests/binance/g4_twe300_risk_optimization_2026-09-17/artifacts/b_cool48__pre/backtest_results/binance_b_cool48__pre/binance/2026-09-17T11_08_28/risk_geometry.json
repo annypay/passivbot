@@ -1,0 +1,161 @@
+{
+  "arm": "b_cool48__pre",
+  "arm_dir": "2026-09-17T11_08_28",
+  "cap_overshoot_fill": {
+    "balance_usd": 4845.930945668353,
+    "cap": 0.42857142857142855,
+    "coin": "AVAX",
+    "excess_pct": 0.0367279483916636,
+    "price": 83.135,
+    "qty": 1.0,
+    "timestamp": "2022-01-09 00:32:00+00:00",
+    "type": "entry_trailing_cropped_long",
+    "wallet_exposure": 0.4443119778821415
+  },
+  "cross_check_problems": [],
+  "declared": {
+    "effective_allowance_pct": 0.0,
+    "liquidation_threshold": 0.05,
+    "n_positions": 7.0,
+    "per_slot_cap": 0.42857142857142855,
+    "slot_share": 0.42857142857142855,
+    "source": "config.json",
+    "starting_balance": 10000.0,
+    "total_wallet_exposure_limit": 3.0,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.0
+  },
+  "declared_allowance_pct": 0.0,
+  "declared_n_positions": 7.0,
+  "declared_twe": 3.0,
+  "leg": "pre",
+  "method": "几何读数全部来自本 arm 的成交账本、权益序列与冻结配置：单槽上限用引擎的 bounded 模式公式（min(raw, TWE/(TWE/n) − 1)）；在场币数按成交时间戳分段做时间加权，窗口取权益序列首末采样（未持仓的时间计入分母）；单币归零上界 = 单币峰值敞口。单槽上限是“下单规划时”的约束，成交时的 wallet_exposure 会因为盯市漂移与交易所最小下单量（额度被裁到 0 时仍会成交最小可交易数量）而略高于上限，因此该不变量用 5% 的执行余量校验，实际超出比例与造成它的那笔成交记在 observed.per_slot_cap_excess_pct 与 cap_overshoot_fill。",
+  "observed": {
+    "active_coins_mean": 2.6408152562574494,
+    "active_coins_peak": 7.0,
+    "empty_slot_time_share": 0.6227406776775073,
+    "fills_count": 16953,
+    "liquidation_shock_at_peak": 0.34620920857737425,
+    "mean_total_exposure": 0.07010581429986362,
+    "occupancy_segments": 15788,
+    "peak_coin_exposure": 0.4443119778821415,
+    "peak_coin_share_of_peak_total": 0.18057482532624514,
+    "peak_exposure_balance_usd": 3375.23957796602,
+    "peak_total_exposure": 2.460542199497641,
+    "per_slot_cap": 0.42857142857142855,
+    "per_slot_cap_excess_pct": 0.036727948391663545,
+    "position_minutes": 1086414.0,
+    "single_coin_wipeout_bound": 0.4443119778821415,
+    "time_with_any_position_share": 0.8632610250297974,
+    "top3_exposure": 1.3165335875699886,
+    "window_minutes": 1258500.0
+  },
+  "per_coin": [
+    [
+      "AVAX",
+      0.4443119778821415
+    ],
+    [
+      "AAVE",
+      0.4378253669064552
+    ],
+    [
+      "LTC",
+      0.4343962427813919
+    ],
+    [
+      "ETH",
+      0.4324091061357463
+    ],
+    [
+      "LINK",
+      0.4319546172186405
+    ],
+    [
+      "BTC",
+      0.4313255220309669
+    ],
+    [
+      "NEAR",
+      0.4296849051664047
+    ],
+    [
+      "FIL",
+      0.4296782366433113
+    ],
+    [
+      "ALGO",
+      0.4295383033773167
+    ],
+    [
+      "HBAR",
+      0.4286238478000079
+    ],
+    [
+      "ZEC",
+      0.4285842381361402
+    ],
+    [
+      "DOGE",
+      0.4285813739660601
+    ],
+    [
+      "XLM",
+      0.4285811052074694
+    ],
+    [
+      "ATOM",
+      0.4285802337538984
+    ],
+    [
+      "SOL",
+      0.4285482472528643
+    ],
+    [
+      "APT",
+      0.4284806482750743
+    ],
+    [
+      "DOT",
+      0.4282136391415376
+    ],
+    [
+      "XMR",
+      0.4122945572096334
+    ],
+    [
+      "XRP",
+      0.3950949995537509
+    ],
+    [
+      "BNB",
+      0.3814521328682158
+    ],
+    [
+      "BCH",
+      0.2875013309884601
+    ],
+    [
+      "ADA",
+      0.2559540021297446
+    ],
+    [
+      "UNI",
+      0.1781264923990304
+    ],
+    [
+      "TRX",
+      0.1693472880070824
+    ],
+    [
+      "INJ",
+      0.1690638443235428
+    ],
+    [
+      "ARB",
+      0.0069267456098871
+    ]
+  ],
+  "per_slot_cap": 0.42857142857142855,
+  "stage": "B"
+}

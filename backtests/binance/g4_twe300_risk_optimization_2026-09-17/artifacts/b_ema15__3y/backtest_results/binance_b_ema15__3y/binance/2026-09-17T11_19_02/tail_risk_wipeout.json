@@ -1,0 +1,396 @@
+{
+  "arm": "b_ema15__3y",
+  "capital": {
+    "liquidation_floor_usd": 500.0,
+    "liquidation_threshold": 0.05,
+    "starting_balance": 10000.0
+  },
+  "config_risk": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 3,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0
+  },
+  "leg": "3y",
+  "matrix": [
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 0.4290107006265217,
+      "loss_fraction": 0.08580214012530435,
+      "loss_usd": 1380.3897842936394,
+      "scope": "worst_coin",
+      "scope_label": "暴露最大的单个币归零",
+      "shock": 0.2
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 0.4290107006265217,
+      "loss_fraction": 0.1716042802506087,
+      "loss_usd": 2760.779568587279,
+      "scope": "worst_coin",
+      "scope_label": "暴露最大的单个币归零",
+      "shock": 0.4
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 0.4290107006265217,
+      "loss_fraction": 0.257406420375913,
+      "loss_usd": 4141.169352880917,
+      "scope": "worst_coin",
+      "scope_label": "暴露最大的单个币归零",
+      "shock": 0.6
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 0.4290107006265217,
+      "loss_fraction": 0.3432085605012174,
+      "loss_usd": 5521.559137174558,
+      "scope": "worst_coin",
+      "scope_label": "暴露最大的单个币归零",
+      "shock": 0.8
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 0.4290107006265217,
+      "loss_fraction": 0.4290107006265217,
+      "loss_usd": 6901.948921468195,
+      "scope": "worst_coin",
+      "scope_label": "暴露最大的单个币归零",
+      "shock": 1.0
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.2868320525675347,
+      "loss_fraction": 0.25736641051350695,
+      "loss_usd": 4140.525671904479,
+      "scope": "top3_worst",
+      "scope_label": "暴露最大的 3 个币同时归零",
+      "shock": 0.2
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.2868320525675347,
+      "loss_fraction": 0.5147328210270139,
+      "loss_usd": 8281.051343808958,
+      "scope": "top3_worst",
+      "scope_label": "暴露最大的 3 个币同时归零",
+      "shock": 0.4
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.2868320525675347,
+      "loss_fraction": 0.7720992315405208,
+      "loss_usd": 12421.577015713438,
+      "scope": "top3_worst",
+      "scope_label": "暴露最大的 3 个币同时归零",
+      "shock": 0.6
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.2868320525675347,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "top3_worst",
+      "scope_label": "暴露最大的 3 个币同时归零",
+      "shock": 0.8
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.2868320525675347,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "top3_worst",
+      "scope_label": "暴露最大的 3 个币同时归零",
+      "shock": 1.0
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 3.0016265054425264,
+      "loss_fraction": 0.6003253010885053,
+      "loss_usd": 9658.068104890834,
+      "scope": "top7_slots",
+      "scope_label": "全部 7 个槽位同时归零（峰值之和，上界）",
+      "shock": 0.2
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 3.0016265054425264,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "top7_slots",
+      "scope_label": "全部 7 个槽位同时归零（峰值之和，上界）",
+      "shock": 0.4
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 3.0016265054425264,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "top7_slots",
+      "scope_label": "全部 7 个槽位同时归零（峰值之和，上界）",
+      "shock": 0.6
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 3.0016265054425264,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "top7_slots",
+      "scope_label": "全部 7 个槽位同时归零（峰值之和，上界）",
+      "shock": 0.8
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 3.0016265054425264,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "top7_slots",
+      "scope_label": "全部 7 个槽位同时归零（峰值之和，上界）",
+      "shock": 1.0
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.6829492622803774,
+      "loss_fraction": 0.33658985245607553,
+      "loss_usd": 5415.076980000001,
+      "scope": "basket_at_observed_peak",
+      "scope_label": "实测总暴露峰值处整篮归零",
+      "shock": 0.2
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.6829492622803774,
+      "loss_fraction": 0.6731797049121511,
+      "loss_usd": 10830.153960000001,
+      "scope": "basket_at_observed_peak",
+      "scope_label": "实测总暴露峰值处整篮归零",
+      "shock": 0.4
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.6829492622803774,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "basket_at_observed_peak",
+      "scope_label": "实测总暴露峰值处整篮归零",
+      "shock": 0.6
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.6829492622803774,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "basket_at_observed_peak",
+      "scope_label": "实测总暴露峰值处整篮归零",
+      "shock": 0.8
+    },
+    {
+      "arm": "b_ema15__3y",
+      "exposure": 1.6829492622803774,
+      "loss_fraction": 1.0,
+      "loss_usd": 16088.057736995088,
+      "scope": "basket_at_observed_peak",
+      "scope_label": "实测总暴露峰值处整篮归零",
+      "shock": 1.0
+    }
+  ],
+  "per_coin_max_exposure": [
+    {
+      "coin": "AVAX",
+      "max_abs_wallet_exposure": 0.4290107006265217
+    },
+    {
+      "coin": "LINK",
+      "max_abs_wallet_exposure": 0.428930027161503
+    },
+    {
+      "coin": "LTC",
+      "max_abs_wallet_exposure": 0.4288913247795101
+    },
+    {
+      "coin": "AAVE",
+      "max_abs_wallet_exposure": 0.4287835209361429
+    },
+    {
+      "coin": "WLD",
+      "max_abs_wallet_exposure": 0.4287497826118446
+    },
+    {
+      "coin": "INJ",
+      "max_abs_wallet_exposure": 0.4286349603745521
+    },
+    {
+      "coin": "NEAR",
+      "max_abs_wallet_exposure": 0.428626188952452
+    },
+    {
+      "coin": "ETH",
+      "max_abs_wallet_exposure": 0.4285912641896752
+    },
+    {
+      "coin": "ENA",
+      "max_abs_wallet_exposure": 0.428588831612043
+    },
+    {
+      "coin": "ONDO",
+      "max_abs_wallet_exposure": 0.4285887048857255
+    },
+    {
+      "coin": "DOGE",
+      "max_abs_wallet_exposure": 0.4285838882409399
+    },
+    {
+      "coin": "ZEC",
+      "max_abs_wallet_exposure": 0.4285818507739181
+    },
+    {
+      "coin": "TAO",
+      "max_abs_wallet_exposure": 0.4285799391423892
+    },
+    {
+      "coin": "XMR",
+      "max_abs_wallet_exposure": 0.4285791312368041
+    },
+    {
+      "coin": "ARB",
+      "max_abs_wallet_exposure": 0.4285723490584299
+    },
+    {
+      "coin": "APT",
+      "max_abs_wallet_exposure": 0.4285498497529341
+    },
+    {
+      "coin": "UNI",
+      "max_abs_wallet_exposure": 0.428508971297246
+    },
+    {
+      "coin": "POL",
+      "max_abs_wallet_exposure": 0.4195580032639076
+    },
+    {
+      "coin": "ATOM",
+      "max_abs_wallet_exposure": 0.4189266118723574
+    },
+    {
+      "coin": "MORPHO",
+      "max_abs_wallet_exposure": 0.4168120167651462
+    },
+    {
+      "coin": "XLM",
+      "max_abs_wallet_exposure": 0.4147764069528785
+    },
+    {
+      "coin": "HBAR",
+      "max_abs_wallet_exposure": 0.4015236591879219
+    },
+    {
+      "coin": "HYPE",
+      "max_abs_wallet_exposure": 0.3116299789229351
+    },
+    {
+      "coin": "KAS",
+      "max_abs_wallet_exposure": 0.3051600484522694
+    },
+    {
+      "coin": "FIL",
+      "max_abs_wallet_exposure": 0.2669780443526355
+    },
+    {
+      "coin": "SUI",
+      "max_abs_wallet_exposure": 0.2658039096538632
+    },
+    {
+      "coin": "BCH",
+      "max_abs_wallet_exposure": 0.2617630466712463
+    },
+    {
+      "coin": "ALGO",
+      "max_abs_wallet_exposure": 0.2534778390576526
+    },
+    {
+      "coin": "ADA",
+      "max_abs_wallet_exposure": 0.1700181716470703
+    },
+    {
+      "coin": "SOL",
+      "max_abs_wallet_exposure": 0.1697880922192498
+    },
+    {
+      "coin": "RENDER",
+      "max_abs_wallet_exposure": 0.1695442221663949
+    },
+    {
+      "coin": "TON",
+      "max_abs_wallet_exposure": 0.1685422146415621
+    },
+    {
+      "coin": "DOT",
+      "max_abs_wallet_exposure": 0.1670638155751996
+    },
+    {
+      "coin": "XRP",
+      "max_abs_wallet_exposure": 0.1615139549204254
+    },
+    {
+      "coin": "BTC",
+      "max_abs_wallet_exposure": 0.0923418846072214
+    },
+    {
+      "coin": "ASTER",
+      "max_abs_wallet_exposure": 0.0683075011106185
+    },
+    {
+      "coin": "BNB",
+      "max_abs_wallet_exposure": 0.0665939564984178
+    },
+    {
+      "coin": "CC",
+      "max_abs_wallet_exposure": 0.0429622675334638
+    },
+    {
+      "coin": "TRX",
+      "max_abs_wallet_exposure": 0.0423698093546207
+    }
+  ],
+  "ruin": {
+    "arm": "b_ema15__3y",
+    "basket_zero_loss_usd": 16088.057736995088,
+    "coins_to_breach_20pct": 1,
+    "coins_to_breach_50pct": 2,
+    "coins_to_breach_80pct": 2,
+    "declared_twe": 3.0,
+    "liquidation_shock_at_peak": 0.5757280199180137,
+    "liquidation_threshold": 0.05,
+    "peak_exposure_balance_usd": 16088.057736995088,
+    "peak_total_exposure": 1.6829492622803774,
+    "ruin_distance": 0.0,
+    "starting_balance_usd": 10000.0,
+    "sum_of_maxima": 12.34280674105969,
+    "top3_exposure": 1.2868320525675347,
+    "top7_exposure": 3.0016265054425264,
+    "worst_coin": "AVAX",
+    "worst_coin_exposure": 0.4290107006265217,
+    "worst_coin_zero_loss_usd": 6901.948921468195
+  },
+  "shock_levels": [
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0
+  ],
+  "survival": {
+    "effective_end_date": "2026-09-11T23:59:00Z",
+    "liquidated": false
+  },
+  "synthetic": false,
+  "warnings": []
+}
