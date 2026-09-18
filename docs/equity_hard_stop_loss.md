@@ -244,9 +244,12 @@ Each `pside` has the same HSL parameter set:
    - a ladder cycle ends when the `pside`'s strategy equity regains the peak the
      cycle started from; only then does the strike count return to zero. Losing
      episodes and their cooldowns do **not** reset it
-   - this is risk shaping, not extra return: measured on the historical legs, longer
-     cooldowns were never better than the flat 12H setting, which is why the
-     recommended ladder stops at 24H (`[720, 1440]`) and stays off by default
+   - this is risk shaping, not extra return, and it stays off by default. Measured on the
+     historical legs the ladder was neutral to slightly negative (terminal value +0.24% on
+     the full history, -0.43% on the out-of-sample window, worst drawdown bit-identical), and
+     the 12H-vs-24H choice for the first rung gave opposite answers on the two legs. Treat
+     `24H` as the documented *upper bound*, not a recommendation: `[720, 1440]` is an example,
+     not a calibrated setting
 7. `hsl_realized_loss_budget_pct`
    - second, mark-to-market-free basis for the terminal no-restart halt
    - `0` (the default) disables it; otherwise it latches when the ladder cycle's

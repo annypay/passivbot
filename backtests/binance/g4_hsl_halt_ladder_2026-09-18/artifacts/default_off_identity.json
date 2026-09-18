@@ -1,0 +1,138 @@
+{
+  "claim": "两个新键取默认值（halt_ladder_minutes=[] 且 realized_loss_budget_pct=0.0）时，新引擎与改动前的同几何臂逐位一致：成交磁带内容哈希与全部可比指标都相同。",
+  "differences": [],
+  "excluded_from_comparison": {
+    "hard_stop_ladder_strikes_max": "本轮新增的指标：上一轮的后端根本不写这个键，缺键不是行为差异。 该指标计数与是否配置阶梯无关，因此默认关闭时它也可能非 0。",
+    "hard_stop_realized_loss_halt_pct_max": "本轮新增的指标：上一轮的后端根本不写这个键，缺键不是行为差异。"
+  },
+  "legs": [
+    {
+      "differences": [],
+      "guard_activity_on_this_leg": {
+        "hard_stop_duration_minutes_max": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_triggers": 0
+      },
+      "leg": "3y",
+      "metrics_compared": [
+        "gain_usd",
+        "gain_strategy_eq",
+        "gain_btc",
+        "adg_strategy_eq",
+        "adg_strategy_eq_w",
+        "drawdown_worst_strategy_eq",
+        "drawdown_worst_mean_1pct_strategy_eq",
+        "drawdown_worst_ema_strategy_eq",
+        "sharpe_ratio_strategy_eq",
+        "sortino_ratio_strategy_eq",
+        "calmar_ratio_strategy_eq",
+        "expected_shortfall_1pct_strategy_eq",
+        "backtest_completion_ratio",
+        "liquidated",
+        "entry_interval_hours_mean",
+        "hard_stop_triggers",
+        "hard_stop_restarts",
+        "hard_stop_time_in_yellow_pct",
+        "hard_stop_time_in_orange_pct",
+        "hard_stop_time_in_red_pct",
+        "hard_stop_duration_minutes_mean",
+        "hard_stop_duration_minutes_max",
+        "hard_stop_trigger_drawdown_mean",
+        "hard_stop_panic_close_loss_sum",
+        "hard_stop_panic_close_loss_max",
+        "hard_stop_panic_close_loss_drawdown_pct_min",
+        "hard_stop_panic_close_loss_drawdown_pct_mean",
+        "hard_stop_panic_close_loss_drawdown_pct_max",
+        "hard_stop_flatten_time_minutes_mean",
+        "hard_stop_post_restart_retrigger_pct",
+        "hard_stop_halt_to_restart_equity_loss_pct"
+      ],
+      "new_arm": "l0_off__3y",
+      "new_fills": {
+        "first_timestamp": "2023-10-06 00:01:00",
+        "last_timestamp": "2026-09-11 23:42:00",
+        "notional_sum": -34507.68965,
+        "qty_sum": 8769.344,
+        "rows": 28550,
+        "sha256": "72f7c3acf8e0277427d56d11b7aa63d94e1b84289c7834c4969cb7a176c7245f"
+      },
+      "new_run": "backtests/binance/g4_hsl_halt_ladder_2026-09-18/artifacts/l0_off__3y/backtest_results/binance_l0_off__3y/binance/2026-09-18T02_54_32",
+      "old_arm": "a_allow000__3y",
+      "old_fills": {
+        "first_timestamp": "2023-10-06 00:01:00",
+        "last_timestamp": "2026-09-11 23:42:00",
+        "notional_sum": -34507.68965,
+        "qty_sum": 8769.344,
+        "rows": 28550,
+        "sha256": "72f7c3acf8e0277427d56d11b7aa63d94e1b84289c7834c4969cb7a176c7245f"
+      },
+      "old_run": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__3y/backtest_results/binance_a_allow000__3y/binance/2026-09-17T10_49_03",
+      "tolerance": 1e-09
+    },
+    {
+      "differences": [],
+      "guard_activity_on_this_leg": {
+        "hard_stop_duration_minutes_max": 720.0,
+        "hard_stop_restarts": 4,
+        "hard_stop_triggers": 4
+      },
+      "leg": "ext",
+      "metrics_compared": [
+        "gain_usd",
+        "gain_strategy_eq",
+        "gain_btc",
+        "adg_strategy_eq",
+        "adg_strategy_eq_w",
+        "drawdown_worst_strategy_eq",
+        "drawdown_worst_mean_1pct_strategy_eq",
+        "drawdown_worst_ema_strategy_eq",
+        "sharpe_ratio_strategy_eq",
+        "sortino_ratio_strategy_eq",
+        "calmar_ratio_strategy_eq",
+        "expected_shortfall_1pct_strategy_eq",
+        "backtest_completion_ratio",
+        "liquidated",
+        "entry_interval_hours_mean",
+        "hard_stop_triggers",
+        "hard_stop_restarts",
+        "hard_stop_time_in_yellow_pct",
+        "hard_stop_time_in_orange_pct",
+        "hard_stop_time_in_red_pct",
+        "hard_stop_duration_minutes_mean",
+        "hard_stop_duration_minutes_max",
+        "hard_stop_trigger_drawdown_mean",
+        "hard_stop_panic_close_loss_sum",
+        "hard_stop_panic_close_loss_max",
+        "hard_stop_panic_close_loss_drawdown_pct_min",
+        "hard_stop_panic_close_loss_drawdown_pct_mean",
+        "hard_stop_panic_close_loss_drawdown_pct_max",
+        "hard_stop_flatten_time_minutes_mean",
+        "hard_stop_post_restart_retrigger_pct",
+        "hard_stop_halt_to_restart_equity_loss_pct"
+      ],
+      "new_arm": "l0_off__ext",
+      "new_fills": {
+        "first_timestamp": "2021-05-14 00:01:00",
+        "last_timestamp": "2026-09-12 22:42:00",
+        "notional_sum": -11573.015113,
+        "qty_sum": 4593.811,
+        "rows": 45644,
+        "sha256": "790a9ef0161fa072d74c3646e536932f9eb27a92dfe42d203bb4183ef7df80a4"
+      },
+      "new_run": "backtests/binance/g4_hsl_halt_ladder_2026-09-18/artifacts/l0_off__ext/backtest_results/binance_l0_off__ext/binance/2026-09-18T02_59_34",
+      "old_arm": "a_allow000__ext",
+      "old_fills": {
+        "first_timestamp": "2021-05-14 00:01:00",
+        "last_timestamp": "2026-09-12 22:42:00",
+        "notional_sum": -11573.015113,
+        "qty_sum": 4593.811,
+        "rows": 45644,
+        "sha256": "790a9ef0161fa072d74c3646e536932f9eb27a92dfe42d203bb4183ef7df80a4"
+      },
+      "old_run": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__ext/backtest_results/binance_a_allow000__ext/binance/2026-09-17T10_50_30",
+      "tolerance": 1e-09
+    }
+  ],
+  "verdict": "identical",
+  "why_these_two_arms": "l0_off 与上一轮的 a_allow000 几何相同：10,000 USDT、TWE 3.0、7 槽、we_excess_allowance_pct=0、unified 守护 RED 0.20 / EMA 60 / 12H、no_restart_drawdown_threshold=1，同一数据集与窗口（逐键比对只差 backtest.base_dir，那是各自 study 的输出目录）。"
+}

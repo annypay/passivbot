@@ -1,0 +1,388 @@
+{
+  "candidate_config_path": "backtests/binance/g4_hsl_halt_ladder_2026-09-18/artifacts/g4_l2_budget__ext.config.json",
+  "candidate_config_sha256": "2a781ee0c4b1efe1051c37f4c0ab26b1fe4f96dc3ef7fb2799da09d19f6a7504",
+  "candidate_id": "g4_hsl_halt_ladder_l2_budget__ext",
+  "candidate_kind": "hsl_halt_ladder_arm_replay",
+  "capital": {
+    "parent_starting_balance": 100000,
+    "scale_vs_parent": 0.1,
+    "starting_balance": 10000.0,
+    "starting_balance_path": "backtest.starting_balance"
+  },
+  "comparison": {
+    "reference_arms": {
+      "a_allow000__3y": {
+        "analysis_sha256": "8726a5b8457abddec6dd2fa174f6ddaf49c056118d1a56a2bdfa2f79b125b78f",
+        "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__3y/backtest_results/binance_a_allow000__3y/binance/2026-09-17T10_49_03"
+      },
+      "a_allow000__ext": {
+        "analysis_sha256": "615b449134b8b7a9077d43a23b54f08267154aaf303ececf09fc75c547983c97",
+        "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__ext/backtest_results/binance_a_allow000__ext/binance/2026-09-17T10_50_30"
+      },
+      "a_allow000__pre": {
+        "analysis_sha256": "c6f000472e15610118c1eded61f9d35e1a01f70329528a3fd1062cb260636c32",
+        "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__pre/backtest_results/binance_a_allow000__pre/binance/2026-09-17T10_47_03"
+      }
+    },
+    "variant_input": "backtests/binance/g4_hsl_halt_ladder_2026-09-18/artifacts/variant_input.json",
+    "variant_input_sha256": "5e19f3186073c40c66a01ee5dcd878f9c6e999d599b5e7783c6d532f43deac9a"
+  },
+  "costs": {
+    "maker_fee_override": 0.0002,
+    "taker_fee_override": 0.0005
+  },
+  "dataset": {
+    "array_dtypes": {
+      "btc_usd_prices": "float64",
+      "timestamps": "int64"
+    },
+    "array_shapes": {
+      "btc_usd_prices": [
+        2875969
+      ],
+      "timestamps": [
+        2875969
+      ]
+    },
+    "cache_dir": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "cache_dir_label": "binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "cache_hash": "a02b6ae1c140f2b7",
+    "coin_count": 40,
+    "data_hashes": {
+      "btc_usd_prices": "e651362acab94666eac27835b4c7e94b38a979d0b20f304b889737f717157a36",
+      "timestamps": "15a4c238bc6f54c4bb9ef29b012a9e311d80f5b28d5d3478363cfa57a5b13920"
+    },
+    "declared_window": [
+      "2021-04-20",
+      "2026-09-13"
+    ],
+    "file_bytes_hashes": {
+      "btc_usd_prices": "5ea77e057cad271fdf8d770fccf3bbd246db1c915858658df207d9bb313f82b2",
+      "hlcvs": "4971ec478a4d897eb425e22e18ccf0b454ceeccd84b0bf4412b2488206f53a5f",
+      "timestamps": "5eba0802d17eeac7a0124bd52c4d655ebd846feda3dc931e544290d6fbe5fed4"
+    },
+    "frozen_bundle_label": "binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+    "full_array_hash": false,
+    "hash_convention": "logical NumPy payload via hlcvs_manifest.hash_logical_array; file_bytes hashes the gzip byte stream for provenance only",
+    "key": "ext",
+    "leg": "ext",
+    "manifest_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+    "manifest_hashes": {
+      "btc_usd_prices": "e651362acab94666eac27835b4c7e94b38a979d0b20f304b889737f717157a36",
+      "hlcvs": "a5a3a50b5ded74c62f27441132f565e400398fa09f954a468726f4ccfe782dd6",
+      "timestamps": "15a4c238bc6f54c4bb9ef29b012a9e311d80f5b28d5d3478363cfa57a5b13920"
+    },
+    "manifest_pinned_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+    "manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+    "override_mode": "dataset",
+    "synthetic": false
+  },
+  "declared_delta": [
+    {
+      "from": 100000,
+      "path": "backtest.starting_balance",
+      "to": 10000
+    },
+    {
+      "from": 1.0,
+      "path": "bot.long.risk.total_wallet_exposure_limit",
+      "to": 3.0
+    },
+    {
+      "from": false,
+      "path": "bot.long.hsl.enabled",
+      "to": true
+    },
+    {
+      "from": "coin",
+      "path": "live.hsl_signal_mode",
+      "to": "unified"
+    },
+    {
+      "from": 0.15,
+      "path": "bot.long.hsl.red_threshold",
+      "to": 0.2
+    },
+    {
+      "from": 720.0,
+      "path": "bot.long.hsl.ema_span_minutes",
+      "to": 60.0
+    },
+    {
+      "from": 2160.0,
+      "path": "bot.long.hsl.cooldown_minutes_after_red",
+      "to": 720.0
+    },
+    {
+      "from": 30.0,
+      "path": "live.pnls_max_lookback_days",
+      "to": 7.0
+    },
+    {
+      "from": 0.37,
+      "path": "bot.long.risk.we_excess_allowance_pct",
+      "to": 0.0
+    },
+    {
+      "from": 1,
+      "path": "bot.long.hsl.no_restart_drawdown_threshold",
+      "to": 1
+    },
+    {
+      "from": 0.0,
+      "path": "bot.long.hsl.realized_loss_budget_pct",
+      "to": 0.3
+    }
+  ],
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "engine": {
+    "compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "compiled_source_stamp": "2b8d145606520d5573cc8f330fa9a64b948035bc5b98c696f4c361f832583b82",
+    "expected_source_fingerprint": "2b8d145606520d5573cc8f330fa9a64b948035bc5b98c696f4c361f832583b82",
+    "git": {
+      "branch": "codex/g4-hsl-halt-ladder",
+      "dirty": true,
+      "head": "6d85971694ff7950d7372fd56288412222b7f322",
+      "status_porcelain": [
+        "M backtests/binance/g4_twe300_risk_optimization_2026-09-17/README.md",
+        " M backtests/binance/g4_twe300_risk_optimization_2026-09-17/report_tools/verify_variant_report.py",
+        " M backtests/binance/g4_twe300_risk_optimization_2026-09-17/run.sh",
+        " M backtests/binance/g4_twe300_risk_optimization_2026-09-17/variant_geometry_design.md",
+        " M configs/examples/default_trailing_martingale_long.json",
+        " M src/tools/hsl_replay_benchmark.py",
+        " M src/tools/run_fake_live.py",
+        " M tests/test_coin_overrides_hsl.py",
+        " M tests/test_g4_twe300_risk_optimization.py",
+        " M tests/test_hsl_startup_preview.py",
+        " M tests/test_realized_loss_gate.py",
+        " M tests/test_run_fake_live.py",
+        "?? backtests/binance/g4_hsl_halt_ladder_2026-09-18/",
+        "?? backtests/binance/g4_overfitting_audit_2026-09-18/",
+        "?? backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__3y/backtest_results/binance_b_red015__3y/binance/2026-09-17T11_21_28/episode_trace.json",
+        "?? backtests/binance/g4_twe300_risk_optimization_2026-09-17/entry_close_mechanics.md",
+        "?? backtests/binance/g4_twe300_risk_optimization_2026-09-17/report_tools/trace_episode.py",
+        "?? scenarios/fake_live/hsl_long_halt_ladder.hjson",
+        "?? tests/test_g4_overfitting_audit.py"
+      ]
+    },
+    "preferred_compiled_path": "venv/lib/python3.12/site-packages/passivbot_rust/passivbot_rust.abi3.so",
+    "runtime_module_path": null,
+    "source_fingerprint_matches_compiled_stamp": true,
+    "source_fingerprint_matches_loaded_stamp": false
+  },
+  "engine_note": "Every arm of this study runs on the same engine revision and the same execution and cost contract. The pinned `a_allow000` reference arms were produced by the previous engine revision and are this round's control columns; `l0_off` is the bridge that must reproduce them bit for bit while both new keys sit at their defaults, which is what makes the two revisions' columns comparable.",
+  "entry_regime_gate": {
+    "block_initial": true,
+    "block_reentry": true,
+    "confirm_days": 0,
+    "enabled": true,
+    "sma_fast_days": 20,
+    "sma_slow_days": 50
+  },
+  "execution": {
+    "execution_delay_bars": 0,
+    "intrabar_fill_order": "close_first"
+  },
+  "exposure_caps": {
+    "effective_allowance_pct": 0.0,
+    "n_positions": 7.0,
+    "per_slot_cap": 0.42857142857142855,
+    "slot_share": 0.42857142857142855,
+    "total_wallet_exposure_limit": 3.0,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0.0
+  },
+  "guard": {
+    "cooldown_minutes_after_red": 720.0,
+    "ema_span_minutes": 60.0,
+    "enabled": true,
+    "halt_ladder_minutes": [],
+    "lookback_days": 7.0,
+    "no_restart_drawdown_threshold": 1.0,
+    "orange_ratio": 0.75,
+    "orange_threshold": 0.15000000000000002,
+    "panic_close_order_type": "limit",
+    "realized_loss_budget_pct": 0.3,
+    "red_threshold": 0.2,
+    "restart_after_red_policy": "threshold",
+    "scope": "unified",
+    "yellow_ratio": 0.5,
+    "yellow_threshold": 0.1
+  },
+  "guard_telemetry": {
+    "hard_stop_duration_minutes_max": 2797147.0,
+    "hard_stop_duration_minutes_mean": 2797147.0,
+    "hard_stop_flatten_time_minutes_mean": 2.0,
+    "hard_stop_halt_to_restart_equity_loss_pct": 0.0,
+    "hard_stop_ladder_strikes_max": 1,
+    "hard_stop_panic_close_loss_drawdown_pct_max": 2.1843364578622055,
+    "hard_stop_panic_close_loss_drawdown_pct_mean": 2.1843364578622055,
+    "hard_stop_panic_close_loss_drawdown_pct_min": 2.1843364578622055,
+    "hard_stop_panic_close_loss_max": 1895.8944362960003,
+    "hard_stop_panic_close_loss_sum": 7120.4474635080005,
+    "hard_stop_post_restart_retrigger_pct": 0.0,
+    "hard_stop_realized_loss_halt_pct_max": 0.67381665742952,
+    "hard_stop_restarts": 0,
+    "hard_stop_restarts_long": 0,
+    "hard_stop_restarts_per_year": 0.0,
+    "hard_stop_restarts_per_year_long": 0.0,
+    "hard_stop_restarts_per_year_short": 0.0,
+    "hard_stop_restarts_short": 0,
+    "hard_stop_time_in_orange_pct": 1.7607623960313825e-06,
+    "hard_stop_time_in_red_pct": 0.9850233072118363,
+    "hard_stop_time_in_yellow_pct": 3.8736772712690415e-06,
+    "hard_stop_trigger_drawdown_mean": 0.678543463745776,
+    "hard_stop_triggers": 1,
+    "hard_stop_triggers_long": 1,
+    "hard_stop_triggers_per_year": 0.18521818318837557,
+    "hard_stop_triggers_short": 0
+  },
+  "hsl_block": {
+    "cooldown_minutes_after_red": 720,
+    "ema_span_minutes": 60.0,
+    "enabled": true,
+    "halt_ladder_minutes": [],
+    "no_restart_drawdown_threshold": 1,
+    "orange_tier_mode": "tp_only_with_active_entry_cancellation",
+    "panic_close_order_type": "limit",
+    "realized_loss_budget_pct": 0.3,
+    "red_threshold": 0.2,
+    "restart_after_red_policy": "threshold",
+    "tier_ratios": {
+      "orange": 0.75,
+      "yellow": 0.5
+    }
+  },
+  "liquidation": {
+    "days_to_liquidation": 1971.9583333333333,
+    "floor_usd": 500.0,
+    "last_equity_usd": 3398.6528,
+    "last_sample_utc": "2026-09-12 23:01:00",
+    "liquidated": false,
+    "peak_equity_usd": 10519.985,
+    "problems": [],
+    "starting_balance": 10000.0
+  },
+  "live_hsl": {
+    "hsl_position_during_cooldown_policy": "panic",
+    "hsl_signal_mode": "unified"
+  },
+  "risk_block": {
+    "entry_cooldown_minutes": 24.1,
+    "n_positions": 7,
+    "position_exposure_enforcer_enabled": false,
+    "position_exposure_enforcer_threshold": 1.0,
+    "total_exposure_enforcer_enabled": false,
+    "total_exposure_enforcer_policy": "reduce_overweight",
+    "total_exposure_enforcer_threshold": 1.0,
+    "total_exposure_entry_gate_enabled": true,
+    "total_wallet_exposure_limit": 3,
+    "wallet_exposure_brake_enabled": false,
+    "we_excess_allowance_mode": "bounded",
+    "we_excess_allowance_pct": 0
+  },
+  "runtime_flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "search_provenance": null,
+  "source_config": "backtests/binance/g4_sma20_50_replay_2026-09-16/artifacts/g4_sma20_50.config.json",
+  "source_config_sha256": "5c8ab5edad9b571cab32a91e82013268ad99ff746a49131cb37bf225b2908bd9",
+  "stage": "L2",
+  "universe": {
+    "coin_count": 40,
+    "coins": [
+      "AAVE",
+      "ADA",
+      "ALGO",
+      "APT",
+      "ARB",
+      "ASTER",
+      "ATOM",
+      "AVAX",
+      "BCH",
+      "BNB",
+      "BTC",
+      "CC",
+      "DOGE",
+      "DOT",
+      "ENA",
+      "ETH",
+      "FIL",
+      "GRAM",
+      "HBAR",
+      "HYPE",
+      "INJ",
+      "KAS",
+      "LINK",
+      "LTC",
+      "MORPHO",
+      "NEAR",
+      "ONDO",
+      "POL",
+      "RENDER",
+      "SOL",
+      "SUI",
+      "TAO",
+      "TON",
+      "TRX",
+      "UNI",
+      "WLD",
+      "XLM",
+      "XMR",
+      "XRP",
+      "ZEC"
+    ],
+    "exchange": "binance"
+  },
+  "variant": {
+    "dataset": "ext",
+    "description": "永久停机改累计已实现亏损口径：预算 0.30、瞬时口径关到合法上界 1.0｜全历史腿（2021-04-20 → 2026-09-13）",
+    "exposure_caps": {
+      "effective_allowance_pct": 0.0,
+      "n_positions": 7.0,
+      "per_slot_cap": 0.42857142857142855,
+      "slot_share": 0.42857142857142855,
+      "total_wallet_exposure_limit": 3.0,
+      "we_excess_allowance_mode": "bounded",
+      "we_excess_allowance_pct": 0.0
+    },
+    "guard": {
+      "cooldown_minutes_after_red": 720.0,
+      "ema_span_minutes": 60.0,
+      "enabled": true,
+      "halt_ladder_minutes": [],
+      "lookback_days": 7.0,
+      "no_restart_drawdown_threshold": 1.0,
+      "orange_ratio": 0.75,
+      "orange_threshold": 0.15000000000000002,
+      "panic_close_order_type": "limit",
+      "realized_loss_budget_pct": 0.3,
+      "red_threshold": 0.2,
+      "restart_after_red_policy": "threshold",
+      "scope": "unified",
+      "yellow_ratio": 0.5,
+      "yellow_threshold": 0.1
+    },
+    "guard_label": "unified：0.20 清仓+停 12H（橙 0.15 停加仓，7 天窗口，EMA 60 分钟，累计已实现亏损预算 0.30）",
+    "hsl_enabled": true,
+    "key": "l2_budget__ext",
+    "leg": "ext",
+    "lever": "l2_budget",
+    "lever_label": "累计已实现亏损口径：no_restart=1 + realized_loss_budget_pct=0.30",
+    "per_slot_cap": 0.42857142857142855,
+    "search_provenance": null,
+    "stage": "L2",
+    "starting_balance": 10000.0,
+    "synthetic": false,
+    "total_wallet_exposure_limit": 3.0
+  },
+  "window": {
+    "effective_end_date": "2026-09-12T23:59:00Z",
+    "effective_start_date": "2021-04-20T00:01:00Z",
+    "end_date": "2026-09-13",
+    "start_date": "2021-04-20"
+  }
+}
