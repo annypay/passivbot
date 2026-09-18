@@ -1,0 +1,22 @@
+{
+  "arm": "s0_off__synth_b",
+  "description": "默认关闭回归臂：stop_loss.enabled = false｜三币崩塌合成腿（原生窗 + 三币注入崩塌）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 51.02,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "synth_b",
+  "lever": "s0_off",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__synth_b/backtest_results/binance_s0_off__synth_b/binance/2026-09-18T11_24_12",
+  "stop_loss": {
+    "cooldown_minutes": 1440.0,
+    "enabled": false,
+    "order_type": "market",
+    "pct_from_avg_entry": 0.15
+  },
+  "synthetic": true
+}

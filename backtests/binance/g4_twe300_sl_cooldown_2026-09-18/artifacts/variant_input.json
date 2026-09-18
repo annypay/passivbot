@@ -1,0 +1,1214 @@
+{
+  "arms": [
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__3y",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s0_off__3y.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          false
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "默认关闭回归臂：stop_loss.enabled = false｜原生窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "key": "s0_off__3y",
+      "leg": "3y",
+      "lever": "s0_off",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__3y",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s1_sl15_cd1440__3y.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "用户给定机制：均价 −15% 止损 + 24h 冷却（市价档）｜原生窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "key": "s1_sl15_cd1440__3y",
+      "leg": "3y",
+      "lever": "s1_sl15_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__3y",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s2_sl15_cd240__3y.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          240.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "冷却长度敏感性：−15% + 4h 冷却｜原生窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "key": "s2_sl15_cd240__3y",
+      "leg": "3y",
+      "lever": "s2_sl15_cd240",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__3y",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s3_sl25_cd1440__3y.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.25
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "止损位敏感性：−25% + 24h 冷却｜原生窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "key": "s3_sl25_cd1440__3y",
+      "leg": "3y",
+      "lever": "s3_sl25_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__3y",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s4_sl15_cd1440_limit__3y.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "limit"
+        ]
+      ],
+      "description": "成交层敏感性：−15% + 24h 冷却（限价档）｜原生窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "key": "s4_sl15_cd1440_limit__3y",
+      "leg": "3y",
+      "lever": "s4_sl15_cd1440_limit",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__3y",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s5_sl15_cd0__3y.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          0.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "隔离冷却：−15% 止损 + 无冷却｜原生窗腿（2023-09-12 → 2026-09-12，样本内）",
+      "key": "s5_sl15_cd0__3y",
+      "leg": "3y",
+      "lever": "s5_sl15_cd0",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__ext",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s0_off__ext.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          false
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "默认关闭回归臂：stop_loss.enabled = false｜全历史腿（2021-04-20 → 2026-09-13）",
+      "key": "s0_off__ext",
+      "leg": "ext",
+      "lever": "s0_off",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__ext",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s1_sl15_cd1440__ext.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "用户给定机制：均价 −15% 止损 + 24h 冷却（市价档）｜全历史腿（2021-04-20 → 2026-09-13）",
+      "key": "s1_sl15_cd1440__ext",
+      "leg": "ext",
+      "lever": "s1_sl15_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__ext",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s2_sl15_cd240__ext.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          240.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "冷却长度敏感性：−15% + 4h 冷却｜全历史腿（2021-04-20 → 2026-09-13）",
+      "key": "s2_sl15_cd240__ext",
+      "leg": "ext",
+      "lever": "s2_sl15_cd240",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__ext",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s3_sl25_cd1440__ext.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.25
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "止损位敏感性：−25% + 24h 冷却｜全历史腿（2021-04-20 → 2026-09-13）",
+      "key": "s3_sl25_cd1440__ext",
+      "leg": "ext",
+      "lever": "s3_sl25_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__ext",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s4_sl15_cd1440_limit__ext.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "limit"
+        ]
+      ],
+      "description": "成交层敏感性：−15% + 24h 冷却（限价档）｜全历史腿（2021-04-20 → 2026-09-13）",
+      "key": "s4_sl15_cd1440_limit__ext",
+      "leg": "ext",
+      "lever": "s4_sl15_cd1440_limit",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__ext",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s5_sl15_cd0__ext.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          0.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "隔离冷却：−15% 止损 + 无冷却｜全历史腿（2021-04-20 → 2026-09-13）",
+      "key": "s5_sl15_cd0__ext",
+      "leg": "ext",
+      "lever": "s5_sl15_cd0",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__pre",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s0_off__pre.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          false
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "默认关闭回归臂：stop_loss.enabled = false｜样本外腿（2021-04-20 → 2023-09-11）",
+      "key": "s0_off__pre",
+      "leg": "pre",
+      "lever": "s0_off",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__pre",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s1_sl15_cd1440__pre.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "用户给定机制：均价 −15% 止损 + 24h 冷却（市价档）｜样本外腿（2021-04-20 → 2023-09-11）",
+      "key": "s1_sl15_cd1440__pre",
+      "leg": "pre",
+      "lever": "s1_sl15_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__pre",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s2_sl15_cd240__pre.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          240.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "冷却长度敏感性：−15% + 4h 冷却｜样本外腿（2021-04-20 → 2023-09-11）",
+      "key": "s2_sl15_cd240__pre",
+      "leg": "pre",
+      "lever": "s2_sl15_cd240",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__pre",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s3_sl25_cd1440__pre.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.25
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "止损位敏感性：−25% + 24h 冷却｜样本外腿（2021-04-20 → 2023-09-11）",
+      "key": "s3_sl25_cd1440__pre",
+      "leg": "pre",
+      "lever": "s3_sl25_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__pre",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s4_sl15_cd1440_limit__pre.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "limit"
+        ]
+      ],
+      "description": "成交层敏感性：−15% + 24h 冷却（限价档）｜样本外腿（2021-04-20 → 2023-09-11）",
+      "key": "s4_sl15_cd1440_limit__pre",
+      "leg": "pre",
+      "lever": "s4_sl15_cd1440_limit",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__pre",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s5_sl15_cd0__pre.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          0.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "隔离冷却：−15% 止损 + 无冷却｜样本外腿（2021-04-20 → 2023-09-11）",
+      "key": "s5_sl15_cd0__pre",
+      "leg": "pre",
+      "lever": "s5_sl15_cd0",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": false
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__synth_a",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s0_off__synth_a.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          false
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "默认关闭回归臂：stop_loss.enabled = false｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+      "key": "s0_off__synth_a",
+      "leg": "synth_a",
+      "lever": "s0_off",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__synth_a",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s1_sl15_cd1440__synth_a.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "用户给定机制：均价 −15% 止损 + 24h 冷却（市价档）｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+      "key": "s1_sl15_cd1440__synth_a",
+      "leg": "synth_a",
+      "lever": "s1_sl15_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__synth_a",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s2_sl15_cd240__synth_a.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          240.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "冷却长度敏感性：−15% + 4h 冷却｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+      "key": "s2_sl15_cd240__synth_a",
+      "leg": "synth_a",
+      "lever": "s2_sl15_cd240",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__synth_a",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s3_sl25_cd1440__synth_a.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.25
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "止损位敏感性：−25% + 24h 冷却｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+      "key": "s3_sl25_cd1440__synth_a",
+      "leg": "synth_a",
+      "lever": "s3_sl25_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__synth_a",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s4_sl15_cd1440_limit__synth_a.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "limit"
+        ]
+      ],
+      "description": "成交层敏感性：−15% + 24h 冷却（限价档）｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+      "key": "s4_sl15_cd1440_limit__synth_a",
+      "leg": "synth_a",
+      "lever": "s4_sl15_cd1440_limit",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__synth_a",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s5_sl15_cd0__synth_a.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          0.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "隔离冷却：−15% 止损 + 无冷却｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+      "key": "s5_sl15_cd0__synth_a",
+      "leg": "synth_a",
+      "lever": "s5_sl15_cd0",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__synth_b",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s0_off__synth_b.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          false
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "默认关闭回归臂：stop_loss.enabled = false｜三币崩塌合成腿（原生窗 + 三币注入崩塌）",
+      "key": "s0_off__synth_b",
+      "leg": "synth_b",
+      "lever": "s0_off",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__synth_b",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s1_sl15_cd1440__synth_b.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "用户给定机制：均价 −15% 止损 + 24h 冷却（市价档）｜三币崩塌合成腿（原生窗 + 三币注入崩塌）",
+      "key": "s1_sl15_cd1440__synth_b",
+      "leg": "synth_b",
+      "lever": "s1_sl15_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__synth_b",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s2_sl15_cd240__synth_b.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          240.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "冷却长度敏感性：−15% + 4h 冷却｜三币崩塌合成腿（原生窗 + 三币注入崩塌）",
+      "key": "s2_sl15_cd240__synth_b",
+      "leg": "synth_b",
+      "lever": "s2_sl15_cd240",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__synth_b",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s3_sl25_cd1440__synth_b.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.25
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "止损位敏感性：−25% + 24h 冷却｜三币崩塌合成腿（原生窗 + 三币注入崩塌）",
+      "key": "s3_sl25_cd1440__synth_b",
+      "leg": "synth_b",
+      "lever": "s3_sl25_cd1440",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__synth_b",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s4_sl15_cd1440_limit__synth_b.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          1440.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "limit"
+        ]
+      ],
+      "description": "成交层敏感性：−15% + 24h 冷却（限价档）｜三币崩塌合成腿（原生窗 + 三币注入崩塌）",
+      "key": "s4_sl15_cd1440_limit__synth_b",
+      "leg": "synth_b",
+      "lever": "s4_sl15_cd1440_limit",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    },
+    {
+      "bundle_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__synth_b",
+      "config": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/g4_s5_sl15_cd0__synth_b.config.json",
+      "deltas": [
+        [
+          "bot.long.stop_loss.enabled",
+          false,
+          true
+        ],
+        [
+          "bot.long.stop_loss.pct_from_avg_entry",
+          0.15,
+          0.15
+        ],
+        [
+          "bot.long.stop_loss.cooldown_minutes",
+          1440.0,
+          0.0
+        ],
+        [
+          "bot.long.stop_loss.order_type",
+          "market",
+          "market"
+        ]
+      ],
+      "description": "隔离冷却：−15% 止损 + 无冷却｜三币崩塌合成腿（原生窗 + 三币注入崩塌）",
+      "key": "s5_sl15_cd0__synth_b",
+      "leg": "synth_b",
+      "lever": "s5_sl15_cd0",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "synthetic": true
+    }
+  ],
+  "datasets": {
+    "3y": {
+      "observed_config_hash": "8300950b42789a26485595e34e0b106e7d1a084ad887730c53693a2453121792",
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__8300950b42789a26"
+    },
+    "ext": {
+      "observed_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+      "path": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7"
+    },
+    "pre": {
+      "observed_config_hash": "a02b6ae1c140f2b77c92d88e4292426dd3e8d4c0c287f2671cd3c9668d639483",
+      "path": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7"
+    },
+    "synth_a": {
+      "observed_config_hash": "4353a7a5e0d6ee69ca8c5ba353197a12c0aeafd5da850e9ee7397f96e64a16f1",
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_a",
+      "synthetic_transform": {
+        "collapse_days": 3,
+        "end_multiple": 0.005,
+        "hold_days": 14,
+        "kind": "synthetic_price_path_collapse"
+      }
+    },
+    "synth_b": {
+      "observed_config_hash": "fa1b8b5aa30ed2c9c71e190dfa0361e8ad0040d0137d96120fcd9a97f37188c5",
+      "path": "caches/hlcvs_data/binance__40_coins__2023-08-17_to_2026-09-12__synthetic_collapse_b",
+      "synthetic_transform": {
+        "collapse_days": 3,
+        "end_multiple": 0.005,
+        "hold_days": 14,
+        "kind": "synthetic_price_path_collapse"
+      }
+    }
+  },
+  "honesty_boundaries": [
+    "合成腿的注入目标币取自上一轮的 baseline run（g4_sma20_50_replay_2026-09-16），而不是本研究的 control 臂；目标选择与本研究无关，但它决定了哪几个币被砸。",
+    "冻结配置声明 backtest.market_orders_allowed = false；止损的 market 档刻意不受该开关约束（它是保护性平仓，不是策略单），因此 market 档的 taker 费与滑点是被建模的、而不是被跳过的。",
+    "引擎侧止损按采样价格触发，不按 K 线插针触发；Phase A 普查按 low（触及）统计，两者口径不同，Phase C 一律以引擎自身语义为准。",
+    "全样本零 taker（28,550 笔全部 maker），真实行情下「看到价格就能平」不成立。"
+  ],
+  "no_search": {
+    "precedent": "上一轮把预算放在机制验证而非再搜一遍风险几何：搜索窗里 ADG 最高的候选在样本外腿被强平",
+    "reason": "本轮只验证一个默认关闭的引擎键（单币止损）；15% 与 1440 分钟是用户给定的机制参数，不做任何样本内择优，六个臂全部预注册",
+    "search": null
+  },
+  "parent_config": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/g4_a_allow000__3y.config.json",
+  "parent_config_sha256": "e241b1191e07a9583c73c38a01d390ac28940c2a8d7e470cf83f6012d632174f",
+  "parent_derivation_paths": [
+    "bot.long.stop_loss.enabled",
+    "bot.long.stop_loss.pct_from_avg_entry",
+    "bot.long.stop_loss.cooldown_minutes",
+    "bot.long.stop_loss.order_type",
+    "bot.short.stop_loss.enabled",
+    "bot.short.stop_loss.pct_from_avg_entry",
+    "bot.short.stop_loss.cooldown_minutes",
+    "bot.short.stop_loss.order_type"
+  ],
+  "reference_runs": {
+    "a_allow000__3y": {
+      "analysis_sha256": "8726a5b8457abddec6dd2fa174f6ddaf49c056118d1a56a2bdfa2f79b125b78f",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__3y/backtest_results/binance_a_allow000__3y/binance/2026-09-17T10_49_03"
+    },
+    "a_allow000__ext": {
+      "analysis_sha256": "615b449134b8b7a9077d43a23b54f08267154aaf303ececf09fc75c547983c97",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__ext/backtest_results/binance_a_allow000__ext/binance/2026-09-17T10_50_30"
+    },
+    "a_allow000__pre": {
+      "analysis_sha256": "c6f000472e15610118c1eded61f9d35e1a01f70329528a3fd1062cb260636c32",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__pre/backtest_results/binance_a_allow000__pre/binance/2026-09-17T10_47_03"
+    }
+  },
+  "stop_loss_defaults": {
+    "cooldown_minutes": 1440.0,
+    "enabled": false,
+    "order_type": "market",
+    "pct_from_avg_entry": 0.15
+  },
+  "study": "g4_twe300_sl_cooldown_2026-09-18",
+  "synthetic_injections": {
+    "synth_a": {
+      "collapse_days": 3,
+      "end_multiple": 0.005,
+      "hold_days": 14,
+      "label": "单币崩塌（合成 A，孤立事件）",
+      "targets": 1
+    },
+    "synth_b": {
+      "collapse_days": 3,
+      "end_multiple": 0.005,
+      "hold_days": 14,
+      "label": "三币先后崩塌（合成 B）",
+      "targets": 3
+    }
+  },
+  "thresholds": {
+    "S1_fill_vs_level_tolerance": 0.005,
+    "S2_tail_improvement_pp": 5.0,
+    "S3_terminal_degradation_pct": 25.0,
+    "S6_spike_exit_share_pct": 25.0
+  }
+}

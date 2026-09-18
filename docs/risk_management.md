@@ -316,6 +316,44 @@ See the dedicated guide:
 
 ---
 
+### E. Per-Coin Stop Loss (`bot.{long,short}.stop_loss.*`)
+
+An opt-in stop that closes a whole position when that coin's own price crosses
+`position average entry x (1 - pct_from_avg_entry)` (mirrored above the entry for shorts), blocks
+further entries for that coin during `cooldown_minutes`, and otherwise leaves every other coin
+alone. It is the only risk control here that reacts to a single coin's price instead of account
+equity, and it is off by default:
+
+| key | default | meaning |
+| --- | --- | --- |
+| `enabled` | `false` | arm the stop on this side |
+| `pct_from_avg_entry` | `0.15` | distance from the average entry, part-per-one |
+| `cooldown_minutes` | `1440` | minutes after a stop-loss fill with no adds for that coin |
+| `order_type` | `"market"` | `market` closes at the touched price; `limit` rests at the level |
+
+Three properties decide whether it is worth arming:
+
+1. **It is sampled, not resting.** No exchange-resident stop order is created anywhere in this
+   repository. The trigger is evaluated in the engine's own decision loop, once per sample, against
+   the price the bot sees at that instant. Between samples - and while the bot is not running - there
+   is no protection at all.
+2. **A `limit` stop can fail to exit.** The stop level is above the market once triggered, so a
+   `limit` order rests there and only fills if the price trades back up to it. In a cascade that
+   gaps through the level it does not fill and the position keeps riding. `market` is the tier that
+   actually exits, at taker cost plus modelled slippage.
+3. **It opts out of the engine's own recovery mechanism.** This strategy's drawdown recovery is
+   adding into the dip and cropping on the bounce; a stop removes exactly that. On the pinned
+   3-year leg a 15% stop with a 24h cooldown interrupted 37 positions, 30 of which ended
+   profitable, and cost 17,680 USDT against simply holding them - while on the longer 2021-2026
+   leg a *tighter account-level* guard was worth +2.0x terminal value and -26pp worst drawdown.
+   Whether a stop pays depends on whether the sample contains a real tail.
+
+Relationship to the account-level guard ([D](#d-equity-hard-stop-loss-botlongshorthsl)): the guard
+acts on account equity and closes everything; this stop acts on one coin's price. The stop is not
+emitted while the guard is in `panic` mode, and the account guard keeps priority when protective
+close orders compete. The measured cost is in `issue/0007-g4-twe300-sl-cooldown-2026-09-18.md`
+and the study report under `backtests/binance/g4_twe300_sl_cooldown_2026-09-18/`.
+
 ## 4. Bankruptcy & Liquidation Technicals
 
 Understanding the math behind liquidation helps in configuring the limits above.

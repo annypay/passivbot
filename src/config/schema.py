@@ -61,6 +61,12 @@ def _get_shared_bot_defaults():
                 "we_excess_allowance_mode": "bounded",
                 "we_excess_allowance_pct": 0.37
             },
+            "stop_loss": {
+                "cooldown_minutes": 1440.0,
+                "enabled": False,
+                "order_type": "market",
+                "pct_from_avg_entry": 0.15
+            },
             "unstuck": {
                 "close_pct": 0.041,
                 "ema_dist": -0.0269,
@@ -115,6 +121,12 @@ def _get_shared_bot_defaults():
                 "wallet_exposure_brake_min_scale": 0.25,
                 "we_excess_allowance_mode": "bounded",
                 "we_excess_allowance_pct": 0.0
+            },
+            "stop_loss": {
+                "cooldown_minutes": 1440.0,
+                "enabled": False,
+                "order_type": "market",
+                "pct_from_avg_entry": 0.15
             },
             "unstuck": {
                 "close_pct": 0.01,

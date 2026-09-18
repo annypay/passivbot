@@ -1,0 +1,22 @@
+{
+  "arm": "s5_sl15_cd0__pre",
+  "description": "隔离冷却：−15% 止损 + 无冷却｜样本外腿（2021-04-20 → 2023-09-11）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 44.22,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "pre",
+  "lever": "s5_sl15_cd0",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__pre/backtest_results/binance_s5_sl15_cd0__pre/binance/2026-09-18T11_18_23",
+  "stop_loss": {
+    "cooldown_minutes": 0.0,
+    "enabled": true,
+    "order_type": "market",
+    "pct_from_avg_entry": 0.15
+  },
+  "synthetic": false
+}

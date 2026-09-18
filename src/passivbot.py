@@ -13819,6 +13819,63 @@ class Passivbot:
                 break
         return out
 
+    def _get_last_stop_loss_fill_timestamps(
+        self, symbols: Iterable[str], *, now_ms: Optional[int] = None
+    ) -> dict[str, dict[str, Optional[int]]]:
+        """Anchor each symbol-side's stop-loss cooldown on its own tagged fill.
+
+        Contract: the cooldown is anchored on a fill this bot tagged as its stop loss
+        (`close_stop_loss_long` / `close_stop_loss_short`), and only while that symbol-side has the
+        stop loss enabled with a positive cooldown. A close that cannot be attributed to the stop
+        loss deliberately starts no cooldown: guessing from size, price or order family would block
+        entries on ordinary exits. Rust owns the cooldown comparison; this only reports the anchor.
+        """
+        out = {symbol: {"long": None, "short": None} for symbol in symbols}
+        if self._pnls_manager is None:
+            return out
+
+        relevant_pairs: set[tuple[str, str]] = set()
+        max_cooldown_minutes = 0.0
+        for symbol in out:
+            for pside in ("long", "short"):
+                if not bool(self.bp(pside, "stop_loss_enabled", symbol)):
+                    continue
+                cooldown_minutes = float(
+                    self.bp(pside, "stop_loss_cooldown_minutes", symbol) or 0.0
+                )
+                if cooldown_minutes > 0.0:
+                    relevant_pairs.add((symbol, pside))
+                    max_cooldown_minutes = max(max_cooldown_minutes, cooldown_minutes)
+        if not relevant_pairs:
+            return out
+
+        if now_ms is None:
+            now_ms = int(self.get_exchange_time())
+        lookback_minutes = self._entry_cooldown_fill_lookback_minutes(
+            max_cooldown_minutes
+        )
+        start_ms = max(0, int(now_ms) - lookback_minutes * 60_000)
+        events = self._pnls_manager.get_events(start_ms=start_ms)
+        stop_loss_order_types = {
+            "long": "close_stop_loss_long",
+            "short": "close_stop_loss_short",
+        }
+        unresolved = set(relevant_pairs)
+        for event in reversed(events):
+            symbol = str(getattr(event, "symbol", "") or "")
+            pside = str(getattr(event, "position_side", "") or "").lower()
+            key = (symbol, pside)
+            if key not in unresolved:
+                continue
+            order_type = str(getattr(event, "pb_order_type", "") or "").lower()
+            if order_type != stop_loss_order_types.get(pside):
+                continue
+            out[symbol][pside] = int(getattr(event, "timestamp", 0) or 0)
+            unresolved.remove(key)
+            if not unresolved:
+                break
+        return out
+
     def _ensure_entry_cooldown_delta_guard_state(self) -> None:
         if not hasattr(self, "_entry_cooldown_prev_pos_sizes"):
             self._entry_cooldown_prev_pos_sizes = {}
@@ -16536,6 +16593,9 @@ class Passivbot:
                         "min_since_max": float(trailing.get("min_since_max", 0.0)),
                     },
                     "last_increase_fill_timestamp_ms": None,
+                    # Cancellation-only wave: entries are not built here, so no stop-loss cooldown
+                    # anchor is required. The live planning path supplies the real one.
+                    "last_stop_loss_fill_timestamp_ms": None,
                     "bot_params": self._bot_params_to_rust_dict(pside, symbol),
                     "strategy_params": self._strategy_params_to_rust_dict(pside, symbol),
                 }
@@ -20165,6 +20225,9 @@ class Passivbot:
         fill_increase_timestamps = self._get_last_increase_fill_timestamps(
             symbols, now_ms=now_ms
         )
+        stop_loss_fill_timestamps = self._get_last_stop_loss_fill_timestamps(
+            symbols, now_ms=now_ms
+        )
         delta_increase_timestamps = self._update_entry_cooldown_position_delta_guard(
             symbols, now_ms=now_ms
         )
@@ -20265,6 +20328,7 @@ class Passivbot:
                     "trailing": trailing,
                     "trailing_available": trailing_available,
                     "last_increase_fill_timestamp_ms": last_increase_fill_timestamps.get(symbol, {}).get(pside),
+                    "last_stop_loss_fill_timestamp_ms": stop_loss_fill_timestamps.get(symbol, {}).get(pside),
                     "bot_params": self._bot_params_to_rust_dict(pside, symbol),
                     "strategy_params": self._strategy_params_to_rust_dict(pside, symbol),
                 }

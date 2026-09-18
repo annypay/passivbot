@@ -2646,6 +2646,26 @@ fn bot_params_from_dict(dict: &PyDict) -> PyResult<BotParams> {
         extract_optional_f64_vec(dict, "hsl_halt_ladder_minutes")?;
     let hsl_realized_loss_budget_pct: f64 =
         extract_optional_f64(dict, "hsl_realized_loss_budget_pct")?;
+    // Opt-in per-coin stop loss. Absent keys keep the engine defaults, so a config that predates
+    // the group configures exactly the disabled stop the Rust `Default` describes.
+    let stop_loss_enabled: bool = dict
+        .get_item("stop_loss_enabled")?
+        .map(|item| item.extract::<bool>())
+        .transpose()?
+        .unwrap_or(false);
+    let stop_loss_pct_from_avg_entry: f64 =
+        extract_optional_f64(dict, "stop_loss_pct_from_avg_entry")?.max(0.0);
+    let stop_loss_cooldown_minutes: f64 =
+        extract_optional_f64(dict, "stop_loss_cooldown_minutes")?.max(0.0);
+    let stop_loss_order_type: String = match dict.get_item("stop_loss_order_type")? {
+        Some(item) => item.extract::<String>()?,
+        None => "market".to_string(),
+    };
+    if stop_loss_order_type != "market" && stop_loss_order_type != "limit" {
+        return Err(PyValueError::new_err(
+            "stop_loss_order_type must be one of {market, limit}",
+        ));
+    }
     // Callers resolve live fixed denominators before building orchestrator input.
     // Preserve zero here: per-symbol zero is the explicit side-disable sentinel.
     let wallet_exposure_limit = wallet_exposure_limit_raw;
@@ -2731,6 +2751,10 @@ fn bot_params_from_dict(dict: &PyDict) -> PyResult<BotParams> {
         hsl_panic_close_order_type,
         hsl_halt_ladder_minutes,
         hsl_realized_loss_budget_pct,
+        stop_loss_enabled,
+        stop_loss_pct_from_avg_entry,
+        stop_loss_cooldown_minutes,
+        stop_loss_order_type,
         risk_entry_cooldown_minutes: extract_optional_f64(dict, "risk_entry_cooldown_minutes")?,
         n_positions,
         total_wallet_exposure_limit,

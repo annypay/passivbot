@@ -1,0 +1,29 @@
+{
+  "3y": {
+    "arm": "s0_off__3y",
+    "fills_sha256": "4fc173b183e4d0810e58b71f98cdc89b51f503377ef7cbd0285be92408c150e4",
+    "fills_sha256_match": true,
+    "metric_differences": [],
+    "reference_run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__3y/backtest_results/binance_a_allow000__3y/binance/2026-09-17T10_49_03",
+    "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__3y/backtest_results/binance_s0_off__3y/binance/2026-09-18T09_39_42",
+    "stop_loss_fills": 0
+  },
+  "ext": {
+    "arm": "s0_off__ext",
+    "fills_sha256": "1c689c06dd988b85d7db44de456bc2bf0f9ed1e925f17fe02db1b169cf7dc36b",
+    "fills_sha256_match": true,
+    "metric_differences": [],
+    "reference_run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__ext/backtest_results/binance_a_allow000__ext/binance/2026-09-17T10_50_30",
+    "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__ext/backtest_results/binance_s0_off__ext/binance/2026-09-18T09_45_31",
+    "stop_loss_fills": 0
+  },
+  "pre": {
+    "arm": "s0_off__pre",
+    "fills_sha256": "b4fa328f95983d008fc91c4ba4f42f9411d89da06010782678118bbbc81cc190",
+    "fills_sha256_match": true,
+    "metric_differences": [],
+    "reference_run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__pre/backtest_results/binance_a_allow000__pre/binance/2026-09-17T10_47_03",
+    "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__pre/backtest_results/binance_s0_off__pre/binance/2026-09-18T11_14_41",
+    "stop_loss_fills": 0
+  }
+}

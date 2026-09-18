@@ -10,6 +10,7 @@ Open only the contract for the subsystem being changed.
 | Fill/PnL ingestion and coverage | `fill_events_manager.md` |
 | Historical runtime/fill attribution | `runtime_attribution.md` |
 | Equity Hard Stop Loss episodes and cooldown boundaries | `equity_hard_stop_loss.md` |
+| Per-coin stop loss: trigger, fill tier, entry cooldown | `stop_loss.md` |
 | Raw versus snapped balance | `balance_routing.md` |
 | Monitor persistence, recovery, rotation, retention | `monitor_persistence.md` |
 | Monitor relay/dashboard | `monitor_relay.md` |

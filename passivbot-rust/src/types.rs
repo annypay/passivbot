@@ -552,6 +552,18 @@ fn default_hsl_realized_loss_budget_pct() -> f64 {
     0.0
 }
 
+fn default_stop_loss_pct_from_avg_entry() -> f64 {
+    0.15
+}
+
+fn default_stop_loss_cooldown_minutes() -> f64 {
+    1440.0
+}
+
+fn default_stop_loss_order_type() -> String {
+    "market".to_string()
+}
+
 pub(crate) fn default_true() -> bool {
     true
 }
@@ -810,6 +822,25 @@ pub struct BotParams {
     /// Cumulative realized-loss budget for the permanent halt. `0.0` disables the basis.
     #[serde(default = "default_hsl_realized_loss_budget_pct")]
     pub hsl_realized_loss_budget_pct: f64,
+    /// Opt-in per-coin stop loss: while the position is open, close the whole position when the
+    /// sampled price crosses `position.price * (1 - stop_loss_pct_from_avg_entry)` (mirrored above
+    /// the entry for shorts), cancel this symbol side's entries, and then block adds for
+    /// `stop_loss_cooldown_minutes`. Default off: with `stop_loss_enabled == false` the engine must
+    /// be bit-identical to a build without these keys.
+    ///
+    /// There is deliberately no `trigger_confirm` key. The orchestrator's market price in a backtest
+    /// *is* the candle close (`backtest.rs` sets `bid = ask = close`), so a "last price versus
+    /// sample close" switch could never change a decision here. A trigger that fires on a bar's wick
+    /// rather than on a sampled price needs an exchange-resident stop order, which this repository
+    /// does not create.
+    #[serde(default)]
+    pub stop_loss_enabled: bool,
+    #[serde(default = "default_stop_loss_pct_from_avg_entry")]
+    pub stop_loss_pct_from_avg_entry: f64,
+    #[serde(default = "default_stop_loss_cooldown_minutes")]
+    pub stop_loss_cooldown_minutes: f64,
+    #[serde(default = "default_stop_loss_order_type")]
+    pub stop_loss_order_type: String,
     #[serde(default)]
     pub risk_entry_cooldown_minutes: f64,
     pub n_positions: usize,
@@ -883,6 +914,10 @@ impl Default for BotParams {
             hsl_panic_close_order_type: default_hsl_panic_close_order_type(),
             hsl_halt_ladder_minutes: default_hsl_halt_ladder_minutes(),
             hsl_realized_loss_budget_pct: default_hsl_realized_loss_budget_pct(),
+            stop_loss_enabled: false,
+            stop_loss_pct_from_avg_entry: default_stop_loss_pct_from_avg_entry(),
+            stop_loss_cooldown_minutes: default_stop_loss_cooldown_minutes(),
+            stop_loss_order_type: default_stop_loss_order_type(),
             risk_entry_cooldown_minutes: 0.0,
             n_positions: 0,
             total_wallet_exposure_limit: 0.0,
@@ -1003,6 +1038,9 @@ pub enum OrderType {
     EntryEmaAnchorShort = 28,
     CloseEmaAnchorShort = 29,
 
+    CloseStopLossLong = 30,
+    CloseStopLossShort = 31,
+
     Empty = 65535,
 }
 
@@ -1038,6 +1076,7 @@ impl OrderType {
                 | ClosePanicLong
                 | EntryEmaAnchorLong
                 | CloseEmaAnchorLong
+                | CloseStopLossLong
         )
     }
 
@@ -1084,6 +1123,8 @@ impl OrderType {
                 | CloseAutoReduceWelShort
                 | CloseEmaAnchorLong
                 | CloseEmaAnchorShort
+                | CloseStopLossLong
+                | CloseStopLossShort
         )
     }
 }

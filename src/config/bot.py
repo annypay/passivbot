@@ -36,6 +36,7 @@ HSL_ORANGE_TIER_MODES = frozenset(
     {"graceful_stop", "tp_only_with_active_entry_cancellation"}
 )
 HSL_PANIC_CLOSE_ORDER_TYPES = frozenset({"limit", "market"})
+STOP_LOSS_ORDER_TYPES = frozenset({"limit", "market"})
 CLIFF_EDGE_DUST_EPS = 1e-9
 CLIFF_EDGE_WARNING_THRESHOLD = 0.1
 FORAGER_CANONICAL_TO_INTERNAL_BOT_KEYS = {
@@ -652,6 +653,60 @@ def normalize_hsl_risk_unstuck_numerics(
         )
 
 
+def normalize_stop_loss_config(
+    result: dict,
+    *,
+    verbose: bool = True,
+    tracker: Optional[object] = None,
+) -> None:
+    """Validate `bot.<pside>.stop_loss` and mirror the declared values onto the flat keys.
+
+    The stop loss is opt-in and default-off: this function only checks what was declared and writes
+    it through, so a disabled stop loss cannot change engine behaviour at all. `pct_from_avg_entry`
+    must be finite and non-negative, and strictly positive while the stop is enabled — a zero
+    distance would trigger on every sample that has a position. `order_type` selects the fill tier:
+    `market` is the pessimistic tier (the bot closes at the touched price), `limit` rests at the
+    stop level and can fail to fill when the market gaps through it.
+    """
+    for pside in BOT_POSITION_SIDES:
+        bot_side = result["bot"][pside]
+        path = f"bot.{pside}.stop_loss"
+        enabled = _validate_bool(
+            get_grouped_bot_value(bot_side, "stop_loss_enabled"),
+            path=f"{path}.enabled",
+        )
+        pct_from_avg_entry = _validate_ratio(
+            get_grouped_bot_value(bot_side, "stop_loss_pct_from_avg_entry"),
+            path=f"{path}.pct_from_avg_entry",
+        )
+        if enabled and pct_from_avg_entry <= 0.0:
+            raise ValueError(
+                f"{path}.pct_from_avg_entry must be > 0 when {path}.enabled is true"
+            )
+        cooldown_minutes = _validate_ratio(
+            get_grouped_bot_value(bot_side, "stop_loss_cooldown_minutes"),
+            path=f"{path}.cooldown_minutes",
+        )
+        order_type = _validate_string_choice(
+            get_grouped_bot_value(bot_side, "stop_loss_order_type"),
+            path=f"{path}.order_type",
+            allowed=STOP_LOSS_ORDER_TYPES,
+        )
+        for flat_key, value in (
+            ("stop_loss_enabled", enabled),
+            ("stop_loss_pct_from_avg_entry", pct_from_avg_entry),
+            ("stop_loss_cooldown_minutes", cooldown_minutes),
+            ("stop_loss_order_type", order_type),
+        ):
+            _set_grouped_bot_value(
+                result,
+                pside=pside,
+                flat_key=flat_key,
+                value=value,
+                tracker=tracker,
+            )
+
+
 def normalize_cliff_edge_thresholds(
     result: dict,
     *,
@@ -1132,6 +1187,7 @@ def format_bot_config(
     ensure_bot_defaults(result, verbose=verbose, tracker=tracker)
     ensure_required_bot_params_present(result)
     normalize_hsl_risk_unstuck_numerics(result, verbose=verbose, tracker=tracker)
+    normalize_stop_loss_config(result, verbose=verbose, tracker=tracker)
     normalize_cliff_edge_thresholds(result, verbose=verbose, tracker=tracker)
     normalize_bot_forager_config(result, verbose=verbose, tracker=tracker)
     normalize_position_counts(result, tracker=tracker)

@@ -1,0 +1,22 @@
+{
+  "arm": "s1_sl15_cd1440__3y",
+  "description": "用户给定机制：均价 −15% 止损 + 24h 冷却（市价档）｜原生窗腿（2023-09-12 → 2026-09-12，样本内）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 52.91,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "3y",
+  "lever": "s1_sl15_cd1440",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__3y/backtest_results/binance_s1_sl15_cd1440__3y/binance/2026-09-18T09_40_36",
+  "stop_loss": {
+    "cooldown_minutes": 1440.0,
+    "enabled": true,
+    "order_type": "market",
+    "pct_from_avg_entry": 0.15
+  },
+  "synthetic": false
+}
