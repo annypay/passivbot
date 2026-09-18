@@ -780,6 +780,8 @@ pub struct Backtest<'a> {
     did_fill_short: Vec<bool>,
     last_increase_fill_timestamp_long: Vec<Option<u64>>,
     last_increase_fill_timestamp_short: Vec<Option<u64>>,
+    last_stop_loss_fill_timestamp_long: Vec<Option<u64>>,
+    last_stop_loss_fill_timestamp_short: Vec<Option<u64>>,
     pub total_wallet_exposures: Vec<f64>,
     // removed rolling_volume_sum & buffer — replaced by per-coin EMAs in `emas`
     equity_tracking_active: bool,
@@ -1665,6 +1667,8 @@ impl<'a> Backtest<'a> {
                         trailing_available: true,
                         last_increase_fill_timestamp_ms: self.last_increase_fill_timestamp_long
                             [idx],
+                        last_stop_loss_fill_timestamp_ms: self.last_stop_loss_fill_timestamp_long
+                            [idx],
                         // Placeholder: refreshed for every symbol on every bar in
                         // `get_orchestrator_input_cached`.
                         regime_allows_initial_entry: true,
@@ -1680,6 +1684,8 @@ impl<'a> Backtest<'a> {
                         trailing: trailing_short,
                         trailing_available: true,
                         last_increase_fill_timestamp_ms: self.last_increase_fill_timestamp_short
+                            [idx],
+                        last_stop_loss_fill_timestamp_ms: self.last_stop_loss_fill_timestamp_short
                             [idx],
                         regime_allows_initial_entry: true,
                         regime_allows_reentry: true,
@@ -1802,6 +1808,10 @@ impl<'a> Backtest<'a> {
             sym.long.last_increase_fill_timestamp_ms = self.last_increase_fill_timestamp_long[idx];
             sym.short.last_increase_fill_timestamp_ms =
                 self.last_increase_fill_timestamp_short[idx];
+            sym.long.last_stop_loss_fill_timestamp_ms =
+                self.last_stop_loss_fill_timestamp_long[idx];
+            sym.short.last_stop_loss_fill_timestamp_ms =
+                self.last_stop_loss_fill_timestamp_short[idx];
 
             sym.long.runtime_budget = Some(self.runtime_budget[idx].long.clone());
             sym.short.runtime_budget = Some(self.runtime_budget[idx].short.clone());
@@ -2316,6 +2326,8 @@ impl<'a> Backtest<'a> {
             did_fill_short: vec![false; n_coins],
             last_increase_fill_timestamp_long: vec![None; n_coins],
             last_increase_fill_timestamp_short: vec![None; n_coins],
+            last_stop_loss_fill_timestamp_long: vec![None; n_coins],
+            last_stop_loss_fill_timestamp_short: vec![None; n_coins],
             total_wallet_exposures: Vec::with_capacity(n_timesteps),
             equity_tracking_active: false,
             debug_writer: if DEBUG_DUMP_ORDERS {
@@ -4628,8 +4640,16 @@ impl<'a> Backtest<'a> {
                     self.process_entry_fill_short(k, idx, &order, exec);
                 }
             } else if pside == LONG {
+                if order.order_type == OrderType::CloseStopLossLong {
+                    self.last_stop_loss_fill_timestamp_long[idx] =
+                        Some(self.first_timestamp_ms + k as u64 * self.interval_ms);
+                }
                 self.process_close_fill_long(k, idx, &order, exec)?;
             } else {
+                if order.order_type == OrderType::CloseStopLossShort {
+                    self.last_stop_loss_fill_timestamp_short[idx] =
+                        Some(self.first_timestamp_ms + k as u64 * self.interval_ms);
+                }
                 self.process_close_fill_short(k, idx, &order, exec)?;
             }
             if pside == LONG {

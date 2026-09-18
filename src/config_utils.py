@@ -213,6 +213,12 @@ def _format_config_change_message(
 
 Path = Tuple[str, ...]  # ("bot", "long", "entry_grid_spacing_pct")
 HSL_TIER_RATIO_KEYS = ("yellow", "orange")
+STOP_LOSS_PSIDE_KEYS = (
+    "stop_loss_enabled",
+    "stop_loss_pct_from_avg_entry",
+    "stop_loss_cooldown_minutes",
+    "stop_loss_order_type",
+)
 HSL_PSIDE_KEYS = (
     "hsl_enabled",
     "hsl_halt_ladder_minutes",
@@ -1731,6 +1737,21 @@ CLI_HELP_OVERRIDES = {
 for _pside in ("long", "short"):
     CLI_HELP_OVERRIDES.update(
         {
+            f"bot.{_pside}.stop_loss.enabled": (
+                f"Enable the {_pside} per-coin stop loss. Off by default."
+            ),
+            f"bot.{_pside}.stop_loss.pct_from_avg_entry": (
+                f"Distance from the {_pside} average entry at which the whole position is "
+                "closed, as part-per-one: below the entry for longs, above it for shorts."
+            ),
+            f"bot.{_pside}.stop_loss.cooldown_minutes": (
+                f"Minutes after a {_pside} stop-loss fill during which that coin may not add."
+            ),
+            f"bot.{_pside}.stop_loss.order_type": (
+                "Allowed values: limit or market. market closes at the touched price and uses "
+                "backtest.market_order_slippage_pct and taker fees in backtests; limit rests at "
+                "the stop level and does not fill when the market gaps through it."
+            ),
             f"bot.{_pside}.hsl.enabled": f"Enable HSL for the {_pside} side.",
             f"bot.{_pside}.hsl.red_threshold": (
                 f"RED drawdown trigger for {_pside} HSL, as part-per-one."

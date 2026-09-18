@@ -565,6 +565,11 @@ optimize bounds. Both default to disabled (empty ladder, zero budget), and the o
 do not model them: an optimizer that varied them would score a flat-cooldown strategy while believing
 it scored a laddered one. Change them deliberately in a config, not through a search.
 
+`bot.<pside>.stop_loss.*` is likewise excluded from the optimize bounds. The optimization backends
+do not model a per-coin stop, so an optimizer that varied it would score an arm with the stop
+silently inert while believing it scored one with the stop armed. Set it deliberately in a config
+and replay it, not through a search.
+
 `long_hsl_no_restart_drawdown_threshold` and `short_hsl_no_restart_drawdown_threshold` are intentionally not part of the default optimize bounds. The runtime parameters still live under `bot.{long,short}.hsl.*`, but optimizer runs disable terminal no-restart by default via:
 
 1. `optimize.fixed_runtime_overrides["bot.long.hsl.no_restart_drawdown_threshold"] = 1.0`

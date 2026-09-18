@@ -6,6 +6,15 @@ since the latest release tag; these features may already be available when insta
 
 ## Unreleased
 
+- Add `bot.<pside>.stop_loss`, an opt-in per-coin stop loss, default off. When the price the engine
+  samples crosses `average entry x (1 - pct_from_avg_entry)` the whole position is closed
+  reduce-only, that coin-side's pending entries are cancelled, and further entries for that coin are
+  blocked for `cooldown_minutes`. `order_type` selects the fill tier: `market` (default) closes at
+  the touched price and pays taker fees plus `backtest.market_order_slippage_pct`, while `limit`
+  rests at the stop level and therefore does not fill when the market gaps through it. No
+  exchange-resident stop order is created - the trigger is evaluated in the engine's own sampling
+  loop, so it protects only while the bot is deciding. The keys are excluded from the optimize
+  bounds because the optimization backends do not model them.
 - Make the permanent HSL halt survivable to configure. The terminal
   `hsl_no_restart_drawdown_threshold` comparison is taken at the instant the panic flatten is
   confirmed, so on a fast crash it fires on an unrealized wick: measured on the historical legs,

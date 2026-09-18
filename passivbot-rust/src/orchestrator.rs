@@ -53,9 +53,8 @@ mod core {
         StrategySide,
     };
     use crate::types::{
-        default_true,
-        BotParams, BotParamsPair, EMABands, ExchangeParams, OrderBook, OrderType, Position,
-        RuntimeBudgetState, RuntimeOrderContext, StateParams, TrailingPriceBundle,
+        default_true, BotParams, BotParamsPair, EMABands, ExchangeParams, OrderBook, OrderType,
+        Position, RuntimeBudgetState, RuntimeOrderContext, StateParams, TrailingPriceBundle,
         TwelEnforcerPolicy,
     };
     use crate::utils::{
@@ -395,6 +394,10 @@ mod core {
         pub trailing_available: bool,
         #[serde(default)]
         pub last_increase_fill_timestamp_ms: Option<u64>,
+        /// Timestamp of this symbol side's most recent stop-loss fill. Drives the
+        /// `stop_loss_cooldown_minutes` entry block; rebuilt from fill history at restart.
+        #[serde(default)]
+        pub last_stop_loss_fill_timestamp_ms: Option<u64>,
         /// Entry-regime gate: true when the regime permits opening a new position.
         /// Consulted only when `SymbolInput::regime_eval_ts_ms` is absent; with a
         /// timestamp present the orchestrator derives this from the gate table in
@@ -628,6 +631,27 @@ mod core {
         }
     }
 
+    /// Block adds for one symbol side while its stop-loss cooldown is running.
+    ///
+    /// Deliberately narrower than `apply_add_order_gates`: this must not also apply the entry-ladder
+    /// staging rule, which belongs to the cooldown of a *filled add*, not to a stop-out. Closes are
+    /// never touched.
+    fn apply_stop_loss_entry_cooldown(
+        orders: &mut Vec<IdealOrder>,
+        pside: PositionSide,
+        now_timestamp_ms: u64,
+        last_stop_loss_fill_timestamp_ms: Option<u64>,
+        cooldown_minutes: f64,
+    ) {
+        if add_order_cooldown_active(
+            now_timestamp_ms,
+            last_stop_loss_fill_timestamp_ms,
+            cooldown_minutes,
+        ) {
+            orders.retain(|order| !order_increases_position(pside, order.qty));
+        }
+    }
+
     pub fn is_close_order_type(order_type: OrderType) -> bool {
         use OrderType::*;
         matches!(
@@ -646,6 +670,8 @@ mod core {
                 | ClosePanicShort
                 | CloseAutoReduceWelShort
                 | CloseEmaAnchorShort
+                | CloseStopLossLong
+                | CloseStopLossShort
         )
     }
 
@@ -653,6 +679,13 @@ mod core {
         matches!(
             order_type,
             OrderType::ClosePanicLong | OrderType::ClosePanicShort
+        )
+    }
+
+    fn is_stop_loss_close_order_type(order_type: OrderType) -> bool {
+        matches!(
+            order_type,
+            OrderType::CloseStopLossLong | OrderType::CloseStopLossShort
         )
     }
 
@@ -697,6 +730,8 @@ mod core {
                 | (PositionSide::Short, OrderType::CloseAutoReduceTwelShort)
                 | (PositionSide::Short, OrderType::CloseAutoReduceWelShort)
                 | (PositionSide::Short, OrderType::CloseUnstuckShort)
+                | (PositionSide::Long, OrderType::CloseStopLossLong)
+                | (PositionSide::Short, OrderType::CloseStopLossShort)
         )
     }
 
@@ -786,6 +821,17 @@ mod core {
             });
             let pside_market = params.hsl_enabled && params.hsl_panic_close_order_type == "market";
             return pside_market || global.panic_close_market;
+        }
+        if is_stop_loss_close_order_type(order.order_type) {
+            // The stop loss carries its own fill tier: `market` means the arm asked to exit at
+            // whatever price is available, and `global.market_orders_allowed` governs strategy
+            // orders rather than this protective one. `limit` falls through to the resting-order
+            // path below.
+            let params = symbol_bot_params.unwrap_or(match order.pside {
+                PositionSide::Long => &global.global_bot_params.long,
+                PositionSide::Short => &global.global_bot_params.short,
+            });
+            return params.stop_loss_enabled && params.stop_loss_order_type == "market";
         }
         if !global.market_orders_allowed {
             return false;
@@ -2520,6 +2566,90 @@ mod core {
         })
     }
 
+    /// Whole-position stop loss for one symbol side, or `None` when it is off or not triggered.
+    ///
+    /// The trigger is the price the orchestrator samples, not the bar's wick: this function only
+    /// ever sees one price per decision (`backtest.rs` sets the order book's bid and ask to the
+    /// candle close), so a tick-accurate stop is out of reach here by construction. Nothing is
+    /// latched -- a price that recovers above the level simply stops re-emitting the order.
+    fn calc_stop_loss_close(
+        symbol_idx: usize,
+        pside: PositionSide,
+        pos: &Position,
+        ob: &OrderBook,
+        exchange: &ExchangeParams,
+        params: &BotParams,
+    ) -> Option<IdealOrder> {
+        let pct = params.stop_loss_pct_from_avg_entry;
+        if !params.stop_loss_enabled
+            || !(pct.is_finite() && pct > 0.0)
+            || pos.size == 0.0
+            || !(pos.price.is_finite() && pos.price > 0.0)
+        {
+            return None;
+        }
+        let market_price = current_market_price(ob);
+        if !market_price.is_finite() || market_price <= 0.0 {
+            return None;
+        }
+        let level = match pside {
+            PositionSide::Long => pos.price * (1.0 - pct),
+            PositionSide::Short => pos.price * (1.0 + pct),
+        };
+        let triggered = match pside {
+            PositionSide::Long => market_price <= level,
+            PositionSide::Short => market_price >= level,
+        };
+        if !triggered || !(level.is_finite() && level > 0.0) {
+            return None;
+        }
+        let qty = match pside {
+            PositionSide::Long => -pos.size.abs(),
+            PositionSide::Short => pos.size.abs(),
+        };
+        let price = if params.stop_loss_order_type == "market" {
+            // Same aggressive-touch construction the panic close uses: a protective exit that is
+            // meant to happen now must be priced where the book is, not where the level was.
+            match pside {
+                PositionSide::Long => {
+                    let touch = tolerant_round_dn_preserve_step(ob.ask, exchange.price_step);
+                    tolerant_round_dn_preserve_step(
+                        touch - exchange.price_step,
+                        exchange.price_step,
+                    )
+                    .max(exchange.price_step)
+                }
+                PositionSide::Short => {
+                    let touch = tolerant_round_up_preserve_step(ob.bid, exchange.price_step);
+                    tolerant_round_up_preserve_step(
+                        touch + exchange.price_step,
+                        exchange.price_step,
+                    )
+                }
+            }
+        } else {
+            // A resting limit at the stop level: it fills only if the market trades back up to it.
+            match pside {
+                PositionSide::Long => tolerant_round_dn_preserve_step(level, exchange.price_step)
+                    .max(exchange.price_step),
+                PositionSide::Short => tolerant_round_up_preserve_step(level, exchange.price_step),
+            }
+        };
+        if !(price.is_finite() && price > 0.0 && qty.is_finite() && qty != 0.0) {
+            return None;
+        }
+        Some(IdealOrder {
+            symbol_idx,
+            pside,
+            qty,
+            price,
+            order_type: match pside {
+                PositionSide::Long => OrderType::CloseStopLossLong,
+                PositionSide::Short => OrderType::CloseStopLossShort,
+            },
+        })
+    }
+
     fn should_generate_entries(mode: TradingMode, has_pos: bool, allow_initial: bool) -> bool {
         match mode {
             TradingMode::Manual => false,
@@ -2534,11 +2664,7 @@ mod core {
     ///
     /// Deliberately entry-only. Closes, panic, and auto-unstuck keep their own
     /// independent paths, so a risk-off bar can still exit but cannot add risk.
-    fn regime_allows_entries(
-        has_pos: bool,
-        allows_initial: bool,
-        allows_reentry: bool,
-    ) -> bool {
+    fn regime_allows_entries(has_pos: bool, allows_initial: bool, allows_reentry: bool) -> bool {
         if has_pos {
             allows_reentry
         } else {
@@ -2647,8 +2773,7 @@ mod core {
                         let runtime_context = RuntimeOrderContext {
                             effective_wallet_exposure_limit: runtime_budget
                                 .effective_wallet_exposure_limit,
-                            wallet_exposure_limit_scale: runtime_budget
-                                .wallet_exposure_limit_scale,
+                            wallet_exposure_limit_scale: runtime_budget.wallet_exposure_limit_scale,
                         };
                         let initial_qty = calc_initial_entry_qty(
                             exchange,
@@ -3836,6 +3961,33 @@ mod core {
                             }
                         }
                     }
+                    apply_stop_loss_entry_cooldown(
+                        &mut entries,
+                        PositionSide::Long,
+                        input.timestamp_ms,
+                        s.long.last_stop_loss_fill_timestamp_ms,
+                        s.long.bot_params.stop_loss_cooldown_minutes,
+                    );
+                    // Panic is already flattening everything, and Manual means the operator
+                    // owns the position; neither one gets a stop-loss order. Entry
+                    // eligibility, entry gating and strategy-input availability
+                    // deliberately do not suppress it.
+                    if mode != TradingMode::Manual {
+                        if let Some(stop_loss_order) = calc_stop_loss_close(
+                            s.symbol_idx,
+                            PositionSide::Long,
+                            &s.long.position,
+                            &s.order_book,
+                            &s.exchange,
+                            &s.long.bot_params,
+                        ) {
+                            // A stop loss replaces this sample's entries rather than joining
+                            // them: adding into a position and exiting it in the same
+                            // decision is churn, not protection.
+                            entries.clear();
+                            closes.push(stop_loss_order);
+                        }
+                    }
                 }
 
                 per_long[s.symbol_idx] = Some(PerSymbolOrders {
@@ -3937,6 +4089,33 @@ mod core {
                             ) {
                                 closes.push(order);
                             }
+                        }
+                    }
+                    apply_stop_loss_entry_cooldown(
+                        &mut entries,
+                        PositionSide::Short,
+                        input.timestamp_ms,
+                        s.short.last_stop_loss_fill_timestamp_ms,
+                        s.short.bot_params.stop_loss_cooldown_minutes,
+                    );
+                    // Panic is already flattening everything, and Manual means the operator
+                    // owns the position; neither one gets a stop-loss order. Entry
+                    // eligibility, entry gating and strategy-input availability
+                    // deliberately do not suppress it.
+                    if mode != TradingMode::Manual {
+                        if let Some(stop_loss_order) = calc_stop_loss_close(
+                            s.symbol_idx,
+                            PositionSide::Short,
+                            &s.short.position,
+                            &s.order_book,
+                            &s.exchange,
+                            &s.short.bot_params,
+                        ) {
+                            // A stop loss replaces this sample's entries rather than joining
+                            // them: adding into a position and exiting it in the same
+                            // decision is churn, not protection.
+                            entries.clear();
+                            closes.push(stop_loss_order);
                         }
                     }
                 }
@@ -4671,20 +4850,29 @@ mod core {
             symbol.short.bot_params.entry_regime_gate = table;
 
             symbol.regime_eval_ts_ms = Some(1_000);
-            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (false, false));
+            assert_eq!(
+                side_regime_verdict(&symbol, PositionSide::Long),
+                (false, false)
+            );
             assert_eq!(
                 side_regime_verdict(&symbol, PositionSide::Short),
                 (false, false)
             );
 
             symbol.regime_eval_ts_ms = Some(2_000);
-            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (true, true));
+            assert_eq!(
+                side_regime_verdict(&symbol, PositionSide::Long),
+                (true, true)
+            );
 
             // No timestamp: the transmitted booleans stand and the table is ignored.
             symbol.regime_eval_ts_ms = None;
             symbol.long.regime_allows_initial_entry = false;
             symbol.long.regime_allows_reentry = true;
-            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (false, true));
+            assert_eq!(
+                side_regime_verdict(&symbol, PositionSide::Long),
+                (false, true)
+            );
         }
 
         #[test]
@@ -4700,10 +4888,16 @@ mod core {
                 block_reentry: false,
             };
             // Risk-off (raw 0) at 5_000: initial entries blocked, re-entries allowed.
-            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (false, true));
+            assert_eq!(
+                side_regime_verdict(&symbol, PositionSide::Long),
+                (false, true)
+            );
             // A side that does not declare the flag never consults the regime.
             symbol.long.bot_params.entry_regime_gate.block_initial = false;
-            assert_eq!(side_regime_verdict(&symbol, PositionSide::Long), (true, true));
+            assert_eq!(
+                side_regime_verdict(&symbol, PositionSide::Long),
+                (true, true)
+            );
         }
 
         fn tm_params_for_test(
@@ -4794,6 +4988,7 @@ mod core {
                     strategy_params: None,
                     parsed_strategy_params: None,
                     last_increase_fill_timestamp_ms: None,
+                    last_stop_loss_fill_timestamp_ms: None,
                     regime_allows_initial_entry: true,
                     regime_allows_reentry: true,
                     runtime_budget: None,
@@ -4807,6 +5002,7 @@ mod core {
                     strategy_params: None,
                     parsed_strategy_params: None,
                     last_increase_fill_timestamp_ms: None,
+                    last_stop_loss_fill_timestamp_ms: None,
                     regime_allows_initial_entry: true,
                     regime_allows_reentry: true,
                     runtime_budget: None,

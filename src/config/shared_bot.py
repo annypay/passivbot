@@ -3,7 +3,7 @@ from typing import Optional
 
 
 BOT_POSITION_SIDES = ("long", "short")
-BOT_SHARED_GROUPS = ("risk", "forager", "hsl", "unstuck")
+BOT_SHARED_GROUPS = ("risk", "forager", "hsl", "stop_loss", "unstuck")
 
 BOT_GROUP_FIELD_MAP = {
     "risk": {
@@ -41,6 +41,12 @@ BOT_GROUP_FIELD_MAP = {
         "red_threshold": "hsl_red_threshold",
         "restart_after_red_policy": "hsl_restart_after_red_policy",
         "tier_ratios": "hsl_tier_ratios",
+    },
+    "stop_loss": {
+        "cooldown_minutes": "stop_loss_cooldown_minutes",
+        "enabled": "stop_loss_enabled",
+        "order_type": "stop_loss_order_type",
+        "pct_from_avg_entry": "stop_loss_pct_from_avg_entry",
     },
     "unstuck": {
         "close_pct": "unstuck_close_pct",

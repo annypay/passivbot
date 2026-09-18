@@ -1714,6 +1714,16 @@ def _submitted_rust_input_context(
                     last_fill_timestamp_ms,
                     f"symbol input {input_idx} has invalid {pside} last_increase_fill_timestamp_ms",
                 )
+            last_stop_loss_fill_timestamp_ms = side_input.get(
+                "last_stop_loss_fill_timestamp_ms"
+            )
+            if last_stop_loss_fill_timestamp_ms is not None:
+                # Rust owns the stop-loss cooldown comparison; live only proves the anchor is a
+                # usable timestamp before it crosses the producer boundary.
+                _validated_rust_u64(
+                    last_stop_loss_fill_timestamp_ms,
+                    f"symbol input {input_idx} has invalid {pside} last_stop_loss_fill_timestamp_ms",
+                )
             if cooldown_minutes > 0.0 and last_fill_timestamp_ms is not None:
                 delay_float = cooldown_minutes * 60_000.0
                 delay_ms = (
