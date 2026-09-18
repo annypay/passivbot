@@ -53,6 +53,23 @@ def write_text(path: Path, text: str) -> None:
     os.replace(tmp, path)
 
 
+#: The main report ends with a verdict table whose last column this generator deliberately leaves
+#: as `待裁决`, because the adjudication belongs to the parent agent. Once that column has been
+#: filled in by hand, re-rendering the file would silently destroy the decision - so the generator
+#: refuses to touch an adjudicated report unless `--force` is passed.
+VERDICT_PLACEHOLDER = "待裁决"
+
+
+def is_adjudicated(path: Path) -> bool:
+    """True when the report exists, has a verdict section, and no longer says `待裁决`."""
+    if not path.exists():
+        return False
+    text = path.read_text(encoding="utf-8")
+    if VERDICT_PLACEHOLDER in text:
+        return False
+    return "裁决" in text
+
+
 def pct(value: float | None, digits: int = 2) -> str:
     return "unknown" if value is None else f"{value * 100:.{digits}f}%"
 
@@ -682,7 +699,7 @@ def render_overfitting_audit() -> str:
     add("")
 
     # ---- 12 verdicts
-    add("## 12. 预注册判据 J1–J5（规则与实测值；裁决见 §13）")
+    add("## 12. 预注册判据 J1–J5（只写规则与实测值，裁决留给父 agent）")
     add("")
 
     def per_panel_range(selection: str, field: str) -> str:
@@ -808,7 +825,7 @@ def render_overfitting_audit() -> str:
     add("")
     add("---")
     add("")
-    add("## 13. 判据裁决表（父 agent 裁决）")
+    add("## 13. 判据裁决表（**裁决列留空给父 agent**）")
     add("")
     add("| 判据 | 规则 | 实测 | 裁决 |")
     add("|---|---|---|---|")
@@ -825,7 +842,7 @@ def render_overfitting_audit() -> str:
         f"池 A `3y`：PBO {min(pool_a_3y['cscv'][f'max_adg|S{s}']['pbo'] for s in BLOCKS):.3f}–"
         f"{max(pool_a_3y['cscv'][f'max_adg|S{s}']['pbo'] for s in BLOCKS):.3f}，"
         f"斜率 {min(pool_a_3y['cscv'][f'max_adg|S{s}']['is_oos_slope'] for s in BLOCKS):+.3f}～"
-        f"{max(pool_a_3y['cscv'][f'max_adg|S{s}']['is_oos_slope'] for s in BLOCKS):+.3f} | **不通过** |"
+        f"{max(pool_a_3y['cscv'][f'max_adg|S{s}']['is_oos_slope'] for s in BLOCKS):+.3f} | 待裁决 |"
     )
     removed_total = sum(p["n_arms_removed"] for p in index["panels"].values())
     pool_total = sum(p["n_arms_in_pool"] for p in index["panels"].values())
@@ -838,7 +855,7 @@ def render_overfitting_audit() -> str:
             f"{index['panels'][name]['n_arms_in_pool']}"
             for name in sorted(index["panels"])
         )
-        + " | **通过（记录项）** |"
+        + " | 待裁决 |"
     )
     add(
         f"| **J3** 选择熬过多重检验 | DSR > 0.95 且 SPA p < 0.05（N 敏感性 "
@@ -853,7 +870,7 @@ def render_overfitting_audit() -> str:
             for n in n_grid
         )
         + f"；池 B SPA p={pool_b_spa['spa_p_value']:.4f}、p_adj@{n_bound}="
-        f"{pool_b_spa['p_adjusted_by_n'][str(n_bound)]:.4f} | **不通过** |"
+        f"{pool_b_spa['p_adjusted_by_n'][str(n_bound)]:.4f} | 待裁决 |"
     )
     add(
         f"| **J4** 折叠稳定性 | 折叠冠军折叠外分位 ≤ 0.50 且 Spearman ≥ 0.5 | "
@@ -864,64 +881,13 @@ def render_overfitting_audit() -> str:
             f"{folds['panels'][name][folds['panels'][name]['primary']]['j4_spearman_measured']:+.3f}"
             for name in sorted(folds["panels"])
         )
-        + " | **不通过** |"
+        + " | 待裁决 |"
     )
     add(
         "| **J5** 冻结决策 | J3 且 J4 通过 ⇒ 冻结这段历史、停止调参；否则只做结构性改动，"
-        "守护/阶梯标注为样本外未确认 | 见 J3 与 J4 的实测 | **不冻结**（J3、J4 样本外均不通过） |"
+        "守护/阶梯标注为样本外未确认 | 见 J3 与 J4 的实测 | 待裁决 |"
     )
     add("")
-    add("")
-    add("### 13.1 裁决理由")
-    add("")
-    add("**J1 不通过。** 规则要求 PBO ≤ 0.50 **且** 半样本 IS→OOS 斜率 > −0.5。PBO 一侧基本合格"
-        "（池 B `ext` 与池 A `pre` 都压在 0.50 附近或以下），但斜率一侧在 16 个「面板 × 分块」组合里"
-        "只有 2 个通过（池 B `ext` 的 S8/S10），而**真正的样本外窗口 `pre` 在每一个分块下斜率都是"
-        "负的**。也就是说：在这条历史上「搜索窗里排第一」与「别处排得好」没有稳定关系，通过的那两格"
-        "还依赖分块数选择。")
-    add("")
-    add("**J2 通过（记录项，不是门槛）。** 预注册的退化规则（`D0`–`D3`）在任何选择之前整体移除 arm，"
-        "4 个面板合计移除 14/72 = 19.4%，且集中在并集池（10/28 = 35.7%，其中 `D1_truncated`×7、"
-        "`D2_terminal_halt`×3、`D3_zero_variance`×10）。污染是实质性的，现在已经量化，并且不再污染"
-        "「挑最好」这一步。")
-    add("")
-    add("**J3 不通过。** 三条被推荐的头部配置在任何 N 下都远达不到 DSR > 0.95"
-        "（`g_user12h__ext` 0.4559–0.6864、`b_red015__ext` 0.5762–0.7309、"
-        "`a_allow037__pre` 0.1541–0.2839）。唯一低于 0.05 的 SPA p 属于**面板内最优 arm** 而不是"
-        "被推荐的配置，而且把没落盘的试验补进多重检验后（N = 1807，仍是**下界**）变成 0.9479；"
-        "另外两个面板的 SPA p 分别是 0.0835 与 0.3050。")
-    add("")
-    add("**J4 不通过。** 只有搜索窗 `3y` 满足（分位 0.188、Spearman +0.667）——同一条历史上切来切去"
-        "当然相关；一旦离开搜索窗，折叠冠军的折叠外分位掉到 0.846（`ext`）、1.000（`pre`）、"
-        "0.647（池 B），平均 Spearman 掉到 +0.190…+0.313。")
-    add("")
-    add("### 13.2 J5：不冻结这条历史（预注册规则的直接后果）")
-    add("")
-    add("1. **停止在同一条 2021–2026 Binance 历史上继续调参。** 本轮之后不再新增「在同一份数据上"
-        "挑更好配置」的搜索；`c1`（搜索冠军）、`b_red015`、`g_user12h`、`a_allow037` 这些点只能作为"
-        "**样本内描述**引用，不得当作预期收益。")
-    add("2. **只做结构性改动。** 能靠机制论证、不依赖这段历史的改动仍然可做——本轮引擎 PR 的两个键"
-        "（冷却阶梯是风险塑形；累计已实现亏损口径修的是「瞬时尖峰扣动永久关停」的机制缺陷）属于"
-        "这一类，但同样必须在文档里标注**样本外未确认**。")
-    add("3. **账户守护与冷却阶梯标记为「未在样本外确认」。** 本审计给出的证据是「在这条历史上，"
-        "守护类改动的样本外排名不可靠」，因此它们在实盘上只能当作**风险上限**（降低暴露、限制单币"
-        "集中度），不能当作已被验证的收益来源。这与 `g4_hsl_halt_ladder_2026-09-18` 的 K1/K3 一致："
-        "阶梯的收益中性、第一档取舍在两条腿上相反。")
-    add("4. **新证据轴。** 后续要改变上述结论，必须引入这条历史之外的证据：新的时间段（2026-09 之后"
-        "的前向纸面/实盘记录）、新的交易所或币池、或与选币无关的机制性论证；在旧历史上再搜一次不算"
-        "新证据。")
-    add("")
-    add("### 13.3 读这些数字时不能越界的地方")
-    add("")
-    add("- **PBO 不是亏钱概率**：它度量的是「在这批 arm 里挑最好的那一个」在这条历史上的脆弱程度，"
-        "与未来收益无关。")
-    add("- **它检测不到参数时间旅行与选择来源**（反模式 R16/R17）：曲线本身不记录每个参数何时变得"
-        "可知，台账也只能记录**被点名**的尝试。")
-    add("- **N = 1807 是下界**：被合同声明但从未真跑的格子、未落盘的非 Pareto 候选、没有记录的人工"
-        "试错都不计入，因此所有以 N 为输入的惩罚（DSR 的 `SR0`、MinBTL、`p_adj`）都是**乐观端**"
-        "——真实惩罚只会更重。判断「通过」时应把这一列读成「最好情况」。")
-    add("- **退化剔除让面板变小**：CSCV 需要矩形面板，退化臂被整体移除而不是插补，池越小 PBO 的估计"
-        "方差越大；池 B 的 10/28 剔除率意味着它的 PBO 比池 A 更不稳定。")
     add("---")
     add("")
     add("## 14. 复现")
@@ -1334,7 +1300,11 @@ def render_readme() -> str:
     add("")
     add("| 路径 | 内容 |")
     add("|---|---|")
-    add("| `overfitting_audit.md` | 主报告：口径、表格、边界、J1–J5（裁决列留空） |")
+    add(
+        "| `overfitting_audit.md` | 主报告：口径、表格、边界、J1–J5"
+        + ("（裁决已由父 agent 填入）|" if is_adjudicated(STUDY / "overfitting_audit.md")
+           else "（裁决列留空 `待裁决`）|")
+    )
     add("| `anti_pattern_audit.md` | R1–R22 逐条 pass/fail/unknown + 证据 |")
     add("| `artifacts/trial_ledger.json` | 全部试验 + N 下界 + 计数方法 + 抽检 |")
     add("| `artifacts/panels/` | 月度收益面板（`index.json` + 每面板 `csv`/`json`） |")
@@ -1362,6 +1332,12 @@ def render_readme() -> str:
     add("")
     add(verification_line)
     add("")
+    add(
+        "`build_report.py` 默认**不会覆盖已裁决的 `overfitting_audit.md`**"
+        "（检测到 §13 裁决列已填就跳过并打印提示；要重渲染需显式 `--force`），"
+        "所以重跑 `run.sh` 不会抹掉裁决结论。"
+    )
+    add("")
     add("## 5. 边界")
     add("")
     add(
@@ -1381,13 +1357,26 @@ def render_readme() -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="re-render even a report whose J1-J5 verdict column has already been adjudicated",
+    )
     args = parser.parse_args()
+    audit_path = STUDY / "overfitting_audit.md"
     outputs = {
-        STUDY / "overfitting_audit.md": render_overfitting_audit(),
+        audit_path: render_overfitting_audit(),
         STUDY / "anti_pattern_audit.md": render_anti_pattern_audit(),
         STUDY / "README.md": render_readme(),
     }
     for path, text in outputs.items():
+        if path == audit_path and not args.force and is_adjudicated(path):
+            print(
+                f"kept {path.relative_to(REPO)}: its J1-J5 verdict column has been adjudicated. "
+                "Re-rendering would erase that decision; pass --force to overwrite it anyway, or "
+                "re-run the pipeline from a clean checkout to regenerate the un-adjudicated form."
+            )
+            continue
         write_text(path, text)
         if not args.quiet:
             print(f"wrote {path.relative_to(REPO)} ({len(text.splitlines())} lines)")

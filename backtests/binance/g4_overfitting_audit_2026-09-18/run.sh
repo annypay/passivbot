@@ -34,13 +34,20 @@ MIN_AVAILABLE_MB="${MIN_AVAILABLE_MB:-1200}"
 
 ONLY_STAGE=""
 VERIFY_ONLY=0
+FORCE_REPORT=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --stage) ONLY_STAGE="${2:?--stage needs one of panels|cscv|bias|folds|stress|report}"; shift 2 ;;
     --verify-only) VERIFY_ONLY=1; shift ;;
+    # `build_report.py` refuses to overwrite a report whose J1-J5 verdict column has already been
+    # adjudicated by hand; this flag is the explicit opt-in to regenerate it anyway.
+    --force-report) FORCE_REPORT=1; shift ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
+
+REPORT_ARGS=(--quiet)
+[ "$FORCE_REPORT" -eq 1 ] && REPORT_ARGS+=(--force)
 
 export PYTHONPATH="$REPO_ROOT/src"
 
@@ -98,7 +105,7 @@ fi
 
 if want_stage report; then
   run_stage "6/7 render the Chinese reports from the tracked artifacts" \
-    "$PY" "$TOOLS/build_report.py"
+    "$PY" "$TOOLS/build_report.py" "${REPORT_ARGS[@]}"
 fi
 
 if [ -z "$ONLY_STAGE" ]; then
@@ -193,7 +200,7 @@ if [ -z "$ONLY_STAGE" ]; then
   # count, so the report is re-rendered once more to keep the prose and the artifact in step.
   # Verification stays the final gate: the re-render cannot change any number it checked.
   echo "== 7b/7 re-render the report so it cites the fresh verification record =="
-  "$PY" "$TOOLS/build_report.py" --quiet || exit 1
+  "$PY" "$TOOLS/build_report.py" "${REPORT_ARGS[@]}" || exit 1
 fi
 
 echo

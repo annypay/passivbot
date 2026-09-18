@@ -23,7 +23,7 @@
 
 | 路径 | 内容 |
 |---|---|
-| `overfitting_audit.md` | 主报告：口径、表格、边界、J1–J5（裁决列留空） |
+| `overfitting_audit.md` | 主报告：口径、表格、边界、J1–J5（裁决已由父 agent 填入）|
 | `anti_pattern_audit.md` | R1–R22 逐条 pass/fail/unknown + 证据 |
 | `artifacts/trial_ledger.json` | 全部试验 + N 下界 + 计数方法 + 抽检 |
 | `artifacts/panels/` | 月度收益面板（`index.json` + 每面板 `csv`/`json`） |
@@ -50,6 +50,8 @@ venv/bin/python -m pytest tests/test_g4_overfitting_audit.py -q
 ```
 
 独立复核 1549 项检查全部通过（失败 0 项；记录在 `artifacts/verification.json`）。`report_tools/verify_audit.py` 不 import 其余模块，用标准库重读权益账本并重算 面板 / 退化规则 / PBO / DSR / MinBTL / 折叠统计 / 压力臂。
+
+`build_report.py` 默认**不会覆盖已裁决的 `overfitting_audit.md`**（检测到 §13 裁决列已填就跳过并打印提示；要重渲染需显式 `--force`），所以重跑 `run.sh` 不会抹掉裁决结论。
 
 ## 5. 边界
 
