@@ -44,8 +44,10 @@ per_coin_cap       = base_limit * (1 + effective_allowance)
 `peak_coin_share_of_peak_total`、`active_coins_mean` 与 `empty_slot_time_share`（占用本身）。
 
 **一个必须一起读的实测细节**：单槽上限是"规划时"的约束，而成交账本记录的是成交时的
-`wallet_exposure`。盯市漂移与**交易所最小下单量**（额度被裁到 0 时仍会成交最小可交易数量）
-会让实测值略高于上限——本轮 allowance=0 的臂最高超出 3.5%，造成它的那笔成交被记录在
+`wallet_exposure`。超出来自**下单规划时的余额/价格快照**与**交易所最小下单量**（额度被裁到 0
+时仍会成交最小可交易数量），而不是盯市漂移：引擎的 `wallet_exposure` 按成本价
+（`position_price`，`passivbot-rust/src/utils.rs:255-265`）而非当前标记价计算。本轮
+allowance=0 的臂最高超出 3.5%，造成它的那笔成交被记录在
 `cap_overshoot_fill` 里（例如 AVAX 的 1.0 张最小加仓）。几何不变量因此用 5% 的执行余量校验，
 报告同时给出实测超出比例；这不是"上限没生效"，而是"上限 + 执行摩擦"。
 

@@ -11,7 +11,10 @@ artifacts claim. It also re-checks the things the study's claim rests on:
 * the reference anchors still hash to their pins,
 * the bundle layout and the report skeleton match the convention,
 * no tracked evidence carries a host-specific path,
-* a synthetic arm says so in its own scope section.
+* a synthetic arm says so in its own scope section,
+* a recorded episode trace is re-derived from the ledger (when the arm carries one),
+* the run's dumped config matches the frozen arm, apart from the defaults the *current* engine
+  injects into a profile frozen before they existed (every tolerated path is printed as a note).
 
 Offline only. No network, no credentials, no exchange account, no bot start.
 """
@@ -19,6 +22,7 @@ Offline only. No network, no credentials, no exchange account, no bot start.
 from __future__ import annotations
 
 import argparse
+import copy
 import re
 import sys
 from pathlib import Path
@@ -37,6 +41,7 @@ import annual_analysis as spec  # noqa: E402  (the convention's own validator)
 import event_windows as events  # noqa: E402
 import geometry_analysis as geometry  # noqa: E402
 import guard_analysis as guard  # noqa: E402
+import trace_episode as trace  # noqa: E402
 import variant_spec as study  # noqa: E402
 import wipeout_matrix as wipeout  # noqa: E402
 
@@ -72,6 +77,10 @@ TRACKED_EVIDENCE = (
     "guard_readiness.json",
     "risk_geometry.json",
     "annual_analysis.md",
+    # The episode trace is tracked evidence too, but only the arm the mechanics document cites
+    # carries one; `OPTIONAL_TRACKED_EVIDENCE` keeps a missing trace out of the failure list
+    # while still scanning a recorded one for host paths.
+    "episode_trace.json",
 )
 PERIOD_COLUMNS = (
     "period",
@@ -146,10 +155,58 @@ def check_skeleton(run_dir: Path) -> list[str]:
     return spec.assert_report_structure(report)
 
 
+def _prune_hydrated_engine_defaults(
+    normalized_root: Any, run_root: Any, frozen_root: Any
+) -> tuple[Any, list[str]]:
+    """Drop the paths only the *current* engine's sanitizer puts on the normalized side.
+
+    `normalize_config_payload` hydrates a frozen profile with the engine as it is today, so a key
+    added to the schema after a run was frozen appears on the normalized side while neither the
+    run dump (written before the key existed) nor the frozen arm file (which never declared it)
+    carries it. Such a difference is default injection by the current engine, not a change in the
+    arm, so the helper removes exactly those paths from a copy of the normalized root and returns
+    them, letting the caller report the tolerance out loud.
+
+    The rule is deliberately narrow: a path the frozen arm *declared* is never pruned — even when
+    the run dump lost it — so a real difference still fails.
+    """
+    pruned = copy.deepcopy(normalized_root)
+    tolerated: list[str] = []
+
+    def walk(normalized: Any, run: Any, frozen: Any, prefix: str) -> None:
+        if not isinstance(normalized, dict):
+            return
+        for key in list(normalized):
+            path = f"{prefix}{key}"
+            in_run = isinstance(run, dict) and key in run
+            in_frozen = isinstance(frozen, dict) and key in frozen
+            if not in_run and not in_frozen:
+                del normalized[key]
+                tolerated.append(path)
+                continue
+            walk(
+                normalized[key],
+                run.get(key) if isinstance(run, dict) else None,
+                frozen.get(key) if isinstance(frozen, dict) else None,
+                f"{path}.",
+            )
+
+    walk(pruned, run_root, frozen_root, "")
+    return pruned, tolerated
+
+
 def check_arm_identity(
-    variant: study.Variant, config: dict[str, Any], run_config: dict[str, Any]
+    variant: study.Variant,
+    config: dict[str, Any],
+    run_config: dict[str, Any],
+    *,
+    notes: list[str] | None = None,
 ) -> list[str]:
-    """Re-derive the arm's frozen config from the parent and compare against what ran."""
+    """Re-derive the arm's frozen config from the parent and compare against what ran.
+
+    `notes` collects the run-config paths tolerated as current-engine default injection (see
+    `_prune_hydrated_engine_defaults`); the caller prints them so the tolerance is never silent.
+    """
     problems: list[str] = []
     parent = study.load_json(study.SOURCE_CONFIG)
     expected = study.load_json(variant.config_path)
@@ -188,10 +245,15 @@ def check_arm_identity(
         )
     normalized = study.normalize_config_payload(expected)
     for root in ("bot", "live", "coin_overrides"):
+        hydrated, tolerated = _prune_hydrated_engine_defaults(
+            normalized[root], run_config[root], expected[root]
+        )
+        if notes is not None:
+            notes.extend(f"{root}.{path}" for path in tolerated)
         problems.extend(
             f"run config {problem}"
             for problem in study.diff_run_config_root(
-                normalized[root], run_config[root], root, declared=declared_paths.get(root, ())
+                hydrated, run_config[root], root, declared=declared_paths.get(root, ())
             )
         )
     for key in ("start_date", "end_date"):
@@ -636,6 +698,176 @@ def check_geometry_artifact(
     return problems
 
 
+TRACE_NAME = "episode_trace.json"
+#: Tracked evidence only some arms carry: a traced episode is study-specific, so a missing trace
+#: is not a layout defect — but a recorded one must survive its own recomputation.
+OPTIONAL_TRACKED_EVIDENCE = (TRACE_NAME,)
+
+
+def _trace_block_problems(
+    recorded: Any, expected: Any, label: str, *, tol: float = 1e-9
+) -> list[str]:
+    """Compare one flat block of a trace (or one ladder row) with its recomputation."""
+    if recorded is None and expected is None:
+        return []
+    if recorded is None or expected is None:
+        return [f"{TRACE_NAME} {label}: recorded {recorded!r} but re-derived {expected!r}"]
+    if not isinstance(recorded, dict) or not isinstance(expected, dict):
+        return [f"{TRACE_NAME} {label}: not a block ({recorded!r} vs {expected!r})"]
+    problems: list[str] = []
+    for key in sorted(set(recorded) | set(expected)):
+        if key not in recorded:
+            problems.append(f"{TRACE_NAME} {label} is missing {key}")
+        elif key not in expected:
+            problems.append(f"{TRACE_NAME} {label} carries an unexpected {key}")
+        elif not _same_value(recorded[key], expected[key], tol=tol):
+            problems.append(
+                f"{TRACE_NAME} {label}.{key}: recorded {recorded[key]!r} != re-derived "
+                f"{expected[key]!r}"
+            )
+    return problems
+
+
+def _episode_ledger_problems(
+    run_dir: Path, config: dict[str, Any], coin: str, window: list[Any]
+) -> list[str]:
+    """Independent arithmetic straight from the ledger — no trace tool involved.
+
+    Four rules, all re-derived from `fills.csv` and the frozen config: the ledger's own position
+    column is self-consistent, every add is either the `x(1 + double_down_factor)` step or the
+    initial-entry floor, a cropped add lands on the per-slot budget, and the panic fill closes the
+    whole position.
+    """
+    fills = events.load_fills(run_dir)
+    required = {"timestamp", "coin", "type", "qty", "price", "psize", "wallet_exposure"}
+    if fills.empty or not required <= set(fills.columns):
+        return [f"{coin}: fills.csv lacks the columns an episode check needs"]
+    start = pd.Timestamp(window[0], tz="UTC")
+    end = pd.Timestamp(window[1], tz="UTC")
+    subset = fills[
+        (fills["coin"].astype(str) == coin)
+        & (fills["timestamp"] >= start)
+        & (fills["timestamp"] <= end)
+    ].sort_values("timestamp", kind="stable")
+    if subset.empty:
+        return [f"{coin}: no fills in the recorded window {window!r}"]
+
+    risk = ((config.get("bot") or {}).get("long") or {}).get("risk") or {}
+    strategy = ((config.get("bot") or {}).get("long") or {}).get("strategy") or {}
+    entry = (strategy.get("trailing_martingale") or {}).get("entry") or {}
+    twe = float(risk.get("total_wallet_exposure_limit") or 0.0)
+    slots = float(risk.get("n_positions") or 0.0)
+    raw_allowance = max(0.0, float(risk.get("we_excess_allowance_pct") or 0.0))
+    base = twe / slots if slots else 0.0
+    mode = str(risk.get("we_excess_allowance_mode") or "bounded")
+    if base <= 0.0:
+        return [f"{coin}: the arm declares no per-slot budget"]
+    effective = raw_allowance if mode == "legacy_raw" else min(raw_allowance, max(0.0, twe / base - 1.0))
+    slot_budget = base * (1.0 + effective)
+    ddf = float(entry.get("double_down_factor") or 0.0)
+    initial_qty_pct = float(entry.get("initial_qty_pct") or 0.0)
+    if ddf <= 0.0 or initial_qty_pct <= 0.0:
+        return [f"{coin}: the arm declares no double-down factor or initial size"]
+
+    problems: list[str] = []
+    position = 0.0
+    for index, row in subset.iterrows():
+        del index
+        stamp = row["timestamp"]
+        qty = float(row["qty"])
+        price = float(row["price"])
+        after = float(row["psize"])
+        balance = float(row.get("usd_total_balance") or 0.0)
+        kind = str(row["type"])
+        if abs(position + qty - after) > max(1e-9, abs(after) * 1e-6):
+            problems.append(
+                f"{coin} {stamp}: ledger position {position} + fill {qty} != recorded {after}"
+            )
+        if study.PANIC_FILL_MARKER in kind:
+            if abs(abs(qty) - abs(position)) > max(1e-9, abs(position) * 1e-6):
+                problems.append(
+                    f"{coin} {stamp}: panic fill {qty} does not close the whole position "
+                    f"{position}"
+                )
+        elif kind.startswith("entry_") and abs(position) > 0.0:
+            floor_qty = (
+                balance * slot_budget * initial_qty_pct / price if price > 0.0 else 0.0
+            )
+            if "cropped" in kind:
+                exposure = float(row["wallet_exposure"])
+                if exposure > slot_budget * 1.01 + 1e-9:
+                    problems.append(
+                        f"{coin} {stamp}: cropped add lands at exposure {exposure:.6f} beyond "
+                        f"the slot budget {slot_budget:.6f}"
+                    )
+            elif qty > floor_qty * 1.02:
+                expected_qty = ddf * abs(position)
+                if abs(qty - expected_qty) > max(1e-9, 0.02 * expected_qty):
+                    problems.append(
+                        f"{coin} {stamp}: add {qty} is neither the x{1.0 + ddf:.2f} step "
+                        f"({expected_qty:.6f}) nor the initial-entry floor ({floor_qty:.6f})"
+                    )
+        position = after
+    return problems
+
+
+def check_episode_trace(
+    run_dir: Path, config: dict[str, Any], variant: study.Variant | None = None
+) -> list[str]:
+    """Re-derive a recorded episode trace from the ledger and compare it field by field.
+
+    The coin and the window are provenance — they select *which* episode to re-derive — while
+    every number comes from `fills.csv`, `config.json` and the frozen dataset's market settings.
+    A trace that no longer matches its ledger therefore cannot pass by quoting itself.
+    """
+    path = run_dir / TRACE_NAME
+    if not path.exists():
+        return []
+    recorded = study.load_json(path)
+    arm = str(recorded.get("arm") or "")
+    variant = variant or study.VARIANTS_BY_KEY.get(arm)
+    if variant is None or variant.key != arm:
+        return [f"{TRACE_NAME}: arm {arm!r} is not a declared arm of this study"]
+    problems: list[str] = []
+    if recorded.get("leg") != variant.leg:
+        problems.append(f"{TRACE_NAME} leg {recorded.get('leg')!r} != {variant.leg!r}")
+    coin = str(recorded.get("coin") or "")
+    window = recorded.get("window") or []
+    if not coin or len(window) != 2:
+        return [f"{TRACE_NAME}: the trace declares no coin or no two-sided window"]
+    try:
+        recomputed = trace.derive_episode(run_dir, variant, coin, window[0], window[1])
+    except SystemExit as exc:
+        return [f"{TRACE_NAME}: cannot re-derive the episode: {exc}"]
+    except Exception as exc:  # noqa: BLE001 - a broken trace must fail, not crash the verifier
+        return [f"{TRACE_NAME}: cannot re-derive the episode: {type(exc).__name__}: {exc}"]
+
+    problems.extend(_trace_block_problems(recorded.get("declared"), recomputed.get("declared"), "declared"))
+    recorded_ladder = recorded.get("ladder") or []
+    expected_ladder = recomputed.get("ladder") or []
+    if len(recorded_ladder) != len(expected_ladder):
+        problems.append(
+            f"{TRACE_NAME}: records {len(recorded_ladder)} ladder fill(s) but "
+            f"{len(expected_ladder)} were re-derived"
+        )
+    for index, (recorded_row, expected_row) in enumerate(zip(recorded_ladder, expected_ladder)):
+        problems.extend(_trace_block_problems(recorded_row, expected_row, f"ladder[{index}]"))
+    problems.extend(_trace_block_problems(recorded.get("panic"), recomputed.get("panic"), "panic"))
+    problems.extend(
+        f"{TRACE_NAME} cross-check: {problem}"
+        for problem in (recorded.get("cross_check_problems") or [])
+    )
+    problems.extend(
+        f"{TRACE_NAME} cross-check: {problem}"
+        for problem in (recomputed.get("cross_check_problems") or [])
+    )
+    problems.extend(
+        f"{TRACE_NAME} ledger-check: {problem}"
+        for problem in _episode_ledger_problems(run_dir, config, coin, window)
+    )
+    return problems
+
+
 def check_report_numbers(
     run_dir: Path, variant: study.Variant, events_payload: dict[str, Any], wipeout_payload: dict[str, Any]
 ) -> list[str]:
@@ -699,7 +931,8 @@ def check_no_host_paths(run_dir: Path) -> list[str]:
     for name in TRACKED_EVIDENCE:
         path = run_dir / name
         if not path.exists():
-            problems.append(f"missing tracked evidence {name}")
+            if name not in OPTIONAL_TRACKED_EVIDENCE:
+                problems.append(f"missing tracked evidence {name}")
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
         for pattern in HOST_PATH_PATTERNS:
@@ -709,7 +942,9 @@ def check_no_host_paths(run_dir: Path) -> list[str]:
     return problems
 
 
-def verify_arm(variant: study.Variant, result_dir: Path | None = None) -> list[str]:
+def verify_arm(
+    variant: study.Variant, result_dir: Path | None = None, *, notes: list[str] | None = None
+) -> list[str]:
     problems: list[str] = []
     try:
         run_dir = study.find_variant_run_dir(variant, result_dir)
@@ -729,7 +964,9 @@ def verify_arm(variant: study.Variant, result_dir: Path | None = None) -> list[s
 
     problems.extend(check_layout(run_dir, config))
     problems.extend(check_skeleton(run_dir))
-    problems.extend(check_arm_identity(variant, study.load_json(variant.config_path), run_config))
+    problems.extend(
+        check_arm_identity(variant, study.load_json(variant.config_path), run_config, notes=notes)
+    )
     problems.extend(check_period_tables(run_dir))
     event_problems, events_payload = check_events_artifact(run_dir, variant, equity, fills)
     problems.extend(event_problems)
@@ -738,6 +975,7 @@ def verify_arm(variant: study.Variant, result_dir: Path | None = None) -> list[s
     problems.extend(check_report_numbers(run_dir, variant, events_payload, wipeout_payload))
     problems.extend(check_guard_artifact(run_dir, variant, analysis))
     problems.extend(check_geometry_artifact(run_dir, variant, analysis))
+    problems.extend(check_episode_trace(run_dir, run_config, variant))
     problems.extend(check_no_host_paths(run_dir))
 
     audit = variant.execution_audit_path
@@ -780,7 +1018,13 @@ def main(argv: list[str] | None = None) -> int:
                 continue
             failures[key] = ["no run directory; run run_variant.py first"]
             continue
-        problems = verify_arm(variant, str(run_dir))
+        notes: list[str] = []
+        problems = verify_arm(variant, str(run_dir), notes=notes)
+        for path in notes:
+            print(
+                f"note {key}: tolerated current-engine default {path} "
+                "(absent from both the run dump and the frozen arm declaration)"
+            )
         if problems:
             failures[key] = problems
         else:

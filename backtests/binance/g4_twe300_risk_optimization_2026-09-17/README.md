@@ -10,7 +10,8 @@
 > 44 个 arm（32 个声明式 + 12 个搜索候选）在三条腿（搜索窗 3y、全历史 ext、样本外 pre）上重放；
 > 每个 arm 的完整深度分析在其 run 目录的 `annual_analysis.md`；跨 arm 综合见
 > [`risk_geometry_analysis.md`](risk_geometry_analysis.md)；本轮设计与下一轮引擎阶梯的定档见
-> [`variant_geometry_design.md`](variant_geometry_design.md)。
+> [`variant_geometry_design.md`](variant_geometry_design.md)；入场/加仓/离场的公式 + Rust 行号说明书（含 ZEC 2026-06-05 清仓案例）见
+> [`entry_close_mechanics.md`](entry_close_mechanics.md)。
 
 ## 1. 这轮在回答什么
 
@@ -38,7 +39,9 @@
 - `allowance = 0` ⇒ 单币上限 = 均分额度 = **0.4286**，但总暴露上界不变。
 
 **一个必须一起读的实测细节**：上限是"下单规划时"的约束；成交账本记录成交时的 `wallet_exposure`，
-盯市漂移与**交易所最小下单量**会让实测略高于上限。本轮 32 个声明式臂里最大绝对超出 0.0191
+超出来自**下单规划时的余额/价格快照**与**交易所最小下单量**，而不是盯市漂移——引擎的
+`wallet_exposure` 用成本价（`position_price`）而不是当前标记价计算
+（`passivbot-rust/src/utils.rs` 的 `calc_wallet_exposure`）。本轮 32 个声明式臂里最大绝对超出 0.0191
 （最紧的上限 TWE 2.5/7 槽），相对最高 +5.47%。几何不变量因此用 `上限 × 1.05 + 0.02` 校验，
 造成超出的那笔成交记在 `risk_geometry.json` 的 `cap_overshoot_fill` 里（例如 AVAX 的 1 张最小加仓）。
 

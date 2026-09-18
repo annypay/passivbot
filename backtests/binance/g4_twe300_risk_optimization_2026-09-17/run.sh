@@ -146,6 +146,21 @@ if [ "$VERIFY_ONLY" -eq 0 ]; then
     has_run "$arm" || { echo "-- $arm: no run to render"; continue; }
     "$PY" "$TOOLS/generate_annual_report.py" --variant "$arm" || exit 1
   done
+
+  echo "== 3b/5 re-derive the episode trace the mechanics document cites =="
+  # The trace is a pure function of the run's ledger and frozen config, so this step is
+  # idempotent. It is skipped for filtered runs (the arm would not have been replayed) and when
+  # the arm has no bundle yet; the verifier re-derives it independently either way.
+  if [ -z "$ONLY_VARIANT" ] && [ -z "$ONLY_LEG" ] && [ -z "$ONLY_STAGE" ]; then
+    if has_run b_red015__3y; then
+      "$PY" "$TOOLS/trace_episode.py" --variant b_red015__3y --coin ZEC \
+        --start 2026-06-04T16:01:00+00:00 --end 2026-06-05T07:15:00+00:00 || exit 1
+    else
+      echo "-- b_red015__3y: no run to trace"
+    fi
+  else
+    echo "-- filtered run: skipping the episode trace"
+  fi
 else
   echo "== verify-only: skipping freeze, replay and render =="
 fi

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -32,12 +33,25 @@ REPO = Path(__file__).resolve().parents[1]
 STUDY = REPO / "backtests/binance/g4_twe300_risk_optimization_2026-09-17"
 TOOLS = STUDY / "report_tools"
 
+#: The study tools already loaded here, by file name, and the plain module names their bodies
+#: import them by. Every study under `backtests/**/report_tools/` names its registry
+#: `variant_spec.py`, so `import variant_spec as study` inside a tool body must resolve to *this*
+#: study's module rather than to whichever study a pytest session happened to import first.
+_LOADED_TOOLS: dict[str, object] = {}
+_SIBLING_ALIASES = {
+    "variant_spec.py": "variant_spec",
+    "event_windows.py": "event_windows",
+    "wipeout_matrix.py": "wipeout_matrix",
+    "geometry_analysis.py": "geometry_analysis",
+}
+
 
 def _load_tool(name: str, filename: str):
     spec = importlib.util.spec_from_file_location(name, TOOLS / filename)
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
+    _LOADED_TOOLS[filename] = module
     return module
 
 
@@ -46,25 +60,27 @@ events = _load_tool("geometry_event_windows", "event_windows.py")
 
 
 def _load_dependent_tool(name: str, filename: str):
-    """Load a tool whose module body does `import variant_spec as study` without leaking it."""
-    previous = sys.modules.get("variant_spec")
+    """Load a tool whose module body imports its sibling tools by their plain names.
+
+    The aliases are registered *before* the module body runs and removed again afterwards, so a
+    tool binds the modules this file already loaded and no other study's test can pick up a
+    `variant_spec` that is not this study's.
+    """
     previous_path = list(sys.path)
+    replaced = {alias: sys.modules.get(alias) for alias in _SIBLING_ALIASES.values()}
     sys.path.insert(0, str(TOOLS))
-    sys.modules["variant_spec"] = spec
+    for sibling, alias in _SIBLING_ALIASES.items():
+        module = _LOADED_TOOLS.get(sibling)
+        if module is not None:
+            sys.modules[alias] = module
     try:
-        module = _load_tool(name, filename)
-        events_module = sys.modules.get("geometry_event_windows")
-        if events_module is not None:
-            sys.modules.setdefault("event_windows", events_module)
-        wipeout_module = sys.modules.get("geometry_wipeout_matrix")
-        if wipeout_module is not None:
-            sys.modules.setdefault("wipeout_matrix", wipeout_module)
-        return module
+        return _load_tool(name, filename)
     finally:
-        if previous is None:
-            sys.modules.pop("variant_spec", None)
-        else:
-            sys.modules["variant_spec"] = previous
+        for alias, module in replaced.items():
+            if module is None:
+                sys.modules.pop(alias, None)
+            else:
+                sys.modules[alias] = module
         sys.path[:] = previous_path
 
 
@@ -579,3 +595,108 @@ def test_synthesis_restates_the_arms_numbers():
             assert entry["peak_coin_exposure"] == pytest.approx(
                 recorded["observed"]["peak_coin_exposure"]
             )
+
+
+# --------------------------------------------------------------------------------------
+# 验证器与 episode 追踪
+# --------------------------------------------------------------------------------------
+
+TRACE_ARM = "b_red015__3y"
+#: Everything `check_episode_trace` re-derives a recorded trace from: the run's dumped config, its
+#: analysis telemetry, the fill ledger, the equity series, and the trace itself.
+TRACE_BUNDLE_FILES = (
+    "config.json",
+    "analysis.json",
+    "fills.csv",
+    "balance_and_equity.csv.gz",
+    "episode_trace.json",
+)
+
+verifier = _load_dependent_tool("geometry_variant_verifier", "verify_variant_report.py")
+
+
+def _different_value(value):
+    """A value that must differ from `value` under the study's own equality."""
+    if isinstance(value, bool):
+        return not value
+    if isinstance(value, (int, float)):
+        return float(value) + 1.0
+    return f"{value}-tampered"
+
+
+@pytest.fixture
+def traced_episode(tmp_path):
+    """A scratch copy of the one arm that carries a trace, so a test may perturb it in place."""
+    variant = spec.VARIANTS_BY_KEY[TRACE_ARM]
+    try:
+        source = spec.find_variant_run_dir(variant)
+    except SystemExit:
+        pytest.skip(f"the {TRACE_ARM} bundle is not present locally")
+    missing = [name for name in TRACE_BUNDLE_FILES if not (source / name).exists()]
+    if missing:
+        pytest.skip(f"{TRACE_ARM} carries no {', '.join(missing)}")
+    run_dir = tmp_path / TRACE_ARM
+    run_dir.mkdir()
+    for name in TRACE_BUNDLE_FILES:
+        shutil.copy2(source / name, run_dir / name)
+    return variant, run_dir, load(run_dir / "config.json"), load(run_dir / "episode_trace.json")
+
+
+def test_tracked_episode_trace_verifies_clean(traced_episode):
+    variant, run_dir, config, _recorded = traced_episode
+    assert verifier.check_episode_trace(run_dir, config, variant) == []
+
+
+def test_episode_trace_check_catches_a_perturbed_ladder_fill(traced_episode):
+    variant, run_dir, config, recorded = traced_episode
+    assert len(recorded["ladder"]) > 3, "the traced episode must have a fourth ladder fill"
+    recorded["ladder"][3]["ledger_qty"] = recorded["ladder"][3]["ledger_qty"] * 1.05
+    spec.write_json(run_dir / verifier.TRACE_NAME, recorded)
+    problems = verifier.check_episode_trace(run_dir, config, variant)
+    assert any("ladder[3].ledger_qty" in problem for problem in problems), problems
+
+
+def test_episode_trace_check_reports_a_cross_check_problem(traced_episode):
+    variant, run_dir, config, recorded = traced_episode
+    recorded["cross_check_problems"] = ["injected arithmetic failure"]
+    spec.write_json(run_dir / verifier.TRACE_NAME, recorded)
+    problems = verifier.check_episode_trace(run_dir, config, variant)
+    assert any(
+        "cross-check" in problem and "injected arithmetic failure" in problem
+        for problem in problems
+    ), problems
+
+
+def test_episode_trace_is_optional_tracked_evidence():
+    """Arms without a trace are not defective, but a recorded trace is scanned like the rest."""
+    assert verifier.TRACE_NAME == "episode_trace.json"
+    assert verifier.TRACE_NAME in verifier.TRACKED_EVIDENCE
+    assert verifier.TRACE_NAME in verifier.OPTIONAL_TRACKED_EVIDENCE
+    assert verifier.TRACE_NAME not in verifier.REQUIRED_LOCAL
+
+
+def test_hydrated_defaults_are_tolerated_but_a_declared_key_change_is_not(traced_episode):
+    """The tolerance is narrow: current-engine default injection only, and never silent."""
+    variant, _run_dir, config, _recorded = traced_episode
+    frozen = load(variant.config_path)
+    notes: list[str] = []
+    assert verifier.check_arm_identity(variant, config, config, notes=notes) == []
+    assert {
+        "bot.long.hsl.halt_ladder_minutes",
+        "bot.long.hsl.realized_loss_budget_pct",
+        "bot.short.hsl.halt_ladder_minutes",
+        "bot.short.hsl.realized_loss_budget_pct",
+    } <= set(notes)
+    for path in notes:
+        # Tolerated paths are exactly the ones neither the dump nor the frozen arm carries; the
+        # frozen arm's own declaration is compared strictly however the engine hydrates it.
+        with pytest.raises(KeyError):
+            spec.get_path(frozen, path)
+
+    declared = {dotted for dotted, _from, _to in variant.deltas}
+    hsl = frozen["bot"]["long"]["hsl"]
+    key = next(name for name in sorted(hsl) if f"bot.long.hsl.{name}" not in declared)
+    tampered = json.loads(json.dumps(config))
+    tampered["bot"]["long"]["hsl"][key] = _different_value(tampered["bot"]["long"]["hsl"][key])
+    problems = verifier.check_arm_identity(variant, tampered, tampered)
+    assert any(f"bot.long.hsl.{key}" in problem for problem in problems), problems
