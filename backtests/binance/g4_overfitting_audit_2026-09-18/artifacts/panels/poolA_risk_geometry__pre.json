@@ -1,0 +1,1292 @@
+{
+  "arm_ids": [
+    "A_risk_geometry|a_allow000__pre",
+    "A_risk_geometry|a_allow000_twe250__pre",
+    "A_risk_geometry|a_allow037__pre",
+    "A_risk_geometry|b_cool24__pre",
+    "A_risk_geometry|b_cool48__pre",
+    "A_risk_geometry|b_cool72__pre",
+    "A_risk_geometry|c2__pre",
+    "A_risk_geometry|c3__pre",
+    "A_risk_geometry|c4__pre"
+  ],
+  "cadence_minutes": [
+    60
+  ],
+  "degeneracy_rule": {
+    "D0_no_equity_series": "arm 没有 balance_and_equity.csv.gz（无法重算月度序列）",
+    "D0_unexpected_cadence": "权益采样间隔不是 (60, 1) 分钟",
+    "D1_truncated": "arm 的月份集合与同腿的众数月份集合不同（强平或数据集裁剪提前结束）",
+    "D2_terminal_halt": "末段权益恒定段 ≥ 30 天（终局停机后再无成交）",
+    "D3_zero_variance": "月度收益样本标准差 < 1e-10，或非零月份 < 3",
+    "applied_at": "在任何选择（CSCV 选臂）之前，从该腿的 arm 池里整体移除",
+    "declared_before": "以上规则在看到任何 PBO/DSR 数字之前写死在 report_tools/panel.py",
+    "thresholds": {
+      "min_nonzero_months": 3,
+      "supported_cadence_minutes": [
+        60,
+        1
+      ],
+      "terminal_flat_abs_tol": 1e-09,
+      "terminal_flat_min_days": 30,
+      "terminal_flat_rel_tol": 1e-12,
+      "zero_variance_tol": 1e-10
+    }
+  },
+  "leg": "pre",
+  "leg_role": "样本外验收窗",
+  "leg_window": [
+    "2021-04-20",
+    "2023-09-11"
+  ],
+  "monthly_crosscheck": {
+    "chained_max_abs": 0.0,
+    "convention_note": "engine 的 monthly_metrics.csv 用「当月最后样本 / 当月第一个样本 − 1」；本审计用「当月最后样本 / 上月最后样本 − 1」串联，保证月度收益相乘等于全窗倍数。两者相差的是跨月那一个小时的权益变动，因此 engine_pct_max_abs 是**已知口径差**（量级 1e-2），而 level_max_rel 与 chained_max_abs 是严格的算术核对（量级 1e-12）。",
+    "engine_pct_max_abs": 0.003423866411058428,
+    "level_max_rel": 0.0,
+    "tol_chained_max_abs": 5e-09,
+    "tol_level_max_rel": 5e-09
+  },
+  "months": [
+    "2021-04",
+    "2021-05",
+    "2021-06",
+    "2021-07",
+    "2021-08",
+    "2021-09",
+    "2021-10",
+    "2021-11",
+    "2021-12",
+    "2022-01",
+    "2022-02",
+    "2022-03",
+    "2022-04",
+    "2022-05",
+    "2022-06",
+    "2022-07",
+    "2022-08",
+    "2022-09",
+    "2022-10",
+    "2022-11",
+    "2022-12",
+    "2023-01",
+    "2023-02",
+    "2023-03",
+    "2023-04",
+    "2023-05",
+    "2023-06",
+    "2023-07",
+    "2023-08",
+    "2023-09"
+  ],
+  "n_arms_in_pool": 10,
+  "n_arms_removed": 1,
+  "n_arms_used": 9,
+  "n_months": 30,
+  "pool": "poolA_risk_geometry",
+  "removed_by_reason": {
+    "D1_truncated": [
+      "c1__pre"
+    ],
+    "D3_zero_variance": [
+      "c1__pre"
+    ]
+  },
+  "removed_detail": [
+    {
+      "arm": "c1__pre",
+      "detail": {
+        "D1_truncated": {
+          "arm_first_month": "2021-04",
+          "arm_last_month": "2021-05",
+          "last_sample": "2021-05-19 12:01:00",
+          "leg_first_month": "2021-04",
+          "leg_last_month": "2023-09",
+          "liquidated": true
+        },
+        "D3_zero_variance": {
+          "monthly_std": 0.01685134454516913,
+          "nonzero_months": 1,
+          "threshold_nonzero_months": 3,
+          "threshold_std": 1e-10
+        }
+      },
+      "reasons": [
+        "D1_truncated",
+        "D3_zero_variance"
+      ],
+      "round": "A_risk_geometry"
+    }
+  ],
+  "returns_matrix": [
+    [
+      0.0,
+      -0.6986219499999999,
+      0.0015546254944578397,
+      0.004705436781824668,
+      0.09095667875392932,
+      0.29490143676436875,
+      0.05662615730609821,
+      0.1003177194448388,
+      0.08407519911020267,
+      -0.17719243044172417,
+      0.010218982275174149,
+      0.020840428168320102,
+      0.04633271221438107,
+      0.022840152308009065,
+      0.004488923094868813,
+      0.02590770982358026,
+      -0.0533500222629002,
+      0.058416078570817875,
+      0.014415630134698487,
+      0.07235685967615746,
+      -0.00549060158406367,
+      0.025462384162060037,
+      0.04541413287001661,
+      0.017629209726244044,
+      0.0010337109940192768,
+      0.00602825100075477,
+      0.0038381504027455993,
+      0.023471601443733947,
+      -0.012727375065930135,
+      -0.000838090916801093
+    ],
+    [
+      0.0,
+      -0.7582778,
+      0.002040482835254709,
+      0.005790754123302655,
+      0.07417784003187933,
+      0.20201399294047784,
+      0.04761834821599442,
+      0.11005536631439994,
+      0.06159915770209756,
+      -0.16715781395956686,
+      0.005542894324114256,
+      0.020098141471708963,
+      0.04460875642113282,
+      0.01879068709832299,
+      0.0024048950903567956,
+      0.022684898479161886,
+      -0.04333533644713916,
+      0.0486170384759812,
+      0.015448698598897748,
+      0.05133063986798847,
+      -0.004352173238470036,
+      0.021790431840333024,
+      0.035171505603753817,
+      0.030370290292238256,
+      0.0017859063537155606,
+      0.00519753684921076,
+      0.004394463129449022,
+      0.021772305911592404,
+      -0.02336934018652026,
+      -0.0018969811781212043
+    ],
+    [
+      0.0,
+      -0.47726750000000007,
+      0.0007876686450527526,
+      0.002246149169108813,
+      0.10259034904875719,
+      0.4504265109683392,
+      0.06276800668618399,
+      0.148453575855102,
+      0.07749194887891075,
+      -0.12167957818387065,
+      0.021884436406819807,
+      0.017930952818291157,
+      0.07456957294465871,
+      0.032134670055703474,
+      0.006278670445735601,
+      0.03872623915676687,
+      -0.18485758863322121,
+      0.018579739941199547,
+      0.020701648915683712,
+      0.08161579804130792,
+      -0.008211128465537954,
+      0.03469795330548453,
+      0.060985325472331375,
+      0.03656909976825462,
+      0.006876254807258064,
+      0.007984881289568424,
+      0.005324113600443381,
+      0.03205339669627083,
+      -0.017200780431831153,
+      -0.0011898567173885821
+    ],
+    [
+      0.0,
+      -0.70835676,
+      0.0016069633570110486,
+      0.004678001820535238,
+      0.08592574445001744,
+      0.2921503659838576,
+      0.058782111817929916,
+      0.11017565742322066,
+      0.08496549199447734,
+      -0.1776208055838212,
+      0.01006602337387208,
+      0.021262129276837793,
+      0.040004167757818676,
+      0.022492876687375762,
+      0.00440476562374692,
+      0.026086569111376967,
+      -0.053934423409186305,
+      0.0519741707322563,
+      0.014754890480966898,
+      0.0718717989745361,
+      0.0002854067291848672,
+      0.02511675923424983,
+      0.044753077592850854,
+      0.017314552471624056,
+      0.0013726646516196706,
+      0.006034773889279199,
+      0.003844705004923288,
+      0.02356439270588906,
+      -0.012490297902200131,
+      -0.0008681839619316678
+    ],
+    [
+      0.0,
+      -0.72671194,
+      0.0017110151098440607,
+      0.0050097959618442545,
+      0.08814561792381648,
+      0.28585321644980577,
+      0.059688956138021165,
+      0.1057125130198664,
+      0.0873287576326649,
+      -0.1850207483600722,
+      0.010075849137540782,
+      0.02161536902243033,
+      0.04218538126909799,
+      0.022407498380341728,
+      0.004204770378845035,
+      0.02645400275515941,
+      -0.04697836901229091,
+      0.05356123583634176,
+      0.01475748296111723,
+      0.0741747002031592,
+      0.00037897887480187187,
+      0.02550898307418703,
+      0.045053319969754924,
+      0.017529080311173173,
+      0.004862185748341297,
+      0.006007947672578506,
+      0.0039635284276851035,
+      0.02469256348477966,
+      -0.012578724808328001,
+      -0.0009215337025781922
+    ],
+    [
+      0.0,
+      -0.7487012,
+      0.0018927269051822737,
+      0.0054849888654304735,
+      0.08319023941893078,
+      0.2894228290831722,
+      0.04760550450153089,
+      0.11148776373467784,
+      0.07752908642025691,
+      -0.20701548412776538,
+      0.009796696893032752,
+      0.022220021496672127,
+      0.044685213609879426,
+      0.022432026759436452,
+      0.003839470332537509,
+      0.025576260442906618,
+      -0.0499762780342109,
+      0.05427709632542932,
+      0.01652376213427531,
+      0.07674718114071766,
+      -0.001666650105017986,
+      0.02591623489493,
+      0.04384437417768838,
+      0.017535120945639138,
+      0.0019282078806532876,
+      0.006176938667489251,
+      0.004286950079038121,
+      0.022580499976148083,
+      -0.019807272185834113,
+      -0.0012810584349832732
+    ],
+    [
+      0.0,
+      -0.73184587,
+      0.005029681996693514,
+      0.0042819582693853775,
+      0.08539402991669975,
+      0.17028264419969763,
+      0.03453963423821471,
+      0.07926402640217622,
+      0.026837515725162797,
+      -0.07404720500978879,
+      0.039662486101772476,
+      0.039128170638375925,
+      0.03809188795468188,
+      0.010055430368735463,
+      0.0037121371540249637,
+      0.016660042858273272,
+      -0.02926767755180304,
+      0.027497986612185832,
+      0.009787664524602002,
+      0.05358908636408111,
+      -0.0065406582272373726,
+      0.018201254777477693,
+      0.030136671583144592,
+      0.021134464040307055,
+      -0.0006674813202425245,
+      0.0041362075627517925,
+      0.004443975462048888,
+      0.01665960612596673,
+      -0.019751684805440983,
+      -0.002071785736229792
+    ],
+    [
+      0.0,
+      -0.85988252,
+      0.0035574433682363793,
+      0.007870302612918545,
+      0.11331295503054095,
+      0.31763366130558657,
+      0.06474643383498857,
+      0.14911048600310428,
+      0.07755665811363799,
+      -0.034972915478357014,
+      0.0737690464967482,
+      0.025412253751014857,
+      0.05992692026584723,
+      0.024673017741427383,
+      0.003016274674572994,
+      0.02946374168914989,
+      -0.03903328742933676,
+      0.05275103863801922,
+      0.01906841844890428,
+      0.07826616105991513,
+      -0.003455025370510123,
+      0.027793298220159635,
+      0.043630321981064535,
+      0.03912151199647562,
+      0.00588711535166464,
+      0.0063662247261131455,
+      0.004618514205033009,
+      0.023977330692173338,
+      -0.016786383445235753,
+      -0.001575657854107182
+    ],
+    [
+      0.0,
+      -0.30244194,
+      0.0006241774340618456,
+      0.001609957778114346,
+      0.07098962806236209,
+      0.3399464548298119,
+      0.0432578103099206,
+      0.10813762741465638,
+      0.060791387561293764,
+      -0.0487662922690737,
+      0.1016648843328587,
+      0.013113000021638621,
+      0.053565685661553175,
+      0.023921767150693052,
+      0.0038608041202348176,
+      0.029615802427663596,
+      -0.03734657972293132,
+      0.05101510781345997,
+      0.016208063526363725,
+      0.05500297359212469,
+      -0.006591626520239036,
+      0.02476085545355078,
+      0.04180371871305577,
+      0.0365497055082562,
+      0.0060019937745499075,
+      0.0058558959450398795,
+      0.0037586585793230043,
+      0.023428634659053316,
+      -0.01469194457176326,
+      -0.0009457112923257904
+    ]
+  ],
+  "returns_matrix_note": "returns_matrix[i][j] = 第 i 个 arm 在第 j 个月的收益（小数，非百分数）；行序与 arm_ids 一致、列序与 months 一致。JSON 浮点是 round-trip 精确的，所以 CSCV/DSR/折叠统计都可以**只靠这个 tracked 文件**重跑；同目录的 .csv 是同一份数据的长表便利副本（未被 tracked）。",
+  "sources": [
+    {
+      "analysis_sha256": "c6f000472e15610118c1eded61f9d35e1a01f70329528a3fd1062cb260636c32",
+      "arm": "a_allow000__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.002564655742620124,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0 + 守护｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "equity_sha256": "da8a5fc83e3cf2951aff716acc9cc238903be8299294cdab7756f59eb1120097",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "f604e39e2a2ef80d1eb22d823ff2d60a3fb19cd502f0273d3802b1a55209d484",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__pre/backtest_results/binance_a_allow000__pre/binance/2026-09-17T10_47_03",
+      "structural": {
+        "adg_strategy_eq": -0.0005645671429509447,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 3,
+        "drawdown_worst_strategy_eq": 0.765622418496935,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 17155.0,
+        "gain_strategy_eq": 0.6104425927367978,
+        "halt_count": 3,
+        "halt_share_of_window_pct": 0.0015733015494636471,
+        "hard_stop_restarts": 3,
+        "hard_stop_triggers": 3,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "560ea2016e361257f6e3057c0f45428d53168c79126d3c2a05cd7e36e46a92d8",
+      "arm": "a_allow000_twe250__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.002118331819469299,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.5
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "TWE 2.5 + allowance=0 + 守护｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "equity_sha256": "a8652d2557e552eecf592d6e5e4b90502145541a1d02473f74762fa64bceba0e",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "8e0bed99e0579bb4b36c02b7d81acf8106c5f4bbbc1fc10795fdbd2d216d1223",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__pre/backtest_results/binance_a_allow000_twe250__pre/binance/2026-09-17T10_59_31",
+      "structural": {
+        "adg_strategy_eq": -0.0009806200676394372,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 3,
+        "drawdown_worst_strategy_eq": 0.8013895123879569,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 17076.0,
+        "gain_strategy_eq": 0.42422876035318785,
+        "halt_count": 3,
+        "halt_share_of_window_pct": 0.0015733015494636471,
+        "hard_stop_restarts": 3,
+        "hard_stop_triggers": 3,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "39125346f6d4272365ab7c1b7506c0514382410c8f5a915fc283cce91f3ad174",
+      "arm": "a_allow037__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.002182365473446024,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        }
+      ],
+      "description": "TWE 3.0 + allowance=0.37（上一轮形状）｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "equity_sha256": "f89800707df4443cb197b1d30fde6e7487ec404b6eb83573feb697ccb7811f18",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "89cc60826cc88ff63bc45d95fcf572860817ebd58d77303fd4f6a1dac06d7d3b",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow037__pre/backtest_results/binance_a_allow037__pre/binance/2026-09-17T10_56_16",
+      "structural": {
+        "adg_strategy_eq": 0.00025586363065710493,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 4,
+        "drawdown_worst_strategy_eq": 0.624044477125747,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 16848.0,
+        "gain_strategy_eq": 1.2505659506199873,
+        "halt_count": 4,
+        "halt_share_of_window_pct": 0.002097735399284863,
+        "hard_stop_restarts": 4,
+        "hard_stop_triggers": 4,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "01be8d4305f1b6d4df6ccfd77d7037641a239884a056f4e8c9fbc086d09e09e5",
+      "arm": "b_cool24__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.002546781504023203,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 1440.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 24H｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "equity_sha256": "67d4a501bb0e374d626fbda430de82de7e9e424c1dfbdaefef858a947cff6774",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "2a4a802202017fa320c9e88c91f46d710f23195bab6ead5812fc91d1aa6607ce",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__pre/backtest_results/binance_b_cool24__pre/binance/2026-09-17T11_05_13",
+      "structural": {
+        "adg_strategy_eq": -0.0006057657459136445,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 3,
+        "drawdown_worst_strategy_eq": 0.7684742243715693,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 17016.0,
+        "gain_strategy_eq": 0.588840644362081,
+        "halt_count": 3,
+        "halt_share_of_window_pct": 0.004576877234803337,
+        "hard_stop_restarts": 3,
+        "hard_stop_triggers": 3,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "9da5d165e9fe28ff150120125b8c0e8829a74c6b582c28b447b2fc4a5b9caf4d",
+      "arm": "b_cool48__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.002578405756218545,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 48H｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "equity_sha256": "515243e0e90fa9fe0bf80015da50110ec9ba62b0699c352316ac0d3ba74ffda4",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "4329cf0b3062a7a94423353ae62eedadd25f46868d4874719c43a0af638a9aee",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__pre/backtest_results/binance_b_cool48__pre/binance/2026-09-17T11_08_28",
+      "structural": {
+        "adg_strategy_eq": -0.0006725622507116613,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 3,
+        "drawdown_worst_strategy_eq": 0.7709770107708243,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 16953.0,
+        "gain_strategy_eq": 0.5554275128312067,
+        "halt_count": 3,
+        "halt_share_of_window_pct": 0.006722288438617402,
+        "hard_stop_restarts": 3,
+        "hard_stop_triggers": 3,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "48c965b3b2c6b411601e6087d777ae1c210549f2a12b772f1640712ffcc0a947",
+      "arm": "b_cool72__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.002591011629384278,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 3.0
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.2
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 4320.0
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.0
+        }
+      ],
+      "description": "allowance=0 + 停 72H｜样本外腿（2021-04-20 → 2023-09-11，与搜索窗不重叠）",
+      "equity_sha256": "99dccc8408dcaa0e5c8a5b36ef62a63473d0769823859fdf8819c9393ed25308",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "30dfdc85b22b2331ff65218ab1cf977b70ce85cbbe6e8e4d28790113095f63b9",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__pre/backtest_results/binance_b_cool72__pre/binance/2026-09-17T11_11_41",
+      "structural": {
+        "adg_strategy_eq": -0.0008319210219956963,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 3,
+        "drawdown_worst_strategy_eq": 0.7929498447389287,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 16755.0,
+        "gain_strategy_eq": 0.48316281765998564,
+        "halt_count": 3,
+        "halt_share_of_window_pct": 0.010154946364719905,
+        "hard_stop_restarts": 3,
+        "hard_stop_triggers": 3,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "aa258b233b563e142621627bcb9954945741120cefb40fdd21a7e8ef375c2982",
+      "arm": "c1__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 5.898059818321144e-17,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [
+        "D1_truncated",
+        "D3_zero_variance"
+      ],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.8
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.21
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.3
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 75.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 4320.0
+        }
+      ],
+      "description": "搜索候选（max_adg）：TWE 2.80 / allowance 0.21 / n_pos 6 / RED 0.30 / EMA 75 / 停 72H",
+      "equity_sha256": "69336ca972bab8453ebd9222a9ea8321f8295f2b9b0cfb8edf5cd3ad04632101",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2021-05-19 12:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "e2f24f6835440b5cf5b548cbf55824907073851007336775bd1aefecc3284568",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__pre/backtest_results/binance_c1__pre/binance/2026-09-18T00_06_10",
+      "structural": {
+        "adg_strategy_eq": -0.011266680362257753,
+        "backtest_completion_ratio": 0.033796561149249935,
+        "complete_halt_count": 0,
+        "drawdown_worst_strategy_eq": 0.9531344046272756,
+        "effective_end_date": "2021-05-19T12:54:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 400.0,
+        "gain_strategy_eq": 0.7118280455329357,
+        "halt_count": 0,
+        "halt_share_of_window_pct": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_triggers": 0,
+        "liquidated": true
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "520460fc0e93f3f78f5a030c524956562a3df57ebf21a772936f936d5654ce5d",
+      "arm": "c2__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.003423866411058428,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.1
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 10
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.06
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.34
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 15.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        }
+      ],
+      "description": "搜索候选（min_dd）：TWE 2.10 / allowance 0.06 / n_pos 10 / RED 0.34 / EMA 15 / 停 48H",
+      "equity_sha256": "9956c20078807121c7288c4268cc8ecf8efbe305ffd1489a8a249899640bab29",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "5ef2031e0540489f9c4891183b575ce1f396ece578f54efd5d56ecb755551f9d",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__pre/backtest_results/binance_c2__pre/binance/2026-09-18T00_09_33",
+      "structural": {
+        "adg_strategy_eq": -0.0008441401900920464,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 2,
+        "drawdown_worst_strategy_eq": 0.7802732498487218,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 21715.0,
+        "gain_strategy_eq": 0.47802602816533973,
+        "halt_count": 2,
+        "halt_share_of_window_pct": 0.004481525625744934,
+        "hard_stop_restarts": 2,
+        "hard_stop_triggers": 2,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "f657195e6f62a3673cf07db2efc5ec75539e869df094860c22b7036ad4294f42",
+      "arm": "c3__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.003013629991488881,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.4
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.21
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.23
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 60.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 720.0
+        }
+      ],
+      "description": "搜索候选（fill）：TWE 2.40 / allowance 0.21 / n_pos 6 / RED 0.23 / EMA 60 / 停 12H",
+      "equity_sha256": "37382d75ca45e82f92eee4e665c968d49f1bab4cf93e0b906e37cd59c54ef1f4",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "31960833491346d9c7a203a7df5f45ad7024e2353ff1c07718da4495223c0df7",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__pre/backtest_results/binance_c3__pre/binance/2026-09-18T00_12_49",
+      "structural": {
+        "adg_strategy_eq": -0.0010119082974942017,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 2,
+        "drawdown_worst_strategy_eq": 0.887701153841824,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 15346.0,
+        "gain_strategy_eq": 0.4127737636323887,
+        "halt_count": 2,
+        "halt_share_of_window_pct": 0.0010488676996424314,
+        "hard_stop_restarts": 2,
+        "hard_stop_triggers": 2,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    },
+    {
+      "analysis_sha256": "f496a056a603958984d256370cbd807c6efce891d5668fea9675c18e38518ef8",
+      "arm": "c4__pre",
+      "cadence_minutes": 60,
+      "crosscheck": {
+        "chained_max_abs": 0.0,
+        "engine_pct_max_abs": 0.002791632518980028,
+        "level_max_rel": 0.0
+      },
+      "dataset": "caches/hlcvs_data/binance__40_coins__2021-03-25_to_2026-09-13__a02b6ae1c140f2b7",
+      "dataset_manifest_sha256": "d7e3b9756be4a0a2460b148de3753130f07f1840ac29d0403409d845fad32f8c",
+      "dataset_override_mode": "intersection",
+      "degeneracy": [],
+      "deltas": [
+        {
+          "from": 100000,
+          "path": "backtest.starting_balance",
+          "to": 10000
+        },
+        {
+          "from": false,
+          "path": "bot.long.hsl.enabled",
+          "to": true
+        },
+        {
+          "from": "coin",
+          "path": "live.hsl_signal_mode",
+          "to": "unified"
+        },
+        {
+          "from": 30.0,
+          "path": "live.pnls_max_lookback_days",
+          "to": 7.0
+        },
+        {
+          "from": 1.0,
+          "path": "bot.long.risk.total_wallet_exposure_limit",
+          "to": 2.25
+        },
+        {
+          "from": 7,
+          "path": "bot.long.risk.n_positions",
+          "to": 6
+        },
+        {
+          "from": 0.37,
+          "path": "bot.long.risk.we_excess_allowance_pct",
+          "to": 0.22
+        },
+        {
+          "from": 0.15,
+          "path": "bot.long.hsl.red_threshold",
+          "to": 0.34
+        },
+        {
+          "from": 720.0,
+          "path": "bot.long.hsl.ema_span_minutes",
+          "to": 120.0
+        },
+        {
+          "from": 2160.0,
+          "path": "bot.long.hsl.cooldown_minutes_after_red",
+          "to": 2880.0
+        }
+      ],
+      "description": "搜索候选（fill）：TWE 2.25 / allowance 0.22 / n_pos 6 / RED 0.34 / EMA 120 / 停 48H",
+      "equity_sha256": "b845ccf71000846a8e67cd21154404454fc1387f5614ce4f16e8c20fb34c2cdc",
+      "first_sample": "2021-04-20 00:01:00",
+      "in_round_report": true,
+      "last_sample": "2023-09-10 23:01:00",
+      "leg": "pre",
+      "monthly_metrics_sha256": "b505b5c50d7ed19ba82ceb324cebde942ca1c4b7702f711c97e16244c390caa8",
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__pre/backtest_results/binance_c4__pre/binance/2026-09-18T00_16_14",
+      "structural": {
+        "adg_strategy_eq": 0.000659264132414572,
+        "backtest_completion_ratio": 1.0,
+        "complete_halt_count": 1,
+        "drawdown_worst_strategy_eq": 0.7999007778661802,
+        "effective_end_date": "2023-09-10T23:59:00Z",
+        "effective_start_date": "2021-04-20T00:01:00Z",
+        "fills_count": 15247.0,
+        "gain_strategy_eq": 1.7789210026331912,
+        "halt_count": 1,
+        "halt_share_of_window_pct": 0.002240762812872467,
+        "hard_stop_restarts": 1,
+        "hard_stop_triggers": 1,
+        "liquidated": false
+      },
+      "terminal_flat_days": 0.0
+    }
+  ]
+}

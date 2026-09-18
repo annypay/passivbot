@@ -1,0 +1,16 @@
+{
+  "checks_failed": 0,
+  "checks_passed": 1549,
+  "generated_by": "report_tools/verify_audit.py",
+  "note": "本文件由独立复核在最后一步写出，记录它自己跑了多少项检查、以及每类比较用的容差。复核模块不 import panel/cscv_pbo/selection_bias/walkforward，用标准库 gzip+csv 重读权益账本并重算面板、退化规则、PBO、DSR、MinBTL、折叠统计与压力臂。",
+  "problems": [],
+  "tolerances": {
+    "dsr_abs": 1e-07,
+    "fold_abs": 1e-09,
+    "minbtl_rel": 1e-09,
+    "money_rel": 1e-09,
+    "pbo_abs": 1e-12,
+    "return_abs": 1e-12,
+    "score_rel": 1e-09
+  }
+}

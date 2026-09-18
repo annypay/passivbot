@@ -1,0 +1,153 @@
+{
+  "cadence_note": "balance_and_equity.csv.gz 是按小时采样的（众数间隔 60 分钟），首列是无名索引、第二组列含 strategy_equity；月度收益按「当月最后一个小时样本 / 上月最后一个小时样本 − 1」重算，首月以上午第一个样本为基。该口径与各 run 自带的 tracked monthly_metrics.csv 一致。",
+  "degeneracy_rule": {
+    "D0_no_equity_series": "arm 没有 balance_and_equity.csv.gz（无法重算月度序列）",
+    "D0_unexpected_cadence": "权益采样间隔不是 (60, 1) 分钟",
+    "D1_truncated": "arm 的月份集合与同腿的众数月份集合不同（强平或数据集裁剪提前结束）",
+    "D2_terminal_halt": "末段权益恒定段 ≥ 30 天（终局停机后再无成交）",
+    "D3_zero_variance": "月度收益样本标准差 < 1e-10，或非零月份 < 3",
+    "applied_at": "在任何选择（CSCV 选臂）之前，从该腿的 arm 池里整体移除",
+    "declared_before": "以上规则在看到任何 PBO/DSR 数字之前写死在 report_tools/panel.py",
+    "thresholds": {
+      "min_nonzero_months": 3,
+      "supported_cadence_minutes": [
+        60,
+        1
+      ],
+      "terminal_flat_abs_tol": 1e-09,
+      "terminal_flat_min_days": 30,
+      "terminal_flat_rel_tol": 1e-12,
+      "zero_variance_tol": 1e-10
+    }
+  },
+  "generated_by": "report_tools/panel.py",
+  "panels": {
+    "poolA_risk_geometry__3y": {
+      "cadence_minutes": [
+        60
+      ],
+      "csv": "backtests/binance/g4_overfitting_audit_2026-09-18/artifacts/panels/poolA_risk_geometry__3y.csv",
+      "monthly_crosscheck": {
+        "chained_max_abs": 0.0,
+        "convention_note": "engine 的 monthly_metrics.csv 用「当月最后样本 / 当月第一个样本 − 1」；本审计用「当月最后样本 / 上月最后样本 − 1」串联，保证月度收益相乘等于全窗倍数。两者相差的是跨月那一个小时的权益变动，因此 engine_pct_max_abs 是**已知口径差**（量级 1e-2），而 level_max_rel 与 chained_max_abs 是严格的算术核对（量级 1e-12）。",
+        "engine_pct_max_abs": 0.0078097281086031735,
+        "level_max_rel": 0.0,
+        "tol_chained_max_abs": 5e-09,
+        "tol_level_max_rel": 5e-09
+      },
+      "n_arms_in_pool": 17,
+      "n_arms_removed": 0,
+      "n_arms_used": 17,
+      "n_months": 37,
+      "path": "backtests/binance/g4_overfitting_audit_2026-09-18/artifacts/panels/poolA_risk_geometry__3y.json",
+      "removed_by_reason": {}
+    },
+    "poolA_risk_geometry__ext": {
+      "cadence_minutes": [
+        60
+      ],
+      "csv": "backtests/binance/g4_overfitting_audit_2026-09-18/artifacts/panels/poolA_risk_geometry__ext.csv",
+      "monthly_crosscheck": {
+        "chained_max_abs": 0.0,
+        "convention_note": "engine 的 monthly_metrics.csv 用「当月最后样本 / 当月第一个样本 − 1」；本审计用「当月最后样本 / 上月最后样本 − 1」串联，保证月度收益相乘等于全窗倍数。两者相差的是跨月那一个小时的权益变动，因此 engine_pct_max_abs 是**已知口径差**（量级 1e-2），而 level_max_rel 与 chained_max_abs 是严格的算术核对（量级 1e-12）。",
+        "engine_pct_max_abs": 0.007807293591280802,
+        "level_max_rel": 0.0,
+        "tol_chained_max_abs": 5e-09,
+        "tol_level_max_rel": 5e-09
+      },
+      "n_arms_in_pool": 17,
+      "n_arms_removed": 3,
+      "n_arms_used": 14,
+      "n_months": 66,
+      "path": "backtests/binance/g4_overfitting_audit_2026-09-18/artifacts/panels/poolA_risk_geometry__ext.json",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__ext"
+        ],
+        "D2_terminal_halt": [
+          "b_term055__ext",
+          "b_term070__ext"
+        ],
+        "D3_zero_variance": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "c1__ext"
+        ]
+      }
+    },
+    "poolA_risk_geometry__pre": {
+      "cadence_minutes": [
+        60
+      ],
+      "csv": "backtests/binance/g4_overfitting_audit_2026-09-18/artifacts/panels/poolA_risk_geometry__pre.csv",
+      "monthly_crosscheck": {
+        "chained_max_abs": 0.0,
+        "convention_note": "engine 的 monthly_metrics.csv 用「当月最后样本 / 当月第一个样本 − 1」；本审计用「当月最后样本 / 上月最后样本 − 1」串联，保证月度收益相乘等于全窗倍数。两者相差的是跨月那一个小时的权益变动，因此 engine_pct_max_abs 是**已知口径差**（量级 1e-2），而 level_max_rel 与 chained_max_abs 是严格的算术核对（量级 1e-12）。",
+        "engine_pct_max_abs": 0.003423866411058428,
+        "level_max_rel": 0.0,
+        "tol_chained_max_abs": 5e-09,
+        "tol_level_max_rel": 5e-09
+      },
+      "n_arms_in_pool": 10,
+      "n_arms_removed": 1,
+      "n_arms_used": 9,
+      "n_months": 30,
+      "path": "backtests/binance/g4_overfitting_audit_2026-09-18/artifacts/panels/poolA_risk_geometry__pre.json",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__pre"
+        ],
+        "D3_zero_variance": [
+          "c1__pre"
+        ]
+      }
+    },
+    "poolB_ext_union__ext": {
+      "cadence_minutes": [
+        60
+      ],
+      "csv": "backtests/binance/g4_overfitting_audit_2026-09-18/artifacts/panels/poolB_ext_union__ext.csv",
+      "monthly_crosscheck": {
+        "chained_max_abs": 0.0,
+        "convention_note": "engine 的 monthly_metrics.csv 用「当月最后样本 / 当月第一个样本 − 1」；本审计用「当月最后样本 / 上月最后样本 − 1」串联，保证月度收益相乘等于全窗倍数。两者相差的是跨月那一个小时的权益变动，因此 engine_pct_max_abs 是**已知口径差**（量级 1e-2），而 level_max_rel 与 chained_max_abs 是严格的算术核对（量级 1e-12）。",
+        "engine_pct_max_abs": 0.013179167573173,
+        "level_max_rel": 0.0,
+        "tol_chained_max_abs": 5e-09,
+        "tol_level_max_rel": 5e-09
+      },
+      "n_arms_in_pool": 28,
+      "n_arms_removed": 10,
+      "n_arms_used": 18,
+      "n_months": 66,
+      "path": "backtests/binance/g4_overfitting_audit_2026-09-18/artifacts/panels/poolB_ext_union__ext.json",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__ext",
+          "g_orange_only__ext",
+          "g_slow_ema__ext",
+          "g_soft_orange__ext",
+          "twe300_10k__ext",
+          "twe300_10k_floor__ext",
+          "twe300_10k_never__ext"
+        ],
+        "D2_terminal_halt": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "g_ladder40__ext"
+        ],
+        "D3_zero_variance": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "c1__ext",
+          "g_ladder40__ext",
+          "g_orange_only__ext",
+          "g_slow_ema__ext",
+          "g_soft_orange__ext",
+          "twe300_10k__ext",
+          "twe300_10k_floor__ext",
+          "twe300_10k_never__ext"
+        ]
+      }
+    }
+  }
+}
