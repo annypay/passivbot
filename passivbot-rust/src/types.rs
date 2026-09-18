@@ -282,6 +282,8 @@ pub struct EquityHardStopLossConfig {
     #[allow(dead_code)]
     // Parsed in Rust for config parity; consumed by Python live order handling.
     pub panic_close_order_type: String,
+    pub halt_ladder_minutes: Vec<f64>,
+    pub realized_loss_budget_pct: f64,
 }
 
 impl Default for EquityHardStopLossConfig {
@@ -297,6 +299,8 @@ impl Default for EquityHardStopLossConfig {
             tier_ratios: EquityHardStopLossTierRatios::default(),
             orange_tier_mode: "tp_only_with_active_entry_cancellation".to_string(),
             panic_close_order_type: "market".to_string(),
+            halt_ladder_minutes: Vec::new(),
+            realized_loss_budget_pct: 0.0,
         }
     }
 }
@@ -540,6 +544,14 @@ fn default_hsl_panic_close_order_type() -> String {
     "market".to_string()
 }
 
+fn default_hsl_halt_ladder_minutes() -> Vec<f64> {
+    Vec::new()
+}
+
+fn default_hsl_realized_loss_budget_pct() -> f64 {
+    0.0
+}
+
 pub(crate) fn default_true() -> bool {
     true
 }
@@ -662,7 +674,8 @@ impl EntryRegimeGateConfig {
         }
         if self.enabled && !self.block_initial && !self.block_reentry {
             return Err(
-                "entry regime gate enabled with neither block_initial nor block_reentry".to_string(),
+                "entry regime gate enabled with neither block_initial nor block_reentry"
+                    .to_string(),
             );
         }
         Ok(())
@@ -791,6 +804,12 @@ pub struct BotParams {
     pub hsl_orange_tier_mode: String,
     #[serde(default = "default_hsl_panic_close_order_type")]
     pub hsl_panic_close_order_type: String,
+    /// Per-strike cooldown ladder in minutes. Empty keeps `cooldown_minutes_after_red`.
+    #[serde(default = "default_hsl_halt_ladder_minutes")]
+    pub hsl_halt_ladder_minutes: Vec<f64>,
+    /// Cumulative realized-loss budget for the permanent halt. `0.0` disables the basis.
+    #[serde(default = "default_hsl_realized_loss_budget_pct")]
+    pub hsl_realized_loss_budget_pct: f64,
     #[serde(default)]
     pub risk_entry_cooldown_minutes: f64,
     pub n_positions: usize,
@@ -862,6 +881,8 @@ impl Default for BotParams {
             hsl_tier_ratio_orange: default_hsl_tier_ratio_orange(),
             hsl_orange_tier_mode: default_hsl_orange_tier_mode(),
             hsl_panic_close_order_type: default_hsl_panic_close_order_type(),
+            hsl_halt_ladder_minutes: default_hsl_halt_ladder_minutes(),
+            hsl_realized_loss_budget_pct: default_hsl_realized_loss_budget_pct(),
             risk_entry_cooldown_minutes: 0.0,
             n_positions: 0,
             total_wallet_exposure_limit: 0.0,
@@ -1303,6 +1324,10 @@ pub struct Analysis {
     pub hard_stop_panic_close_loss_drawdown_pct_max: f64,
     pub hard_stop_flatten_time_minutes_mean: f64,
     pub hard_stop_post_restart_retrigger_pct: f64,
+    /// Highest cooldown-ladder strike index reached in any halt cycle (0 when disabled).
+    pub hard_stop_ladder_strikes_max: u32,
+    /// Cumulative realized giveback that latched a permanent halt (0 when unused).
+    pub hard_stop_realized_loss_halt_pct_max: f64,
 }
 
 impl Default for Analysis {
@@ -1495,10 +1520,11 @@ impl Default for Analysis {
             hard_stop_panic_close_loss_drawdown_pct_max: 0.0,
             hard_stop_flatten_time_minutes_mean: 0.0,
             hard_stop_post_restart_retrigger_pct: 0.0,
+            hard_stop_ladder_strikes_max: 0,
+            hard_stop_realized_loss_halt_pct_max: 0.0,
         }
     }
 }
-
 
 #[cfg(test)]
 mod entry_regime_gate_tests {
@@ -1566,7 +1592,10 @@ mod entry_regime_gate_tests {
 
         let mut config = gate();
         config.transition_ts = vec![2_000, 1_000];
-        assert!(config.validate().unwrap_err().contains("strictly ascending"));
+        assert!(config
+            .validate()
+            .unwrap_err()
+            .contains("strictly ascending"));
 
         let mut config = gate();
         config.regime = vec![0, 2];
@@ -1575,12 +1604,18 @@ mod entry_regime_gate_tests {
         let mut config = gate();
         config.transition_ts = vec![];
         config.regime = vec![];
-        assert!(config.validate().unwrap_err().contains("empty regime table"));
+        assert!(config
+            .validate()
+            .unwrap_err()
+            .contains("empty regime table"));
 
         let mut config = gate();
         config.block_initial = false;
         config.block_reentry = false;
-        assert!(config.validate().unwrap_err().contains("neither block_initial"));
+        assert!(config
+            .validate()
+            .unwrap_err()
+            .contains("neither block_initial"));
     }
 
     #[test]

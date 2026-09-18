@@ -215,6 +215,8 @@ Path = Tuple[str, ...]  # ("bot", "long", "entry_grid_spacing_pct")
 HSL_TIER_RATIO_KEYS = ("yellow", "orange")
 HSL_PSIDE_KEYS = (
     "hsl_enabled",
+    "hsl_halt_ladder_minutes",
+    "hsl_realized_loss_budget_pct",
     "hsl_red_threshold",
     "hsl_ema_span_minutes",
     "hsl_cooldown_minutes_after_red",
@@ -1743,6 +1745,16 @@ for _pside in ("long", "short"):
             f"bot.{_pside}.hsl.no_restart_drawdown_threshold": (
                 f"Terminal {_pside} HSL drawdown threshold. Values below "
                 "red_threshold are clamped up to red_threshold."
+            ),
+            f"bot.{_pside}.hsl.halt_ladder_minutes": (
+                f"Per-strike cooldown ladder, in minutes, for {_pside} HSL halts "
+                "(1st, 2nd, ...). Empty keeps cooldown_minutes_after_red. Rungs "
+                "saturate at the last entry."
+            ),
+            f"bot.{_pside}.hsl.realized_loss_budget_pct": (
+                f"Cumulative realized-loss budget for the {_pside} terminal HSL halt, "
+                "as part-per-one of the equity the ladder cycle started from. "
+                "0 disables the basis."
             ),
             f"bot.{_pside}.hsl.restart_after_red_policy": (
                 f"Restart policy after {_pside} HSL RED. Allowed values: "

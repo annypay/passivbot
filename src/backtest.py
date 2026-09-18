@@ -279,6 +279,12 @@ def _resolve_backtest_hsl_configs(config: dict) -> tuple[dict, dict]:
             "no_restart_drawdown_threshold": float(
                 pside_cfg["hsl_no_restart_drawdown_threshold"]
             ),
+            "halt_ladder_minutes": [
+                float(minutes) for minutes in pside_cfg["hsl_halt_ladder_minutes"]
+            ],
+            "realized_loss_budget_pct": float(
+                pside_cfg["hsl_realized_loss_budget_pct"]
+            ),
             "restart_after_red_policy": normalize_hsl_restart_after_red_policy(
                 pside_cfg["hsl_restart_after_red_policy"],
                 path="bot.<pside>.hsl.restart_after_red_policy",

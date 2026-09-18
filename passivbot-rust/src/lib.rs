@@ -181,6 +181,8 @@ fn passivbot_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(calc_unstucking_close_py, m)?)?;
     m.add_function(wrap_pyfunction!(trailing_bundle_default_py, m)?)?;
     m.add_function(wrap_pyfunction!(hsl_no_restart_triggered, m)?)?;
+    m.add_function(wrap_pyfunction!(hsl_validate_halt_ladder, m)?)?;
+    m.add_function(wrap_pyfunction!(hsl_ladder_cycle_observe, m)?)?;
     m.add_function(wrap_pyfunction!(hsl_coin_drawdown_signal, m)?)?;
     m.add_function(wrap_pyfunction!(hsl_red_episode_finalization, m)?)?;
     m.add_function(wrap_pyfunction!(update_trailing_bundle_py, m)?)?;

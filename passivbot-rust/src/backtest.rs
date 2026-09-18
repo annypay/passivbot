@@ -591,6 +591,9 @@ struct HardStopPsideRuntime {
     current_halt_start_ms: Option<u64>,
     equity_at_halt: f64,
     last_restart_ts_ms: Option<u64>,
+    /// Cooldown-ladder cycle: strikes since the scope last regained its pre-strike peak,
+    /// plus the cumulative references the realized-loss budget is measured from.
+    ladder: ehsl::LadderCycle,
     no_restart_peak_strategy_equity: f64,
     panic_close_event_loss_usd: f64,
     panic_close_event_start_equity_usd: Option<f64>,
@@ -647,6 +650,8 @@ pub struct HardStopMetrics {
     pub panic_close_loss_drawdown_pct_max: f64,
     pub flatten_time_minutes_mean: f64,
     pub post_restart_retrigger_pct: f64,
+    pub ladder_strikes_max: u32,
+    pub realized_loss_halt_pct_max: f64,
 }
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -838,6 +843,8 @@ pub struct Backtest<'a> {
     peak_strategy_equity_series: Vec<f64>,
     peak_strategy_equity_series_pside: [Vec<f64>; 2],
     hard_stop_no_restart_peak_strategy_equity: f64,
+    hard_stop_ladder_strikes_max: u32,
+    hard_stop_realized_loss_halt_pct_max: f64,
     liquidated: bool,
     final_hard_stop_metrics: Option<HardStopMetrics>,
     final_strategy_equity_metrics: Option<StrategyEquityMetricsBundle>,
@@ -1161,6 +1168,8 @@ impl<'a> Backtest<'a> {
             bp.hsl_tier_ratio_orange = common_hsl.tier_ratios.orange;
             bp.hsl_orange_tier_mode = common_hsl.orange_tier_mode.clone();
             bp.hsl_panic_close_order_type = common_hsl.panic_close_order_type.clone();
+            bp.hsl_halt_ladder_minutes = common_hsl.halt_ladder_minutes.clone();
+            bp.hsl_realized_loss_budget_pct = common_hsl.realized_loss_budget_pct;
         }
     }
 
@@ -1801,8 +1810,7 @@ impl<'a> Backtest<'a> {
             // evaluates the table in `bot_params` itself. Refreshed here rather than
             // when the orchestrator input cache is built, because this loop is the
             // only place that runs for every symbol on every bar.
-            sym.regime_eval_ts_ms =
-                Some(self.first_timestamp_ms + (k as u64) * self.interval_ms);
+            sym.regime_eval_ts_ms = Some(self.first_timestamp_ms + (k as u64) * self.interval_ms);
 
             let mut mode_long: Option<orchestrator::TradingMode> = self.configured_mode(idx, LONG);
             let mut mode_short: Option<orchestrator::TradingMode> =
@@ -2391,6 +2399,8 @@ impl<'a> Backtest<'a> {
             peak_strategy_equity_series: Vec::new(),
             peak_strategy_equity_series_pside: [Vec::new(), Vec::new()],
             hard_stop_no_restart_peak_strategy_equity: 0.0,
+            hard_stop_ladder_strikes_max: 0,
+            hard_stop_realized_loss_halt_pct_max: 0.0,
             liquidated: false,
             final_hard_stop_metrics: None,
             final_strategy_equity_metrics: None,
@@ -2703,7 +2713,12 @@ impl<'a> Backtest<'a> {
             1.0
         } else {
             let peak = self.equity_peak_usd;
-            let equity = self.equities.usd_total_equity.last().copied().unwrap_or(peak);
+            let equity = self
+                .equities
+                .usd_total_equity
+                .last()
+                .copied()
+                .unwrap_or(peak);
             if !peak.is_finite() || !equity.is_finite() || peak <= 0.0 {
                 1.0
             } else {
@@ -3808,6 +3823,16 @@ impl<'a> Backtest<'a> {
         );
         let strategy_equity = baseline_balance + strategy_pnl;
         let peak_strategy_equity = (baseline_balance + peak_strategy_pnl).max(strategy_equity);
+        // Ladder cycle, observed before the halt decision: a sample that regains the
+        // pre-strike peak must clear the strike count before it can register one. The
+        // guard mirrors the engine's positive-equity contract without inventing equity.
+        self.hard_stop_pside[pside]
+            .ladder
+            .observe(strategy_equity.max(f64::EPSILON), realized_pnl)
+            .map_err(|e| {
+                format!("pside hard-stop ladder cycle failed at k {k} pside {pside}: {e}")
+            })?;
+        let ladder_realized_pnl_now = realized_pnl;
         let cfg = self.hard_stop_cfg_pside(pside);
         let hsl_red_threshold = cfg.hsl_red_threshold;
         let hsl_ema_span_minutes = cfg.hsl_ema_span_minutes;
@@ -3817,6 +3842,8 @@ impl<'a> Backtest<'a> {
             cfg.hsl_no_restart_drawdown_threshold.max(hsl_red_threshold);
         let hsl_restart_after_red_policy = cfg.hsl_restart_after_red_policy.clone();
         let hsl_cooldown_minutes_after_red = cfg.hsl_cooldown_minutes_after_red;
+        let hsl_halt_ladder_minutes = cfg.hsl_halt_ladder_minutes.clone();
+        let hsl_realized_loss_budget_pct = cfg.hsl_realized_loss_budget_pct;
         if !(hsl_no_restart_drawdown_threshold.is_finite()
             && hsl_red_threshold.is_finite()
             && hsl_red_threshold <= hsl_no_restart_drawdown_threshold
@@ -3958,20 +3985,36 @@ impl<'a> Backtest<'a> {
                         runtime.last_restart_ts_ms = None;
                     }
                     let finalization = ehsl::evaluate_red_episode_finalization(
-                        hsl_restart_after_red_policy.as_str(),
-                        stop_snapshot.timestamp_ms,
-                        stop_snapshot.equity,
-                        stop_snapshot.peak_strategy_equity,
-                        runtime.no_restart_peak_strategy_equity,
-                        stop_snapshot.drawdown_ema,
-                        hsl_red_threshold,
-                        hsl_no_restart_drawdown_threshold,
-                        hsl_cooldown_minutes_after_red,
+                        ehsl::RedEpisodeFinalizationContext {
+                            restart_after_red_policy: hsl_restart_after_red_policy.as_str(),
+                            stop_timestamp_ms: stop_snapshot.timestamp_ms,
+                            stop_equity: stop_snapshot.equity,
+                            stop_peak_strategy_equity: stop_snapshot.peak_strategy_equity,
+                            previous_no_restart_peak_strategy_equity: runtime
+                                .no_restart_peak_strategy_equity,
+                            drawdown_ema: stop_snapshot.drawdown_ema,
+                            red_threshold: hsl_red_threshold,
+                            no_restart_drawdown_threshold: hsl_no_restart_drawdown_threshold,
+                            cooldown_minutes_after_red: hsl_cooldown_minutes_after_red,
+                            halt_ladder_minutes: hsl_halt_ladder_minutes.as_slice(),
+                            ladder: runtime.ladder,
+                            realized_pnl_now: ladder_realized_pnl_now,
+                            realized_loss_budget_pct: hsl_realized_loss_budget_pct,
+                        },
                     )?;
                     runtime.no_restart_peak_strategy_equity =
                         finalization.no_restart_peak_strategy_equity;
                     runtime.no_restart_latched = finalization.no_restart_latched;
                     runtime.cooldown_until_ms = finalization.cooldown_until_ms;
+                    runtime.ladder = finalization.ladder;
+                    self.hard_stop_ladder_strikes_max = self
+                        .hard_stop_ladder_strikes_max
+                        .max(finalization.ladder.strikes);
+                    if finalization.no_restart_reason == ehsl::NoRestartReason::RealizedLoss {
+                        self.hard_stop_realized_loss_halt_pct_max = self
+                            .hard_stop_realized_loss_halt_pct_max
+                            .max(finalization.realized_loss_pct);
+                    }
                     self.hard_stop_plot_events_pside[pside].push(HardStopPlotEvent {
                         kind: "halt".to_string(),
                         timestamp_ms: stop_snapshot.timestamp_ms,
@@ -4029,6 +4072,18 @@ impl<'a> Backtest<'a> {
                     k, idx, pside, e
                 )
             })?;
+        // Coin scope: the ladder cycle is the coin's own slot-equity path, so a coin that
+        // regains its cycle peak clears its own strike count.
+        self.hard_stop_coin[pside][idx]
+            .ladder
+            .observe(
+                (slot_budget + last_realized + current_upnl).max(f64::EPSILON),
+                last_realized,
+            )
+            .map_err(|e| {
+                format!("coin hard-stop ladder cycle failed at k {k} coin {idx} pside {pside}: {e}")
+            })?;
+        let ladder_realized_pnl_now = last_realized;
         let cfg = self.hard_stop_cfg_coin(pside, idx);
         let hsl_red_threshold = cfg.hsl_red_threshold;
         let hsl_ema_span_minutes = cfg.hsl_ema_span_minutes;
@@ -4038,6 +4093,8 @@ impl<'a> Backtest<'a> {
             cfg.hsl_no_restart_drawdown_threshold.max(hsl_red_threshold);
         let hsl_restart_after_red_policy = cfg.hsl_restart_after_red_policy.clone();
         let hsl_cooldown_minutes_after_red = cfg.hsl_cooldown_minutes_after_red;
+        let hsl_halt_ladder_minutes = cfg.hsl_halt_ladder_minutes.clone();
+        let hsl_realized_loss_budget_pct = cfg.hsl_realized_loss_budget_pct;
         if !(hsl_no_restart_drawdown_threshold.is_finite()
             && hsl_red_threshold.is_finite()
             && hsl_red_threshold <= hsl_no_restart_drawdown_threshold
@@ -4163,20 +4220,36 @@ impl<'a> Backtest<'a> {
                         runtime.last_restart_ts_ms = None;
                     }
                     let finalization = ehsl::evaluate_red_episode_finalization(
-                        hsl_restart_after_red_policy.as_str(),
-                        stop_snapshot.timestamp_ms,
-                        stop_snapshot.equity,
-                        stop_snapshot.peak_strategy_equity,
-                        runtime.no_restart_peak_strategy_equity,
-                        stop_snapshot.drawdown_ema,
-                        hsl_red_threshold,
-                        hsl_no_restart_drawdown_threshold,
-                        hsl_cooldown_minutes_after_red,
+                        ehsl::RedEpisodeFinalizationContext {
+                            restart_after_red_policy: hsl_restart_after_red_policy.as_str(),
+                            stop_timestamp_ms: stop_snapshot.timestamp_ms,
+                            stop_equity: stop_snapshot.equity,
+                            stop_peak_strategy_equity: stop_snapshot.peak_strategy_equity,
+                            previous_no_restart_peak_strategy_equity: runtime
+                                .no_restart_peak_strategy_equity,
+                            drawdown_ema: stop_snapshot.drawdown_ema,
+                            red_threshold: hsl_red_threshold,
+                            no_restart_drawdown_threshold: hsl_no_restart_drawdown_threshold,
+                            cooldown_minutes_after_red: hsl_cooldown_minutes_after_red,
+                            halt_ladder_minutes: hsl_halt_ladder_minutes.as_slice(),
+                            ladder: runtime.ladder,
+                            realized_pnl_now: ladder_realized_pnl_now,
+                            realized_loss_budget_pct: hsl_realized_loss_budget_pct,
+                        },
                     )?;
                     runtime.no_restart_peak_strategy_equity =
                         finalization.no_restart_peak_strategy_equity;
                     runtime.no_restart_latched = finalization.no_restart_latched;
                     runtime.cooldown_until_ms = finalization.cooldown_until_ms;
+                    runtime.ladder = finalization.ladder;
+                    self.hard_stop_ladder_strikes_max = self
+                        .hard_stop_ladder_strikes_max
+                        .max(finalization.ladder.strikes);
+                    if finalization.no_restart_reason == ehsl::NoRestartReason::RealizedLoss {
+                        self.hard_stop_realized_loss_halt_pct_max = self
+                            .hard_stop_realized_loss_halt_pct_max
+                            .max(finalization.realized_loss_pct);
+                    }
                     self.hard_stop_plot_events_pside[pside].push(HardStopPlotEvent {
                         kind: "halt".to_string(),
                         timestamp_ms: stop_snapshot.timestamp_ms,
@@ -6374,6 +6447,8 @@ impl<'a> Backtest<'a> {
             panic_close_loss_drawdown_pct_max: self.hard_stop_panic_close_loss_drawdown_pct_max,
             flatten_time_minutes_mean,
             post_restart_retrigger_pct,
+            ladder_strikes_max: self.hard_stop_ladder_strikes_max,
+            realized_loss_halt_pct_max: self.hard_stop_realized_loss_halt_pct_max,
         }
     }
 
@@ -12542,7 +12617,11 @@ mod tests {
         assert_eq!(alphas.volatility_ema_1h_alpha_short, 1.0);
     }
 
-    fn brake_config(start: f64, full: f64, min_scale: f64) -> crate::types::WalletExposureBrakeConfig {
+    fn brake_config(
+        start: f64,
+        full: f64,
+        min_scale: f64,
+    ) -> crate::types::WalletExposureBrakeConfig {
         crate::types::WalletExposureBrakeConfig {
             enabled: true,
             start_drawdown: start,
@@ -12586,7 +12665,9 @@ mod tests {
 
     #[test]
     fn wallet_exposure_brake_config_rejects_invalid_geometry() {
-        assert!(crate::types::WalletExposureBrakeConfig::default().validate().is_ok());
+        assert!(crate::types::WalletExposureBrakeConfig::default()
+            .validate()
+            .is_ok());
         let mut brake = brake_config(0.50, 0.10, 0.20);
         assert!(brake.validate().is_err());
         brake = brake_config(0.10, 0.50, 0.0);
@@ -12620,7 +12701,6 @@ mod tests {
         };
         assert!((non_finite.braked_wallet_exposure_limit() - 0.4).abs() < 1e-12);
     }
-
 }
 
 fn calc_warmup_bars(bot_params: &[BotParamsPair], strategy_params: &[StrategyParamsPair]) -> usize {

@@ -267,9 +267,16 @@ Operational notes:
 
 1. HSL is configured separately under `bot.long.hsl.*` and `bot.short.hsl.*`.
 2. `live.hsl_signal_mode` defaults to the per-coin slot signal (`coin`), with `unified` available for shared account-level signals and `pside` available for side-local strategy signals.
-3. RED can auto-restart after `hsl_cooldown_minutes_after_red`. Terminal no-restart uses persistent cross-restart HSL drawdown.
-4. In backtests, simulated market panic closes use `backtest.market_order_slippage_pct`; live market panic closes use the exchange adapter's order semantics and live exchange/CCXT slippage controls.
-5. Backtests export canonical strategy-equity metrics under `*_strategy_eq`, including side-specific `*_strategy_eq_long` / `*_strategy_eq_short` metrics. Deprecated `*_hsl` metric names remain accepted as aliases for older configs/results.
+3. RED can auto-restart after `hsl_cooldown_minutes_after_red`, or after the matching rung of
+   `hsl_halt_ladder_minutes` when that ladder is configured (empty by default; rungs saturate at the
+   last entry, and the strike count clears only when the scope regains the equity peak its ladder
+   cycle started from).
+4. Terminal no-restart uses persistent cross-restart HSL drawdown, and additionally the ladder
+   cycle's cumulative realized giveback when `hsl_realized_loss_budget_pct` is set. The instantaneous
+   drawdown basis is sampled at panic-flatten confirmation, so it can fire on an unrealized wick; the
+   realized-loss basis cannot. `no_restart_reason` on the halt event reports which basis fired.
+5. In backtests, simulated market panic closes use `backtest.market_order_slippage_pct`; live market panic closes use the exchange adapter's order semantics and live exchange/CCXT slippage controls.
+6. Backtests export canonical strategy-equity metrics under `*_strategy_eq`, including side-specific `*_strategy_eq_long` / `*_strategy_eq_short` metrics. Deprecated `*_hsl` metric names remain accepted as aliases for older configs/results.
 
 #### HSL Statelessness And Startup Caveats
 

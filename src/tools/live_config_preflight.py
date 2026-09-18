@@ -275,6 +275,8 @@ def _hsl_side_report(side_config: dict[str, Any]) -> dict[str, Any]:
             ("red_threshold", "hsl_red_threshold"),
             ("cooldown_minutes_after_red", "hsl_cooldown_minutes_after_red"),
             ("no_restart_drawdown_threshold", "hsl_no_restart_drawdown_threshold"),
+            ("halt_ladder_minutes", "hsl_halt_ladder_minutes"),
+            ("realized_loss_budget_pct", "hsl_realized_loss_budget_pct"),
             ("restart_after_red_policy", "hsl_restart_after_red_policy"),
             ("ema_span_minutes", "hsl_ema_span_minutes"),
             ("tier_ratios", "hsl_tier_ratios"),
@@ -292,6 +294,8 @@ def _hsl_side_report(side_config: dict[str, Any]) -> dict[str, Any]:
         "red_threshold": hsl_values["red_threshold"],
         "cooldown_minutes_after_red": hsl_values["cooldown_minutes_after_red"],
         "no_restart_drawdown_threshold": hsl_values["no_restart_drawdown_threshold"],
+        "halt_ladder_minutes": hsl_values["halt_ladder_minutes"],
+        "realized_loss_budget_pct": hsl_values["realized_loss_budget_pct"],
         "ema_span_minutes": hsl_values["ema_span_minutes"],
         "tier_ratios": {
             key: tier_ratios[key]

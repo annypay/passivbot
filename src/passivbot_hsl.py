@@ -12,7 +12,7 @@ import traceback
 from collections import deque
 from itertools import groupby
 from types import MethodType
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Optional, Sequence
 
 import passivbot_rust as pbr
 
@@ -439,6 +439,13 @@ def _equity_hard_stop_make_state(self) -> dict[str, Any]:
         "runtime": pbr.EquityHardStopRuntime(),
         "strategy_pnl_peak": pbr.EquityHardStopRollingPeak(),
         "no_restart_peak_strategy_equity": 0.0,
+        # Cooldown-ladder cycle (`hsl_halt_ladder_minutes`). Unlike every per-episode
+        # field above, this survives an episode end: it is cleared only when the scope
+        # regains the equity peak the cycle started from. Rebuilt from fill history at
+        # restart (`_equity_hard_stop_ladder_observe`), never read from the latch file.
+        "ladder_strikes": 0,
+        "ladder_peak_equity": 0.0,
+        "ladder_realized_pnl_peak": 0.0,
         "halted": False,
         "no_restart_latched": False,
         "last_metrics": None,
@@ -462,6 +469,32 @@ def _equity_hard_stop_make_state(self) -> dict[str, Any]:
         "cooldown_unresolved_residue": False,
         "pnl_reset_timestamp_ms": None,
     }
+
+
+def _equity_hard_stop_ladder_observe(
+    state: dict[str, Any], *, equity: float, realized_pnl: float
+) -> bool:
+    """Advance one cooldown-ladder cycle with a sample. Returns True on a cycle reset.
+
+    Rust owns the rule (`equity_hard_stop_loss::LadderCycle::observe`); this function only
+    persists its result, so the live path and the backtest cannot drift apart.
+    """
+    ladder = pbr.hsl_ladder_cycle_observe(
+        equity=float(equity),
+        realized_pnl=float(realized_pnl),
+        strikes=int(state.get("ladder_strikes", 0) or 0),
+        peak_equity=float(state.get("ladder_peak_equity", 0.0) or 0.0),
+        realized_pnl_peak=float(state.get("ladder_realized_pnl_peak", 0.0) or 0.0),
+    )
+    if not isinstance(ladder, dict):
+        raise TypeError(
+            "passivbot_rust.hsl_ladder_cycle_observe() must return a dict, "
+            f"got {type(ladder).__name__}"
+        )
+    state["ladder_strikes"] = int(ladder["strikes"])
+    state["ladder_peak_equity"] = float(ladder["peak_equity"])
+    state["ladder_realized_pnl_peak"] = float(ladder["realized_pnl_peak"])
+    return bool(ladder["reset"])
 
 
 def _hsl_coin_state(self, pside: str, symbol: str) -> dict[str, Any]:
@@ -501,6 +534,29 @@ def _equity_hard_stop_coin_active_pside(
     return total_wallet_exposure_limit > 0.0
 
 
+def _normalize_halt_ladder_minutes(value: Any, *, path: str) -> list[float]:
+    """Validate a per-strike cooldown ladder against the Rust contract.
+
+    `passivbot_rust` owns the rule (`equity_hard_stop_loss::validate_halt_ladder`); this wrapper
+    only turns its message into the config error a caller can act on. An empty ladder is the
+    documented "disabled" value, not a zero-length cooldown.
+    """
+    if isinstance(value, (str, bytes)) or not isinstance(value, (list, tuple)):
+        raise TypeError(
+            f"{path} must be a list of minutes, got {type(value).__name__}"
+        )
+    ladder: list[float] = []
+    for index, entry in enumerate(value):
+        if isinstance(entry, bool) or not isinstance(entry, (int, float)):
+            raise TypeError(f"{path}[{index}] must be a number, got {type(entry).__name__}")
+        ladder.append(float(entry))
+    try:
+        pbr.hsl_validate_halt_ladder(ladder)
+    except Exception as exc:  # noqa: BLE001 - re-raised as the config's own error type
+        raise ValueError(f"{path} is invalid: {exc}") from exc
+    return ladder
+
+
 def _format_hsl_startup_config(
     pside: str,
     *,
@@ -514,11 +570,19 @@ def _format_hsl_startup_config(
     orange_tier_mode: str,
     panic_close_order_type: str,
     restart_after_red_policy: str,
+    halt_ladder_minutes: Sequence[float] = (),
+    realized_loss_budget_pct: float = 0.0,
 ) -> str:
     """Return the bounded operator-facing HSL startup configuration summary."""
+    if halt_ladder_minutes:
+        ladder = "/".join(f"{minutes:.6g}" for minutes in halt_ladder_minutes)
+        cooldown = f"ladder={ladder}"
+    else:
+        cooldown = f"cd={cooldown_minutes_after_red:.6g}"
     return (
         f"[risk] HSL[{pside}] on | red={red_threshold:.6g} ema={ema_span_minutes:.6g} "
-        f"cd={cooldown_minutes_after_red:.6g} no-r={no_restart_drawdown_threshold:.6g} "
+        f"{cooldown} no-r={no_restart_drawdown_threshold:.6g} "
+        f"rl-budget={realized_loss_budget_pct:.6g} "
         f"mode={signal_mode} tiers={ratio_yellow:.6g}/{ratio_orange:.6g} "
         f"orange={orange_tier_mode} panic={panic_close_order_type} "
         f"restart={restart_after_red_policy}"
@@ -540,6 +604,13 @@ def _parse_hsl_config(self) -> dict[str, dict[str, Any]]:
         cooldown_minutes_after_red = float(self.bot_value(pside, "hsl_cooldown_minutes_after_red"))
         no_restart_drawdown_threshold = float(
             self.bot_value(pside, "hsl_no_restart_drawdown_threshold")
+        )
+        halt_ladder_minutes = _normalize_halt_ladder_minutes(
+            self.bot_value(pside, "hsl_halt_ladder_minutes"),
+            path=f"bot.{pside}.hsl.halt_ladder_minutes",
+        )
+        realized_loss_budget_pct = float(
+            self.bot_value(pside, "hsl_realized_loss_budget_pct")
         )
         ratio_yellow = float(self.bot_value(pside, "hsl_tier_ratios.yellow"))
         ratio_orange = float(self.bot_value(pside, "hsl_tier_ratios.orange"))
@@ -569,6 +640,10 @@ def _parse_hsl_config(self) -> dict[str, dict[str, Any]]:
                 f"bot.{pside}.hsl_no_restart_drawdown_threshold must satisfy "
                 "hsl_red_threshold <= hsl_no_restart_drawdown_threshold <= 1.0"
             )
+        if not (math.isfinite(realized_loss_budget_pct) and 0.0 <= realized_loss_budget_pct <= 1.0):
+            raise ValueError(
+                f"bot.{pside}.hsl.realized_loss_budget_pct must satisfy 0.0 <= x <= 1.0"
+            )
         if not (0.0 < ratio_yellow < ratio_orange < 1.0):
             raise ValueError(f"bot.{pside}.hsl_tier_ratios must satisfy 0 < yellow < orange < 1")
         if orange_tier_mode not in {"graceful_stop", "tp_only_with_active_entry_cancellation"}:
@@ -583,6 +658,8 @@ def _parse_hsl_config(self) -> dict[str, dict[str, Any]]:
 
         out[pside] = {
             "enabled": enabled,
+            "halt_ladder_minutes": halt_ladder_minutes,
+            "realized_loss_budget_pct": realized_loss_budget_pct,
             "red_threshold": red_threshold,
             "ema_span_minutes": ema_span_minutes,
             "cooldown_minutes_after_red": cooldown_minutes_after_red,
@@ -624,6 +701,8 @@ def _parse_hsl_config(self) -> dict[str, dict[str, Any]]:
                     orange_tier_mode=orange_tier_mode,
                     panic_close_order_type=panic_close_order_type,
                     restart_after_red_policy=restart_after_red_policy,
+                    halt_ladder_minutes=halt_ladder_minutes,
+                    realized_loss_budget_pct=realized_loss_budget_pct,
                 )
             )
     return out
@@ -670,6 +749,13 @@ def _equity_hard_stop_config(
     return {
         "cooldown_minutes_after_red": float(
             self.bp(pside, "hsl_cooldown_minutes_after_red", symbol)
+        ),
+        "halt_ladder_minutes": _normalize_halt_ladder_minutes(
+            self.bp(pside, "hsl_halt_ladder_minutes", symbol),
+            path=f"coin HSL {symbol} {pside}.halt_ladder_minutes",
+        ),
+        "realized_loss_budget_pct": float(
+            self.bp(pside, "hsl_realized_loss_budget_pct", symbol)
         ),
         "ema_span_minutes": float(self.bp(pside, "hsl_ema_span_minutes", symbol)),
         "enabled": bool(self.bp(pside, "hsl_enabled", symbol)),
@@ -1205,6 +1291,9 @@ def _equity_hard_stop_reset_state(self) -> None:
         state["runtime"].reset()
         state["strategy_pnl_peak"].reset()
         state["no_restart_peak_strategy_equity"] = 0.0
+        state["ladder_strikes"] = 0
+        state["ladder_peak_equity"] = 0.0
+        state["ladder_realized_pnl_peak"] = 0.0
         state["halted"] = False
         state["no_restart_latched"] = False
         state["last_metrics"] = None
@@ -1804,6 +1893,11 @@ def _equity_hard_stop_apply_sample(
     )
     baseline_balance = balance - realized_pnl_total
     strategy_equity = max(float(baseline_balance + strategy_pnl), 1e-12)
+    # Ladder cycle, observed before the sample: a sample that regains the pre-strike
+    # peak clears the strike count before any halt in this call can register one.
+    _equity_hard_stop_ladder_observe(
+        state, equity=strategy_equity, realized_pnl=realized_pnl_signal
+    )
     peak_strategy_equity = max(
         float(strategy_equity),
         float(max(baseline_balance + peak_strategy_pnl, 1e-12)),
@@ -1960,6 +2054,13 @@ def _equity_hard_stop_apply_coin_metrics_sample(
             cached["elapsed_minutes"] = 0
             state["last_metrics"] = cached
             return cached
+    # Coin scope: the ladder cycle follows the coin's own marked slot equity, so a
+    # coin that regains its cycle peak clears its own strike count.
+    _equity_hard_stop_ladder_observe(
+        state,
+        equity=max(slot_budget + last_realized + current_upnl, 1e-12),
+        realized_pnl=last_realized,
+    )
     prev_tier = str(state["runtime"].tier())
     synthetic_equity = max(1.0 - drawdown_ratio, 1e-12)
     step = state["runtime"].apply_sample(
@@ -2833,6 +2934,10 @@ def _equity_hard_stop_build_latch_payload(
     cooldown_until_ms: Optional[int],
     no_restart_peak_strategy_equity: Optional[float] = None,
     no_restart_drawdown_raw: Optional[float] = None,
+    no_restart_reason: Optional[str] = None,
+    realized_loss_pct: Optional[float] = None,
+    halt_minutes: Optional[float] = None,
+    ladder_strikes: Optional[int] = None,
 ) -> dict:
     cfg = _equity_hard_stop_config(self, pside, symbol)
     return {
@@ -2876,6 +2981,12 @@ def _equity_hard_stop_build_latch_payload(
         "drawdown_ema": float(drawdown_ema),
         "drawdown_score": float(drawdown_score),
         "no_restart_latched": bool(no_restart_latched),
+        "halt_ladder_minutes": [float(minutes) for minutes in cfg["halt_ladder_minutes"]],
+        "halt_minutes": None if halt_minutes is None else float(halt_minutes),
+        "ladder_strikes": None if ladder_strikes is None else int(ladder_strikes),
+        "realized_loss_budget_pct": float(cfg["realized_loss_budget_pct"]),
+        "realized_loss_pct": None if realized_loss_pct is None else float(realized_loss_pct),
+        "no_restart_reason": None if no_restart_reason is None else str(no_restart_reason),
         "auto_restart_eligible": bool(
             (not no_restart_latched) and float(cfg["cooldown_minutes_after_red"]) > 0.0
         ),
@@ -2910,6 +3021,14 @@ def _equity_hard_stop_red_episode_finalization(
         red_threshold=float(cfg["red_threshold"]),
         no_restart_drawdown_threshold=float(cfg["no_restart_drawdown_threshold"]),
         cooldown_minutes_after_red=float(cfg["cooldown_minutes_after_red"]),
+        halt_ladder_minutes=list(cfg["halt_ladder_minutes"]),
+        ladder_strikes=int(state.get("ladder_strikes", 0) or 0),
+        ladder_peak_equity=float(state.get("ladder_peak_equity", 0.0) or 0.0),
+        ladder_realized_pnl_peak=float(
+            state.get("ladder_realized_pnl_peak", 0.0) or 0.0
+        ),
+        realized_pnl_now=float(stop_event.get("realized_pnl") or 0.0),
+        realized_loss_budget_pct=float(cfg["realized_loss_budget_pct"]),
     )
     if not isinstance(result, dict):
         raise TypeError(
@@ -2919,6 +3038,11 @@ def _equity_hard_stop_red_episode_finalization(
     state["no_restart_peak_strategy_equity"] = float(
         result["no_restart_peak_strategy_equity"]
     )
+    # The strike is registered inside the Rust transition, so persisting the returned
+    # cycle here is what makes the next halt pick the next rung.
+    state["ladder_strikes"] = int(result["ladder_strikes"])
+    state["ladder_peak_equity"] = float(result["ladder_peak_equity"])
+    state["ladder_realized_pnl_peak"] = float(result["ladder_realized_pnl_peak"])
     return result
 
 
@@ -6126,10 +6250,17 @@ def _equity_hard_stop_reset_coin_after_restart(self, pside: str, symbol: str) ->
     no_restart_peak_strategy_equity = float(
         state.get("no_restart_peak_strategy_equity", 0.0) or 0.0
     )
+    # The ladder cycle outlives an episode exactly like the persistent no-restart peak.
+    ladder_strikes = int(state.get("ladder_strikes", 0) or 0)
+    ladder_peak_equity = float(state.get("ladder_peak_equity", 0.0) or 0.0)
+    ladder_realized_pnl_peak = float(state.get("ladder_realized_pnl_peak", 0.0) or 0.0)
     state.clear()
     state.update(self._equity_hard_stop_make_state())
     state["pnl_reset_timestamp_ms"] = reset_ts
     state["no_restart_peak_strategy_equity"] = no_restart_peak_strategy_equity
+    state["ladder_strikes"] = ladder_strikes
+    state["ladder_peak_equity"] = ladder_peak_equity
+    state["ladder_realized_pnl_peak"] = ladder_realized_pnl_peak
     self._equity_hard_stop_clear_coin_runtime_forced_mode(pside, symbol)
 
 
@@ -6851,6 +6982,10 @@ async def _equity_hard_stop_finalize_red_stop(
     )
     no_restart_drawdown_raw = float(finalization["no_restart_drawdown_raw"])
     no_restart_latched = bool(finalization["no_restart_latched"])
+    no_restart_reason = str(finalization["no_restart_reason"])
+    realized_loss_pct = float(finalization["realized_loss_pct"])
+    halt_minutes = float(finalization["halt_minutes"])
+    ladder_strikes = int(finalization["ladder_strikes"])
     cooldown_until_ms = finalization["cooldown_until_ms"]
     payload = self._equity_hard_stop_build_latch_payload(
         pside,
@@ -6871,6 +7006,10 @@ async def _equity_hard_stop_finalize_red_stop(
         cooldown_until_ms=cooldown_until_ms,
         no_restart_peak_strategy_equity=no_restart_peak_strategy_equity,
         no_restart_drawdown_raw=no_restart_drawdown_raw,
+        no_restart_reason=no_restart_reason,
+        realized_loss_pct=realized_loss_pct,
+        halt_minutes=halt_minutes,
+        ladder_strikes=ladder_strikes,
     )
     state["last_stop_event"] = payload
     state["halted"] = True
@@ -6978,6 +7117,10 @@ async def _equity_hard_stop_finalize_coin_red_stop(
         symbol=symbol,
     )
     no_restart_latched = bool(finalization["no_restart_latched"])
+    no_restart_reason = str(finalization["no_restart_reason"])
+    realized_loss_pct = float(finalization["realized_loss_pct"])
+    halt_minutes = float(finalization["halt_minutes"])
+    ladder_strikes = int(finalization["ladder_strikes"])
     cooldown_until_ms = finalization["cooldown_until_ms"]
     payload = self._equity_hard_stop_build_latch_payload(
         pside,
@@ -7001,6 +7144,10 @@ async def _equity_hard_stop_finalize_coin_red_stop(
             finalization["no_restart_peak_strategy_equity"]
         ),
         no_restart_drawdown_raw=float(finalization["no_restart_drawdown_raw"]),
+        no_restart_reason=no_restart_reason,
+        realized_loss_pct=realized_loss_pct,
+        halt_minutes=halt_minutes,
+        ladder_strikes=ladder_strikes,
     )
     state["last_stop_event"] = payload
     state["halted"] = True

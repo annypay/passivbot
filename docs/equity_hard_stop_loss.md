@@ -229,18 +229,48 @@ Each `pside` has the same HSL parameter set:
    - terminal no-restart threshold for that `pside`
    - evaluated against persistent cross-restart HSL drawdown
    - values below `hsl_red_threshold` are clamped to `hsl_red_threshold`
-6. `hsl_tier_ratios.yellow`
+   - the comparison is `max(drawdown_raw, drawdown_ema)` taken at the moment the
+     panic flatten is confirmed, so a single unrealized wick can latch it; pair it
+     with `hsl_realized_loss_budget_pct` when that is not what you want
+6. `hsl_halt_ladder_minutes`
+   - per-strike cooldown ladder, in minutes: the 1st, 2nd, ... RED halt in the
+     current ladder cycle waits this long before auto-restart is allowed
+   - empty list (the default) disables the ladder and keeps
+     `hsl_cooldown_minutes_after_red`
+   - a ladder longer than the number of strikes that occur saturates at its last
+     entry; it never wraps and never skips a rung
+   - a `0` rung means "no auto-restart for that strike", exactly like
+     `hsl_cooldown_minutes_after_red = 0`
+   - a ladder cycle ends when the `pside`'s strategy equity regains the peak the
+     cycle started from; only then does the strike count return to zero. Losing
+     episodes and their cooldowns do **not** reset it
+   - this is risk shaping, not extra return: measured on the historical legs, longer
+     cooldowns were never better than the flat 12H setting, which is why the
+     recommended ladder stops at 24H (`[720, 1440]`) and stays off by default
+7. `hsl_realized_loss_budget_pct`
+   - second, mark-to-market-free basis for the terminal no-restart halt
+   - `0` (the default) disables it; otherwise it latches when the ladder cycle's
+     cumulative realized giveback reaches this share of the equity the cycle
+     started from
+   - cumulative by construction: earlier halts' realized losses stay in the
+     measurement, unlike the instantaneous drawdown threshold
+   - both bases are compared only while `hsl_restart_after_red_policy = "threshold"`;
+     `always` and `never` keep their existing meaning as the single authoritative
+     switch
+   - the basis that latched is reported as `no_restart_reason` in the halt event,
+     the latch payload and `hsl-startup-preview`
+8. `hsl_tier_ratios.yellow`
    - yellow threshold multiplier
-7. `hsl_tier_ratios.orange`
+9. `hsl_tier_ratios.orange`
    - orange threshold multiplier
-8. `hsl_orange_tier_mode`
-   - ORANGE behavior selector
-9. `hsl_panic_close_order_type`
-   - `market` or `limit`
+10. `hsl_orange_tier_mode`
+    - ORANGE behavior selector
+11. `hsl_panic_close_order_type`
+    - `market` or `limit`
 
 Live-only HSL parameter:
 
-10. `live.hsl_position_during_cooldown_policy`
+12. `live.hsl_position_during_cooldown_policy`
     - controls how the live bot responds if an open position appears on a halted `pside` during RED cooldown
     - supported values are listed in the section above
 
@@ -313,6 +343,12 @@ Useful global HSL backtest metrics include:
 18. `hard_stop_flatten_time_minutes_mean`
 19. `hard_stop_post_restart_retrigger_pct`
 20. `hard_stop_halt_to_restart_equity_loss_pct`
+21. `hard_stop_ladder_strikes_max`
+22. `hard_stop_realized_loss_halt_pct_max`
+
+Items 21 and 22 are produced by the exact replay backend only. The optimization/GPU proxy does not
+model the cooldown ladder or the realized-loss halt basis, so it does not emit them at all; read them
+only from an exact-backend `analysis.json`.
 
 ## Interpreting HSL Metrics
 
@@ -350,6 +386,15 @@ moment.
 4. `hard_stop_flatten_time_minutes_mean`
    - Average time from RED trigger until all positions on the triggered `pside` are fully closed.
    - This isolates execution/exit latency from the later cooldown portion of the halt.
+5. `hard_stop_ladder_strikes_max`
+   - Highest cooldown-ladder strike reached in any halt cycle, counted independently of whether a
+     ladder is configured (a run with one halt and no ladder reports `1`).
+   - `2` with `[720, 1440]` means a second halt happened before the scope regained the equity peak its
+     cycle started from, so the 24H rung was used; it stays `0` only when no halt ever finalized.
+6. `hard_stop_realized_loss_halt_pct_max`
+   - Cumulative realized giveback, as a share of the cycle-start equity, at the halt that a
+     `hsl_realized_loss_budget_pct` budget latched.
+   - `0` when no halt latched on that basis; a drawdown-basis latch does not populate it.
 
 ### Restart quality metrics
 

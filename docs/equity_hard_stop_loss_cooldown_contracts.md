@@ -30,7 +30,13 @@ For the configured HSL scope, define:
    - the fill timestamp that made the scope fully flat
    - the order type is irrelevant
 2. `cooldown_end`
-   - `F + hsl_cooldown_minutes_after_red`
+   - `F + halt_minutes`, where `halt_minutes` is `hsl_cooldown_minutes_after_red`
+     when `hsl_halt_ladder_minutes` is empty, and otherwise the ladder rung selected
+     by the strike count of the current ladder cycle (the ladder saturates at its
+     last entry)
+   - the ladder cycle, and therefore the strike count, is rebuilt from fill history:
+     it survives an episode end and clears only when the scope's strategy equity
+     regains the peak the cycle started from
 3. `E`
    - first entry fill in that scope after `F`
 4. `scope_flat_now`
