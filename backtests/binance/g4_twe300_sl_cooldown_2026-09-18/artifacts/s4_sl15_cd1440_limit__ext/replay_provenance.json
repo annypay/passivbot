@@ -1,0 +1,22 @@
+{
+  "arm": "s4_sl15_cd1440_limit__ext",
+  "description": "成交层敏感性：−15% + 24h 冷却（限价档）｜全历史腿（2021-04-20 → 2026-09-13）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 4846.05,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "ext",
+  "lever": "s4_sl15_cd1440_limit",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__ext/backtest_results/binance_s4_sl15_cd1440_limit__ext/binance/2026-09-18T11_10_47",
+  "stop_loss": {
+    "cooldown_minutes": 1440.0,
+    "enabled": true,
+    "order_type": "limit",
+    "pct_from_avg_entry": 0.15
+  },
+  "synthetic": false
+}

@@ -1,0 +1,22 @@
+{
+  "arm": "s2_sl15_cd240__synth_a",
+  "description": "冷却长度敏感性：−15% + 4h 冷却｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 48.72,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "synth_a",
+  "lever": "s2_sl15_cd240",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__synth_a/backtest_results/binance_s2_sl15_cd240__synth_a/binance/2026-09-18T11_20_52",
+  "stop_loss": {
+    "cooldown_minutes": 240.0,
+    "enabled": true,
+    "order_type": "market",
+    "pct_from_avg_entry": 0.15
+  },
+  "synthetic": true
+}

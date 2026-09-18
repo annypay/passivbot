@@ -1,0 +1,22 @@
+{
+  "arm": "s0_off__pre",
+  "description": "默认关闭回归臂：stop_loss.enabled = false｜样本外腿（2021-04-20 → 2023-09-11）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 63.34,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "pre",
+  "lever": "s0_off",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__pre/backtest_results/binance_s0_off__pre/binance/2026-09-18T11_14_41",
+  "stop_loss": {
+    "cooldown_minutes": 1440.0,
+    "enabled": false,
+    "order_type": "market",
+    "pct_from_avg_entry": 0.15
+  },
+  "synthetic": false
+}

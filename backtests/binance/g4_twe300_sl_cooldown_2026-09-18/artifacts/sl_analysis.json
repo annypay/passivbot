@@ -1,0 +1,3038 @@
+{
+  "arms": [
+    {
+      "arm": "s0_off__3y",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -20.0996,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 6.7986
+      },
+      "leg": "3y",
+      "lever": "s0_off",
+      "metrics": {
+        "adg_strategy_eq": 0.0014096104461793768,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.006114880639818834,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.1492768526706412,
+        "drawdown_worst_strategy_eq": 0.23052133462757904,
+        "expected_shortfall_1pct_strategy_eq": 0.11376662274349743,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28550.0,
+        "fills_count_close": 10874.0,
+        "fills_count_entry": 17676.0,
+        "gain_strategy_eq": 4.68256105539886,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.23360394735855133,
+        "mdg_strategy_eq": 0.00038138769663593027,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 2.898482286043232,
+        "position_held_hours_max": 819.4,
+        "position_held_hours_median": 3.033333333333333,
+        "sharpe_ratio_usd": 0.06607386364285162,
+        "sortino_ratio_usd": 0.06250644300874086,
+        "sterling_ratio_strategy_eq": 0.00944292715823456,
+        "strategy_eq_recovery_days_max": 49.35625,
+        "strategy_eq_underwater_pct_mean": 0.007136682441045925,
+        "terminal_multiple": 4.7536,
+        "total_wallet_exposure_max": 1.6829492622803774,
+        "total_wallet_exposure_mean": 0.06128815265194782
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__3y/backtest_results/binance_s0_off__3y/binance/2026-09-18T09_39_42",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": false,
+        "max_single_coin_loss_usd": null,
+        "stop_loss_coins_count": 0,
+        "stop_loss_fills_count": 0,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": 0,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": []
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s1_sl15_cd1440__3y",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.5127,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.5643
+      },
+      "leg": "3y",
+      "lever": "s1_sl15_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.000918550892697656,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.004451363531012681,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.16364013378478667,
+        "drawdown_worst_strategy_eq": 0.2063527021098427,
+        "expected_shortfall_1pct_strategy_eq": 0.09869229269866729,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 27995.0,
+        "fills_count_close": 10499.0,
+        "fills_count_entry": 17496.0,
+        "gain_strategy_eq": 2.735378162535712,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.42384586926747697,
+        "mdg_strategy_eq": 0.00036137645580286263,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.9420580190516772,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.033333333333333,
+        "sharpe_ratio_usd": 0.05358196780393355,
+        "sortino_ratio_usd": 0.048114387605678835,
+        "sterling_ratio_strategy_eq": 0.005613237238645255,
+        "strategy_eq_recovery_days_max": 184.1298611111111,
+        "strategy_eq_underwater_pct_mean": 0.02619107059783968,
+        "terminal_multiple": 2.7771,
+        "total_wallet_exposure_max": 1.6905378174149466,
+        "total_wallet_exposure_mean": 0.0543921798134674
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__3y/backtest_results/binance_s1_sl15_cd1440__3y/binance/2026-09-18T09_40_36",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1841.87,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 42,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -8440.89,
+        "stop_loss_taker_fills": 42,
+        "worst_coins": [
+          [
+            "ZEC",
+            -1841.8687150900005
+          ],
+          [
+            "LINK",
+            -1656.8506673749987
+          ],
+          [
+            "LTC",
+            -1135.9353985365137
+          ],
+          [
+            "INJ",
+            -923.871691295986
+          ],
+          [
+            "WLD",
+            -716.9560586000001
+          ],
+          [
+            "DOGE",
+            -418.42656207500005
+          ],
+          [
+            "NEAR",
+            -272.7009259999998
+          ],
+          [
+            "HBAR",
+            -260.56533678
+          ],
+          [
+            "APT",
+            -251.5091117700002
+          ],
+          [
+            "ALGO",
+            -185.93619320649992
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s2_sl15_cd240__3y",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.444,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.8414
+      },
+      "leg": "3y",
+      "lever": "s2_sl15_cd240",
+      "metrics": {
+        "adg_strategy_eq": 0.0009131528332027017,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.004198140326845018,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.164240336541082,
+        "drawdown_worst_strategy_eq": 0.2175136517861406,
+        "expected_shortfall_1pct_strategy_eq": 0.09869633529644803,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28220.0,
+        "fills_count_close": 10578.0,
+        "fills_count_entry": 17642.0,
+        "gain_strategy_eq": 2.7192574165658345,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.4308878238087367,
+        "mdg_strategy_eq": 0.00035831930497609495,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.9292576272088253,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.033333333333333,
+        "sharpe_ratio_usd": 0.053299563621748335,
+        "sortino_ratio_usd": 0.04772312272015014,
+        "sterling_ratio_strategy_eq": 0.005559857294704773,
+        "strategy_eq_recovery_days_max": 185.2548611111111,
+        "strategy_eq_underwater_pct_mean": 0.027894216136121128,
+        "terminal_multiple": 2.7606,
+        "total_wallet_exposure_max": 1.6726181699142824,
+        "total_wallet_exposure_mean": 0.05442463492541967
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__3y/backtest_results/binance_s2_sl15_cd240__3y/binance/2026-09-18T09_41_26",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1850.97,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 42,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -8725.58,
+        "stop_loss_taker_fills": 42,
+        "worst_coins": [
+          [
+            "ZEC",
+            -1850.9726914750004
+          ],
+          [
+            "LINK",
+            -1647.2173519
+          ],
+          [
+            "LTC",
+            -1129.4348546138353
+          ],
+          [
+            "INJ",
+            -914.5539756050196
+          ],
+          [
+            "WLD",
+            -715.4854999000005
+          ],
+          [
+            "DOGE",
+            -419.1847649699998
+          ],
+          [
+            "APT",
+            -319.916182945
+          ],
+          [
+            "AAVE",
+            -312.3098400000001
+          ],
+          [
+            "NEAR",
+            -260.78954499999986
+          ],
+          [
+            "HBAR",
+            -256.51770590000007
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s3_sl25_cd1440__3y",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -19.6724,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": -5.2588
+      },
+      "leg": "3y",
+      "lever": "s3_sl25_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.0011265335799932608,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.005115540407888973,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.16920654024626608,
+        "drawdown_worst_strategy_eq": 0.22021790273730849,
+        "expected_shortfall_1pct_strategy_eq": 0.1104551173506672,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28159.0,
+        "fills_count_close": 10563.0,
+        "fills_count_entry": 17596.0,
+        "gain_strategy_eq": 3.434893328303462,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.3896008355562212,
+        "mdg_strategy_eq": 0.00037104404777912225,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 2.1938199155419498,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.033333333333333,
+        "sharpe_ratio_usd": 0.05927783523330219,
+        "sortino_ratio_usd": 0.05238004819162282,
+        "sterling_ratio_strategy_eq": 0.0066577425337914515,
+        "strategy_eq_recovery_days_max": 114.02847222222222,
+        "strategy_eq_underwater_pct_mean": 0.02296003636329354,
+        "terminal_multiple": 3.4871,
+        "total_wallet_exposure_max": 1.6789194764967632,
+        "total_wallet_exposure_mean": 0.059242239564013
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__3y/backtest_results/binance_s3_sl25_cd1440__3y/binance/2026-09-18T09_42_19",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -4511.4,
+        "stop_loss_coins_count": 8,
+        "stop_loss_fills_count": 10,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -9185.4,
+        "stop_loss_taker_fills": 10,
+        "worst_coins": [
+          [
+            "ZEC",
+            -4511.40115129
+          ],
+          [
+            "LINK",
+            -2375.188562034998
+          ],
+          [
+            "AAVE",
+            -1673.6426014705883
+          ],
+          [
+            "WLD",
+            -467.16823274999996
+          ],
+          [
+            "BNB",
+            -73.9371008
+          ],
+          [
+            "NEAR",
+            -41.884158
+          ],
+          [
+            "DOGE",
+            -21.188573199999997
+          ],
+          [
+            "ARB",
+            -20.994311330999995
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s4_sl15_cd1440_limit__3y",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -20.1005,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 2.1129
+      },
+      "leg": "3y",
+      "lever": "s4_sl15_cd1440_limit",
+      "metrics": {
+        "adg_strategy_eq": 0.0009255850442915214,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.004014695188156099,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.1566102060493768,
+        "drawdown_worst_strategy_eq": 0.23054926984796123,
+        "expected_shortfall_1pct_strategy_eq": 0.10753897262707537,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28008.0,
+        "fills_count_close": 10514.0,
+        "fills_count_entry": 17494.0,
+        "gain_strategy_eq": 2.7565282906079376,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.422144564237226,
+        "mdg_strategy_eq": 0.0003609011937722156,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.9699787443707235,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.025,
+        "sharpe_ratio_usd": 0.0504079802868712,
+        "sortino_ratio_usd": 0.0441367057181711,
+        "sterling_ratio_strategy_eq": 0.0059101195741974736,
+        "strategy_eq_recovery_days_max": 171.66458333333333,
+        "strategy_eq_underwater_pct_mean": 0.02251685456955954,
+        "terminal_multiple": 2.7985,
+        "total_wallet_exposure_max": 1.6894769980082471,
+        "total_wallet_exposure_mean": 0.05477768345709003
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__3y/backtest_results/binance_s4_sl15_cd1440_limit__3y/binance/2026-09-18T09_43_09",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1844.5,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 42,
+        "stop_loss_maker_fills": 42,
+        "stop_loss_realized_pnl_usd": -7916.79,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": [
+          [
+            "ZEC",
+            -1844.5041630539977
+          ],
+          [
+            "LTC",
+            -1179.6468628183286
+          ],
+          [
+            "LINK",
+            -1178.8400235559993
+          ],
+          [
+            "INJ",
+            -901.0945580113593
+          ],
+          [
+            "WLD",
+            -682.2802044400001
+          ],
+          [
+            "DOGE",
+            -420.34818447999976
+          ],
+          [
+            "NEAR",
+            -253.74814179999984
+          ],
+          [
+            "HBAR",
+            -252.248611196
+          ],
+          [
+            "APT",
+            -224.2787023399998
+          ],
+          [
+            "AAVE",
+            -220.07100720000017
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s5_sl15_cd0__3y",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.4393,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.8213
+      },
+      "leg": "3y",
+      "lever": "s5_sl15_cd0",
+      "metrics": {
+        "adg_strategy_eq": 0.0009224661274662704,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.004273546945785093,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.16372913472886838,
+        "drawdown_worst_strategy_eq": 0.21585491844803567,
+        "expected_shortfall_1pct_strategy_eq": 0.09887086046638227,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28390.0,
+        "fills_count_close": 10639.0,
+        "fills_count_entry": 17751.0,
+        "gain_strategy_eq": 2.7471303152432305,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.43041121644454006,
+        "mdg_strategy_eq": 0.0003610322203430671,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.952856477400002,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.0,
+        "sharpe_ratio_usd": 0.05353208689218756,
+        "sortino_ratio_usd": 0.04819363188681859,
+        "sterling_ratio_strategy_eq": 0.005634098836434046,
+        "strategy_eq_recovery_days_max": 182.10347222222222,
+        "strategy_eq_underwater_pct_mean": 0.02749452281541199,
+        "terminal_multiple": 2.789,
+        "total_wallet_exposure_max": 1.672126369331343,
+        "total_wallet_exposure_mean": 0.054411945292759126
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__3y/backtest_results/binance_s5_sl15_cd0__3y/binance/2026-09-18T09_44_03",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1915.1,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 44,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -8870.64,
+        "stop_loss_taker_fills": 44,
+        "worst_coins": [
+          [
+            "ZEC",
+            -1915.0967161499966
+          ],
+          [
+            "LINK",
+            -1658.7264828150007
+          ],
+          [
+            "LTC",
+            -1136.68079785023
+          ],
+          [
+            "INJ",
+            -902.7382604798256
+          ],
+          [
+            "WLD",
+            -782.31382895
+          ],
+          [
+            "DOGE",
+            -419.5064935949998
+          ],
+          [
+            "APT",
+            -319.930132945
+          ],
+          [
+            "AAVE",
+            -312.3098400000001
+          ],
+          [
+            "NEAR",
+            -261.052118
+          ],
+          [
+            "HBAR",
+            -256.8767309699998
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s0_off__ext",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -20.1347,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 6.8159
+      },
+      "leg": "ext",
+      "lever": "s0_off",
+      "metrics": {
+        "adg_strategy_eq": 0.0004224931542822219,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0005518296539848687,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.7257891552814142,
+        "drawdown_worst_strategy_eq": 0.765622418496935,
+        "expected_shortfall_1pct_strategy_eq": 0.1711949992898398,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 45644.0,
+        "fills_count_close": 17352.0,
+        "fills_count_entry": 28292.0,
+        "gain_strategy_eq": 2.3001642843046213,
+        "hard_stop_ladder_strikes_max": 4,
+        "hard_stop_panic_close_loss_sum": 11077.451372074585,
+        "hard_stop_restarts": 4,
+        "hard_stop_time_in_red_pct": 0.0010184249698645515,
+        "hard_stop_trigger_drawdown_mean": 0.3325795168807505,
+        "hard_stop_triggers": 4,
+        "liquidated": false,
+        "loss_profit_ratio": 0.5639533367057697,
+        "mdg_strategy_eq": 0.00030373089796089064,
+        "n_days": 1971.9986111111111,
+        "omega_ratio_strategy_eq": 1.4743955317467967,
+        "position_held_hours_max": 2017.5666666666666,
+        "position_held_hours_median": 3.066666666666667,
+        "sharpe_ratio_usd": 0.015191885756462655,
+        "sortino_ratio_usd": 0.011767660509602321,
+        "sterling_ratio_strategy_eq": 0.0005821155513386065,
+        "strategy_eq_recovery_days_max": 1301.425,
+        "strategy_eq_underwater_pct_mean": 0.29412505470053857,
+        "terminal_multiple": 2.3244,
+        "total_wallet_exposure_max": 2.510742495844707,
+        "total_wallet_exposure_mean": 0.06630852952966636
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__ext/backtest_results/binance_s0_off__ext/binance/2026-09-18T09_45_31",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": false,
+        "max_single_coin_loss_usd": null,
+        "stop_loss_coins_count": 0,
+        "stop_loss_fills_count": 0,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": 0,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": []
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s1_sl15_cd1440__ext",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.5996,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.4564
+      },
+      "leg": "ext",
+      "lever": "s1_sl15_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.0006286983891805598,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.001690443319610677,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.30237854168343825,
+        "drawdown_worst_strategy_eq": 0.3719133211312603,
+        "expected_shortfall_1pct_strategy_eq": 0.11092634536649422,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 44952.0,
+        "fills_count_close": 16752.0,
+        "fills_count_entry": 28200.0,
+        "gain_strategy_eq": 3.4535533541775605,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 1277.4688092419992,
+        "hard_stop_restarts": 2,
+        "hard_stop_time_in_red_pct": 0.0005092124849322757,
+        "hard_stop_trigger_drawdown_mean": 0.23321327073371595,
+        "hard_stop_triggers": 2,
+        "liquidated": false,
+        "loss_profit_ratio": 0.506137622174494,
+        "mdg_strategy_eq": 0.0002772912966164274,
+        "n_days": 1971.9986111111111,
+        "omega_ratio_strategy_eq": 1.6097654305827793,
+        "position_held_hours_max": 444.56666666666666,
+        "position_held_hours_median": 3.05,
+        "sharpe_ratio_usd": 0.03533004142892216,
+        "sortino_ratio_usd": 0.029147700142231767,
+        "sterling_ratio_strategy_eq": 0.0020791766032086613,
+        "strategy_eq_recovery_days_max": 289.85833333333335,
+        "strategy_eq_underwater_pct_mean": 0.05164904683495983,
+        "terminal_multiple": 3.49,
+        "total_wallet_exposure_max": 2.4105952862622777,
+        "total_wallet_exposure_mean": 0.05170913382597965
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__ext/backtest_results/binance_s1_sl15_cd1440__ext/binance/2026-09-18T09_47_04",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -2925.85,
+        "stop_loss_coins_count": 26,
+        "stop_loss_fills_count": 86,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -17362.67,
+        "stop_loss_taker_fills": 86,
+        "worst_coins": [
+          [
+            "ZEC",
+            -2925.854596604997
+          ],
+          [
+            "LINK",
+            -2835.3047895613013
+          ],
+          [
+            "LTC",
+            -2131.555873435101
+          ],
+          [
+            "INJ",
+            -1377.9288944870211
+          ],
+          [
+            "AAVE",
+            -1147.2257933373733
+          ],
+          [
+            "NEAR",
+            -1101.132966188105
+          ],
+          [
+            "XLM",
+            -951.1771009999997
+          ],
+          [
+            "SOL",
+            -894.2520222500001
+          ],
+          [
+            "ETH",
+            -578.0390116899999
+          ],
+          [
+            "DOGE",
+            -560.1204657550004
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s2_sl15_cd240__ext",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.4221,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.8295
+      },
+      "leg": "ext",
+      "lever": "s2_sl15_cd240",
+      "metrics": {
+        "adg_strategy_eq": 0.0006991410862886571,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.001956712945894139,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.2889173069055514,
+        "drawdown_worst_strategy_eq": 0.35730385888011607,
+        "expected_shortfall_1pct_strategy_eq": 0.10723023745928434,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 45551.0,
+        "fills_count_close": 16913.0,
+        "fills_count_entry": 28638.0,
+        "gain_strategy_eq": 3.967850417847277,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 579.0616667079994,
+        "hard_stop_restarts": 1,
+        "hard_stop_time_in_red_pct": 0.0002546062424661379,
+        "hard_stop_trigger_drawdown_mean": 0.22374117824125872,
+        "hard_stop_triggers": 1,
+        "liquidated": false,
+        "loss_profit_ratio": 0.48646350803363964,
+        "mdg_strategy_eq": 0.00028439771624650474,
+        "n_days": 1971.9986111111111,
+        "omega_ratio_strategy_eq": 1.6879884995677223,
+        "position_held_hours_max": 444.56666666666666,
+        "position_held_hours_median": 3.05,
+        "sharpe_ratio_usd": 0.03889021702537917,
+        "sortino_ratio_usd": 0.033040271134109844,
+        "sterling_ratio_strategy_eq": 0.0024198657178997243,
+        "strategy_eq_recovery_days_max": 185.30208333333334,
+        "strategy_eq_underwater_pct_mean": 0.04015024210162516,
+        "terminal_multiple": 4.0097,
+        "total_wallet_exposure_max": 2.40149827079573,
+        "total_wallet_exposure_mean": 0.051754604656652194
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__ext/backtest_results/binance_s2_sl15_cd240__ext/binance/2026-09-18T09_48_34",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -3292.56,
+        "stop_loss_coins_count": 26,
+        "stop_loss_fills_count": 88,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -20140.84,
+        "stop_loss_taker_fills": 88,
+        "worst_coins": [
+          [
+            "ZEC",
+            -3292.5605659950015
+          ],
+          [
+            "LINK",
+            -3182.699018706731
+          ],
+          [
+            "LTC",
+            -2363.7973762721736
+          ],
+          [
+            "INJ",
+            -1342.2777511807844
+          ],
+          [
+            "AAVE",
+            -1248.5450595
+          ],
+          [
+            "NEAR",
+            -1143.6116174206547
+          ],
+          [
+            "WLD",
+            -1042.2612385500006
+          ],
+          [
+            "XLM",
+            -936.0688129200012
+          ],
+          [
+            "SOL",
+            -902.8699309499995
+          ],
+          [
+            "AVAX",
+            -724.6054495000001
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s3_sl25_cd1440__ext",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -19.668,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": -4.2874
+      },
+      "leg": "ext",
+      "lever": "s3_sl25_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.0002878862101212132,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.00040750212703579043,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.664769483891893,
+        "drawdown_worst_strategy_eq": 0.7064655397392041,
+        "expected_shortfall_1pct_strategy_eq": 0.16387261543159354,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 45397.0,
+        "fills_count_close": 17189.0,
+        "fills_count_entry": 28208.0,
+        "gain_strategy_eq": 1.7640810511058047,
+        "hard_stop_ladder_strikes_max": 4,
+        "hard_stop_panic_close_loss_sum": 4418.917170544149,
+        "hard_stop_restarts": 4,
+        "hard_stop_time_in_red_pct": 0.0010184249698645515,
+        "hard_stop_trigger_drawdown_mean": 0.3193362533567056,
+        "hard_stop_triggers": 4,
+        "liquidated": false,
+        "loss_profit_ratio": 0.7056024531176502,
+        "mdg_strategy_eq": 0.00027702389200018855,
+        "n_days": 1971.9986111111111,
+        "omega_ratio_strategy_eq": 1.3210484115837886,
+        "position_held_hours_max": 862.2333333333333,
+        "position_held_hours_median": 3.066666666666667,
+        "sharpe_ratio_usd": 0.011404618138459265,
+        "sortino_ratio_usd": 0.008363017809779787,
+        "sterling_ratio_strategy_eq": 0.00043306171100963197,
+        "strategy_eq_recovery_days_max": 1309.0159722222222,
+        "strategy_eq_underwater_pct_mean": 0.2964731740167857,
+        "terminal_multiple": 1.7828,
+        "total_wallet_exposure_max": 2.5938495265979733,
+        "total_wallet_exposure_mean": 0.06469427756778974
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__ext/backtest_results/binance_s3_sl25_cd1440__ext/binance/2026-09-18T09_50_08",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -2587.32,
+        "stop_loss_coins_count": 16,
+        "stop_loss_fills_count": 28,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -10984.61,
+        "stop_loss_taker_fills": 28,
+        "worst_coins": [
+          [
+            "ZEC",
+            -2587.3249128999996
+          ],
+          [
+            "LTC",
+            -1449.7454201250002
+          ],
+          [
+            "SOL",
+            -1365.2699183999998
+          ],
+          [
+            "AAVE",
+            -1243.2421472429253
+          ],
+          [
+            "LINK",
+            -1232.7314053199989
+          ],
+          [
+            "XLM",
+            -1148.5799671000004
+          ],
+          [
+            "XRP",
+            -1126.4454836900002
+          ],
+          [
+            "AVAX",
+            -467.684894
+          ],
+          [
+            "WLD",
+            -240.32634640000003
+          ],
+          [
+            "BNB",
+            -40.190367099999996
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s4_sl15_cd1440_limit__ext",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -20.093,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 2.1205
+      },
+      "leg": "ext",
+      "lever": "s4_sl15_cd1440_limit",
+      "metrics": {
+        "adg_strategy_eq": 0.0006532132433609839,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.001787443566009347,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.3065900657573306,
+        "drawdown_worst_strategy_eq": 0.3654455199496726,
+        "expected_shortfall_1pct_strategy_eq": 0.11629409478969056,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 45027.0,
+        "fills_count_close": 16791.0,
+        "fills_count_entry": 28236.0,
+        "gain_strategy_eq": 3.624498685591091,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 1194.0602021039997,
+        "hard_stop_restarts": 1,
+        "hard_stop_time_in_red_pct": 0.0002546062424661379,
+        "hard_stop_trigger_drawdown_mean": 0.2542109364740104,
+        "hard_stop_triggers": 1,
+        "liquidated": false,
+        "loss_profit_ratio": 0.4917570120770334,
+        "mdg_strategy_eq": 0.00028646186583427603,
+        "n_days": 1971.9986111111111,
+        "omega_ratio_strategy_eq": 1.6487708579044489,
+        "position_held_hours_max": 444.65,
+        "position_held_hours_median": 3.05,
+        "sharpe_ratio_usd": 0.03517775923680203,
+        "sortino_ratio_usd": 0.02871603283439613,
+        "sterling_ratio_strategy_eq": 0.0021305753718648185,
+        "strategy_eq_recovery_days_max": 290.63680555555555,
+        "strategy_eq_underwater_pct_mean": 0.048144466101556635,
+        "terminal_multiple": 3.6628,
+        "total_wallet_exposure_max": 2.4240335896700422,
+        "total_wallet_exposure_mean": 0.0506690792069344
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__ext/backtest_results/binance_s4_sl15_cd1440_limit__ext/binance/2026-09-18T11_10_47",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -2841.42,
+        "stop_loss_coins_count": 26,
+        "stop_loss_fills_count": 86,
+        "stop_loss_maker_fills": 86,
+        "stop_loss_realized_pnl_usd": -16497.83,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": [
+          [
+            "ZEC",
+            -2841.4204708980033
+          ],
+          [
+            "LINK",
+            -2265.4579907271004
+          ],
+          [
+            "LTC",
+            -2141.623130854483
+          ],
+          [
+            "INJ",
+            -1196.2337215447772
+          ],
+          [
+            "AAVE",
+            -1164.6718898406857
+          ],
+          [
+            "NEAR",
+            -1041.0013139207356
+          ],
+          [
+            "XLM",
+            -1019.3644577580009
+          ],
+          [
+            "SOL",
+            -922.2997535000003
+          ],
+          [
+            "ETH",
+            -726.298281344
+          ],
+          [
+            "DOGE",
+            -570.2888790859995
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s5_sl15_cd0__ext",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.4295,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.7858
+      },
+      "leg": "ext",
+      "lever": "s5_sl15_cd0",
+      "metrics": {
+        "adg_strategy_eq": 0.0007297586505570219,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0021799684247712312,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.26563488448977646,
+        "drawdown_worst_strategy_eq": 0.3347565231976223,
+        "expected_shortfall_1pct_strategy_eq": 0.10860544749630012,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 45900.0,
+        "fills_count_close": 17073.0,
+        "fills_count_entry": 28827.0,
+        "gain_strategy_eq": 4.214619110800379,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 1423.4612655240003,
+        "hard_stop_restarts": 1,
+        "hard_stop_time_in_red_pct": 0.0002546062424661379,
+        "hard_stop_trigger_drawdown_mean": 0.2714410591177442,
+        "hard_stop_triggers": 1,
+        "liquidated": false,
+        "loss_profit_ratio": 0.4810653498923329,
+        "mdg_strategy_eq": 0.0002829629469162654,
+        "n_days": 1971.9986111111111,
+        "omega_ratio_strategy_eq": 1.7169885618323417,
+        "position_held_hours_max": 444.56666666666666,
+        "position_held_hours_median": 3.0166666666666666,
+        "sharpe_ratio_usd": 0.04033857814659273,
+        "sortino_ratio_usd": 0.03407552781079749,
+        "sterling_ratio_strategy_eq": 0.0027472244541929067,
+        "strategy_eq_recovery_days_max": 185.26388888888889,
+        "strategy_eq_underwater_pct_mean": 0.03744300559210776,
+        "terminal_multiple": 4.2596,
+        "total_wallet_exposure_max": 2.3765671828180404,
+        "total_wallet_exposure_mean": 0.05082860181953709
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__ext/backtest_results/binance_s5_sl15_cd0__ext/binance/2026-09-18T11_13_29",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -3550.03,
+        "stop_loss_coins_count": 26,
+        "stop_loss_fills_count": 95,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -20443.1,
+        "stop_loss_taker_fills": 95,
+        "worst_coins": [
+          [
+            "ZEC",
+            -3550.027115745001
+          ],
+          [
+            "LINK",
+            -3363.8816487967347
+          ],
+          [
+            "LTC",
+            -2483.5735802306012
+          ],
+          [
+            "INJ",
+            -1402.5386596708702
+          ],
+          [
+            "NEAR",
+            -1199.4271063450612
+          ],
+          [
+            "WLD",
+            -1145.3140580500008
+          ],
+          [
+            "XLM",
+            -1082.1658485094565
+          ],
+          [
+            "SOL",
+            -975.7740606499998
+          ],
+          [
+            "AAVE",
+            -702.0821425
+          ],
+          [
+            "DOGE",
+            -686.4411458799995
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s0_off__pre",
+      "june_2026": {},
+      "leg": "pre",
+      "lever": "s0_off",
+      "metrics": {
+        "adg_strategy_eq": -0.0005645671429509447,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": -0.0007373963056872073,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.7381351564473051,
+        "drawdown_worst_strategy_eq": 0.765622418496935,
+        "expected_shortfall_1pct_strategy_eq": 0.23247290537145102,
+        "fills_active_symbols_count": 26.0,
+        "fills_count": 17155.0,
+        "fills_count_close": 6565.0,
+        "fills_count_entry": 10590.0,
+        "gain_strategy_eq": 0.6104425927367978,
+        "hard_stop_ladder_strikes_max": 3,
+        "hard_stop_panic_close_loss_sum": 9038.83336721206,
+        "hard_stop_restarts": 3,
+        "hard_stop_time_in_red_pct": 0.0017233995386787587,
+        "hard_stop_trigger_drawdown_mean": 0.3711513930960213,
+        "hard_stop_triggers": 3,
+        "liquidated": false,
+        "loss_profit_ratio": 1.5103974427958986,
+        "mdg_strategy_eq": 0.00022757418214896816,
+        "n_days": 873.9986111111111,
+        "omega_ratio_strategy_eq": 1.012934826303944,
+        "position_held_hours_max": 2017.5666666666666,
+        "position_held_hours_median": 3.0833333333333335,
+        "sharpe_ratio_usd": -0.016605409753276044,
+        "sortino_ratio_usd": -0.012254550713450926,
+        "sterling_ratio_strategy_eq": -0.0007648560538265714,
+        "strategy_eq_recovery_days_max": 844.61875,
+        "strategy_eq_underwater_pct_mean": 0.5163264222101378,
+        "terminal_multiple": 0.6099,
+        "total_wallet_exposure_max": 2.510742495844707,
+        "total_wallet_exposure_mean": 0.07019507910585711
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__pre/backtest_results/binance_s0_off__pre/binance/2026-09-18T11_14_41",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": false,
+        "max_single_coin_loss_usd": null,
+        "stop_loss_coins_count": 0,
+        "stop_loss_fills_count": 0,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": 0,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": []
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s1_sl15_cd1440__pre",
+      "june_2026": {},
+      "leg": "pre",
+      "lever": "s1_sl15_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.0002493853034504223,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0006705468432586904,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.32461754576997925,
+        "drawdown_worst_strategy_eq": 0.3719133211312603,
+        "expected_shortfall_1pct_strategy_eq": 0.13296634881684685,
+        "fills_active_symbols_count": 26.0,
+        "fills_count": 16827.0,
+        "fills_count_close": 6202.0,
+        "fills_count_entry": 10625.0,
+        "gain_strategy_eq": 1.2435069600358386,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 1277.4688092419992,
+        "hard_stop_restarts": 2,
+        "hard_stop_time_in_red_pct": 0.0011489330257858392,
+        "hard_stop_trigger_drawdown_mean": 0.23321327073371595,
+        "hard_stop_triggers": 2,
+        "liquidated": false,
+        "loss_profit_ratio": 0.781288074287869,
+        "mdg_strategy_eq": 0.00019151225770695034,
+        "n_days": 873.9986111111111,
+        "omega_ratio_strategy_eq": 1.2629281070455165,
+        "position_held_hours_max": 444.56666666666666,
+        "position_held_hours_median": 3.1,
+        "sharpe_ratio_usd": 0.013262115147090294,
+        "sortino_ratio_usd": 0.01007291254965303,
+        "sterling_ratio_strategy_eq": 0.0007682434504853729,
+        "strategy_eq_recovery_days_max": 289.85833333333335,
+        "strategy_eq_underwater_pct_mean": 0.0829985565564455,
+        "terminal_multiple": 1.2435,
+        "total_wallet_exposure_max": 2.4105952862622777,
+        "total_wallet_exposure_mean": 0.04848196895514061
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__pre/backtest_results/binance_s1_sl15_cd1440__pre/binance/2026-09-18T11_15_25",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -951.18,
+        "stop_loss_coins_count": 21,
+        "stop_loss_fills_count": 44,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -7056.53,
+        "stop_loss_taker_fills": 44,
+        "worst_coins": [
+          [
+            "XLM",
+            -951.1771009999997
+          ],
+          [
+            "AAVE",
+            -924.9850783373736
+          ],
+          [
+            "SOL",
+            -767.68081635
+          ],
+          [
+            "NEAR",
+            -749.1609926881047
+          ],
+          [
+            "LINK",
+            -739.651250956299
+          ],
+          [
+            "LTC",
+            -695.0521456050002
+          ],
+          [
+            "ETH",
+            -578.0390116899999
+          ],
+          [
+            "ZEC",
+            -576.0936857949999
+          ],
+          [
+            "AVAX",
+            -331.54527950000005
+          ],
+          [
+            "XRP",
+            -249.94476099499977
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s2_sl15_cd240__pre",
+      "june_2026": {},
+      "leg": "pre",
+      "lever": "s2_sl15_cd240",
+      "metrics": {
+        "adg_strategy_eq": 0.00043049495366709323,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.001204842721308346,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.3132159669690793,
+        "drawdown_worst_strategy_eq": 0.35730385888011607,
+        "expected_shortfall_1pct_strategy_eq": 0.12075868234279125,
+        "fills_active_symbols_count": 26.0,
+        "fills_count": 17192.0,
+        "fills_count_close": 6294.0,
+        "fills_count_entry": 10898.0,
+        "gain_strategy_eq": 1.4566971184278794,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 579.0616667079994,
+        "hard_stop_restarts": 1,
+        "hard_stop_time_in_red_pct": 0.0005744665128929196,
+        "hard_stop_trigger_drawdown_mean": 0.22374117824125872,
+        "hard_stop_triggers": 1,
+        "liquidated": false,
+        "loss_profit_ratio": 0.6636981726682382,
+        "mdg_strategy_eq": 0.00018743905317233266,
+        "n_days": 873.9986111111111,
+        "omega_ratio_strategy_eq": 1.422458302816799,
+        "position_held_hours_max": 444.56666666666666,
+        "position_held_hours_median": 3.0833333333333335,
+        "sharpe_ratio_usd": 0.02279364288965708,
+        "sortino_ratio_usd": 0.01824478739222544,
+        "sterling_ratio_strategy_eq": 0.0013744348917869558,
+        "strategy_eq_recovery_days_max": 181.23541666666668,
+        "strategy_eq_underwater_pct_mean": 0.05518505033257317,
+        "terminal_multiple": 1.4567,
+        "total_wallet_exposure_max": 2.40149827079573,
+        "total_wallet_exposure_mean": 0.048632962384936425
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__pre/backtest_results/binance_s2_sl15_cd240__pre/binance/2026-09-18T11_16_09",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -936.07,
+        "stop_loss_coins_count": 21,
+        "stop_loss_fills_count": 46,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -7472.02,
+        "stop_loss_taker_fills": 46,
+        "worst_coins": [
+          [
+            "XLM",
+            -936.0688129200012
+          ],
+          [
+            "LINK",
+            -793.2513722967309
+          ],
+          [
+            "AAVE",
+            -786.6712804999997
+          ],
+          [
+            "NEAR",
+            -765.2662639206545
+          ],
+          [
+            "SOL",
+            -756.4210874499994
+          ],
+          [
+            "LTC",
+            -725.9299354350003
+          ],
+          [
+            "AVAX",
+            -701.2159750000001
+          ],
+          [
+            "ZEC",
+            -602.7313747599998
+          ],
+          [
+            "ETH",
+            -578.0413916900001
+          ],
+          [
+            "XRP",
+            -253.70835779499976
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s3_sl25_cd1440__pre",
+      "june_2026": {},
+      "leg": "pre",
+      "lever": "s3_sl25_cd1440",
+      "metrics": {
+        "adg_strategy_eq": -0.0005684488176590508,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": -0.0008046377150524531,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.6806406868626989,
+        "drawdown_worst_strategy_eq": 0.7064655397392041,
+        "expected_shortfall_1pct_strategy_eq": 0.21797637092039573,
+        "fills_active_symbols_count": 26.0,
+        "fills_count": 17170.0,
+        "fills_count_close": 6583.0,
+        "fills_count_entry": 10587.0,
+        "gain_strategy_eq": 0.6083739542496656,
+        "hard_stop_ladder_strikes_max": 3,
+        "hard_stop_panic_close_loss_sum": 3351.0860324613745,
+        "hard_stop_restarts": 3,
+        "hard_stop_time_in_red_pct": 0.0017233995386787587,
+        "hard_stop_trigger_drawdown_mean": 0.3502136273294772,
+        "hard_stop_triggers": 3,
+        "liquidated": false,
+        "loss_profit_ratio": 1.5121738150207993,
+        "mdg_strategy_eq": 0.00018670092969621637,
+        "n_days": 873.9986111111111,
+        "omega_ratio_strategy_eq": 0.9448380036948139,
+        "position_held_hours_max": 862.2333333333333,
+        "position_held_hours_median": 3.1,
+        "sharpe_ratio_usd": -0.018444842800024536,
+        "sortino_ratio_usd": -0.012582734619227985,
+        "sterling_ratio_strategy_eq": -0.0008351672602459632,
+        "strategy_eq_recovery_days_max": 844.61875,
+        "strategy_eq_underwater_pct_mean": 0.5037483335660764,
+        "terminal_multiple": 0.6084,
+        "total_wallet_exposure_max": 2.5938495265979733,
+        "total_wallet_exposure_mean": 0.07011446801772923
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__pre/backtest_results/binance_s3_sl25_cd1440__pre/binance/2026-09-18T11_16_55",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1449.75,
+        "stop_loss_coins_count": 12,
+        "stop_loss_fills_count": 17,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -5939.63,
+        "stop_loss_taker_fills": 17,
+        "worst_coins": [
+          [
+            "LTC",
+            -1449.7454201250002
+          ],
+          [
+            "SOL",
+            -1201.7205912
+          ],
+          [
+            "XLM",
+            -1148.5799671000004
+          ],
+          [
+            "XRP",
+            -1126.4454836900002
+          ],
+          [
+            "AVAX",
+            -467.684894
+          ],
+          [
+            "ZEC",
+            -304.66688841499985
+          ],
+          [
+            "AAVE",
+            -184.17020299999993
+          ],
+          [
+            "HBAR",
+            -26.621510639999986
+          ],
+          [
+            "LINK",
+            -16.082063090000005
+          ],
+          [
+            "FIL",
+            -5.653229815000002
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s4_sl15_cd1440_limit__pre",
+      "june_2026": {},
+      "leg": "pre",
+      "lever": "s4_sl15_cd1440_limit",
+      "metrics": {
+        "adg_strategy_eq": 0.0002719045326875502,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0007440357531951551,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.32781199103213354,
+        "drawdown_worst_strategy_eq": 0.3654455199496726,
+        "expected_shortfall_1pct_strategy_eq": 0.13531175980809138,
+        "fills_active_symbols_count": 26.0,
+        "fills_count": 16888.0,
+        "fills_count_close": 6232.0,
+        "fills_count_entry": 10656.0,
+        "gain_strategy_eq": 1.2682173577485774,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 1194.0602021039997,
+        "hard_stop_restarts": 1,
+        "hard_stop_time_in_red_pct": 0.0005744665128929196,
+        "hard_stop_trigger_drawdown_mean": 0.2542109364740104,
+        "hard_stop_triggers": 1,
+        "liquidated": false,
+        "loss_profit_ratio": 0.7650763922389462,
+        "mdg_strategy_eq": 0.00019514919944053983,
+        "n_days": 873.9986111111111,
+        "omega_ratio_strategy_eq": 1.2837723682594242,
+        "position_held_hours_max": 444.65,
+        "position_held_hours_median": 3.1083333333333334,
+        "sharpe_ratio_usd": 0.014242467135712,
+        "sortino_ratio_usd": 0.010713549682205288,
+        "sterling_ratio_strategy_eq": 0.0008294526744779662,
+        "strategy_eq_recovery_days_max": 290.63680555555555,
+        "strategy_eq_underwater_pct_mean": 0.08146641361956451,
+        "terminal_multiple": 1.2682,
+        "total_wallet_exposure_max": 2.4240335896700422,
+        "total_wallet_exposure_mean": 0.045990809610603964
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__pre/backtest_results/binance_s4_sl15_cd1440_limit__pre/binance/2026-09-18T11_17_39",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1019.36,
+        "stop_loss_coins_count": 21,
+        "stop_loss_fills_count": 45,
+        "stop_loss_maker_fills": 45,
+        "stop_loss_realized_pnl_usd": -6877.32,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": [
+          [
+            "XLM",
+            -1019.3644577580009
+          ],
+          [
+            "AAVE",
+            -891.7270296406858
+          ],
+          [
+            "SOL",
+            -791.6066111400004
+          ],
+          [
+            "ETH",
+            -726.298281344
+          ],
+          [
+            "LINK",
+            -723.5084024571004
+          ],
+          [
+            "NEAR",
+            -714.3906841207353
+          ],
+          [
+            "LTC",
+            -599.1217506980004
+          ],
+          [
+            "ZEC",
+            -428.64260458200033
+          ],
+          [
+            "AVAX",
+            -357.2974382000003
+          ],
+          [
+            "XRP",
+            -179.3064281199998
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s5_sl15_cd0__pre",
+      "june_2026": {},
+      "leg": "pre",
+      "lever": "s5_sl15_cd0",
+      "metrics": {
+        "adg_strategy_eq": 0.0004832254799160829,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0014435132594288768,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.28746112496014325,
+        "drawdown_worst_strategy_eq": 0.3347565231976223,
+        "expected_shortfall_1pct_strategy_eq": 0.12343702123804973,
+        "fills_active_symbols_count": 26.0,
+        "fills_count": 17419.0,
+        "fills_count_close": 6401.0,
+        "fills_count_entry": 11018.0,
+        "gain_strategy_eq": 1.5253700857654753,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 1423.4612655240003,
+        "hard_stop_restarts": 1,
+        "hard_stop_time_in_red_pct": 0.0005744665128929196,
+        "hard_stop_trigger_drawdown_mean": 0.2714410591177442,
+        "hard_stop_triggers": 1,
+        "liquidated": false,
+        "loss_profit_ratio": 0.6440610854690708,
+        "mdg_strategy_eq": 0.00019023329695407948,
+        "n_days": 873.9986111111111,
+        "omega_ratio_strategy_eq": 1.4733333644358328,
+        "position_held_hours_max": 444.56666666666666,
+        "position_held_hours_median": 3.0166666666666666,
+        "sharpe_ratio_usd": 0.025248452540306814,
+        "sortino_ratio_usd": 0.02005430045020124,
+        "sterling_ratio_strategy_eq": 0.0016810115802026536,
+        "strategy_eq_recovery_days_max": 174.23611111111111,
+        "strategy_eq_underwater_pct_mean": 0.04965903781642797,
+        "terminal_multiple": 1.5254,
+        "total_wallet_exposure_max": 2.3765671828180404,
+        "total_wallet_exposure_mean": 0.046426658617177465
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__pre/backtest_results/binance_s5_sl15_cd0__pre/binance/2026-09-18T11_18_23",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1082.17,
+        "stop_loss_coins_count": 21,
+        "stop_loss_fills_count": 51,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -6931.67,
+        "stop_loss_taker_fills": 51,
+        "worst_coins": [
+          [
+            "XLM",
+            -1082.1658485094565
+          ],
+          [
+            "LINK",
+            -821.9323026817357
+          ],
+          [
+            "SOL",
+            -821.08729105
+          ],
+          [
+            "NEAR",
+            -796.4332338450616
+          ],
+          [
+            "LTC",
+            -741.1287072250003
+          ],
+          [
+            "ZEC",
+            -625.3054138850002
+          ],
+          [
+            "ETH",
+            -580.17467139
+          ],
+          [
+            "AVAX",
+            -343.1943455000002
+          ],
+          [
+            "XRP",
+            -267.19415439499977
+          ],
+          [
+            "AAVE",
+            -228.47002550000002
+          ]
+        ]
+      },
+      "synthetic": false
+    },
+    {
+      "arm": "s0_off__synth_a",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -20.0888,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 6.798
+      },
+      "leg": "synth_a",
+      "lever": "s0_off",
+      "metrics": {
+        "adg_strategy_eq": 0.0012046819228506145,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.004003431332558862,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.23656568350670787,
+        "drawdown_worst_strategy_eq": 0.30091234812828255,
+        "expected_shortfall_1pct_strategy_eq": 0.11615286985015624,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28385.0,
+        "fills_count_close": 10729.0,
+        "fills_count_entry": 17656.0,
+        "gain_strategy_eq": 3.74168758617527,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 3583.220515670588,
+        "hard_stop_restarts": 1,
+        "hard_stop_time_in_red_pct": 0.00045873913900239445,
+        "hard_stop_trigger_drawdown_mean": 0.20316978047867984,
+        "hard_stop_triggers": 1,
+        "liquidated": false,
+        "loss_profit_ratio": 0.3033429492612363,
+        "mdg_strategy_eq": 0.0003814637234057333,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 2.374103571859876,
+        "position_held_hours_max": 819.4,
+        "position_held_hours_median": 3.033333333333333,
+        "sharpe_ratio_usd": 0.05762023116131254,
+        "sortino_ratio_usd": 0.05296631849583028,
+        "sterling_ratio_strategy_eq": 0.005092378171648279,
+        "strategy_eq_recovery_days_max": 224.74722222222223,
+        "strategy_eq_underwater_pct_mean": 0.033270975999885946,
+        "terminal_multiple": 3.7985,
+        "total_wallet_exposure_max": 1.6937467203795884,
+        "total_wallet_exposure_mean": 0.059539597517241555
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__synth_a/backtest_results/binance_s0_off__synth_a/binance/2026-09-18T11_19_14",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": false,
+        "max_single_coin_loss_usd": null,
+        "stop_loss_coins_count": 0,
+        "stop_loss_fills_count": 0,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": 0,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": []
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s1_sl15_cd1440__synth_a",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.6069,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.469
+      },
+      "leg": "synth_a",
+      "lever": "s1_sl15_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.0009165200033500742,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.004422668332589023,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.16376157033842875,
+        "drawdown_worst_strategy_eq": 0.20723236164841796,
+        "expected_shortfall_1pct_strategy_eq": 0.0987872104367544,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 27995.0,
+        "fills_count_close": 10502.0,
+        "fills_count_entry": 17493.0,
+        "gain_strategy_eq": 2.7293019481620884,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.4253498508307767,
+        "mdg_strategy_eq": 0.00035637169693622956,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.9384616512872965,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.0166666666666666,
+        "sharpe_ratio_usd": 0.05344025563842963,
+        "sortino_ratio_usd": 0.04784852301538472,
+        "sterling_ratio_strategy_eq": 0.005596673269900863,
+        "strategy_eq_recovery_days_max": 184.1298611111111,
+        "strategy_eq_underwater_pct_mean": 0.026320634224877768,
+        "terminal_multiple": 2.7697,
+        "total_wallet_exposure_max": 1.6909920564680034,
+        "total_wallet_exposure_mean": 0.054394225625867425
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__synth_a/backtest_results/binance_s1_sl15_cd1440__synth_a/binance/2026-09-18T11_20_03",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1865.96,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 43,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -8465.41,
+        "stop_loss_taker_fills": 43,
+        "worst_coins": [
+          [
+            "ZEC",
+            -1865.9587250949999
+          ],
+          [
+            "LINK",
+            -1654.6494753449992
+          ],
+          [
+            "LTC",
+            -1134.4980845188265
+          ],
+          [
+            "INJ",
+            -923.1441108959859
+          ],
+          [
+            "WLD",
+            -715.4673999
+          ],
+          [
+            "DOGE",
+            -418.37569102000003
+          ],
+          [
+            "NEAR",
+            -272.52935299999984
+          ],
+          [
+            "HBAR",
+            -260.56533678
+          ],
+          [
+            "APT",
+            -251.5091117700002
+          ],
+          [
+            "ALGO",
+            -185.7420454745
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s2_sl15_cd240__synth_a",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.1244,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 5.1614
+      },
+      "leg": "synth_a",
+      "lever": "s2_sl15_cd240",
+      "metrics": {
+        "adg_strategy_eq": 0.0008959082317627765,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0039094624804848176,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.1650860738895646,
+        "drawdown_worst_strategy_eq": 0.22916404396639045,
+        "expected_shortfall_1pct_strategy_eq": 0.0982467724591442,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28199.0,
+        "fills_count_close": 10567.0,
+        "fills_count_entry": 17632.0,
+        "gain_strategy_eq": 2.6683914334879972,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.4371863359668564,
+        "mdg_strategy_eq": 0.00035537136925094866,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.9037526989617006,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.0166666666666666,
+        "sharpe_ratio_usd": 0.05228544720341076,
+        "sortino_ratio_usd": 0.04678278194395147,
+        "sterling_ratio_strategy_eq": 0.005426915854586863,
+        "strategy_eq_recovery_days_max": 189.70069444444445,
+        "strategy_eq_underwater_pct_mean": 0.030171602364344234,
+        "terminal_multiple": 2.7091,
+        "total_wallet_exposure_max": 1.6807699784272723,
+        "total_wallet_exposure_mean": 0.05430292617075959
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__synth_a/backtest_results/binance_s2_sl15_cd240__synth_a/binance/2026-09-18T11_20_52",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1787.17,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 42,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -8745.23,
+        "stop_loss_taker_fills": 42,
+        "worst_coins": [
+          [
+            "ZEC",
+            -1787.1719079500015
+          ],
+          [
+            "LINK",
+            -1615.403912909998
+          ],
+          [
+            "LTC",
+            -1107.157285115141
+          ],
+          [
+            "INJ",
+            -889.7405665413788
+          ],
+          [
+            "WLD",
+            -708.4138696500004
+          ],
+          [
+            "AAVE",
+            -495.18321
+          ],
+          [
+            "DOGE",
+            -418.5142232649998
+          ],
+          [
+            "APT",
+            -319.916182945
+          ],
+          [
+            "NEAR",
+            -260.6099719999999
+          ],
+          [
+            "HBAR",
+            -252.58754503999998
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s3_sl25_cd1440__synth_a",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -19.6711,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": -5.2633
+      },
+      "leg": "synth_a",
+      "lever": "s3_sl25_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.0011189021250932463,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.005080651216706127,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.17081427411996059,
+        "drawdown_worst_strategy_eq": 0.22022809229928741,
+        "expected_shortfall_1pct_strategy_eq": 0.11138070023023358,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28151.0,
+        "fills_count_close": 10556.0,
+        "fills_count_entry": 17595.0,
+        "gain_strategy_eq": 3.406315389747,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.3922042302144876,
+        "mdg_strategy_eq": 0.0003724027175264821,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 2.171919178330182,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.033333333333333,
+        "sharpe_ratio_usd": 0.05869500621848248,
+        "sortino_ratio_usd": 0.05181196649170955,
+        "sterling_ratio_strategy_eq": 0.006550401779112771,
+        "strategy_eq_recovery_days_max": 114.29513888888889,
+        "strategy_eq_underwater_pct_mean": 0.023850283846842568,
+        "terminal_multiple": 3.4579,
+        "total_wallet_exposure_max": 1.6808304903921258,
+        "total_wallet_exposure_mean": 0.05963757631641609
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__synth_a/backtest_results/binance_s3_sl25_cd1440__synth_a/binance/2026-09-18T11_21_41",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -4474.83,
+        "stop_loss_coins_count": 8,
+        "stop_loss_fills_count": 10,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -9236.13,
+        "stop_loss_taker_fills": 10,
+        "worst_coins": [
+          [
+            "ZEC",
+            -4474.827733134998
+          ],
+          [
+            "LINK",
+            -2353.621893835001
+          ],
+          [
+            "AAVE",
+            -1785.636576470588
+          ],
+          [
+            "WLD",
+            -464.79321550000014
+          ],
+          [
+            "BNB",
+            -73.93620079999998
+          ],
+          [
+            "NEAR",
+            -41.5396675
+          ],
+          [
+            "DOGE",
+            -20.988681
+          ],
+          [
+            "ARB",
+            -20.788786991
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s4_sl15_cd1440_limit__synth_a",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -20.1056,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 2.1166
+      },
+      "leg": "synth_a",
+      "lever": "s4_sl15_cd1440_limit",
+      "metrics": {
+        "adg_strategy_eq": 0.000924330760888159,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.00400843403294139,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.15670225113826527,
+        "drawdown_worst_strategy_eq": 0.23059647565407906,
+        "expected_shortfall_1pct_strategy_eq": 0.10754621673507851,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 27983.0,
+        "fills_count_close": 10503.0,
+        "fills_count_entry": 17480.0,
+        "gain_strategy_eq": 2.7527450064285444,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.4224654375520773,
+        "mdg_strategy_eq": 0.00035489783293911407,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.9681339418476018,
+        "position_held_hours_max": 401.4,
+        "position_held_hours_median": 3.0166666666666666,
+        "sharpe_ratio_usd": 0.05035177784901874,
+        "sortino_ratio_usd": 0.044025184736967926,
+        "sterling_ratio_strategy_eq": 0.005898643792121285,
+        "strategy_eq_recovery_days_max": 171.66805555555555,
+        "strategy_eq_underwater_pct_mean": 0.022696386245228482,
+        "terminal_multiple": 2.7946,
+        "total_wallet_exposure_max": 1.6905642857002978,
+        "total_wallet_exposure_mean": 0.05484707492672081
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__synth_a/backtest_results/binance_s4_sl15_cd1440_limit__synth_a/binance/2026-09-18T11_22_33",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1841.9,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 43,
+        "stop_loss_maker_fills": 43,
+        "stop_loss_realized_pnl_usd": -7915.2,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": [
+          [
+            "ZEC",
+            -1841.902038908
+          ],
+          [
+            "LTC",
+            -1178.029719284524
+          ],
+          [
+            "LINK",
+            -1177.588813740002
+          ],
+          [
+            "INJ",
+            -900.125296355987
+          ],
+          [
+            "WLD",
+            -680.7330506000003
+          ],
+          [
+            "DOGE",
+            -420.31062140799975
+          ],
+          [
+            "NEAR",
+            -253.74014499999984
+          ],
+          [
+            "HBAR",
+            -252.248611196
+          ],
+          [
+            "AAVE",
+            -226.72653480000017
+          ],
+          [
+            "APT",
+            -224.2787023399998
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s5_sl15_cd0__synth_a",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.4334,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.8381
+      },
+      "leg": "synth_a",
+      "lever": "s5_sl15_cd0",
+      "metrics": {
+        "adg_strategy_eq": 0.0008963526988587933,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.003929030178993974,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.16501827218759405,
+        "drawdown_worst_strategy_eq": 0.22813586509236394,
+        "expected_shortfall_1pct_strategy_eq": 0.09898785118670746,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28389.0,
+        "fills_count_close": 10647.0,
+        "fills_count_entry": 17742.0,
+        "gain_strategy_eq": 2.669690455131643,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.4417011845405077,
+        "mdg_strategy_eq": 0.0003572051822529712,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.9125097653174048,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 2.966666666666667,
+        "sharpe_ratio_usd": 0.0520195618169101,
+        "sortino_ratio_usd": 0.04657610144045436,
+        "sterling_ratio_strategy_eq": 0.005431839074401486,
+        "strategy_eq_recovery_days_max": 189.72569444444446,
+        "strategy_eq_underwater_pct_mean": 0.02992375668618498,
+        "terminal_multiple": 2.7104,
+        "total_wallet_exposure_max": 1.6786815376945807,
+        "total_wallet_exposure_mean": 0.054317488327756534
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__synth_a/backtest_results/binance_s5_sl15_cd0__synth_a/binance/2026-09-18T11_23_21",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1861.21,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 45,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -8921.32,
+        "stop_loss_taker_fills": 45,
+        "worst_coins": [
+          [
+            "ZEC",
+            -1861.2051327300005
+          ],
+          [
+            "LINK",
+            -1626.60099076
+          ],
+          [
+            "LTC",
+            -1114.5140407413014
+          ],
+          [
+            "INJ",
+            -889.3368959157299
+          ],
+          [
+            "WLD",
+            -777.4820060500002
+          ],
+          [
+            "AAVE",
+            -501.98218499999996
+          ],
+          [
+            "DOGE",
+            -418.8759329449999
+          ],
+          [
+            "APT",
+            -319.930132945
+          ],
+          [
+            "NEAR",
+            -260.69297200000005
+          ],
+          [
+            "HBAR",
+            -254.1402153799995
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s0_off__synth_b",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -20.1356,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 6.8149
+      },
+      "leg": "synth_b",
+      "lever": "s0_off",
+      "metrics": {
+        "adg_strategy_eq": 0.00026642691817535535,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0003659432543182956,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.689043576777723,
+        "drawdown_worst_strategy_eq": 0.7280552791488811,
+        "expected_shortfall_1pct_strategy_eq": 0.1664553893664569,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28589.0,
+        "fills_count_close": 10752.0,
+        "fills_count_entry": 17837.0,
+        "gain_strategy_eq": 1.3390561637505287,
+        "hard_stop_ladder_strikes_max": 5,
+        "hard_stop_panic_close_loss_sum": 10629.981331273751,
+        "hard_stop_restarts": 5,
+        "hard_stop_time_in_red_pct": 0.0023342472211116314,
+        "hard_stop_trigger_drawdown_mean": 0.2326470429475223,
+        "hard_stop_triggers": 5,
+        "liquidated": false,
+        "loss_profit_ratio": 0.7718492589261714,
+        "mdg_strategy_eq": 0.00038804709038456705,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.2576163909364209,
+        "position_held_hours_max": 745.1166666666667,
+        "position_held_hours_median": 3.0166666666666666,
+        "sharpe_ratio_usd": 0.010773444431145467,
+        "sortino_ratio_usd": 0.008544476980214858,
+        "sterling_ratio_strategy_eq": 0.00038666192843896346,
+        "strategy_eq_recovery_days_max": 918.4513888888889,
+        "strategy_eq_underwater_pct_mean": 0.3174747963149422,
+        "terminal_multiple": 1.3594,
+        "total_wallet_exposure_max": 1.713565898156526,
+        "total_wallet_exposure_mean": 0.05759680885642711
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s0_off__synth_b/backtest_results/binance_s0_off__synth_b/binance/2026-09-18T11_24_12",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": false,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": false,
+        "max_single_coin_loss_usd": null,
+        "stop_loss_coins_count": 0,
+        "stop_loss_fills_count": 0,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": 0,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": []
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s1_sl15_cd1440__synth_b",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.6725,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.4942
+      },
+      "leg": "synth_b",
+      "lever": "s1_sl15_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.0007109427362763654,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0020634419893942922,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.2480887766829279,
+        "drawdown_worst_strategy_eq": 0.34454214847351394,
+        "expected_shortfall_1pct_strategy_eq": 0.09761565617384205,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28210.0,
+        "fills_count_close": 10555.0,
+        "fills_count_entry": 17655.0,
+        "gain_strategy_eq": 2.1791096790606512,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.5205842046209556,
+        "mdg_strategy_eq": 0.0003536785393935394,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.6168100638389402,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.0,
+        "sharpe_ratio_usd": 0.041191927270197735,
+        "sortino_ratio_usd": 0.03647872340836799,
+        "sterling_ratio_strategy_eq": 0.0028656787533157626,
+        "strategy_eq_recovery_days_max": 275.8986111111111,
+        "strategy_eq_underwater_pct_mean": 0.05665778626553179,
+        "terminal_multiple": 2.2124,
+        "total_wallet_exposure_max": 1.682951163223942,
+        "total_wallet_exposure_mean": 0.05523044205847717
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__synth_b/backtest_results/binance_s1_sl15_cd1440__synth_b/binance/2026-09-18T11_25_01",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -2220.17,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 49,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -9637.27,
+        "stop_loss_taker_fills": 49,
+        "worst_coins": [
+          [
+            "WLD",
+            -2220.1668772999997
+          ],
+          [
+            "INJ",
+            -1802.5874051063395
+          ],
+          [
+            "ZEC",
+            -1473.6116980900006
+          ],
+          [
+            "LINK",
+            -1331.6269391999995
+          ],
+          [
+            "LTC",
+            -912.8213754423653
+          ],
+          [
+            "DOGE",
+            -401.36677585499996
+          ],
+          [
+            "NEAR",
+            -246.7394555
+          ],
+          [
+            "APT",
+            -218.97839710500006
+          ],
+          [
+            "HBAR",
+            -208.67646047000002
+          ],
+          [
+            "FIL",
+            -168.83882288500007
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s2_sl15_cd240__synth_b",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.4087,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.8035
+      },
+      "leg": "synth_b",
+      "lever": "s2_sl15_cd240",
+      "metrics": {
+        "adg_strategy_eq": 0.000452473477531079,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0009275698278066296,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.4131875847170905,
+        "drawdown_worst_strategy_eq": 0.48780529936060446,
+        "expected_shortfall_1pct_strategy_eq": 0.10611416845356869,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28325.0,
+        "fills_count_close": 10548.0,
+        "fills_count_entry": 17777.0,
+        "gain_strategy_eq": 1.641809146496141,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.6597973184050201,
+        "mdg_strategy_eq": 0.0003436079034407479,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.3615064509162522,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.0166666666666666,
+        "sharpe_ratio_usd": 0.026468473258055833,
+        "sortino_ratio_usd": 0.02160905366145782,
+        "sterling_ratio_strategy_eq": 0.0010950800417705861,
+        "strategy_eq_recovery_days_max": 615.6756944444444,
+        "strategy_eq_underwater_pct_mean": 0.13661234437096634,
+        "terminal_multiple": 1.6667,
+        "total_wallet_exposure_max": 1.5651568045251734,
+        "total_wallet_exposure_mean": 0.05525267908107561
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s2_sl15_cd240__synth_b/backtest_results/binance_s2_sl15_cd240__synth_b/binance/2026-09-18T11_25_52",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 240.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -2999.82,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 53,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -10997.69,
+        "stop_loss_taker_fills": 53,
+        "worst_coins": [
+          [
+            "WLD",
+            -2999.819772049999
+          ],
+          [
+            "INJ",
+            -2531.5349111728433
+          ],
+          [
+            "ZEC",
+            -1125.7734481299992
+          ],
+          [
+            "LINK",
+            -997.1807228299998
+          ],
+          [
+            "AAVE",
+            -882.8456910000008
+          ],
+          [
+            "LTC",
+            -683.6305829985021
+          ],
+          [
+            "DOGE",
+            -391.0520531949998
+          ],
+          [
+            "NEAR",
+            -271.4803585000001
+          ],
+          [
+            "APT",
+            -261.85419253000015
+          ],
+          [
+            "SUI",
+            -203.99756037499998
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s3_sl25_cd1440__synth_b",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -19.6685,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": -4.2499
+      },
+      "leg": "synth_b",
+      "lever": "s3_sl25_cd1440",
+      "metrics": {
+        "adg_strategy_eq": 0.0007432257021529054,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.001838350843360341,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.31377063912165687,
+        "drawdown_worst_strategy_eq": 0.40428936883144856,
+        "expected_shortfall_1pct_strategy_eq": 0.12385733417942876,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28376.0,
+        "fills_count_close": 10601.0,
+        "fills_count_entry": 17775.0,
+        "gain_strategy_eq": 2.257533425871293,
+        "hard_stop_ladder_strikes_max": 1,
+        "hard_stop_panic_close_loss_sum": 0.5533756799999899,
+        "hard_stop_restarts": 1,
+        "hard_stop_time_in_red_pct": 0.00045810552140708726,
+        "hard_stop_trigger_drawdown_mean": 0.20439444768337534,
+        "hard_stop_triggers": 1,
+        "liquidated": false,
+        "loss_profit_ratio": 0.5439757464147165,
+        "mdg_strategy_eq": 0.0003476767362452203,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.61587345694157,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 3.0166666666666666,
+        "sharpe_ratio_usd": 0.03649368194082984,
+        "sortino_ratio_usd": 0.03133278364861362,
+        "sterling_ratio_strategy_eq": 0.0023686910420727346,
+        "strategy_eq_recovery_days_max": 287.0625,
+        "strategy_eq_underwater_pct_mean": 0.06635190169567133,
+        "terminal_multiple": 2.2919,
+        "total_wallet_exposure_max": 1.686358698113245,
+        "total_wallet_exposure_mean": 0.05844991090550492
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__synth_b/backtest_results/binance_s3_sl25_cd1440__synth_b/binance/2026-09-18T11_26_41",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.25
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -3120.52,
+        "stop_loss_coins_count": 9,
+        "stop_loss_fills_count": 14,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -11629.92,
+        "stop_loss_taker_fills": 14,
+        "worst_coins": [
+          [
+            "WLD",
+            -3120.5236334500005
+          ],
+          [
+            "ZEC",
+            -2933.927251550001
+          ],
+          [
+            "INJ",
+            -2462.0704527339694
+          ],
+          [
+            "LINK",
+            -1544.5938588049987
+          ],
+          [
+            "AAVE",
+            -1461.908127184123
+          ],
+          [
+            "BNB",
+            -49.52656719999997
+          ],
+          [
+            "NEAR",
+            -29.9310735
+          ],
+          [
+            "DOGE",
+            -13.7925618
+          ],
+          [
+            "ARB",
+            -13.646816176
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s4_sl15_cd1440_limit__synth_b",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -20.0895,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 2.124
+      },
+      "leg": "synth_b",
+      "lever": "s4_sl15_cd1440_limit",
+      "metrics": {
+        "adg_strategy_eq": 0.0004974973713047781,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.001024053706458265,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.4280111651820654,
+        "drawdown_worst_strategy_eq": 0.4858117969470499,
+        "expected_shortfall_1pct_strategy_eq": 0.12364077017790938,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28231.0,
+        "fills_count_close": 10559.0,
+        "fills_count_entry": 17672.0,
+        "gain_strategy_eq": 1.7248179900916043,
+        "hard_stop_ladder_strikes_max": 2,
+        "hard_stop_panic_close_loss_sum": 4001.10840054,
+        "hard_stop_restarts": 2,
+        "hard_stop_time_in_red_pct": 0.0009320514826968539,
+        "hard_stop_trigger_drawdown_mean": 0.22247128580972048,
+        "hard_stop_triggers": 2,
+        "liquidated": false,
+        "loss_profit_ratio": 0.6342208123287483,
+        "mdg_strategy_eq": 0.0003505824489309554,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.4020396146922054,
+        "position_held_hours_max": 401.4,
+        "position_held_hours_median": 3.0,
+        "sharpe_ratio_usd": 0.02570279143192869,
+        "sortino_ratio_usd": 0.020929458441363333,
+        "sterling_ratio_strategy_eq": 0.001162346713766579,
+        "strategy_eq_recovery_days_max": 595.8763888888889,
+        "strategy_eq_underwater_pct_mean": 0.12031780638409925,
+        "terminal_multiple": 1.7505,
+        "total_wallet_exposure_max": 1.7443541033627146,
+        "total_wallet_exposure_mean": 0.05609182911403742
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__synth_b/backtest_results/binance_s4_sl15_cd1440_limit__synth_b/binance/2026-09-18T11_27_29",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 1440.0,
+        "enabled": true,
+        "order_type": "limit",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -1411.72,
+        "stop_loss_coins_count": 19,
+        "stop_loss_fills_count": 46,
+        "stop_loss_maker_fills": 46,
+        "stop_loss_realized_pnl_usd": -6465.58,
+        "stop_loss_taker_fills": 0,
+        "worst_coins": [
+          [
+            "WLD",
+            -1411.7177293200007
+          ],
+          [
+            "ZEC",
+            -1161.5741169359992
+          ],
+          [
+            "LTC",
+            -738.3124406798686
+          ],
+          [
+            "LINK",
+            -737.7385729600006
+          ],
+          [
+            "INJ",
+            -709.9399760814896
+          ],
+          [
+            "DOGE",
+            -391.23440497199977
+          ],
+          [
+            "NEAR",
+            -209.91442660000007
+          ],
+          [
+            "AAVE",
+            -174.97700360000013
+          ],
+          [
+            "APT",
+            -170.8076871239997
+          ],
+          [
+            "FIL",
+            -165.5823910080001
+          ]
+        ]
+      },
+      "synthetic": true
+    },
+    {
+      "arm": "s5_sl15_cd0__synth_b",
+      "june_2026": {
+        "fills_count": null,
+        "max_intraperiod_equity_drawdown_pct": -14.4255,
+        "source": "balance_and_equity.csv.gz",
+        "total_equity_return_pct": 4.7054
+      },
+      "leg": "synth_b",
+      "lever": "s5_sl15_cd0",
+      "metrics": {
+        "adg_strategy_eq": 0.00045725802245510927,
+        "backtest_completion_ratio": 1.0,
+        "calmar_ratio_usd": 0.0008893100032775183,
+        "drawdown_worst_mean_1pct_strategy_eq": 0.4431178939371582,
+        "drawdown_worst_strategy_eq": 0.514171684530591,
+        "expected_shortfall_1pct_strategy_eq": 0.11044633565854649,
+        "fills_active_symbols_count": 39.0,
+        "fills_count": 28535.0,
+        "fills_count_close": 10645.0,
+        "fills_count_entry": 17890.0,
+        "gain_strategy_eq": 1.6504372437214752,
+        "hard_stop_ladder_strikes_max": 0,
+        "hard_stop_panic_close_loss_sum": 0.0,
+        "hard_stop_restarts": 0,
+        "hard_stop_time_in_red_pct": 0.0,
+        "hard_stop_trigger_drawdown_mean": 0.0,
+        "hard_stop_triggers": 0,
+        "liquidated": false,
+        "loss_profit_ratio": 0.6589548591798514,
+        "mdg_strategy_eq": 0.0003437888184329265,
+        "n_days": 1095.9986111111111,
+        "omega_ratio_strategy_eq": 1.3608799940872913,
+        "position_held_hours_max": 330.6666666666667,
+        "position_held_hours_median": 2.966666666666667,
+        "sharpe_ratio_usd": 0.025435392666635755,
+        "sortino_ratio_usd": 0.021461833873096383,
+        "sterling_ratio_strategy_eq": 0.0010319105337685964,
+        "strategy_eq_recovery_days_max": 615.3090277777778,
+        "strategy_eq_underwater_pct_mean": 0.13747077648241163,
+        "terminal_multiple": 1.6754,
+        "total_wallet_exposure_max": 1.6633098356556895,
+        "total_wallet_exposure_mean": 0.055395542996131135
+      },
+      "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s5_sl15_cd0__synth_b/backtest_results/binance_s5_sl15_cd0__synth_b/binance/2026-09-18T11_28_18",
+      "status": "complete",
+      "stop_loss": {
+        "cooldown_minutes": 0.0,
+        "enabled": true,
+        "order_type": "market",
+        "pct_from_avg_entry": 0.15
+      },
+      "stop_loss_stats": {
+        "entries_inside_cooldown": 0,
+        "marker_found": true,
+        "max_single_coin_loss_usd": -3048.07,
+        "stop_loss_coins_count": 20,
+        "stop_loss_fills_count": 55,
+        "stop_loss_maker_fills": 0,
+        "stop_loss_realized_pnl_usd": -11013.2,
+        "stop_loss_taker_fills": 55,
+        "worst_coins": [
+          [
+            "WLD",
+            -3048.067202249998
+          ],
+          [
+            "INJ",
+            -2892.4561282108816
+          ],
+          [
+            "ZEC",
+            -1158.073470239999
+          ],
+          [
+            "LINK",
+            -999.6534602999996
+          ],
+          [
+            "LTC",
+            -685.3899479177626
+          ],
+          [
+            "AAVE",
+            -435.0073610000003
+          ],
+          [
+            "DOGE",
+            -391.08143654499975
+          ],
+          [
+            "NEAR",
+            -288.1259410000001
+          ],
+          [
+            "APT",
+            -261.85816253
+          ],
+          [
+            "SUI",
+            -204.25638252499996
+          ]
+        ]
+      },
+      "synthetic": true
+    }
+  ],
+  "honesty_boundaries": [
+    "合成腿的注入目标币取自上一轮的 baseline run（g4_sma20_50_replay_2026-09-16），而不是本研究的 control 臂；目标选择与本研究无关，但它决定了哪几个币被砸。",
+    "冻结配置声明 backtest.market_orders_allowed = false；止损的 market 档刻意不受该开关约束（它是保护性平仓，不是策略单），因此 market 档的 taker 费与滑点是被建模的、而不是被跳过的。",
+    "引擎侧止损按采样价格触发，不按 K 线插针触发；Phase A 普查按 low（触及）统计，两者口径不同，Phase C 一律以引擎自身语义为准。",
+    "全样本零 taker（28,550 笔全部 maker），真实行情下「看到价格就能平」不成立。"
+  ],
+  "study": "g4_twe300_sl_cooldown_2026-09-18",
+  "thresholds": {
+    "S1_fill_vs_level_tolerance": 0.005,
+    "S2_tail_improvement_pp": 5.0,
+    "S3_terminal_degradation_pct": 25.0,
+    "S6_spike_exit_share_pct": 25.0
+  },
+  "verdicts": [
+    {
+      "id": "S0",
+      "observed": {
+        "legs_identical": [
+          "3y",
+          "ext",
+          "pre"
+        ]
+      },
+      "pass": true,
+      "statement": "默认关闭时 s0_off 与上一轮同几何臂逐位一致（3y 与 ext）",
+      "threshold": "fills.csv sha256 相同 + 指标零差异 + 零止损成交"
+    },
+    {
+      "id": "S1",
+      "observed": {
+        "entries_inside_cooldown": 0,
+        "stop_loss_fills": 42
+      },
+      "pass": true,
+      "statement": "机制：触发即整仓离场且冷却内不再加仓",
+      "threshold": "≥1 次止损成交且冷却内 0 笔入场"
+    },
+    {
+      "id": "S2",
+      "observed": {
+        "terminal_multiple_delta": -1.0288,
+        "worst_drawdown_delta_pp": -9.368
+      },
+      "pass": true,
+      "statement": "合成单币崩塌腿上尾部改善（市价档）",
+      "threshold": "最差回撤改善 ≥ 5.0pp"
+    },
+    {
+      "id": "S5",
+      "observed": {
+        "terminal_multiple_delta": -1.0288,
+        "worst_drawdown_delta_pp": -9.368
+      },
+      "pass": true,
+      "statement": "尾部收益必须在悲观（市价）档成立",
+      "threshold": "market 档臂满足 S2（limit 档不算数）"
+    },
+    {
+      "id": "S3",
+      "observed": {
+        "terminal_degradation_pct": 41.579,
+        "worst_drawdown_delta_pp": -2.4169
+      },
+      "pass": false,
+      "statement": "真实腿代价不超过阈值，且回撤不恶化",
+      "threshold": "终值退化 ≤ 25.0% 且最差回撤不恶化"
+    },
+    {
+      "id": "S4",
+      "observed": {
+        "limit_stop_loss_fills": 43,
+        "limit_worst_drawdown": 0.23059647565407906,
+        "market_worst_drawdown": 0.20723236164841796
+      },
+      "pass": true,
+      "statement": "限价档不得优于市价档（穿价不成交）",
+      "threshold": "limit 档最差回撤 ≥ market 档"
+    },
+    {
+      "id": "S6",
+      "observed": {
+        "breaches": 37,
+        "spike_exit_share_pct": 13.51
+      },
+      "pass": true,
+      "statement": "插针代价：触发里「卖在低点」的比例",
+      "threshold": "< 25.0%"
+    },
+    {
+      "id": "S7",
+      "observed": {
+        "armed": {
+          "fills_count": null,
+          "max_intraperiod_equity_drawdown_pct": -14.5127,
+          "source": "balance_and_equity.csv.gz",
+          "total_equity_return_pct": 4.5643
+        },
+        "baseline": {
+          "fills_count": null,
+          "max_intraperiod_equity_drawdown_pct": -20.0996,
+          "source": "balance_and_equity.csv.gz",
+          "total_equity_return_pct": 6.7986
+        }
+      },
+      "pass": null,
+      "statement": "2026-06 锚点：止损臂相对基准的 6 月表现",
+      "threshold": "报数，不设通过线（基准 20.10% 回撤 / +6.81%）"
+    }
+  ]
+}

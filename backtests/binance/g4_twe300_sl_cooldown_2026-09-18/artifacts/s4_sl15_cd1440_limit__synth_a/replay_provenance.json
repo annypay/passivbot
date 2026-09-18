@@ -1,0 +1,22 @@
+{
+  "arm": "s4_sl15_cd1440_limit__synth_a",
+  "description": "成交层敏感性：−15% + 24h 冷却（限价档）｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 48.85,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "synth_a",
+  "lever": "s4_sl15_cd1440_limit",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s4_sl15_cd1440_limit__synth_a/backtest_results/binance_s4_sl15_cd1440_limit__synth_a/binance/2026-09-18T11_22_33",
+  "stop_loss": {
+    "cooldown_minutes": 1440.0,
+    "enabled": true,
+    "order_type": "limit",
+    "pct_from_avg_entry": 0.15
+  },
+  "synthetic": true
+}

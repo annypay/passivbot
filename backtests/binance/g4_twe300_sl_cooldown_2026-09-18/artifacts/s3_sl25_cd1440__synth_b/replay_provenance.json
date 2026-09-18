@@ -1,0 +1,22 @@
+{
+  "arm": "s3_sl25_cd1440__synth_b",
+  "description": "止损位敏感性：−25% + 24h 冷却｜三币崩塌合成腿（原生窗 + 三币注入崩塌）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 48.6,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "synth_b",
+  "lever": "s3_sl25_cd1440",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s3_sl25_cd1440__synth_b/backtest_results/binance_s3_sl25_cd1440__synth_b/binance/2026-09-18T11_26_41",
+  "stop_loss": {
+    "cooldown_minutes": 1440.0,
+    "enabled": true,
+    "order_type": "market",
+    "pct_from_avg_entry": 0.25
+  },
+  "synthetic": true
+}

@@ -1,0 +1,22 @@
+{
+  "arm": "s1_sl15_cd1440__synth_a",
+  "description": "用户给定机制：均价 −15% 止损 + 24h 冷却（市价档）｜单币崩塌合成腿（原生窗 + 单币注入崩塌）",
+  "disabled_plot_groups": [
+    "coin_fills"
+  ],
+  "elapsed_s": 49.05,
+  "flags": [
+    "--disable_plotting",
+    "coin_fills"
+  ],
+  "leg": "synth_a",
+  "lever": "s1_sl15_cd1440",
+  "run_dir": "backtests/binance/g4_twe300_sl_cooldown_2026-09-18/artifacts/s1_sl15_cd1440__synth_a/backtest_results/binance_s1_sl15_cd1440__synth_a/binance/2026-09-18T11_20_03",
+  "stop_loss": {
+    "cooldown_minutes": 1440.0,
+    "enabled": true,
+    "order_type": "market",
+    "pct_from_avg_entry": 0.15
+  },
+  "synthetic": true
+}

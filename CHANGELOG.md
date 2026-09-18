@@ -15,6 +15,16 @@ since the latest release tag; these features may already be available when insta
   exchange-resident stop order is created - the trigger is evaluated in the engine's own sampling
   loop, so it protects only while the bot is deciding. The keys are excluded from the optimize
   bounds because the optimization backends do not model them.
+
+  Measured on 30 pre-registered arms (6 levers x 3 real legs + 2 synthetic collapse legs): with
+  the stop off the engine is bit-identical to the previous round (fills hash and every metric, on
+  all three real legs), and with it armed at 15% / 24h it cost 41.6% of terminal value on the
+  native 3-year window while cutting the worst drawdown by 2.4pp - but on the 5.4-year history it
+  lifted terminal value from 2.32x to 3.49x and cut the worst drawdown from 76.6% to 37.2%, and on
+  the out-of-sample 2021-2023 window from 0.61x to 1.24x. The 24h cooldown was pure cost on every
+  real leg (a zero cooldown did better), and no exchange-resident stop order exists anywhere in
+  this repository, so the protection only applies while the bot is deciding. See
+  `issue/0007-g4-twe300-sl-cooldown-2026-09-18.md`.
 - Make the permanent HSL halt survivable to configure. The terminal
   `hsl_no_restart_drawdown_threshold` comparison is taken at the instant the panic flatten is
   confirmed, so on a fast crash it fires on an unrealized wick: measured on the historical legs,
