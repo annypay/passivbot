@@ -575,14 +575,16 @@ def _format_hsl_startup_config(
 ) -> str:
     """Return the bounded operator-facing HSL startup configuration summary."""
     if halt_ladder_minutes:
-        ladder = "/".join(f"{minutes:.6g}" for minutes in halt_ladder_minutes)
-        cooldown = f"ladder={ladder}"
+        shown = [f"{minutes:.6g}" for minutes in halt_ladder_minutes[:3]]
+        if len(halt_ladder_minutes) > 3:
+            shown.append(f"+{len(halt_ladder_minutes) - 3} more")
+        cooldown = f"ladder={'/'.join(shown)}"
     else:
         cooldown = f"cd={cooldown_minutes_after_red:.6g}"
     return (
         f"[risk] HSL[{pside}] on | red={red_threshold:.6g} ema={ema_span_minutes:.6g} "
         f"{cooldown} no-r={no_restart_drawdown_threshold:.6g} "
-        f"rl-budget={realized_loss_budget_pct:.6g} "
+        f"rl={realized_loss_budget_pct:.6g} "
         f"mode={signal_mode} tiers={ratio_yellow:.6g}/{ratio_orange:.6g} "
         f"orange={orange_tier_mode} panic={panic_close_order_type} "
         f"restart={restart_after_red_policy}"

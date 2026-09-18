@@ -467,18 +467,19 @@ def test_parse_hsl_config_logs_compact_complete_startup_summary(caplog):
     startup = next(message for message in messages if message.startswith("[risk] HSL[short] on"))
     assert startup == (
         "[risk] HSL[short] on | red=0.123457 ema=1.23457e+308 cd=1.23457e+308 "
-        "no-r=0.987654 rl-budget=0 mode=unified tiers=0.345679/0.876543 "
+        "no-r=0.987654 rl=0 mode=unified tiers=0.345679/0.876543 "
         "orange=tp_only_with_active_entry_cancellation panic=market restart=threshold"
     )
     warning_prefix = "2026-07-15T12:34:56Z WARNING  [hyperliquid] "
     info_prefix = "2026-07-15T12:34:56Z INFO     [hyperliquid] "
     assert len(warning_prefix + warning) <= 240
     # The frozen 1.23e308 placeholders are the pathological rendering: with the new
-    # `rl-budget=` field the complete record reaches 252 visible characters, above the
-    # 240-character console budget of docs/ai/logging_policy.md. The realistic startup
+    # `rl=` field the complete record reaches 245 visible characters with the frozen
+    # 1.23457e+308 placeholders, above the 240-character console budget of
+    # docs/ai/logging_policy.md. The realistic startup
     # rendering (halt ladder + budget) is asserted inside that budget by
     # `test_parse_hsl_config_logs_halt_ladder_and_realized_loss_budget`.
-    assert len(info_prefix + startup) == 252
+    assert len(info_prefix + startup) == 245
 
 
 def test_coin_panic_supervision_requires_red_active_now():
@@ -1399,7 +1400,7 @@ def test_parse_hsl_config_logs_halt_ladder_and_realized_loss_budget(caplog):
     # always rendered so an operator can see the second latch basis.
     assert startup == (
         "[risk] HSL[long] on | red=0.15 ema=720 ladder=720/1440 no-r=1 "
-        "rl-budget=0.345679 mode=coin tiers=0.5/0.75 "
+        "rl=0.345679 mode=coin tiers=0.5/0.75 "
         "orange=tp_only_with_active_entry_cancellation panic=market restart=threshold"
     )
     assert len("2026-07-15T12:34:56Z INFO     [hyperliquid] " + startup) <= 240
