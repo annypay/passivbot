@@ -1,0 +1,2594 @@
+{
+  "arms": {
+    "A_risk_geometry|a_allow000__3y": {
+      "arm": "a_allow000__3y",
+      "baseline": {
+        "final_multiple": 4.7535734,
+        "in_panel": true,
+        "worst_drawdown": 0.20099583396674248
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28550,
+        "fills_sha256": "4fc173b183e4d0810e58b71f98cdc89b51f503377ef7cbd0285be92408c150e4",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28550
+        },
+        "traded_notional": 6813706.94413
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__3y/backtest_results/binance_a_allow000__3y/binance/2026-09-17T10_49_03",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.012021982472003367,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9426700989926442,
+          "stressed_final_multiple": 4.4810515075468,
+          "stressed_worst_drawdown": 0.21301781643874584,
+          "total_extra_cost": 2725.482777652,
+          "total_extra_cost_share_of_initial": 0.2725482777652
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.025464705058092507,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8853401979852885,
+          "stressed_final_multiple": 4.2085296150936005,
+          "stressed_worst_drawdown": 0.22646053902483498,
+          "total_extra_cost": 5450.965555304,
+          "total_extra_cost_share_of_initial": 0.5450965555304
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.015240048271661144,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9283376237408053,
+          "stressed_final_multiple": 4.4129210344335,
+          "stressed_worst_drawdown": 0.21623588223840362,
+          "total_extra_cost": 3406.8534720650005,
+          "total_extra_cost_share_of_initial": 0.34068534720650007
+        }
+      }
+    },
+    "A_risk_geometry|a_allow000__ext": {
+      "arm": "a_allow000__ext",
+      "baseline": {
+        "final_multiple": 2.3244041,
+        "in_panel": true,
+        "worst_drawdown": 0.7361871713695409
+      },
+      "declared_headline": true,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45644,
+        "fills_sha256": "1c689c06dd988b85d7db44de456bc2bf0f9ed1e925f17fe02db1b169cf7dc36b",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 45644
+        },
+        "traded_notional": 4450417.236652999
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__ext/backtest_results/binance_a_allow000__ext/binance/2026-09-17T10_50_30",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 2.3244041,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.003764604302391672,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9234140528894605,
+          "stressed_final_multiple": 2.146387410533879,
+          "stressed_worst_drawdown": 0.7399517756719326,
+          "total_extra_cost": 1780.1668946611999,
+          "total_extra_cost_share_of_initial": 0.17801668946611998
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 2.3244041,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.007540498625392522,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8468281057789214,
+          "stressed_final_multiple": 1.9683707210677588,
+          "stressed_worst_drawdown": 0.7437276699949334,
+          "total_extra_cost": 3560.3337893223998,
+          "total_extra_cost_share_of_initial": 0.35603337893223996
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 2.3244041,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.004707517462030908,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9042675661118261,
+          "stressed_final_multiple": 2.10188323816735,
+          "stressed_worst_drawdown": 0.7408946888315718,
+          "total_extra_cost": 2225.2086183265,
+          "total_extra_cost_share_of_initial": 0.22252086183265002
+        }
+      }
+    },
+    "A_risk_geometry|a_allow000__pre": {
+      "arm": "a_allow000__pre",
+      "baseline": {
+        "final_multiple": 0.6098876,
+        "in_panel": true,
+        "worst_drawdown": 0.7361871713695409
+      },
+      "declared_headline": false,
+      "leg": "pre",
+      "provenance": {
+        "fills": 17155,
+        "fills_sha256": "b4fa328f95983d008fc91c4ba4f42f9411d89da06010782678118bbbc81cc190",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:57:00",
+        "liquidity_counts": {
+          "maker": 17155
+        },
+        "traded_notional": 994197.9324659999
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000__pre/backtest_results/binance_a_allow000__pre/binance/2026-09-17T10_47_03",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 0.6098876,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.003764604302391672,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9347946780707792,
+          "stressed_final_multiple": 0.5701196827013602,
+          "stressed_worst_drawdown": 0.7399517756719326,
+          "total_extra_cost": 397.6791729863999,
+          "total_extra_cost_share_of_initial": 0.039767917298639995
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 0.6098876,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.007540498625392522,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8695893561415583,
+          "stressed_final_multiple": 0.5303517654027202,
+          "stressed_worst_drawdown": 0.7437276699949334,
+          "total_extra_cost": 795.3583459727998,
+          "total_extra_cost_share_of_initial": 0.07953583459727999
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 0.6098876,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.004707517462030908,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9184933475884735,
+          "stressed_final_multiple": 0.5601777033766998,
+          "stressed_worst_drawdown": 0.7408946888315718,
+          "total_extra_cost": 497.098966233,
+          "total_extra_cost_share_of_initial": 0.0497098966233
+        }
+      }
+    },
+    "A_risk_geometry|a_allow000_twe200__3y": {
+      "arm": "a_allow000_twe200__3y",
+      "baseline": {
+        "final_multiple": 2.8414164,
+        "in_panel": true,
+        "worst_drawdown": 0.13450402220533308
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28560,
+        "fills_sha256": "b6e8fe396976f75e7e9c7e8de57755e2c674d3efe3c8b1bb953f92895e7c76fa",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28560
+        },
+        "traded_notional": 3319947.607911
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe200__3y/backtest_results/binance_a_allow000_twe200__3y/binance/2026-09-17T11_00_23",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 2.8414164,
+          "baseline_worst_drawdown": 0.13450402220533308,
+          "drawdown_added": 0.006653083753917266,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9532671841795379,
+          "stressed_final_multiple": 2.7086290107095596,
+          "stressed_worst_drawdown": 0.14115710595925035,
+          "total_extra_cost": 1327.9790431644,
+          "total_extra_cost_share_of_initial": 0.13279790431644
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 2.8414164,
+          "baseline_worst_drawdown": 0.13450402220533308,
+          "drawdown_added": 0.01393099053126523,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.9065343683590759,
+          "stressed_final_multiple": 2.5758416214191193,
+          "stressed_worst_drawdown": 0.14843501273659832,
+          "total_extra_cost": 2655.9580863288,
+          "total_extra_cost_share_of_initial": 0.26559580863288
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 2.8414164,
+          "baseline_worst_drawdown": 0.13450402220533308,
+          "drawdown_added": 0.00841066197137652,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9415839802244229,
+          "stressed_final_multiple": 2.675432163386951,
+          "stressed_worst_drawdown": 0.1429146841767096,
+          "total_extra_cost": 1659.9738039555002,
+          "total_extra_cost_share_of_initial": 0.16599738039555
+        }
+      }
+    },
+    "A_risk_geometry|a_allow000_twe200__ext": {
+      "arm": "a_allow000_twe200__ext",
+      "baseline": {
+        "final_multiple": 1.9636955000000003,
+        "in_panel": true,
+        "worst_drawdown": 0.5876844750280779
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45710,
+        "fills_sha256": "c0a340ddedf907e31c2c2f89c5565a8ce08555b3d890fb6980c260531973aa8e",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 23:02:00",
+        "liquidity_counts": {
+          "maker": 45710
+        },
+        "traded_notional": 3158877.7050949996
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe200__ext/backtest_results/binance_a_allow000_twe200__ext/binance/2026-09-17T11_01_52",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 1.9636955000000003,
+          "baseline_worst_drawdown": 0.5876844750280779,
+          "drawdown_added": 0.003050999754339312,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.935661072711426,
+          "stressed_final_multiple": 1.8373534380086003,
+          "stressed_worst_drawdown": 0.5907354747824172,
+          "total_extra_cost": 1263.551082038,
+          "total_extra_cost_share_of_initial": 0.1263551082038
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 1.9636955000000003,
+          "baseline_worst_drawdown": 0.5876844750280779,
+          "drawdown_added": 0.0061087586703989505,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.871322145422852,
+          "stressed_final_multiple": 1.7110113760172003,
+          "stressed_worst_drawdown": 0.5937932336984768,
+          "total_extra_cost": 2527.102164076,
+          "total_extra_cost_share_of_initial": 0.2527102164076
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 1.9636955000000003,
+          "baseline_worst_drawdown": 0.5876844750280779,
+          "drawdown_added": 0.003814804935276972,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9195763408892819,
+          "stressed_final_multiple": 1.805767922510749,
+          "stressed_worst_drawdown": 0.5914992799633548,
+          "total_extra_cost": 1579.4388525475001,
+          "total_extra_cost_share_of_initial": 0.15794388525475
+        }
+      }
+    },
+    "A_risk_geometry|a_allow000_twe250__3y": {
+      "arm": "a_allow000_twe250__3y",
+      "baseline": {
+        "final_multiple": 3.71317,
+        "in_panel": true,
+        "worst_drawdown": 0.1682296954882584
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28583,
+        "fills_sha256": "bedf978f05c50af20222c14fcd6c491beb0550f0b8f5be296e7962f61e543f96",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28583
+        },
+        "traded_notional": 4878647.291259
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__3y/backtest_results/binance_a_allow000_twe250__3y/binance/2026-09-17T10_57_10",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 3.71317,
+          "baseline_worst_drawdown": 0.1682296954882584,
+          "drawdown_added": 0.009290250315932114,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9474495442825513,
+          "stressed_final_multiple": 3.518041224343641,
+          "stressed_worst_drawdown": 0.1775199458041905,
+          "total_extra_cost": 1951.4589165036,
+          "total_extra_cost_share_of_initial": 0.19514589165036
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 3.71317,
+          "baseline_worst_drawdown": 0.1682296954882584,
+          "drawdown_added": 0.019570467727172747,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8948990885651028,
+          "stressed_final_multiple": 3.3229124486872825,
+          "stressed_worst_drawdown": 0.18780016321543114,
+          "total_extra_cost": 3902.9178330072,
+          "total_extra_cost_share_of_initial": 0.39029178330072
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 3.71317,
+          "baseline_worst_drawdown": 0.1682296954882584,
+          "drawdown_added": 0.011761551664213776,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9343119303531889,
+          "stressed_final_multiple": 3.4692590304295505,
+          "stressed_worst_drawdown": 0.17999124715247217,
+          "total_extra_cost": 2439.3236456295,
+          "total_extra_cost_share_of_initial": 0.24393236456294998
+        }
+      }
+    },
+    "A_risk_geometry|a_allow000_twe250__ext": {
+      "arm": "a_allow000_twe250__ext",
+      "baseline": {
+        "final_multiple": 1.6323777,
+        "in_panel": true,
+        "worst_drawdown": 0.7846082130562516
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45723,
+        "fills_sha256": "1b760cbafb8fa9ce718e02a11db95837df3dff65a58cb4264d35b64ca94f4309",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 23:02:00",
+        "liquidity_counts": {
+          "maker": 45723
+        },
+        "traded_notional": 2903686.072047
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__ext/backtest_results/binance_a_allow000_twe250__ext/binance/2026-09-17T10_58_38",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 1.6323777,
+          "baseline_worst_drawdown": 0.7846082130562516,
+          "drawdown_added": 0.003150388307467389,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.928855989340531,
+          "stressed_final_multiple": 1.5162438035109205,
+          "stressed_worst_drawdown": 0.787758601363719,
+          "total_extra_cost": 1161.4744288188,
+          "total_extra_cost_share_of_initial": 0.11614744288188002
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 1.6323777,
+          "baseline_worst_drawdown": 0.7846082130562516,
+          "drawdown_added": 0.006309150305154554,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8577119786810617,
+          "stressed_final_multiple": 1.4001099070218406,
+          "stressed_worst_drawdown": 0.7909173633614062,
+          "total_extra_cost": 2322.9488576376,
+          "total_extra_cost_share_of_initial": 0.23229488576376003
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 1.6323777,
+          "baseline_worst_drawdown": 0.7846082130562516,
+          "drawdown_added": 0.0039392924705994314,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9110699866756632,
+          "stressed_final_multiple": 1.4872103293886496,
+          "stressed_worst_drawdown": 0.788547505526851,
+          "total_extra_cost": 1451.8430360235002,
+          "total_extra_cost_share_of_initial": 0.14518430360235002
+        }
+      }
+    },
+    "A_risk_geometry|a_allow000_twe250__pre": {
+      "arm": "a_allow000_twe250__pre",
+      "baseline": {
+        "final_multiple": 0.4237113,
+        "in_panel": true,
+        "worst_drawdown": 0.7846082130562516
+      },
+      "declared_headline": false,
+      "leg": "pre",
+      "provenance": {
+        "fills": 17076,
+        "fills_sha256": "44dc15272e776e9a68e76d8f00e1fdb95014e9297371fc2222a883587e6afe3e",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:57:00",
+        "liquidity_counts": {
+          "maker": 17076
+        },
+        "traded_notional": 712405.880792
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow000_twe250__pre/backtest_results/binance_a_allow000_twe250__pre/binance/2026-09-17T10_59_31",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 0.4237113,
+          "baseline_worst_drawdown": 0.7846082130562516,
+          "drawdown_added": 0.003150388307467389,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9327461051152517,
+          "stressed_final_multiple": 0.39521506476831997,
+          "stressed_worst_drawdown": 0.787758601363719,
+          "total_extra_cost": 284.9623523168,
+          "total_extra_cost_share_of_initial": 0.028496235231679996
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 0.4237113,
+          "baseline_worst_drawdown": 0.7846082130562516,
+          "drawdown_added": 0.006309150305154554,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8654922102305035,
+          "stressed_final_multiple": 0.3667188295366399,
+          "stressed_worst_drawdown": 0.7909173633614062,
+          "total_extra_cost": 569.9247046336,
+          "total_extra_cost_share_of_initial": 0.05699247046335999
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 0.4237113,
+          "baseline_worst_drawdown": 0.7846082130562516,
+          "drawdown_added": 0.0039392924705994314,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9159326313940647,
+          "stressed_final_multiple": 0.38809100596039997,
+          "stressed_worst_drawdown": 0.788547505526851,
+          "total_extra_cost": 356.20294039600003,
+          "total_extra_cost_share_of_initial": 0.0356202940396
+        }
+      }
+    },
+    "A_risk_geometry|a_allow010__3y": {
+      "arm": "a_allow010__3y",
+      "baseline": {
+        "final_multiple": 4.403709399999999,
+        "in_panel": true,
+        "worst_drawdown": 0.22298822654944084
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28481,
+        "fills_sha256": "685825070e62436639613bb3fcd0f4e8e417f16538083b95db9aeeabf60e7616",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28481
+        },
+        "traded_notional": 7934128.055648
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow010__3y/backtest_results/binance_a_allow010__3y/binance/2026-09-17T10_51_28",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.403709399999999,
+          "baseline_worst_drawdown": 0.22298822654944084,
+          "drawdown_added": 0.01397459922190969,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9279384441584816,
+          "stressed_final_multiple": 4.08637124916208,
+          "stressed_worst_drawdown": 0.23696282577135053,
+          "total_extra_cost": 3173.6512222592,
+          "total_extra_cost_share_of_initial": 0.31736512222592
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.403709399999999,
+          "baseline_worst_drawdown": 0.22298822654944084,
+          "drawdown_added": 0.02967512456529453,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8558768883169633,
+          "stressed_final_multiple": 3.769033098324161,
+          "stressed_worst_drawdown": 0.25266335111473537,
+          "total_extra_cost": 6347.3024445184,
+          "total_extra_cost_share_of_initial": 0.63473024445184
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.403709399999999,
+          "baseline_worst_drawdown": 0.22298822654944084,
+          "drawdown_added": 0.017725988010666383,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9099230551981018,
+          "stressed_final_multiple": 4.007036711452599,
+          "stressed_worst_drawdown": 0.24071421456010722,
+          "total_extra_cost": 3967.0640278240003,
+          "total_extra_cost_share_of_initial": 0.39670640278240005
+        }
+      }
+    },
+    "A_risk_geometry|a_allow010__ext": {
+      "arm": "a_allow010__ext",
+      "baseline": {
+        "final_multiple": 2.6956395,
+        "in_panel": true,
+        "worst_drawdown": 0.6871074268565153
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45394,
+        "fills_sha256": "f8ca582025caf240d6e868c27e17a75dfa3dafd8d02701bef083a508645e31b7",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 23:02:00",
+        "liquidity_counts": {
+          "maker": 45394
+        },
+        "traded_notional": 6274223.463237001
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow010__ext/backtest_results/binance_a_allow010__ext/binance/2026-09-17T10_52_55",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 2.6956395,
+          "baseline_worst_drawdown": 0.6871074268565153,
+          "drawdown_added": 0.004141649003585379,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9069091227620462,
+          "stressed_final_multiple": 2.4447000542277206,
+          "stressed_worst_drawdown": 0.6912490758601006,
+          "total_extra_cost": 2509.6893852948,
+          "total_extra_cost_share_of_initial": 0.25096893852948
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 2.6956395,
+          "baseline_worst_drawdown": 0.6871074268565153,
+          "drawdown_added": 0.008296594821352365,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8138182455240923,
+          "stressed_final_multiple": 2.1937606084554413,
+          "stressed_worst_drawdown": 0.6954040216778676,
+          "total_extra_cost": 5019.3787705896,
+          "total_extra_cost_share_of_initial": 0.50193787705896
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 2.6956395,
+          "baseline_worst_drawdown": 0.6871074268565153,
+          "drawdown_added": 0.00517913638336287,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.8836364034525568,
+          "stressed_final_multiple": 2.3819651927846484,
+          "stressed_worst_drawdown": 0.6922865632398781,
+          "total_extra_cost": 3137.1117316185,
+          "total_extra_cost_share_of_initial": 0.31371117316185
+        }
+      }
+    },
+    "A_risk_geometry|a_allow020__3y": {
+      "arm": "a_allow020__3y",
+      "baseline": {
+        "final_multiple": 5.3018355,
+        "in_panel": true,
+        "worst_drawdown": 0.21744329200093337
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28426,
+        "fills_sha256": "3ec339a56bb4dd3992108e6bc2922684fd7758f29bc038da301123b44755be35",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28426
+        },
+        "traded_notional": 9681942.417352
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow020__3y/backtest_results/binance_a_allow020__3y/binance/2026-09-17T10_53_54",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 5.3018355,
+          "baseline_worst_drawdown": 0.21744329200093337,
+          "drawdown_added": 0.014030429814744227,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9269607037792705,
+          "stressed_final_multiple": 4.914593166401921,
+          "stressed_worst_drawdown": 0.2314737218156776,
+          "total_extra_cost": 3872.7769669408,
+          "total_extra_cost_share_of_initial": 0.38727769669407996
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 5.3018355,
+          "baseline_worst_drawdown": 0.21744329200093337,
+          "drawdown_added": 0.029835301109784607,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8539214075585408,
+          "stressed_final_multiple": 4.52735083280384,
+          "stressed_worst_drawdown": 0.24727859311071798,
+          "total_extra_cost": 7745.5539338816,
+          "total_extra_cost_share_of_initial": 0.7745553933881599
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 5.3018355,
+          "baseline_worst_drawdown": 0.21744329200093337,
+          "drawdown_added": 0.017802739808747692,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9087008797240879,
+          "stressed_final_multiple": 4.8177825830023995,
+          "stressed_worst_drawdown": 0.23524603180968107,
+          "total_extra_cost": 4840.971208676,
+          "total_extra_cost_share_of_initial": 0.4840971208676
+        }
+      }
+    },
+    "A_risk_geometry|a_allow020__ext": {
+      "arm": "a_allow020__ext",
+      "baseline": {
+        "final_multiple": 3.0737361,
+        "in_panel": true,
+        "worst_drawdown": 0.7299764153541515
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45565,
+        "fills_sha256": "943259bcab6bd6b96848fc81525967a1da2a3dba0923a00cc7f88ca82fec0f11",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 45565
+        },
+        "traded_notional": 7132331.312344
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow020__ext/backtest_results/binance_a_allow020__ext/binance/2026-09-17T10_55_22",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 3.0737361,
+          "baseline_worst_drawdown": 0.7299764153541515,
+          "drawdown_added": 0.00436514204011762,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9071835566840755,
+          "stressed_final_multiple": 2.7884428475062393,
+          "stressed_worst_drawdown": 0.7343415573942691,
+          "total_extra_cost": 2852.9325249376,
+          "total_extra_cost_share_of_initial": 0.28529325249376003
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 3.0737361,
+          "baseline_worst_drawdown": 0.7299764153541515,
+          "drawdown_added": 0.00874459893281121,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.814367113368151,
+          "stressed_final_multiple": 2.5031495950124785,
+          "stressed_worst_drawdown": 0.7387210142869627,
+          "total_extra_cost": 5705.8650498752,
+          "total_extra_cost_share_of_initial": 0.5705865049875201
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 3.0737361,
+          "baseline_worst_drawdown": 0.7299764153541515,
+          "drawdown_added": 0.0054586614986452675,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.8839794458550956,
+          "stressed_final_multiple": 2.7171195343828027,
+          "stressed_worst_drawdown": 0.7354350768527967,
+          "total_extra_cost": 3566.165656172,
+          "total_extra_cost_share_of_initial": 0.3566165656172
+        }
+      }
+    },
+    "A_risk_geometry|a_allow037__pre": {
+      "arm": "a_allow037__pre",
+      "baseline": {
+        "final_multiple": 1.2489987999999999,
+        "in_panel": true,
+        "worst_drawdown": 0.5494346650429327
+      },
+      "declared_headline": true,
+      "leg": "pre",
+      "provenance": {
+        "fills": 16848,
+        "fills_sha256": "66f6d18aa51c82a455efc1c79d5ce053363655d110514852c571325412111e34",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:57:00",
+        "liquidity_counts": {
+          "maker": 16848
+        },
+        "traded_notional": 2330385.919691
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/a_allow037__pre/backtest_results/binance_a_allow037__pre/binance/2026-09-17T10_56_16",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 1.2489987999999999,
+          "baseline_worst_drawdown": 0.5494346650429327,
+          "drawdown_added": 0.0058615075376540204,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9253678732216237,
+          "stressed_final_multiple": 1.15578336321236,
+          "stressed_worst_drawdown": 0.5552961725805867,
+          "total_extra_cost": 932.1543678764001,
+          "total_extra_cost_share_of_initial": 0.09321543678764001
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 1.2489987999999999,
+          "baseline_worst_drawdown": 0.5494346650429327,
+          "drawdown_added": 0.011745004829032957,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8507357464432476,
+          "stressed_final_multiple": 1.0625679264247203,
+          "stressed_worst_drawdown": 0.5611796698719657,
+          "total_extra_cost": 1864.3087357528002,
+          "total_extra_cost_share_of_initial": 0.18643087357528002
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 1.2489987999999999,
+          "baseline_worst_drawdown": 0.5494346650429327,
+          "drawdown_added": 0.007330315494144313,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9067098415270292,
+          "stressed_final_multiple": 1.1324795040154494,
+          "stressed_worst_drawdown": 0.556764980537077,
+          "total_extra_cost": 1165.1929598455,
+          "total_extra_cost_share_of_initial": 0.11651929598454999
+        }
+      }
+    },
+    "A_risk_geometry|b_cool24__3y": {
+      "arm": "b_cool24__3y",
+      "baseline": {
+        "final_multiple": 4.7535734,
+        "in_panel": true,
+        "worst_drawdown": 0.20099583396674248
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28550,
+        "fills_sha256": "4fc173b183e4d0810e58b71f98cdc89b51f503377ef7cbd0285be92408c150e4",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28550
+        },
+        "traded_notional": 6813706.94413
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__3y/backtest_results/binance_b_cool24__3y/binance/2026-09-17T11_02_50",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.012021982472003367,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9426700989926442,
+          "stressed_final_multiple": 4.4810515075468,
+          "stressed_worst_drawdown": 0.21301781643874584,
+          "total_extra_cost": 2725.482777652,
+          "total_extra_cost_share_of_initial": 0.2725482777652
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.025464705058092507,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8853401979852885,
+          "stressed_final_multiple": 4.2085296150936005,
+          "stressed_worst_drawdown": 0.22646053902483498,
+          "total_extra_cost": 5450.965555304,
+          "total_extra_cost_share_of_initial": 0.5450965555304
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.015240048271661144,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9283376237408053,
+          "stressed_final_multiple": 4.4129210344335,
+          "stressed_worst_drawdown": 0.21623588223840362,
+          "total_extra_cost": 3406.8534720650005,
+          "total_extra_cost_share_of_initial": 0.34068534720650007
+        }
+      }
+    },
+    "A_risk_geometry|b_cool24__ext": {
+      "arm": "b_cool24__ext",
+      "baseline": {
+        "final_multiple": 2.7957041,
+        "in_panel": true,
+        "worst_drawdown": 0.7447451683628827
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45698,
+        "fills_sha256": "7e20f6bed0ddd94039f82419684a215c6f031615b26ec5215c6bded47cf1d0fa",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 23:02:00",
+        "liquidity_counts": {
+          "maker": 45698
+        },
+        "traded_notional": 5010621.627281
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__ext/backtest_results/binance_b_cool24__ext/binance/2026-09-17T11_04_18",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 2.7957041,
+          "baseline_worst_drawdown": 0.7447451683628827,
+          "drawdown_added": 0.003682375088612244,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9283196497139884,
+          "stressed_final_multiple": 2.5953070508159612,
+          "stressed_worst_drawdown": 0.748427543451495,
+          "total_extra_cost": 2004.2486509124,
+          "total_extra_cost_share_of_initial": 0.20042486509124
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 2.7957041,
+          "baseline_worst_drawdown": 0.7447451683628827,
+          "drawdown_added": 0.007375793593026425,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8566392994279768,
+          "stressed_final_multiple": 2.3949100016319225,
+          "stressed_worst_drawdown": 0.7521209619559092,
+          "total_extra_cost": 4008.4973018248,
+          "total_extra_cost_share_of_initial": 0.40084973018248
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 2.7957041,
+          "baseline_worst_drawdown": 0.7447451683628827,
+          "drawdown_added": 0.004604692456090742,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9103995621424852,
+          "stressed_final_multiple": 2.5452077885199507,
+          "stressed_worst_drawdown": 0.7493498608189735,
+          "total_extra_cost": 2505.3108136405,
+          "total_extra_cost_share_of_initial": 0.25053108136405
+        }
+      }
+    },
+    "A_risk_geometry|b_cool24__pre": {
+      "arm": "b_cool24__pre",
+      "baseline": {
+        "final_multiple": 0.5883041,
+        "in_panel": true,
+        "worst_drawdown": 0.7447451683628827
+      },
+      "declared_headline": false,
+      "leg": "pre",
+      "provenance": {
+        "fills": 17016,
+        "fills_sha256": "fb5ad0bb9aa45299b871607d8755a7b35e17e55f07b37619eeabe5b8121fc355",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:57:00",
+        "liquidity_counts": {
+          "maker": 17016
+        },
+        "traded_notional": 965879.850782
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool24__pre/backtest_results/binance_b_cool24__pre/binance/2026-09-17T11_05_13",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 0.5883041,
+          "baseline_worst_drawdown": 0.7447451683628827,
+          "drawdown_added": 0.003682375088612244,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9343278518179966,
+          "stressed_final_multiple": 0.5496689059687199,
+          "stressed_worst_drawdown": 0.748427543451495,
+          "total_extra_cost": 386.35194031279997,
+          "total_extra_cost_share_of_initial": 0.03863519403128
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 0.5883041,
+          "baseline_worst_drawdown": 0.7447451683628827,
+          "drawdown_added": 0.007375793593026425,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8686557036359932,
+          "stressed_final_multiple": 0.5110337119374397,
+          "stressed_worst_drawdown": 0.7521209619559092,
+          "total_extra_cost": 772.7038806255999,
+          "total_extra_cost_share_of_initial": 0.07727038806256
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 0.5883041,
+          "baseline_worst_drawdown": 0.7447451683628827,
+          "drawdown_added": 0.004604692456090742,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9179098147724958,
+          "stressed_final_multiple": 0.5400101074608998,
+          "stressed_worst_drawdown": 0.7493498608189735,
+          "total_extra_cost": 482.93992539100003,
+          "total_extra_cost_share_of_initial": 0.0482939925391
+        }
+      }
+    },
+    "A_risk_geometry|b_cool48__3y": {
+      "arm": "b_cool48__3y",
+      "baseline": {
+        "final_multiple": 4.7535734,
+        "in_panel": true,
+        "worst_drawdown": 0.20099583396674248
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28550,
+        "fills_sha256": "4fc173b183e4d0810e58b71f98cdc89b51f503377ef7cbd0285be92408c150e4",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28550
+        },
+        "traded_notional": 6813706.94413
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__3y/backtest_results/binance_b_cool48__3y/binance/2026-09-17T11_06_06",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.012021982472003367,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9426700989926442,
+          "stressed_final_multiple": 4.4810515075468,
+          "stressed_worst_drawdown": 0.21301781643874584,
+          "total_extra_cost": 2725.482777652,
+          "total_extra_cost_share_of_initial": 0.2725482777652
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.025464705058092507,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8853401979852885,
+          "stressed_final_multiple": 4.2085296150936005,
+          "stressed_worst_drawdown": 0.22646053902483498,
+          "total_extra_cost": 5450.965555304,
+          "total_extra_cost_share_of_initial": 0.5450965555304
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.015240048271661144,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9283376237408053,
+          "stressed_final_multiple": 4.4129210344335,
+          "stressed_worst_drawdown": 0.21623588223840362,
+          "total_extra_cost": 3406.8534720650005,
+          "total_extra_cost_share_of_initial": 0.34068534720650007
+        }
+      }
+    },
+    "A_risk_geometry|b_cool48__ext": {
+      "arm": "b_cool48__ext",
+      "baseline": {
+        "final_multiple": 2.1048598000000003,
+        "in_panel": true,
+        "worst_drawdown": 0.7618683866944678
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45380,
+        "fills_sha256": "a6ccabd620e19d2749e9ddb193b02b13be50c1046b412969f54caa48a072646d",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 45380
+        },
+        "traded_notional": 4062272.8068819996
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__ext/backtest_results/binance_b_cool48__ext/binance/2026-09-17T11_07_34",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 2.1048598000000003,
+          "baseline_worst_drawdown": 0.7618683866944678,
+          "drawdown_added": 0.004189922552866099,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9228020259233987,
+          "stressed_final_multiple": 1.94236888772472,
+          "stressed_worst_drawdown": 0.7660583092473339,
+          "total_extra_cost": 1624.9091227528002,
+          "total_extra_cost_share_of_initial": 0.16249091227528
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 2.1048598000000003,
+          "baseline_worst_drawdown": 0.7618683866944678,
+          "drawdown_added": 0.008392410652645843,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8456040518467977,
+          "stressed_final_multiple": 1.7798779754494405,
+          "stressed_worst_drawdown": 0.7702607973471136,
+          "total_extra_cost": 3249.8182455056003,
+          "total_extra_cost_share_of_initial": 0.32498182455056
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 2.1048598000000003,
+          "baseline_worst_drawdown": 0.7618683866944678,
+          "drawdown_added": 0.0052393643522224975,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9035025324042483,
+          "stressed_final_multiple": 1.9017461596558998,
+          "stressed_worst_drawdown": 0.7671077510466903,
+          "total_extra_cost": 2031.136403441,
+          "total_extra_cost_share_of_initial": 0.2031136403441
+        }
+      }
+    },
+    "A_risk_geometry|b_cool48__pre": {
+      "arm": "b_cool48__pre",
+      "baseline": {
+        "final_multiple": 0.55491006,
+        "in_panel": true,
+        "worst_drawdown": 0.7618683866944678
+      },
+      "declared_headline": false,
+      "leg": "pre",
+      "provenance": {
+        "fills": 16953,
+        "fills_sha256": "21a9bcf2abfba06db7ad1e6308eb8ee6eac54a69ea6b113cf1a0b68b4cfc42d1",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:57:00",
+        "liquidity_counts": {
+          "maker": 16953
+        },
+        "traded_notional": 942218.591891
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool48__pre/backtest_results/binance_b_cool48__pre/binance/2026-09-17T11_08_28",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 0.55491006,
+          "baseline_worst_drawdown": 0.7618683866944678,
+          "drawdown_added": 0.004189922552866099,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9320813472445598,
+          "stressed_final_multiple": 0.5172213163243595,
+          "stressed_worst_drawdown": 0.7660583092473339,
+          "total_extra_cost": 376.8874367564,
+          "total_extra_cost_share_of_initial": 0.03768874367564
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 0.55491006,
+          "baseline_worst_drawdown": 0.7618683866944678,
+          "drawdown_added": 0.008392410652645843,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8641626944891199,
+          "stressed_final_multiple": 0.4795325726487192,
+          "stressed_worst_drawdown": 0.7702607973471136,
+          "total_extra_cost": 753.7748735128,
+          "total_extra_cost_share_of_initial": 0.07537748735128
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 0.55491006,
+          "baseline_worst_drawdown": 0.7618683866944678,
+          "drawdown_added": 0.0052393643522224975,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9151016840557007,
+          "stressed_final_multiple": 0.5077991304054499,
+          "stressed_worst_drawdown": 0.7671077510466903,
+          "total_extra_cost": 471.10929594550004,
+          "total_extra_cost_share_of_initial": 0.04711092959455
+        }
+      }
+    },
+    "A_risk_geometry|b_cool72__3y": {
+      "arm": "b_cool72__3y",
+      "baseline": {
+        "final_multiple": 4.7535734,
+        "in_panel": true,
+        "worst_drawdown": 0.20099583396674248
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28550,
+        "fills_sha256": "4fc173b183e4d0810e58b71f98cdc89b51f503377ef7cbd0285be92408c150e4",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28550
+        },
+        "traded_notional": 6813706.94413
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__3y/backtest_results/binance_b_cool72__3y/binance/2026-09-17T11_09_20",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.012021982472003367,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9426700989926442,
+          "stressed_final_multiple": 4.4810515075468,
+          "stressed_worst_drawdown": 0.21301781643874584,
+          "total_extra_cost": 2725.482777652,
+          "total_extra_cost_share_of_initial": 0.2725482777652
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.025464705058092507,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8853401979852885,
+          "stressed_final_multiple": 4.2085296150936005,
+          "stressed_worst_drawdown": 0.22646053902483498,
+          "total_extra_cost": 5450.965555304,
+          "total_extra_cost_share_of_initial": 0.5450965555304
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.015240048271661144,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9283376237408053,
+          "stressed_final_multiple": 4.4129210344335,
+          "stressed_worst_drawdown": 0.21623588223840362,
+          "total_extra_cost": 3406.8534720650005,
+          "total_extra_cost_share_of_initial": 0.34068534720650007
+        }
+      }
+    },
+    "A_risk_geometry|b_cool72__ext": {
+      "arm": "b_cool72__ext",
+      "baseline": {
+        "final_multiple": 1.8863416000000002,
+        "in_panel": true,
+        "worst_drawdown": 0.7803737552857728
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45095,
+        "fills_sha256": "5d80d1e7dfb650e27fc45818b6a0b5cd7b5eea3870c1c014135dd621a93a5af7",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 45095
+        },
+        "traded_notional": 3665218.459031
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__ext/backtest_results/binance_b_cool72__ext/binance/2026-09-17T11_10_47",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 1.8863416000000002,
+          "baseline_worst_drawdown": 0.7803737552857728,
+          "drawdown_added": 0.0034155159931849033,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9222787970316509,
+          "stressed_final_multiple": 1.73973286163876,
+          "stressed_worst_drawdown": 0.7837892712789577,
+          "total_extra_cost": 1466.0873836124001,
+          "total_extra_cost_share_of_initial": 0.14660873836124
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 1.8863416000000002,
+          "baseline_worst_drawdown": 0.7803737552857728,
+          "drawdown_added": 0.006841275093707688,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.844557594063302,
+          "stressed_final_multiple": 1.5931241232775197,
+          "stressed_worst_drawdown": 0.7872150303794805,
+          "total_extra_cost": 2932.1747672248002,
+          "total_extra_cost_share_of_initial": 0.29321747672248
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 1.8863416000000002,
+          "baseline_worst_drawdown": 0.7803737552857728,
+          "drawdown_added": 0.004270993679083013,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9028484962895644,
+          "stressed_final_multiple": 1.7030806770484512,
+          "stressed_worst_drawdown": 0.7846447489648558,
+          "total_extra_cost": 1832.6092295155,
+          "total_extra_cost_share_of_initial": 0.18326092295155
+        }
+      }
+    },
+    "A_risk_geometry|b_cool72__pre": {
+      "arm": "b_cool72__pre",
+      "baseline": {
+        "final_multiple": 0.48264535999999997,
+        "in_panel": true,
+        "worst_drawdown": 0.7803737552857728
+      },
+      "declared_headline": false,
+      "leg": "pre",
+      "provenance": {
+        "fills": 16755,
+        "fills_sha256": "0369dbbe301f7c0859c7dba59fe7a2f498871badb9d5dd6ab56d68eb653048f0",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:57:00",
+        "liquidity_counts": {
+          "maker": 16755
+        },
+        "traded_notional": 862806.825452
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_cool72__pre/backtest_results/binance_b_cool72__pre/binance/2026-09-17T11_11_41",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 0.48264535999999997,
+          "baseline_worst_drawdown": 0.7803737552857728,
+          "drawdown_added": 0.0034155159931849033,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9284935153668937,
+          "stressed_final_multiple": 0.44813308698191995,
+          "stressed_worst_drawdown": 0.7837892712789577,
+          "total_extra_cost": 345.1227301808,
+          "total_extra_cost_share_of_initial": 0.03451227301808
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 0.48264535999999997,
+          "baseline_worst_drawdown": 0.7803737552857728,
+          "drawdown_added": 0.006841275093707688,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8569870307337873,
+          "stressed_final_multiple": 0.4136208139638398,
+          "stressed_worst_drawdown": 0.7872150303794805,
+          "total_extra_cost": 690.2454603616,
+          "total_extra_cost_share_of_initial": 0.06902454603616
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 0.48264535999999997,
+          "baseline_worst_drawdown": 0.7803737552857728,
+          "drawdown_added": 0.004270993679083013,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9106168942086171,
+          "stressed_final_multiple": 0.4395050187273999,
+          "stressed_worst_drawdown": 0.7846447489648558,
+          "total_extra_cost": 431.403412726,
+          "total_extra_cost_share_of_initial": 0.0431403412726
+        }
+      }
+    },
+    "A_risk_geometry|b_ema15__3y": {
+      "arm": "b_ema15__3y",
+      "baseline": {
+        "final_multiple": 3.8395324,
+        "in_panel": true,
+        "worst_drawdown": 0.20764775287589488
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28485,
+        "fills_sha256": "f1dc85bab5ad82c9155025256b6e263b3a2fe32ed86c47752be971c04e1da451",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28485
+        },
+        "traded_notional": 6562719.498382
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_ema15__3y/backtest_results/binance_b_ema15__3y/binance/2026-09-17T11_19_02",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 3.8395324,
+          "baseline_worst_drawdown": 0.20764775287589488,
+          "drawdown_added": 0.012532344485728819,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9316355885296657,
+          "stressed_final_multiple": 3.5770450271527197,
+          "stressed_worst_drawdown": 0.2201800973616237,
+          "total_extra_cost": 2625.0877993527997,
+          "total_extra_cost_share_of_initial": 0.26250877993528
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 3.8395324,
+          "baseline_worst_drawdown": 0.20764775287589488,
+          "drawdown_added": 0.026547292110294052,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8632711770593314,
+          "stressed_final_multiple": 3.31455765430544,
+          "stressed_worst_drawdown": 0.23419504498618893,
+          "total_extra_cost": 5250.175598705599,
+          "total_extra_cost_share_of_initial": 0.52501755987056
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 3.8395324,
+          "baseline_worst_drawdown": 0.20764775287589488,
+          "drawdown_added": 0.015887246846881364,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9145444856620824,
+          "stressed_final_multiple": 3.5114231839409005,
+          "stressed_worst_drawdown": 0.22353499972277624,
+          "total_extra_cost": 3281.359749191,
+          "total_extra_cost_share_of_initial": 0.3281359749191
+        }
+      }
+    },
+    "A_risk_geometry|b_ema15__ext": {
+      "arm": "b_ema15__ext",
+      "baseline": {
+        "final_multiple": 1.8002965,
+        "in_panel": true,
+        "worst_drawdown": 0.6778732289066953
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45382,
+        "fills_sha256": "b6ded8e6ada8635fed5a182830e84acf8f48b3256c79a7b7107589fbd2d2f943",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 23:02:00",
+        "liquidity_counts": {
+          "maker": 45382
+        },
+        "traded_notional": 4183835.6551130004
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_ema15__ext/backtest_results/binance_b_ema15__ext/binance/2026-09-17T11_20_29",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 1.8002965,
+          "baseline_worst_drawdown": 0.6778732289066953,
+          "drawdown_added": 0.005052479536101329,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9070511368683328,
+          "stressed_final_multiple": 1.6329609870250805,
+          "stressed_worst_drawdown": 0.6829257084427967,
+          "total_extra_cost": 1673.5342620452002,
+          "total_extra_cost_share_of_initial": 0.16735342620452
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 1.8002965,
+          "baseline_worst_drawdown": 0.6778732289066953,
+          "drawdown_added": 0.010120111421163647,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8141022737366655,
+          "stressed_final_multiple": 1.4656254740501609,
+          "stressed_worst_drawdown": 0.687993340327859,
+          "total_extra_cost": 3347.0685240904004,
+          "total_extra_cost_share_of_initial": 0.33470685240904
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 1.8002965,
+          "baseline_worst_drawdown": 0.6778732289066953,
+          "drawdown_added": 0.0063179643150383935,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.883813921085417,
+          "stressed_final_multiple": 1.5911271087813523,
+          "stressed_worst_drawdown": 0.6841911932217337,
+          "total_extra_cost": 2091.9178275565,
+          "total_extra_cost_share_of_initial": 0.20919178275565
+        }
+      }
+    },
+    "A_risk_geometry|b_lossgate050__3y": {
+      "arm": "b_lossgate050__3y",
+      "baseline": {
+        "final_multiple": 4.7535734,
+        "in_panel": true,
+        "worst_drawdown": 0.20099583396674248
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28550,
+        "fills_sha256": "4fc173b183e4d0810e58b71f98cdc89b51f503377ef7cbd0285be92408c150e4",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28550
+        },
+        "traded_notional": 6813706.94413
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_lossgate050__3y/backtest_results/binance_b_lossgate050__3y/binance/2026-09-17T11_16_37",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.012021982472003367,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9426700989926442,
+          "stressed_final_multiple": 4.4810515075468,
+          "stressed_worst_drawdown": 0.21301781643874584,
+          "total_extra_cost": 2725.482777652,
+          "total_extra_cost_share_of_initial": 0.2725482777652
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.025464705058092507,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8853401979852885,
+          "stressed_final_multiple": 4.2085296150936005,
+          "stressed_worst_drawdown": 0.22646053902483498,
+          "total_extra_cost": 5450.965555304,
+          "total_extra_cost_share_of_initial": 0.5450965555304
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.015240048271661144,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9283376237408053,
+          "stressed_final_multiple": 4.4129210344335,
+          "stressed_worst_drawdown": 0.21623588223840362,
+          "total_extra_cost": 3406.8534720650005,
+          "total_extra_cost_share_of_initial": 0.34068534720650007
+        }
+      }
+    },
+    "A_risk_geometry|b_lossgate050__ext": {
+      "arm": "b_lossgate050__ext",
+      "baseline": {
+        "final_multiple": 2.3244041,
+        "in_panel": true,
+        "worst_drawdown": 0.7361871713695409
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45644,
+        "fills_sha256": "1c689c06dd988b85d7db44de456bc2bf0f9ed1e925f17fe02db1b169cf7dc36b",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 45644
+        },
+        "traded_notional": 4450417.236652999
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_lossgate050__ext/backtest_results/binance_b_lossgate050__ext/binance/2026-09-17T11_18_04",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 2.3244041,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.003764604302391672,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9234140528894605,
+          "stressed_final_multiple": 2.146387410533879,
+          "stressed_worst_drawdown": 0.7399517756719326,
+          "total_extra_cost": 1780.1668946611999,
+          "total_extra_cost_share_of_initial": 0.17801668946611998
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 2.3244041,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.007540498625392522,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8468281057789214,
+          "stressed_final_multiple": 1.9683707210677588,
+          "stressed_worst_drawdown": 0.7437276699949334,
+          "total_extra_cost": 3560.3337893223998,
+          "total_extra_cost_share_of_initial": 0.35603337893223996
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 2.3244041,
+          "baseline_worst_drawdown": 0.7361871713695409,
+          "drawdown_added": 0.004707517462030908,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9042675661118261,
+          "stressed_final_multiple": 2.10188323816735,
+          "stressed_worst_drawdown": 0.7408946888315718,
+          "total_extra_cost": 2225.2086183265,
+          "total_extra_cost_share_of_initial": 0.22252086183265002
+        }
+      }
+    },
+    "A_risk_geometry|b_red015__3y": {
+      "arm": "b_red015__3y",
+      "baseline": {
+        "final_multiple": 3.6673848,
+        "in_panel": true,
+        "worst_drawdown": 0.2313532766355204
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28471,
+        "fills_sha256": "bbaf626d8ccf01cfe76770eb9a8a9eb48abcdf7ab67b2a972109ada3d01ff219",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28471
+        },
+        "traded_notional": 6436132.923386999
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__3y/backtest_results/binance_b_red015__3y/binance/2026-09-17T11_21_28",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 3.6673848,
+          "baseline_worst_drawdown": 0.2313532766355204,
+          "drawdown_added": 0.01380922171913801,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9298069046538338,
+          "stressed_final_multiple": 3.409959709062519,
+          "stressed_worst_drawdown": 0.24516249835465842,
+          "total_extra_cost": 2574.4531693548,
+          "total_extra_cost_share_of_initial": 0.25744531693548
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 3.6673848,
+          "baseline_worst_drawdown": 0.2313532766355204,
+          "drawdown_added": 0.029252089810107296,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8596138093076675,
+          "stressed_final_multiple": 3.152534618125038,
+          "stressed_worst_drawdown": 0.2606053664456277,
+          "total_extra_cost": 5148.9063387096,
+          "total_extra_cost_share_of_initial": 0.51489063387096
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 3.6673848,
+          "baseline_worst_drawdown": 0.2313532766355204,
+          "drawdown_added": 0.01750594146205886,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9122586308172933,
+          "stressed_final_multiple": 3.345603436328153,
+          "stressed_worst_drawdown": 0.24885921809757927,
+          "total_extra_cost": 3218.0664616935,
+          "total_extra_cost_share_of_initial": 0.32180664616935
+        }
+      }
+    },
+    "A_risk_geometry|b_red015__ext": {
+      "arm": "b_red015__ext",
+      "baseline": {
+        "final_multiple": 4.3486887,
+        "in_panel": true,
+        "worst_drawdown": 0.47879643364510505
+      },
+      "declared_headline": true,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45456,
+        "fills_sha256": "24e9e07d0a9688a16c978f85dd07bf5cf8d831e9ddbf6cbca1e45794b9be6e7c",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 45456
+        },
+        "traded_notional": 9390468.711875
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_red015__ext/backtest_results/binance_b_red015__ext/binance/2026-09-17T11_22_56",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.3486887,
+          "baseline_worst_drawdown": 0.47879643364510505,
+          "drawdown_added": 0.0028968551721314517,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9136248247718902,
+          "stressed_final_multiple": 3.9730699515249994,
+          "stressed_worst_drawdown": 0.4816932888172365,
+          "total_extra_cost": 3756.1874847500003,
+          "total_extra_cost_share_of_initial": 0.37561874847500004
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.3486887,
+          "baseline_worst_drawdown": 0.47879643364510505,
+          "drawdown_added": 0.005802397991613861,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8272496495437804,
+          "stressed_final_multiple": 3.5974512030499985,
+          "stressed_worst_drawdown": 0.4845988316367189,
+          "total_extra_cost": 7512.374969500001,
+          "total_extra_cost_share_of_initial": 0.7512374969500001
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.3486887,
+          "baseline_worst_drawdown": 0.47879643364510505,
+          "drawdown_added": 0.0036224248851650653,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.8920310309648632,
+          "stressed_final_multiple": 3.879165264406251,
+          "stressed_worst_drawdown": 0.4824188585302701,
+          "total_extra_cost": 4695.2343559374995,
+          "total_extra_cost_share_of_initial": 0.4695234355937499
+        }
+      }
+    },
+    "A_risk_geometry|b_term055__3y": {
+      "arm": "b_term055__3y",
+      "baseline": {
+        "final_multiple": 4.7535734,
+        "in_panel": true,
+        "worst_drawdown": 0.20099583396674248
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28550,
+        "fills_sha256": "4fc173b183e4d0810e58b71f98cdc89b51f503377ef7cbd0285be92408c150e4",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28550
+        },
+        "traded_notional": 6813706.94413
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term055__3y/backtest_results/binance_b_term055__3y/binance/2026-09-17T11_12_33",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.012021982472003367,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9426700989926442,
+          "stressed_final_multiple": 4.4810515075468,
+          "stressed_worst_drawdown": 0.21301781643874584,
+          "total_extra_cost": 2725.482777652,
+          "total_extra_cost_share_of_initial": 0.2725482777652
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.025464705058092507,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8853401979852885,
+          "stressed_final_multiple": 4.2085296150936005,
+          "stressed_worst_drawdown": 0.22646053902483498,
+          "total_extra_cost": 5450.965555304,
+          "total_extra_cost_share_of_initial": 0.5450965555304
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.015240048271661144,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9283376237408053,
+          "stressed_final_multiple": 4.4129210344335,
+          "stressed_worst_drawdown": 0.21623588223840362,
+          "total_extra_cost": 3406.8534720650005,
+          "total_extra_cost_share_of_initial": 0.34068534720650007
+        }
+      }
+    },
+    "A_risk_geometry|b_term070__3y": {
+      "arm": "b_term070__3y",
+      "baseline": {
+        "final_multiple": 4.7535734,
+        "in_panel": true,
+        "worst_drawdown": 0.20099583396674248
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28550,
+        "fills_sha256": "4fc173b183e4d0810e58b71f98cdc89b51f503377ef7cbd0285be92408c150e4",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28550
+        },
+        "traded_notional": 6813706.94413
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/b_term070__3y/backtest_results/binance_b_term070__3y/binance/2026-09-17T11_14_36",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.012021982472003367,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9426700989926442,
+          "stressed_final_multiple": 4.4810515075468,
+          "stressed_worst_drawdown": 0.21301781643874584,
+          "total_extra_cost": 2725.482777652,
+          "total_extra_cost_share_of_initial": 0.2725482777652
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.025464705058092507,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8853401979852885,
+          "stressed_final_multiple": 4.2085296150936005,
+          "stressed_worst_drawdown": 0.22646053902483498,
+          "total_extra_cost": 5450.965555304,
+          "total_extra_cost_share_of_initial": 0.5450965555304
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 4.7535734,
+          "baseline_worst_drawdown": 0.20099583396674248,
+          "drawdown_added": 0.015240048271661144,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9283376237408053,
+          "stressed_final_multiple": 4.4129210344335,
+          "stressed_worst_drawdown": 0.21623588223840362,
+          "total_extra_cost": 3406.8534720650005,
+          "total_extra_cost_share_of_initial": 0.34068534720650007
+        }
+      }
+    },
+    "A_risk_geometry|c1__3y": {
+      "arm": "c1__3y",
+      "baseline": {
+        "final_multiple": 7.401308599999999,
+        "in_panel": true,
+        "worst_drawdown": 0.20323911467160016
+      },
+      "declared_headline": true,
+      "leg": "3y",
+      "provenance": {
+        "fills": 25122,
+        "fills_sha256": "f0035eba9fac51efefb17d5b5f42a0c9f54fa257f3ffd323cf35e44825b93d75",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:33:00",
+        "liquidity_counts": {
+          "maker": 25122
+        },
+        "traded_notional": 10748533.196365
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c1__3y/backtest_results/binance_c1__3y/binance/2026-09-18T00_05_05",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 7.401308599999999,
+          "baseline_worst_drawdown": 0.20323911467160016,
+          "drawdown_added": 0.0119542312126113,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9419155642267639,
+          "stressed_final_multiple": 6.9714077659854,
+          "stressed_worst_drawdown": 0.21519334588421146,
+          "total_extra_cost": 4299.413278546,
+          "total_extra_cost_share_of_initial": 0.4299413278546
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 7.401308599999999,
+          "baseline_worst_drawdown": 0.20323911467160016,
+          "drawdown_added": 0.025307370442753552,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8838311284535276,
+          "stressed_final_multiple": 6.541506931970798,
+          "stressed_worst_drawdown": 0.22854648511435371,
+          "total_extra_cost": 8598.826557092,
+          "total_extra_cost_share_of_initial": 0.8598826557092
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 7.401308599999999,
+          "baseline_worst_drawdown": 0.20323911467160016,
+          "drawdown_added": 0.015152179652044073,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.927394455283455,
+          "stressed_final_multiple": 6.86393255748175,
+          "stressed_worst_drawdown": 0.21839129432364424,
+          "total_extra_cost": 5374.266598182499,
+          "total_extra_cost_share_of_initial": 0.5374266598182499
+        }
+      }
+    },
+    "A_risk_geometry|c2__3y": {
+      "arm": "c2__3y",
+      "baseline": {
+        "final_multiple": 2.5966346000000002,
+        "in_panel": true,
+        "worst_drawdown": 0.14523265290624288
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 37259,
+        "fills_sha256": "8de87023e7a874fff6fc085dde00bba1975ddcbcb12a87d46e75dcce107bfa90",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 37259
+        },
+        "traded_notional": 3134325.959865
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__3y/backtest_results/binance_c2__3y/binance/2026-09-18T00_07_04",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 2.5966346000000002,
+          "baseline_worst_drawdown": 0.14523265290624288,
+          "drawdown_added": 0.0025509548313998875,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9517200276016503,
+          "stressed_final_multiple": 2.4712691531834006,
+          "stressed_worst_drawdown": 0.14778360773764276,
+          "total_extra_cost": 1253.730383946,
+          "total_extra_cost_share_of_initial": 0.1253730383946
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 2.5966346000000002,
+          "baseline_worst_drawdown": 0.14523265290624288,
+          "drawdown_added": 0.005180990955382048,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.9034400552033008,
+          "stressed_final_multiple": 2.3459037063668013,
+          "stressed_worst_drawdown": 0.15041364386162492,
+          "total_extra_cost": 2507.460767892,
+          "total_extra_cost_share_of_initial": 0.2507460767892
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 2.5966346000000002,
+          "baseline_worst_drawdown": 0.14523265290624288,
+          "drawdown_added": 0.003200907995126734,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9396500345020622,
+          "stressed_final_multiple": 2.4399277914792488,
+          "stressed_worst_drawdown": 0.1484335609013696,
+          "total_extra_cost": 1567.1629799325,
+          "total_extra_cost_share_of_initial": 0.15671629799325001
+        }
+      }
+    },
+    "A_risk_geometry|c2__ext": {
+      "arm": "c2__ext",
+      "baseline": {
+        "final_multiple": 1.3100299000000002,
+        "in_panel": true,
+        "worst_drawdown": 0.7567301674126765
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 59175,
+        "fills_sha256": "ffcdb077672e45567f88b22449171dea1ad3aeb32f778bfc744105336018180c",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 59175
+        },
+        "traded_notional": 2391293.49405
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__ext/backtest_results/binance_c2__ext/binance/2026-09-18T00_08_38",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 1.3100299000000002,
+          "baseline_worst_drawdown": 0.7567301674126765,
+          "drawdown_added": 0.0034315457141539385,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9269850712857776,
+          "stressed_final_multiple": 1.2143781602380002,
+          "stressed_worst_drawdown": 0.7601617131268305,
+          "total_extra_cost": 956.51739762,
+          "total_extra_cost_share_of_initial": 0.095651739762
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 1.3100299000000002,
+          "baseline_worst_drawdown": 0.7567301674126765,
+          "drawdown_added": 0.006872654804849665,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.853970142571555,
+          "stressed_final_multiple": 1.1187264204760001,
+          "stressed_worst_drawdown": 0.7636028222175262,
+          "total_extra_cost": 1913.03479524,
+          "total_extra_cost_share_of_initial": 0.191303479524
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 1.3100299000000002,
+          "baseline_worst_drawdown": 0.7567301674126765,
+          "drawdown_added": 0.004290924860256284,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9087313391072228,
+          "stressed_final_multiple": 1.1904652252975014,
+          "stressed_worst_drawdown": 0.7610210922729328,
+          "total_extra_cost": 1195.646747025,
+          "total_extra_cost_share_of_initial": 0.1195646747025
+        }
+      }
+    },
+    "A_risk_geometry|c2__pre": {
+      "arm": "c2__pre",
+      "baseline": {
+        "final_multiple": 0.47749927,
+        "in_panel": true,
+        "worst_drawdown": 0.7567301674126765
+      },
+      "declared_headline": false,
+      "leg": "pre",
+      "provenance": {
+        "fills": 21715,
+        "fills_sha256": "c43e5d4537c685d939f9179fd079aaf44bc0a71d486d387c9e1a5685834de86a",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:57:00",
+        "liquidity_counts": {
+          "maker": 21715
+        },
+        "traded_notional": 734419.8850469999
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c2__pre/backtest_results/binance_c2__pre/binance/2026-09-18T00_09_33",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 0.47749927,
+          "baseline_worst_drawdown": 0.7567301674126765,
+          "drawdown_added": 0.0034315457141539385,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9384778213338837,
+          "stressed_final_multiple": 0.4481224745981199,
+          "stressed_worst_drawdown": 0.7601617131268305,
+          "total_extra_cost": 293.7679540188,
+          "total_extra_cost_share_of_initial": 0.029376795401880002
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 0.47749927,
+          "baseline_worst_drawdown": 0.7567301674126765,
+          "drawdown_added": 0.006872654804849665,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8769556426677675,
+          "stressed_final_multiple": 0.4187456791962398,
+          "stressed_worst_drawdown": 0.7636028222175262,
+          "total_extra_cost": 587.5359080376,
+          "total_extra_cost_share_of_initial": 0.058753590803760004
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 0.47749927,
+          "baseline_worst_drawdown": 0.7567301674126765,
+          "drawdown_added": 0.004290924860256284,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9230972766673547,
+          "stressed_final_multiple": 0.4407782757476499,
+          "stressed_worst_drawdown": 0.7610210922729328,
+          "total_extra_cost": 367.20994252350005,
+          "total_extra_cost_share_of_initial": 0.03672099425235
+        }
+      }
+    },
+    "A_risk_geometry|c3__3y": {
+      "arm": "c3__3y",
+      "baseline": {
+        "final_multiple": 5.542797,
+        "in_panel": true,
+        "worst_drawdown": 0.1741141987293796
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 25112,
+        "fills_sha256": "c89f9255cd9aecb2d5639a1faf24595e2a09402104e7100a79ace29fdb85602a",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:33:00",
+        "liquidity_counts": {
+          "maker": 25112
+        },
+        "traded_notional": 7557937.241312
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__3y/backtest_results/binance_c3__3y/binance/2026-09-18T00_10_27",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 5.542797,
+          "baseline_worst_drawdown": 0.1741141987293796,
+          "drawdown_added": 0.009649032553485482,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9454622748167616,
+          "stressed_final_multiple": 5.240505460467522,
+          "stressed_worst_drawdown": 0.1837632312828651,
+          "total_extra_cost": 3023.1748965248,
+          "total_extra_cost_share_of_initial": 0.30231748965247995
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 5.542797,
+          "baseline_worst_drawdown": 0.1741141987293796,
+          "drawdown_added": 0.02035438047336391,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8909245496335233,
+          "stressed_final_multiple": 4.938213920935044,
+          "stressed_worst_drawdown": 0.19446857920274352,
+          "total_extra_cost": 6046.3497930496,
+          "total_extra_cost_share_of_initial": 0.6046349793049599
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 5.542797,
+          "baseline_worst_drawdown": 0.1741141987293796,
+          "drawdown_added": 0.012219831451098173,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9318278435209514,
+          "stressed_final_multiple": 5.164932575584399,
+          "stressed_worst_drawdown": 0.18633403018047778,
+          "total_extra_cost": 3778.9686206560004,
+          "total_extra_cost_share_of_initial": 0.3778968620656
+        }
+      }
+    },
+    "A_risk_geometry|c3__ext": {
+      "arm": "c3__ext",
+      "baseline": {
+        "final_multiple": 2.3611916,
+        "in_panel": true,
+        "worst_drawdown": 0.8809825793354189
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 40597,
+        "fills_sha256": "523ae6069a037c36c3bdb5d89e8cfba629ac0d0c774b38bbe1bd19a766007e80",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 40597
+        },
+        "traded_notional": 3903948.099635
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__ext/backtest_results/binance_c3__ext/binance/2026-09-18T00_11_54",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 2.3611916,
+          "baseline_worst_drawdown": 0.8809825793354189,
+          "drawdown_added": 0.0031807261996606995,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9338647808227847,
+          "stressed_final_multiple": 2.2050336760146005,
+          "stressed_worst_drawdown": 0.8841633055350796,
+          "total_extra_cost": 1561.5792398539998,
+          "total_extra_cost_share_of_initial": 0.1561579239854
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 2.3611916,
+          "baseline_worst_drawdown": 0.8809825793354189,
+          "drawdown_added": 0.00637073935564858,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8677295616455695,
+          "stressed_final_multiple": 2.048875752029201,
+          "stressed_worst_drawdown": 0.8873533186910675,
+          "total_extra_cost": 3123.1584797079995,
+          "total_extra_cost_share_of_initial": 0.3123158479708
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 2.3611916,
+          "baseline_worst_drawdown": 0.8809825793354189,
+          "drawdown_added": 0.003977357249430158,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9173309760284808,
+          "stressed_final_multiple": 2.1659941950182504,
+          "stressed_worst_drawdown": 0.8849599365848491,
+          "total_extra_cost": 1951.9740498175001,
+          "total_extra_cost_share_of_initial": 0.19519740498175
+        }
+      }
+    },
+    "A_risk_geometry|c3__pre": {
+      "arm": "c3__pre",
+      "baseline": {
+        "final_multiple": 0.4122563,
+        "in_panel": true,
+        "worst_drawdown": 0.8809825793354189
+      },
+      "declared_headline": false,
+      "leg": "pre",
+      "provenance": {
+        "fills": 15346,
+        "fills_sha256": "dad0c70875c735db712e09357185a4816f3d74d91a2c149eb0b59472c0ddb54a",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:56:00",
+        "liquidity_counts": {
+          "maker": 15346
+        },
+        "traded_notional": 701093.626832
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c3__pre/backtest_results/binance_c3__pre/binance/2026-09-18T00_12_49",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 0.4122563,
+          "baseline_worst_drawdown": 0.8809825793354189,
+          "drawdown_added": 0.0031807261996606995,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9319749750985493,
+          "stressed_final_multiple": 0.3842125549267201,
+          "stressed_worst_drawdown": 0.8841633055350796,
+          "total_extra_cost": 280.4374507328,
+          "total_extra_cost_share_of_initial": 0.028043745073280002
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 0.4122563,
+          "baseline_worst_drawdown": 0.8809825793354189,
+          "drawdown_added": 0.00637073935564858,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8639499501970985,
+          "stressed_final_multiple": 0.3561688098534401,
+          "stressed_worst_drawdown": 0.8873533186910675,
+          "total_extra_cost": 560.8749014656,
+          "total_extra_cost_share_of_initial": 0.056087490146560004
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 0.4122563,
+          "baseline_worst_drawdown": 0.8809825793354189,
+          "drawdown_added": 0.003977357249430158,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9149687188731859,
+          "stressed_final_multiple": 0.3772016186583998,
+          "stressed_worst_drawdown": 0.8849599365848491,
+          "total_extra_cost": 350.546813416,
+          "total_extra_cost_share_of_initial": 0.0350546813416
+        }
+      }
+    },
+    "A_risk_geometry|c4__3y": {
+      "arm": "c4__3y",
+      "baseline": {
+        "final_multiple": 5.0167991999999995,
+        "in_panel": true,
+        "worst_drawdown": 0.1645090208245099
+      },
+      "declared_headline": false,
+      "leg": "3y",
+      "provenance": {
+        "fills": 25116,
+        "fills_sha256": "11c5c4037a165b3463e5e45b9548b81258927ebcb42093a89a5ac3cdd36d72d9",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:33:00",
+        "liquidity_counts": {
+          "maker": 25116
+        },
+        "traded_notional": 6688081.928851999
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__3y/backtest_results/binance_c4__3y/binance/2026-09-18T00_13_45",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 5.0167991999999995,
+          "baseline_worst_drawdown": 0.1645090208245099,
+          "drawdown_added": 0.00892920669836994,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.946678943380058,
+          "stressed_final_multiple": 4.74929816580592,
+          "stressed_worst_drawdown": 0.17343822752287985,
+          "total_extra_cost": 2675.2327715408005,
+          "total_extra_cost_share_of_initial": 0.26752327715408003
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 5.0167991999999995,
+          "baseline_worst_drawdown": 0.1645090208245099,
+          "drawdown_added": 0.018813236711677006,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.893357886760116,
+          "stressed_final_multiple": 4.48179713161184,
+          "stressed_worst_drawdown": 0.18332225753618692,
+          "total_extra_cost": 5350.465543081601,
+          "total_extra_cost_share_of_initial": 0.5350465543081601
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 5.0167991999999995,
+          "baseline_worst_drawdown": 0.1645090208245099,
+          "drawdown_added": 0.01130494764057488,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9333486792250725,
+          "stressed_final_multiple": 4.6824229072574,
+          "stressed_worst_drawdown": 0.1758139684650848,
+          "total_extra_cost": 3344.040964426,
+          "total_extra_cost_share_of_initial": 0.3344040964426
+        }
+      }
+    },
+    "A_risk_geometry|c4__ext": {
+      "arm": "c4__ext",
+      "baseline": {
+        "final_multiple": 9.112665,
+        "in_panel": true,
+        "worst_drawdown": 0.6100918467960836
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 40483,
+        "fills_sha256": "6b7e4b4f05e4fab1bce53b441824db8862e83a511f394c4d436947814d69cdac",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 23:02:00",
+        "liquidity_counts": {
+          "maker": 40483
+        },
+        "traded_notional": 14295755.679481998
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__ext/backtest_results/binance_c4__ext/binance/2026-09-18T00_15_17",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 9.112665,
+          "baseline_worst_drawdown": 0.6100918467960836,
+          "drawdown_added": 0.003965068157155582,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9372594764580858,
+          "stressed_final_multiple": 8.540931627037923,
+          "stressed_worst_drawdown": 0.6140569149532392,
+          "total_extra_cost": 5718.3022717928,
+          "total_extra_cost_share_of_initial": 0.57183022717928
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 9.112665,
+          "baseline_worst_drawdown": 0.6100918467960836,
+          "drawdown_added": 0.007941249963968389,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8745189529161713,
+          "stressed_final_multiple": 7.969198254075843,
+          "stressed_worst_drawdown": 0.618033096760052,
+          "total_extra_cost": 11436.6045435856,
+          "total_extra_cost_share_of_initial": 1.14366045435856
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 9.112665,
+          "baseline_worst_drawdown": 0.6100918467960836,
+          "drawdown_added": 0.0049580698809048585,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9215743455726071,
+          "stressed_final_multiple": 8.397998283797401,
+          "stressed_worst_drawdown": 0.6150499166769885,
+          "total_extra_cost": 7147.877839741001,
+          "total_extra_cost_share_of_initial": 0.7147877839741
+        }
+      }
+    },
+    "A_risk_geometry|c4__pre": {
+      "arm": "c4__pre",
+      "baseline": {
+        "final_multiple": 1.7771903999999998,
+        "in_panel": true,
+        "worst_drawdown": 0.6100918467960836
+      },
+      "declared_headline": false,
+      "leg": "pre",
+      "provenance": {
+        "fills": 15247,
+        "fills_sha256": "544a7f16b011c904bd7bc220f3356b684153abc8d2783954fa82ede661574659",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2023-09-06 17:56:00",
+        "liquidity_counts": {
+          "maker": 15247
+        },
+        "traded_notional": 2160681.4777539996
+      },
+      "round": "A_risk_geometry",
+      "run_dir": "backtests/binance/g4_twe300_risk_optimization_2026-09-17/artifacts/c4__pre/backtest_results/binance_c4__pre/binance/2026-09-18T00_16_14",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 1.7771903999999998,
+          "baseline_worst_drawdown": 0.6100918467960836,
+          "drawdown_added": 0.003965068157155582,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9513685989356234,
+          "stressed_final_multiple": 1.69076314088984,
+          "stressed_worst_drawdown": 0.6140569149532392,
+          "total_extra_cost": 864.2725911016,
+          "total_extra_cost_share_of_initial": 0.08642725911016
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 1.7771903999999998,
+          "baseline_worst_drawdown": 0.6100918467960836,
+          "drawdown_added": 0.007941249963968389,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.9027371978712468,
+          "stressed_final_multiple": 1.6043358817796802,
+          "stressed_worst_drawdown": 0.618033096760052,
+          "total_extra_cost": 1728.5451822032,
+          "total_extra_cost_share_of_initial": 0.17285451822032
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 1.7771903999999998,
+          "baseline_worst_drawdown": 0.6100918467960836,
+          "drawdown_added": 0.0049580698809048585,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9392107486695295,
+          "stressed_final_multiple": 1.6691563261123004,
+          "stressed_worst_drawdown": 0.6150499166769885,
+          "total_extra_cost": 1080.3407388770001,
+          "total_extra_cost_share_of_initial": 0.10803407388770002
+        }
+      }
+    },
+    "B_10k_replay|twe100_10k__ext": {
+      "arm": "twe100_10k__ext",
+      "baseline": {
+        "final_multiple": 3.2369371,
+        "in_panel": true,
+        "worst_drawdown": 0.4081405655647763
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45497,
+        "fills_sha256": "61dec21e941676b0aaa57422f0b4a6da1ae4b6dee79718f21559b4c078992d81",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 23:02:00",
+        "liquidity_counts": {
+          "maker": 45497
+        },
+        "traded_notional": 4050250.728696
+      },
+      "round": "B_10k_replay",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe100_10k__ext/backtest_results/binance_twe100_10k__ext/binance/2026-09-17T08_24_34",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 3.2369371,
+          "baseline_worst_drawdown": 0.4081405655647763,
+          "drawdown_added": 0.002786118614460764,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.949954144132044,
+          "stressed_final_multiple": 3.0749418124397607,
+          "stressed_worst_drawdown": 0.41092668417923706,
+          "total_extra_cost": 1620.1002914784,
+          "total_extra_cost_share_of_initial": 0.16201002914784002
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 3.2369371,
+          "baseline_worst_drawdown": 0.4081405655647763,
+          "drawdown_added": 0.005577597995021888,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8999082882640881,
+          "stressed_final_multiple": 2.9129465248795214,
+          "stressed_worst_drawdown": 0.4137181635597982,
+          "total_extra_cost": 3240.2005829568,
+          "total_extra_cost_share_of_initial": 0.32402005829568004
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 3.2369371,
+          "baseline_worst_drawdown": 0.4081405655647763,
+          "drawdown_added": 0.0034834852838413477,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9374426801650546,
+          "stressed_final_multiple": 3.0344429905496995,
+          "stressed_worst_drawdown": 0.41162405084861764,
+          "total_extra_cost": 2025.1253643480002,
+          "total_extra_cost_share_of_initial": 0.20251253643480002
+        }
+      }
+    },
+    "B_10k_replay|twe300_10k__3y": {
+      "arm": "twe300_10k__3y",
+      "baseline": {
+        "final_multiple": 9.0184164,
+        "in_panel": false,
+        "worst_drawdown": 0.2772691975266265
+      },
+      "declared_headline": true,
+      "leg": "3y",
+      "provenance": {
+        "fills": 28487,
+        "fills_sha256": "67cc9a6fda4e8d64ff7a6c3d8850e16c5c710923e14cdd170da1296406c42dd2",
+        "first_fill": "2023-10-06 00:01:00",
+        "last_fill": "2026-09-11 23:42:00",
+        "liquidity_counts": {
+          "maker": 28487
+        },
+        "traded_notional": 14291068.923352998
+      },
+      "round": "B_10k_replay",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k__3y/backtest_results/binance_twe300_10k__3y/binance/2026-09-17T08_18_53",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 9.0184164,
+          "baseline_worst_drawdown": 0.2772691975266265,
+          "drawdown_added": 0.01836128983195784,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9366214448866965,
+          "stressed_final_multiple": 8.44684219915788,
+          "stressed_worst_drawdown": 0.2956304873585843,
+          "total_extra_cost": 5716.4275693412,
+          "total_extra_cost_share_of_initial": 0.57164275693412
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 9.0184164,
+          "baseline_worst_drawdown": 0.2772691975266265,
+          "drawdown_added": 0.03913904093636156,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8732428897733928,
+          "stressed_final_multiple": 7.875267998315758,
+          "stressed_worst_drawdown": 0.31640823846298805,
+          "total_extra_cost": 11432.8551386824,
+          "total_extra_cost_share_of_initial": 1.14328551386824
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 9.0184164,
+          "baseline_worst_drawdown": 0.2772691975266265,
+          "drawdown_added": 0.023311426674878732,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9207768061083706,
+          "stressed_final_multiple": 8.30394864894735,
+          "stressed_worst_drawdown": 0.3005806242015052,
+          "total_extra_cost": 7145.5344616765,
+          "total_extra_cost_share_of_initial": 0.7145534461676499
+        }
+      }
+    },
+    "B_10k_replay|twe300_10k_allowance0__ext": {
+      "arm": "twe300_10k_allowance0__ext",
+      "baseline": {
+        "final_multiple": 14.442614,
+        "in_panel": true,
+        "worst_drawdown": 0.6408706476292505
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 46015,
+        "fills_sha256": "13e8360d6a8e1f604acf573d09122438515f35e48544a8df5fbf0b7705693e0c",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 46015
+        },
+        "traded_notional": 24589930.654822998
+      },
+      "round": "B_10k_replay",
+      "run_dir": "backtests/binance/g4_twe300_10k_replay_2026-09-17/artifacts/twe300_10k_allowance0__ext/backtest_results/binance_twe300_10k_allowance0__ext/binance/2026-09-17T08_32_07",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 14.442614,
+          "baseline_worst_drawdown": 0.6408706476292505,
+          "drawdown_added": 0.0017600781678546173,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9318961770914244,
+          "stressed_final_multiple": 13.459016773807086,
+          "stressed_worst_drawdown": 0.6426307257971051,
+          "total_extra_cost": 9835.9722619292,
+          "total_extra_cost_share_of_initial": 0.9835972261929201
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 14.442614,
+          "baseline_worst_drawdown": 0.6408706476292505,
+          "drawdown_added": 0.0035254347971868105,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8637923541828486,
+          "stressed_final_multiple": 12.475419547614168,
+          "stressed_worst_drawdown": 0.6443960824264373,
+          "total_extra_cost": 19671.9445238584,
+          "total_extra_cost_share_of_initial": 1.9671944523858402
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 14.442614,
+          "baseline_worst_drawdown": 0.6408706476292505,
+          "drawdown_added": 0.002200921542923062,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.9148702213642801,
+          "stressed_final_multiple": 13.21311746725885,
+          "stressed_worst_drawdown": 0.6430715691721736,
+          "total_extra_cost": 12294.9653274115,
+          "total_extra_cost_share_of_initial": 1.22949653274115
+        }
+      }
+    },
+    "C_account_guard|g_user12h__ext": {
+      "arm": "g_user12h__ext",
+      "baseline": {
+        "final_multiple": 7.968567999999999,
+        "in_panel": true,
+        "worst_drawdown": 0.5494346650429327
+      },
+      "declared_headline": true,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45425,
+        "fills_sha256": "7992201401c472d02336945009e0e03ff98f54e3fb8cc1f1ce477334428d0124",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 45425
+        },
+        "traded_notional": 18771918.337072
+      },
+      "round": "C_account_guard",
+      "run_dir": "backtests/binance/g4_twe300_account_guard_2026-09-17/artifacts/g_user12h__ext/backtest_results/binance_g_user12h__ext/binance/2026-09-17T09_36_13",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 7.968567999999999,
+          "baseline_worst_drawdown": 0.5494346650429327,
+          "drawdown_added": 0.0058615075376540204,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9057701793493037,
+          "stressed_final_multiple": 7.217691266517122,
+          "stressed_worst_drawdown": 0.5552961725805867,
+          "total_extra_cost": 7508.767334828801,
+          "total_extra_cost_share_of_initial": 0.7508767334828801
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 7.968567999999999,
+          "baseline_worst_drawdown": 0.5494346650429327,
+          "drawdown_added": 0.011745004829032957,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.8115403586986073,
+          "stressed_final_multiple": 6.466814533034244,
+          "stressed_worst_drawdown": 0.5611796698719657,
+          "total_extra_cost": 15017.534669657602,
+          "total_extra_cost_share_of_initial": 1.5017534669657602
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 7.968567999999999,
+          "baseline_worst_drawdown": 0.5494346650429327,
+          "drawdown_added": 0.007330315494144313,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.8822127241866288,
+          "stressed_final_multiple": 7.029972083146395,
+          "stressed_worst_drawdown": 0.556764980537077,
+          "total_extra_cost": 9385.959168536,
+          "total_extra_cost_share_of_initial": 0.9385959168535999
+        }
+      }
+    },
+    "C_account_guard|g_user24h__ext": {
+      "arm": "g_user24h__ext",
+      "baseline": {
+        "final_multiple": 7.809556,
+        "in_panel": true,
+        "worst_drawdown": 0.5556832127107735
+      },
+      "declared_headline": false,
+      "leg": "ext",
+      "provenance": {
+        "fills": 45202,
+        "fills_sha256": "1a5c3df993c403d8336c7914d5c95a588a6164bb96d20b509fbdfc494e8b25db",
+        "first_fill": "2021-05-14 00:01:00",
+        "last_fill": "2026-09-12 22:42:00",
+        "liquidity_counts": {
+          "maker": 45202
+        },
+        "traded_notional": 18579349.084326
+      },
+      "round": "C_account_guard",
+      "run_dir": "backtests/binance/g4_twe300_account_guard_2026-09-17/artifacts/g_user24h__ext/backtest_results/binance_g_user24h__ext/binance/2026-09-17T09_37_46",
+      "stress": {
+        "FEE_CONSERVATIVE": {
+          "baseline_final_multiple": 7.809556,
+          "baseline_worst_drawdown": 0.5556832127107735,
+          "drawdown_added": 0.005736118025602477,
+          "extra_bp": 4.0,
+          "retained_final_multiple_share": 0.9048378725534414,
+          "stressed_final_multiple": 7.066382036626964,
+          "stressed_worst_drawdown": 0.561419330736376,
+          "total_extra_cost": 7431.7396337304,
+          "total_extra_cost_share_of_initial": 0.74317396337304
+        },
+        "FEE_SEVERE": {
+          "baseline_final_multiple": 7.809556,
+          "baseline_worst_drawdown": 0.5556832127107735,
+          "drawdown_added": 0.011493755399582528,
+          "extra_bp": 8.0,
+          "retained_final_multiple_share": 0.809675745106883,
+          "stressed_final_multiple": 6.323208073253928,
+          "stressed_worst_drawdown": 0.567176968110356,
+          "total_extra_cost": 14863.4792674608,
+          "total_extra_cost_share_of_initial": 1.48634792674608
+        },
+        "SLIP_5BP": {
+          "baseline_final_multiple": 7.809556,
+          "baseline_worst_drawdown": 0.5556832127107735,
+          "drawdown_added": 0.007173505206502395,
+          "extra_bp": 5.0,
+          "retained_final_multiple_share": 0.8810473406918009,
+          "stressed_final_multiple": 6.880588545783698,
+          "stressed_worst_drawdown": 0.5628567179172759,
+          "total_extra_cost": 9289.674542163,
+          "total_extra_cost_share_of_initial": 0.9289674542163
+        }
+      }
+    }
+  },
+  "declared_before_measurement": true,
+  "generated_by": "report_tools/walkforward.py --stage stress",
+  "method": "对每一笔成交按其名义额 |qty×price| 追加 extra_bp 的额外成本，在成交时间戳上累积后前向填充到逐小时权益序列并直接相减，再重算终值倍数与最差回撤。这是一阶界：真实费率变化还会改变下单位置与订单结构，本算式无法建模；成交账本 fills.csv 是 run-local 文件，其 sha256 记录在此以便复核。",
+  "selection_input": false,
+  "selection_input_note": "这些压力臂**明确不是选择输入**：它们在看任何压力数字之前就被声明，并且不参与 CSCV/PBO、DSR、折叠稳定性或任何选臂规则。它们只回答「已发布的头条结论在更差的成本下还剩多少」。",
+  "stresses": [
+    {
+      "extra_bp": 4.0,
+      "key": "FEE_CONSERVATIVE",
+      "kind": "fee_inflation",
+      "note": "maker 0.0002 → 0.0006（早期研究声明的 conservative 成本档）"
+    },
+    {
+      "extra_bp": 8.0,
+      "key": "FEE_SEVERE",
+      "kind": "fee_inflation",
+      "note": "maker 0.0002 → 0.0010（早期研究声明的 severe 成本档）"
+    },
+    {
+      "extra_bp": 5.0,
+      "key": "SLIP_5BP",
+      "kind": "adverse_slippage",
+      "note": "每笔成交按名义额额外 5bp 逆价（挂单被穿价的保守代理）"
+    }
+  ]
+}

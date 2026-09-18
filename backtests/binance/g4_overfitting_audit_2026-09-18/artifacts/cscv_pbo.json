@@ -1,0 +1,2475 @@
+{
+  "blocks": [
+    8,
+    10,
+    12,
+    16
+  ],
+  "degeneracy_rule": {
+    "D0_no_equity_series": "arm 没有 balance_and_equity.csv.gz（无法重算月度序列）",
+    "D0_unexpected_cadence": "权益采样间隔不是 (60, 1) 分钟",
+    "D1_truncated": "arm 的月份集合与同腿的众数月份集合不同（强平或数据集裁剪提前结束）",
+    "D2_terminal_halt": "末段权益恒定段 ≥ 30 天（终局停机后再无成交）",
+    "D3_zero_variance": "月度收益样本标准差 < 1e-10，或非零月份 < 3",
+    "applied_at": "在任何选择（CSCV 选臂）之前，从该腿的 arm 池里整体移除",
+    "declared_before": "以上规则在看到任何 PBO/DSR 数字之前写死在 report_tools/panel.py",
+    "thresholds": {
+      "min_nonzero_months": 3,
+      "supported_cadence_minutes": [
+        60,
+        1
+      ],
+      "terminal_flat_abs_tol": 1e-09,
+      "terminal_flat_min_days": 30,
+      "terminal_flat_rel_tol": 1e-12,
+      "zero_variance_tol": 1e-10
+    }
+  },
+  "generated_by": "report_tools/cscv_pbo.py",
+  "interpretation": "PBO 度量的是「在这批 arm 里挑最好的那一个」在这条历史上的脆弱程度：把月份切成 S 个连续块、枚举全部半样本划分，用一半排名、看样本内冠军在另一半的分位。它**不是**亏钱概率，也检测不到参数时间旅行与选择 provenance——曲线本身不记录每个参数何时变得可知。",
+  "method_conventions": {
+    "block_edges": "edges[i] = floor(i·M/S)：整数运算，余数落在最早的块",
+    "rank_convention": "并列值取平均名次（average rank）；CSCV omega = 平均名次/(n+1)，omega ≤ 0.5 = 样本内冠军落在样本外下半区",
+    "tie_note": "并列是真实存在的：某条保护在窗口内从未触发时，多个 arm 的权益曲线逐位相同，用位置式 tie-break 会让 arm 的字母序决定答案"
+  },
+  "panels": {
+    "poolA_risk_geometry__3y": {
+      "arm_ids": [
+        "A_risk_geometry|a_allow000__3y",
+        "A_risk_geometry|a_allow000_twe200__3y",
+        "A_risk_geometry|a_allow000_twe250__3y",
+        "A_risk_geometry|a_allow010__3y",
+        "A_risk_geometry|a_allow020__3y",
+        "A_risk_geometry|b_cool24__3y",
+        "A_risk_geometry|b_cool48__3y",
+        "A_risk_geometry|b_cool72__3y",
+        "A_risk_geometry|b_ema15__3y",
+        "A_risk_geometry|b_lossgate050__3y",
+        "A_risk_geometry|b_red015__3y",
+        "A_risk_geometry|b_term055__3y",
+        "A_risk_geometry|b_term070__3y",
+        "A_risk_geometry|c1__3y",
+        "A_risk_geometry|c2__3y",
+        "A_risk_geometry|c3__3y",
+        "A_risk_geometry|c4__3y"
+      ],
+      "cscv": {
+        "max_adg_x_1_minus_dd|S10": {
+          "distinct_is_winners": 2,
+          "is_oos_intercept": 1.8414789143669048,
+          "is_oos_pearson": -0.9020675460409192,
+          "is_oos_slope": -1.0203303686498444,
+          "is_oos_spearman_mean": 0.5136800334168755,
+          "is_selected_score_mean": 0.9237041374839289,
+          "is_selected_score_median": 0.9139328124366081,
+          "logit_mean": 2.59829919164572,
+          "logit_median": 2.8332133440562157,
+          "logit_q05": -0.45198512374305727,
+          "logit_q95": 2.8332133440562157,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c1__3y",
+              238
+            ],
+            [
+              "A_risk_geometry|a_allow020__3y",
+              14
+            ]
+          ],
+          "n_blocks": 10,
+          "oos_selected_percentile_mean": 0.9080687830687831,
+          "oos_selected_percentile_median": 0.9444444444444444,
+          "oos_selected_score_mean": 0.8989955312445416,
+          "oos_selected_score_median": 0.8865364977633433,
+          "pbo": 0.05555555555555555,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 252
+        },
+        "max_adg_x_1_minus_dd|S12": {
+          "distinct_is_winners": 2,
+          "is_oos_intercept": 1.8020625329104392,
+          "is_oos_pearson": -0.8798521347159116,
+          "is_oos_slope": -0.9713288566267009,
+          "is_oos_spearman_mean": 0.524732285258601,
+          "is_selected_score_mean": 0.925366223624662,
+          "is_selected_score_median": 0.9151407261143418,
+          "logit_mean": 2.6363786778772904,
+          "logit_median": 2.8332133440562157,
+          "logit_q05": 2.0794415416798353,
+          "logit_q95": 2.8332133440562157,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c1__3y",
+              881
+            ],
+            [
+              "A_risk_geometry|a_allow020__3y",
+              43
+            ]
+          ],
+          "n_blocks": 12,
+          "oos_selected_percentile_mean": 0.913961038961039,
+          "oos_selected_percentile_median": 0.9444444444444444,
+          "oos_selected_score_mean": 0.903227616956129,
+          "oos_selected_score_median": 0.8884388319040735,
+          "pbo": 0.046536796536796536,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 924
+        },
+        "max_adg_x_1_minus_dd|S16": {
+          "distinct_is_winners": 2,
+          "is_oos_intercept": 1.8168414301884368,
+          "is_oos_pearson": -0.9592618003694496,
+          "is_oos_slope": -0.9646639347207717,
+          "is_oos_spearman_mean": 0.5189612726454832,
+          "is_selected_score_mean": 0.9284337290972372,
+          "is_selected_score_median": 0.9142520330432019,
+          "logit_mean": 2.773543613141783,
+          "logit_median": 2.8332133440562157,
+          "logit_q05": 2.8332133440562157,
+          "logit_q95": 2.8332133440562157,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c1__3y",
+              12685
+            ],
+            [
+              "A_risk_geometry|a_allow020__3y",
+              185
+            ]
+          ],
+          "n_blocks": 16,
+          "oos_selected_percentile_mean": 0.9352887852887853,
+          "oos_selected_percentile_median": 0.9444444444444444,
+          "oos_selected_score_mean": 0.9212148959500188,
+          "oos_selected_score_median": 0.9041283697449424,
+          "pbo": 0.014374514374514374,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 12870
+        },
+        "max_adg_x_1_minus_dd|S8": {
+          "distinct_is_winners": 2,
+          "is_oos_intercept": 1.8256394490435657,
+          "is_oos_pearson": -0.9568676857897215,
+          "is_oos_slope": -0.9731699157746782,
+          "is_oos_spearman_mean": 0.5403007518796993,
+          "is_selected_score_mean": 0.9286237962669796,
+          "is_selected_score_median": 0.9166075165819813,
+          "logit_mean": 2.772068596527751,
+          "logit_median": 2.8332133440562157,
+          "logit_q05": 2.8332133440562157,
+          "logit_q95": 2.8332133440562157,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c1__3y",
+              69
+            ],
+            [
+              "A_risk_geometry|a_allow020__3y",
+              1
+            ]
+          ],
+          "n_blocks": 8,
+          "oos_selected_percentile_mean": 0.9349206349206349,
+          "oos_selected_percentile_median": 0.9444444444444444,
+          "oos_selected_score_mean": 0.9219307074440666,
+          "oos_selected_score_median": 0.8526554603129548,
+          "pbo": 0.014285714285714285,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 70
+        },
+        "max_adg|S10": {
+          "distinct_is_winners": 2,
+          "is_oos_intercept": 1.8424883461844819,
+          "is_oos_pearson": -0.9255720802898092,
+          "is_oos_slope": -1.0174071401985005,
+          "is_oos_spearman_mean": 0.5789891395154554,
+          "is_selected_score_mean": 0.9237041374839289,
+          "is_selected_score_median": 0.9139328124366081,
+          "logit_mean": 2.606912122246323,
+          "logit_median": 2.8332133440562157,
+          "logit_q05": -0.45198512374305727,
+          "logit_q95": 2.8332133440562157,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c1__3y",
+              238
+            ],
+            [
+              "A_risk_geometry|a_allow020__3y",
+              14
+            ]
+          ],
+          "n_blocks": 10,
+          "oos_selected_percentile_mean": 0.9100529100529101,
+          "oos_selected_percentile_median": 0.9444444444444444,
+          "oos_selected_score_mean": 0.9027051612774354,
+          "oos_selected_score_median": 0.8865364977633433,
+          "pbo": 0.05555555555555555,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 252
+        },
+        "max_adg|S12": {
+          "distinct_is_winners": 2,
+          "is_oos_intercept": 1.8098935755268644,
+          "is_oos_pearson": -0.9101238262187201,
+          "is_oos_slope": -0.9760071799777696,
+          "is_oos_spearman_mean": 0.5873490544543175,
+          "is_selected_score_mean": 0.925366223624662,
+          "is_selected_score_median": 0.9151407261143418,
+          "logit_mean": 2.6444696126839182,
+          "logit_median": 2.8332133440562157,
+          "logit_q05": 2.0794415416798353,
+          "logit_q95": 2.8332133440562157,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c1__3y",
+              881
+            ],
+            [
+              "A_risk_geometry|a_allow020__3y",
+              43
+            ]
+          ],
+          "n_blocks": 12,
+          "oos_selected_percentile_mean": 0.9158249158249159,
+          "oos_selected_percentile_median": 0.9444444444444444,
+          "oos_selected_score_mean": 0.906729497160281,
+          "oos_selected_score_median": 0.8884388319040735,
+          "pbo": 0.046536796536796536,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 924
+        },
+        "max_adg|S16": {
+          "distinct_is_winners": 2,
+          "is_oos_intercept": 1.8223010864050393,
+          "is_oos_pearson": -0.9680407129569678,
+          "is_oos_slope": -0.9690899733136744,
+          "is_oos_spearman_mean": 0.5844227702122439,
+          "is_selected_score_mean": 0.9284337290972372,
+          "is_selected_score_median": 0.9142520330432019,
+          "logit_mean": 2.7797911749222495,
+          "logit_median": 2.8332133440562157,
+          "logit_q05": 2.8332133440562157,
+          "logit_q95": 2.8332133440562157,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c1__3y",
+              12685
+            ],
+            [
+              "A_risk_geometry|a_allow020__3y",
+              185
+            ]
+          ],
+          "n_blocks": 16,
+          "oos_selected_percentile_mean": 0.9367176033842701,
+          "oos_selected_percentile_median": 0.9444444444444444,
+          "oos_selected_score_mean": 0.9225652686506842,
+          "oos_selected_score_median": 0.9057293321815675,
+          "pbo": 0.011655011655011656,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 12870
+        },
+        "max_adg|S8": {
+          "distinct_is_winners": 2,
+          "is_oos_intercept": 1.8288492834005312,
+          "is_oos_pearson": -0.9654719978240893,
+          "is_oos_slope": -0.9753386541690154,
+          "is_oos_spearman_mean": 0.6006015037593987,
+          "is_selected_score_mean": 0.9286237962669796,
+          "is_selected_score_median": 0.9166075165819813,
+          "logit_mean": 2.775513768767992,
+          "logit_median": 2.8332133440562157,
+          "logit_q05": 2.8332133440562157,
+          "logit_q95": 2.8332133440562157,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c1__3y",
+              69
+            ],
+            [
+              "A_risk_geometry|a_allow020__3y",
+              1
+            ]
+          ],
+          "n_blocks": 8,
+          "oos_selected_percentile_mean": 0.9357142857142857,
+          "oos_selected_percentile_median": 0.9444444444444444,
+          "oos_selected_score_mean": 0.9231265997201727,
+          "oos_selected_score_median": 0.8526554603129548,
+          "pbo": 0.014285714285714285,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 70
+        }
+      },
+      "degeneracy_rule": {
+        "D0_no_equity_series": "arm 没有 balance_and_equity.csv.gz（无法重算月度序列）",
+        "D0_unexpected_cadence": "权益采样间隔不是 (60, 1) 分钟",
+        "D1_truncated": "arm 的月份集合与同腿的众数月份集合不同（强平或数据集裁剪提前结束）",
+        "D2_terminal_halt": "末段权益恒定段 ≥ 30 天（终局停机后再无成交）",
+        "D3_zero_variance": "月度收益样本标准差 < 1e-10，或非零月份 < 3",
+        "applied_at": "在任何选择（CSCV 选臂）之前，从该腿的 arm 池里整体移除",
+        "declared_before": "以上规则在看到任何 PBO/DSR 数字之前写死在 report_tools/panel.py",
+        "thresholds": {
+          "min_nonzero_months": 3,
+          "supported_cadence_minutes": [
+            60,
+            1
+          ],
+          "terminal_flat_abs_tol": 1e-09,
+          "terminal_flat_min_days": 30,
+          "terminal_flat_rel_tol": 1e-12,
+          "zero_variance_tol": 1e-10
+        }
+      },
+      "headline": {
+        "max_adg": {
+          "ranking": [
+            {
+              "adg": 0.913982206443577,
+              "arm_id": "A_risk_geometry|c1__3y",
+              "score": 0.913982206443577,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.7426468946487139,
+              "arm_id": "A_risk_geometry|c3__3y",
+              "score": 0.7426468946487139,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.717706874056032,
+              "arm_id": "A_risk_geometry|a_allow020__3y",
+              "score": 0.717706874056032,
+              "worst_drawdown": 0.13405531777315294
+            },
+            {
+              "adg": 0.6871955536702294,
+              "arm_id": "A_risk_geometry|c4__3y",
+              "score": 0.6871955536702294,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|a_allow000__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_cool24__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_cool48__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_cool72__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_lossgate050__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_term055__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_term070__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6173575841293557,
+              "arm_id": "A_risk_geometry|a_allow010__3y",
+              "score": 0.6173575841293557,
+              "worst_drawdown": 0.14762064112223627
+            },
+            {
+              "adg": 0.5470191039521866,
+              "arm_id": "A_risk_geometry|b_ema15__3y",
+              "score": 0.5470191039521866,
+              "worst_drawdown": 0.1378211809274742
+            },
+            {
+              "adg": 0.530319484977583,
+              "arm_id": "A_risk_geometry|a_allow000_twe250__3y",
+              "score": 0.530319484977583,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.5241739483795171,
+              "arm_id": "A_risk_geometry|b_red015__3y",
+              "score": 0.5241739483795171,
+              "worst_drawdown": 0.16359515229030486
+            },
+            {
+              "adg": 0.40311217931894183,
+              "arm_id": "A_risk_geometry|a_allow000_twe200__3y",
+              "score": 0.40311217931894183,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.362710228024387,
+              "arm_id": "A_risk_geometry|c2__3y",
+              "score": 0.362710228024387,
+              "worst_drawdown": 0.0036301664949311974
+            }
+          ],
+          "selection": "max_adg",
+          "winner": "A_risk_geometry|c1__3y",
+          "winner_adg": 0.913982206443577,
+          "winner_score": 0.913982206443577,
+          "winner_worst_drawdown": 0.0
+        },
+        "max_adg_x_1_minus_dd": {
+          "ranking": [
+            {
+              "adg": 0.913982206443577,
+              "arm_id": "A_risk_geometry|c1__3y",
+              "score": 0.913982206443577,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.7426468946487139,
+              "arm_id": "A_risk_geometry|c3__3y",
+              "score": 0.7426468946487139,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6871955536702294,
+              "arm_id": "A_risk_geometry|c4__3y",
+              "score": 0.6871955536702294,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|a_allow000__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_cool24__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_cool48__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_cool72__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_lossgate050__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_term055__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6579602739460362,
+              "arm_id": "A_risk_geometry|b_term070__3y",
+              "score": 0.6579602739460362,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.717706874056032,
+              "arm_id": "A_risk_geometry|a_allow020__3y",
+              "score": 0.6214944509864744,
+              "worst_drawdown": 0.13405531777315294
+            },
+            {
+              "adg": 0.530319484977583,
+              "arm_id": "A_risk_geometry|a_allow000_twe250__3y",
+              "score": 0.530319484977583,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.6173575841293557,
+              "arm_id": "A_risk_geometry|a_allow010__3y",
+              "score": 0.5262228617585053,
+              "worst_drawdown": 0.14762064112223627
+            },
+            {
+              "adg": 0.5470191039521866,
+              "arm_id": "A_risk_geometry|b_ema15__3y",
+              "score": 0.47162828505560744,
+              "worst_drawdown": 0.1378211809274742
+            },
+            {
+              "adg": 0.5241739483795171,
+              "arm_id": "A_risk_geometry|b_red015__3y",
+              "score": 0.43842163146775964,
+              "worst_drawdown": 0.16359515229030486
+            },
+            {
+              "adg": 0.40311217931894183,
+              "arm_id": "A_risk_geometry|a_allow000_twe200__3y",
+              "score": 0.40311217931894183,
+              "worst_drawdown": 0.0
+            },
+            {
+              "adg": 0.362710228024387,
+              "arm_id": "A_risk_geometry|c2__3y",
+              "score": 0.361393529507244,
+              "worst_drawdown": 0.0036301664949311974
+            }
+          ],
+          "selection": "max_adg_x_1_minus_dd",
+          "winner": "A_risk_geometry|c1__3y",
+          "winner_adg": 0.913982206443577,
+          "winner_score": 0.913982206443577,
+          "winner_worst_drawdown": 0.0
+        }
+      },
+      "leg": "3y",
+      "months": [
+        "2023-09",
+        "2023-10",
+        "2023-11",
+        "2023-12",
+        "2024-01",
+        "2024-02",
+        "2024-03",
+        "2024-04",
+        "2024-05",
+        "2024-06",
+        "2024-07",
+        "2024-08",
+        "2024-09",
+        "2024-10",
+        "2024-11",
+        "2024-12",
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07",
+        "2026-08",
+        "2026-09"
+      ],
+      "n_arms_in_pool": 17,
+      "n_arms_removed": 0,
+      "n_arms_used": 17,
+      "n_months": 37,
+      "pool": "poolA_risk_geometry",
+      "removed_by_reason": {}
+    },
+    "poolA_risk_geometry__ext": {
+      "arm_ids": [
+        "A_risk_geometry|a_allow000__ext",
+        "A_risk_geometry|a_allow000_twe200__ext",
+        "A_risk_geometry|a_allow000_twe250__ext",
+        "A_risk_geometry|a_allow010__ext",
+        "A_risk_geometry|a_allow020__ext",
+        "A_risk_geometry|b_cool24__ext",
+        "A_risk_geometry|b_cool48__ext",
+        "A_risk_geometry|b_cool72__ext",
+        "A_risk_geometry|b_ema15__ext",
+        "A_risk_geometry|b_lossgate050__ext",
+        "A_risk_geometry|b_red015__ext",
+        "A_risk_geometry|c2__ext",
+        "A_risk_geometry|c3__ext",
+        "A_risk_geometry|c4__ext"
+      ],
+      "cscv": {
+        "max_adg_x_1_minus_dd|S10": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.9350639613944459,
+          "is_oos_pearson": -0.9097367323721404,
+          "is_oos_slope": -1.481268779556462,
+          "is_oos_spearman_mean": 0.11135584924131178,
+          "is_selected_score_mean": 0.45821750135393596,
+          "is_selected_score_median": 0.42685732958275574,
+          "logit_mean": 0.5731293352375775,
+          "logit_median": 0.6931471805599452,
+          "logit_q05": -1.3862943611198906,
+          "logit_q95": 1.8718021769015918,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__ext",
+              126
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              120
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              6
+            ]
+          ],
+          "n_blocks": 10,
+          "oos_selected_percentile_mean": 0.606878306878307,
+          "oos_selected_percentile_median": 0.6666666666666666,
+          "oos_selected_score_mean": 0.2563206823924903,
+          "oos_selected_score_median": 0.15547522385163637,
+          "pbo": 0.36904761904761907,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 252
+        },
+        "max_adg_x_1_minus_dd|S12": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.8984939215500225,
+          "is_oos_pearson": -0.9288457655321077,
+          "is_oos_slope": -1.2808596533314194,
+          "is_oos_spearman_mean": 0.15412781051547572,
+          "is_selected_score_mean": 0.47248569560844594,
+          "is_selected_score_median": 0.4276967809675367,
+          "logit_mean": 0.6692384830560516,
+          "logit_median": 0.6931471805599452,
+          "logit_q05": -1.3862943611198906,
+          "logit_q95": 1.8718021769015918,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__ext",
+              462
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              434
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              28
+            ]
+          ],
+          "n_blocks": 12,
+          "oos_selected_percentile_mean": 0.6266955266955269,
+          "oos_selected_percentile_median": 0.6666666666666666,
+          "oos_selected_score_mean": 0.2933060572689343,
+          "oos_selected_score_median": 0.17427626353313821,
+          "pbo": 0.3560606060606061,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 924
+        },
+        "max_adg_x_1_minus_dd|S16": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.8512816991029398,
+          "is_oos_pearson": -0.8930085153932283,
+          "is_oos_slope": -1.1399795097663765,
+          "is_oos_spearman_mean": 0.17741974129639326,
+          "is_selected_score_mean": 0.484494761309539,
+          "is_selected_score_median": 0.4225508020332105,
+          "logit_mean": 0.7029857167212651,
+          "logit_median": 1.3862943611198908,
+          "logit_q05": -1.3862943611198906,
+          "logit_q95": 1.8718021769015918,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__ext",
+              6435
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              5940
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              495
+            ]
+          ],
+          "n_blocks": 16,
+          "oos_selected_percentile_mean": 0.6354623154623156,
+          "oos_selected_percentile_median": 0.8,
+          "oos_selected_score_mean": 0.2989675986209139,
+          "oos_selected_score_median": 0.15402520089633506,
+          "pbo": 0.3300699300699301,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 12870
+        },
+        "max_adg_x_1_minus_dd|S8": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.9756853650163577,
+          "is_oos_pearson": -0.8872946098144353,
+          "is_oos_slope": -1.6293489724447803,
+          "is_oos_spearman_mean": 0.0699811202013845,
+          "is_selected_score_mean": 0.44682662950623164,
+          "is_selected_score_median": 0.42672137930576176,
+          "logit_mean": 0.5216460993215701,
+          "logit_median": 1.0116009116784797,
+          "logit_q05": -1.3862943611198906,
+          "logit_q95": 1.8718021769015918,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__ext",
+              35
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              34
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              1
+            ]
+          ],
+          "n_blocks": 8,
+          "oos_selected_percentile_mean": 0.5952380952380952,
+          "oos_selected_percentile_median": 0.7333333333333333,
+          "oos_selected_score_mean": 0.2476488553694149,
+          "oos_selected_score_median": 0.15408231626787947,
+          "pbo": 0.4,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 70
+        },
+        "max_adg|S10": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 1.3527755277791804,
+          "is_oos_pearson": -0.8238687424026673,
+          "is_oos_slope": -2.156756019792854,
+          "is_oos_spearman_mean": 0.04171036990420251,
+          "is_selected_score_mean": 0.5352171627281428,
+          "is_selected_score_median": 0.532630155694269,
+          "logit_mean": -0.11439286772053428,
+          "logit_median": 0.2694982503663434,
+          "logit_q05": -2.639057329615259,
+          "logit_q95": 1.8718021769015918,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__ext",
+              126
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              120
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              6
+            ]
+          ],
+          "n_blocks": 10,
+          "oos_selected_percentile_mean": 0.4965608465608467,
+          "oos_selected_percentile_median": 0.5666666666666667,
+          "oos_selected_score_mean": 0.19844269016880667,
+          "oos_selected_score_median": 0.17576315080343585,
+          "pbo": 0.49206349206349204,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 252
+        },
+        "max_adg|S12": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 1.2267084802404438,
+          "is_oos_pearson": -0.9148155349965824,
+          "is_oos_slope": -1.8600370040098506,
+          "is_oos_spearman_mean": 0.042031390049011186,
+          "is_selected_score_mean": 0.5402462511746801,
+          "is_selected_score_median": 0.5263680391333607,
+          "logit_mean": -0.12549541860602878,
+          "logit_median": 0.6931471805599452,
+          "logit_q05": -2.639057329615259,
+          "logit_q95": 1.8718021769015918,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__ext",
+              462
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              434
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              28
+            ]
+          ],
+          "n_blocks": 12,
+          "oos_selected_percentile_mean": 0.4981962481962483,
+          "oos_selected_percentile_median": 0.6666666666666666,
+          "oos_selected_score_mean": 0.2218304617779392,
+          "oos_selected_score_median": 0.19095054830641267,
+          "pbo": 0.47835497835497837,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 924
+        },
+        "max_adg|S16": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 1.1151933372331215,
+          "is_oos_pearson": -0.8912068395327672,
+          "is_oos_slope": -1.610910291820148,
+          "is_oos_spearman_mean": 0.04853756131289171,
+          "is_selected_score_mean": 0.5521221921295576,
+          "is_selected_score_median": 0.5213211430411583,
+          "logit_mean": -0.19291266804475873,
+          "logit_median": 0.6931471805599452,
+          "logit_q05": -2.639057329615259,
+          "logit_q95": 1.8718021769015918,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__ext",
+              6435
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              5940
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              495
+            ]
+          ],
+          "n_blocks": 16,
+          "oos_selected_percentile_mean": 0.48794612794612807,
+          "oos_selected_percentile_median": 0.6666666666666666,
+          "oos_selected_score_mean": 0.22577401558931542,
+          "oos_selected_score_median": 0.20141822890886962,
+          "pbo": 0.4857031857031857,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 12870
+        },
+        "max_adg|S8": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 1.3181995694785138,
+          "is_oos_pearson": -0.7150745367657716,
+          "is_oos_slope": -2.1236799065133463,
+          "is_oos_spearman_mean": 0.040402769037130276,
+          "is_selected_score_mean": 0.5267824488239222,
+          "is_selected_score_median": 0.5229354282217605,
+          "logit_mean": -0.02461481181579373,
+          "logit_median": 0.41333928659223385,
+          "logit_q05": -2.639057329615259,
+          "logit_q95": 1.8718021769015918,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__ext",
+              35
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              34
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              1
+            ]
+          ],
+          "n_blocks": 8,
+          "oos_selected_percentile_mean": 0.503809523809524,
+          "oos_selected_percentile_median": 0.6,
+          "oos_selected_score_mean": 0.1994822678072547,
+          "oos_selected_score_median": 0.1556575996113294,
+          "pbo": 0.4857142857142857,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 70
+        }
+      },
+      "degeneracy_rule": {
+        "D0_no_equity_series": "arm 没有 balance_and_equity.csv.gz（无法重算月度序列）",
+        "D0_unexpected_cadence": "权益采样间隔不是 (60, 1) 分钟",
+        "D1_truncated": "arm 的月份集合与同腿的众数月份集合不同（强平或数据集裁剪提前结束）",
+        "D2_terminal_halt": "末段权益恒定段 ≥ 30 天（终局停机后再无成交）",
+        "D3_zero_variance": "月度收益样本标准差 < 1e-10，或非零月份 < 3",
+        "applied_at": "在任何选择（CSCV 选臂）之前，从该腿的 arm 池里整体移除",
+        "declared_before": "以上规则在看到任何 PBO/DSR 数字之前写死在 report_tools/panel.py",
+        "thresholds": {
+          "min_nonzero_months": 3,
+          "supported_cadence_minutes": [
+            60,
+            1
+          ],
+          "terminal_flat_abs_tol": 1e-09,
+          "terminal_flat_min_days": 30,
+          "terminal_flat_rel_tol": 1e-12,
+          "zero_variance_tol": 1e-10
+        }
+      },
+      "headline": {
+        "max_adg": {
+          "ranking": [
+            {
+              "adg": 0.49444860070476526,
+              "arm_id": "A_risk_geometry|c4__ext",
+              "score": 0.49444860070476526,
+              "worst_drawdown": 0.30244194
+            },
+            {
+              "adg": 0.3063668431983795,
+              "arm_id": "A_risk_geometry|b_red015__ext",
+              "score": 0.3063668431983795,
+              "worst_drawdown": 0.39731035000000003
+            },
+            {
+              "adg": 0.22649745254749898,
+              "arm_id": "A_risk_geometry|a_allow020__ext",
+              "score": 0.22649745254749898,
+              "worst_drawdown": 0.6839771699999999
+            },
+            {
+              "adg": 0.20553609682679297,
+              "arm_id": "A_risk_geometry|b_cool24__ext",
+              "score": 0.20553609682679297,
+              "worst_drawdown": 0.70835676
+            },
+            {
+              "adg": 0.19757341788940952,
+              "arm_id": "A_risk_geometry|a_allow010__ext",
+              "score": 0.19757341788940952,
+              "worst_drawdown": 0.6404771
+            },
+            {
+              "adg": 0.16907410699541536,
+              "arm_id": "A_risk_geometry|c3__ext",
+              "score": 0.16907410699541536,
+              "worst_drawdown": 0.85988252
+            },
+            {
+              "adg": 0.16574111770317757,
+              "arm_id": "A_risk_geometry|a_allow000__ext",
+              "score": 0.16574111770317757,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": 0.16574111770317757,
+              "arm_id": "A_risk_geometry|b_lossgate050__ext",
+              "score": 0.16574111770317757,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": 0.14490077611316576,
+              "arm_id": "A_risk_geometry|b_cool48__ext",
+              "score": 0.14490077611316576,
+              "worst_drawdown": 0.72671194
+            },
+            {
+              "adg": 0.13054071664273015,
+              "arm_id": "A_risk_geometry|a_allow000_twe200__ext",
+              "score": 0.13054071664273015,
+              "worst_drawdown": 0.5474427
+            },
+            {
+              "adg": 0.12230988876394733,
+              "arm_id": "A_risk_geometry|b_cool72__ext",
+              "score": 0.12230988876394733,
+              "worst_drawdown": 0.7487012
+            },
+            {
+              "adg": 0.11282324453260562,
+              "arm_id": "A_risk_geometry|b_ema15__ext",
+              "score": 0.11282324453260562,
+              "worst_drawdown": 0.6335292699999999
+            },
+            {
+              "adg": 0.09318751785283985,
+              "arm_id": "A_risk_geometry|a_allow000_twe250__ext",
+              "score": 0.09318751785283985,
+              "worst_drawdown": 0.7582778
+            },
+            {
+              "adg": 0.05032537065119813,
+              "arm_id": "A_risk_geometry|c2__ext",
+              "score": 0.05032537065119813,
+              "worst_drawdown": 0.73184587
+            }
+          ],
+          "selection": "max_adg",
+          "winner": "A_risk_geometry|c4__ext",
+          "winner_adg": 0.49444860070476526,
+          "winner_score": 0.49444860070476526,
+          "winner_worst_drawdown": 0.30244194
+        },
+        "max_adg_x_1_minus_dd": {
+          "ranking": [
+            {
+              "adg": 0.49444860070476526,
+              "arm_id": "A_risk_geometry|c4__ext",
+              "score": 0.3449066066773307,
+              "worst_drawdown": 0.30244194
+            },
+            {
+              "adg": 0.3063668431983795,
+              "arm_id": "A_risk_geometry|b_red015__ext",
+              "score": 0.1846441254988362,
+              "worst_drawdown": 0.39731035000000003
+            },
+            {
+              "adg": 0.22649745254749898,
+              "arm_id": "A_risk_geometry|a_allow020__ext",
+              "score": 0.07157836594185135,
+              "worst_drawdown": 0.6839771699999999
+            },
+            {
+              "adg": 0.19757341788940952,
+              "arm_id": "A_risk_geometry|a_allow010__ext",
+              "score": 0.07103216816251239,
+              "worst_drawdown": 0.6404771
+            },
+            {
+              "adg": 0.20553609682679297,
+              "arm_id": "A_risk_geometry|b_cool24__ext",
+              "score": 0.05994321321551961,
+              "worst_drawdown": 0.70835676
+            },
+            {
+              "adg": 0.13054071664273015,
+              "arm_id": "A_risk_geometry|a_allow000_twe200__ext",
+              "score": 0.05907715426389903,
+              "worst_drawdown": 0.5474427
+            },
+            {
+              "adg": 0.16574111770317757,
+              "arm_id": "A_risk_geometry|a_allow000__ext",
+              "score": 0.04995073485820414,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": 0.16574111770317757,
+              "arm_id": "A_risk_geometry|b_lossgate050__ext",
+              "score": 0.04995073485820414,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": 0.11282324453260562,
+              "arm_id": "A_risk_geometry|b_ema15__ext",
+              "score": 0.041346416784832495,
+              "worst_drawdown": 0.6335292699999999
+            },
+            {
+              "adg": 0.14490077611316576,
+              "arm_id": "A_risk_geometry|b_cool48__ext",
+              "score": 0.03959965199646142,
+              "worst_drawdown": 0.72671194
+            },
+            {
+              "adg": 0.12230988876394733,
+              "arm_id": "A_risk_geometry|b_cool72__ext",
+              "score": 0.03073632827451345,
+              "worst_drawdown": 0.7487012
+            },
+            {
+              "adg": 0.16907410699541536,
+              "arm_id": "A_risk_geometry|c3__ext",
+              "score": 0.023690237805447975,
+              "worst_drawdown": 0.85988252
+            },
+            {
+              "adg": 0.09318751785283985,
+              "arm_id": "A_risk_geometry|a_allow000_twe250__ext",
+              "score": 0.022525491827927725,
+              "worst_drawdown": 0.7582778
+            },
+            {
+              "adg": 0.05032537065119813,
+              "arm_id": "A_risk_geometry|c2__ext",
+              "score": 0.013494955983899567,
+              "worst_drawdown": 0.73184587
+            }
+          ],
+          "selection": "max_adg_x_1_minus_dd",
+          "winner": "A_risk_geometry|c4__ext",
+          "winner_adg": 0.49444860070476526,
+          "winner_score": 0.3449066066773307,
+          "winner_worst_drawdown": 0.30244194
+        }
+      },
+      "leg": "ext",
+      "months": [
+        "2021-04",
+        "2021-05",
+        "2021-06",
+        "2021-07",
+        "2021-08",
+        "2021-09",
+        "2021-10",
+        "2021-11",
+        "2021-12",
+        "2022-01",
+        "2022-02",
+        "2022-03",
+        "2022-04",
+        "2022-05",
+        "2022-06",
+        "2022-07",
+        "2022-08",
+        "2022-09",
+        "2022-10",
+        "2022-11",
+        "2022-12",
+        "2023-01",
+        "2023-02",
+        "2023-03",
+        "2023-04",
+        "2023-05",
+        "2023-06",
+        "2023-07",
+        "2023-08",
+        "2023-09",
+        "2023-10",
+        "2023-11",
+        "2023-12",
+        "2024-01",
+        "2024-02",
+        "2024-03",
+        "2024-04",
+        "2024-05",
+        "2024-06",
+        "2024-07",
+        "2024-08",
+        "2024-09",
+        "2024-10",
+        "2024-11",
+        "2024-12",
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07",
+        "2026-08",
+        "2026-09"
+      ],
+      "n_arms_in_pool": 17,
+      "n_arms_removed": 3,
+      "n_arms_used": 14,
+      "n_months": 66,
+      "pool": "poolA_risk_geometry",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__ext"
+        ],
+        "D2_terminal_halt": [
+          "b_term055__ext",
+          "b_term070__ext"
+        ],
+        "D3_zero_variance": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "c1__ext"
+        ]
+      }
+    },
+    "poolA_risk_geometry__pre": {
+      "arm_ids": [
+        "A_risk_geometry|a_allow000__pre",
+        "A_risk_geometry|a_allow000_twe250__pre",
+        "A_risk_geometry|a_allow037__pre",
+        "A_risk_geometry|b_cool24__pre",
+        "A_risk_geometry|b_cool48__pre",
+        "A_risk_geometry|b_cool72__pre",
+        "A_risk_geometry|c2__pre",
+        "A_risk_geometry|c3__pre",
+        "A_risk_geometry|c4__pre"
+      ],
+      "cscv": {
+        "max_adg_x_1_minus_dd|S10": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.47768288306354656,
+          "is_oos_pearson": -0.8468305131723008,
+          "is_oos_slope": -0.8124967082239467,
+          "is_oos_spearman_mean": 0.21587301587301586,
+          "is_selected_score_mean": 0.33727875697620413,
+          "is_selected_score_median": 0.2226513799334613,
+          "logit_mean": 0.846884120755007,
+          "logit_median": 1.3862943611198908,
+          "logit_q05": -2.197224577336219,
+          "logit_q95": 1.3862943611198908,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__pre",
+              122
+            ],
+            [
+              "A_risk_geometry|c3__pre",
+              109
+            ],
+            [
+              "A_risk_geometry|a_allow037__pre",
+              21
+            ]
+          ],
+          "n_blocks": 10,
+          "oos_selected_percentile_mean": 0.6904761904761906,
+          "oos_selected_percentile_median": 0.8,
+          "oos_selected_score_mean": 0.20364500326651613,
+          "oos_selected_score_median": 0.048840661927576384,
+          "pbo": 0.1388888888888889,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 252
+        },
+        "max_adg_x_1_minus_dd|S12": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.4819311965930144,
+          "is_oos_pearson": -0.8845438885615912,
+          "is_oos_slope": -0.9035595604103542,
+          "is_oos_spearman_mean": 0.2907287157287157,
+          "is_selected_score_mean": 0.3191840995628303,
+          "is_selected_score_median": 0.22707974082610563,
+          "logit_mean": 0.9973954988227991,
+          "logit_median": 1.3862943611198908,
+          "logit_q05": -0.8472978603872036,
+          "logit_q95": 1.3862943611198908,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__pre",
+              467
+            ],
+            [
+              "A_risk_geometry|c3__pre",
+              398
+            ],
+            [
+              "A_risk_geometry|a_allow037__pre",
+              59
+            ]
+          ],
+          "n_blocks": 12,
+          "oos_selected_percentile_mean": 0.7221861471861472,
+          "oos_selected_percentile_median": 0.8,
+          "oos_selected_score_mean": 0.1935293519020487,
+          "oos_selected_score_median": 0.17477130466443266,
+          "pbo": 0.0735930735930736,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 924
+        },
+        "max_adg_x_1_minus_dd|S16": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.4673272318036039,
+          "is_oos_pearson": -0.8571074730415921,
+          "is_oos_slope": -0.8372734109619195,
+          "is_oos_spearman_mean": 0.24606319606319607,
+          "is_selected_score_mean": 0.32823255545064406,
+          "is_selected_score_median": 0.22412676390445907,
+          "logit_mean": 0.8026296488606075,
+          "logit_median": 0.8472978603872034,
+          "logit_q05": -2.197224577336219,
+          "logit_q95": 1.3862943611198908,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__pre",
+              6372
+            ],
+            [
+              "A_risk_geometry|c3__pre",
+              5212
+            ],
+            [
+              "A_risk_geometry|a_allow037__pre",
+              1286
+            ]
+          ],
+          "n_blocks": 16,
+          "oos_selected_percentile_mean": 0.6807692307692308,
+          "oos_selected_percentile_median": 0.7,
+          "oos_selected_score_mean": 0.19250684051269573,
+          "oos_selected_score_median": 0.1404191441307459,
+          "pbo": 0.16526806526806526,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 12870
+        },
+        "max_adg_x_1_minus_dd|S8": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.49092251139820353,
+          "is_oos_pearson": -0.8651922243401531,
+          "is_oos_slope": -0.8662173270962296,
+          "is_oos_spearman_mean": 0.2380952380952381,
+          "is_selected_score_mean": 0.32883415202542965,
+          "is_selected_score_median": 0.22159726145539776,
+          "logit_mean": 1.0115024372921932,
+          "logit_median": 1.3862943611198908,
+          "logit_q05": -1.390932816183594,
+          "logit_q95": 2.1972245773362196,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c3__pre",
+              33
+            ],
+            [
+              "A_risk_geometry|c4__pre",
+              32
+            ],
+            [
+              "A_risk_geometry|a_allow037__pre",
+              5
+            ]
+          ],
+          "n_blocks": 8,
+          "oos_selected_percentile_mean": 0.7214285714285716,
+          "oos_selected_percentile_median": 0.8,
+          "oos_selected_score_mean": 0.20608067117278064,
+          "oos_selected_score_median": 0.06323535274872814,
+          "pbo": 0.1,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 70
+        },
+        "max_adg|S10": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.43449502109997584,
+          "is_oos_pearson": -0.8396643197433825,
+          "is_oos_slope": -1.3658441320765857,
+          "is_oos_spearman_mean": 0.07976190476190477,
+          "is_selected_score_mean": 0.35580671019734433,
+          "is_selected_score_median": 0.2754952302458822,
+          "logit_mean": -0.3779489509521905,
+          "logit_median": -0.4054651081081643,
+          "logit_q05": -2.197224577336219,
+          "logit_q95": 1.3862943611198908,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__pre",
+              126
+            ],
+            [
+              "A_risk_geometry|c3__pre",
+              105
+            ],
+            [
+              "A_risk_geometry|a_allow037__pre",
+              21
+            ]
+          ],
+          "n_blocks": 10,
+          "oos_selected_percentile_mean": 0.4507936507936508,
+          "oos_selected_percentile_median": 0.4,
+          "oos_selected_score_mean": -0.05148148617654096,
+          "oos_selected_score_median": 0.027396458711332394,
+          "pbo": 0.5119047619047619,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 252
+        },
+        "max_adg|S12": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.4686351704086535,
+          "is_oos_pearson": -0.8582252614721307,
+          "is_oos_slope": -1.5363494510308078,
+          "is_oos_spearman_mean": 0.21385281385281385,
+          "is_selected_score_mean": 0.3395687940505062,
+          "is_selected_score_median": 0.2867333395640429,
+          "logit_mean": -0.17593365192342011,
+          "logit_median": 0.8472978603872034,
+          "logit_q05": -2.197224577336219,
+          "logit_q95": 1.3862943611198908,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__pre",
+              474
+            ],
+            [
+              "A_risk_geometry|c3__pre",
+              372
+            ],
+            [
+              "A_risk_geometry|a_allow037__pre",
+              78
+            ]
+          ],
+          "n_blocks": 12,
+          "oos_selected_percentile_mean": 0.4931818181818182,
+          "oos_selected_percentile_median": 0.7,
+          "oos_selected_score_mean": -0.05306115991803523,
+          "oos_selected_score_median": 0.18514597531709986,
+          "pbo": 0.4231601731601732,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 924
+        },
+        "max_adg|S16": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.4447328611853446,
+          "is_oos_pearson": -0.835671651692639,
+          "is_oos_slope": -1.4093412825979312,
+          "is_oos_spearman_mean": 0.10378399378399379,
+          "is_selected_score_mean": 0.3485174546497385,
+          "is_selected_score_median": 0.2849067466003994,
+          "logit_mean": -0.3223430273303412,
+          "logit_median": 0.0,
+          "logit_q05": -2.197224577336219,
+          "logit_q95": 1.3862943611198908,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__pre",
+              6518
+            ],
+            [
+              "A_risk_geometry|c3__pre",
+              5063
+            ],
+            [
+              "A_risk_geometry|a_allow037__pre",
+              1289
+            ]
+          ],
+          "n_blocks": 16,
+          "oos_selected_percentile_mean": 0.4597280497280497,
+          "oos_selected_percentile_median": 0.5,
+          "oos_selected_score_mean": -0.04644717535848439,
+          "oos_selected_score_median": 0.14960717182344752,
+          "pbo": 0.5150738150738151,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 12870
+        },
+        "max_adg|S8": {
+          "distinct_is_winners": 3,
+          "is_oos_intercept": 0.448710175820728,
+          "is_oos_pearson": -0.8805569590501487,
+          "is_oos_slope": -1.4761348295528207,
+          "is_oos_spearman_mean": 0.1514285714285714,
+          "is_selected_score_mean": 0.3460431978686126,
+          "is_selected_score_median": 0.3010067982802933,
+          "logit_mean": -0.3323514297809597,
+          "logit_median": 0.4054651081081642,
+          "logit_q05": -2.197224577336219,
+          "logit_q95": 1.3862943611198908,
+          "most_frequent_is_best": [
+            [
+              "A_risk_geometry|c4__pre",
+              35
+            ],
+            [
+              "A_risk_geometry|c3__pre",
+              30
+            ],
+            [
+              "A_risk_geometry|a_allow037__pre",
+              5
+            ]
+          ],
+          "n_blocks": 8,
+          "oos_selected_percentile_mean": 0.4628571428571429,
+          "oos_selected_percentile_median": 0.6,
+          "oos_selected_score_mean": -0.06209624108296962,
+          "oos_selected_score_median": 0.036698538193511265,
+          "pbo": 0.4714285714285714,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 70
+        }
+      },
+      "degeneracy_rule": {
+        "D0_no_equity_series": "arm 没有 balance_and_equity.csv.gz（无法重算月度序列）",
+        "D0_unexpected_cadence": "权益采样间隔不是 (60, 1) 分钟",
+        "D1_truncated": "arm 的月份集合与同腿的众数月份集合不同（强平或数据集裁剪提前结束）",
+        "D2_terminal_halt": "末段权益恒定段 ≥ 30 天（终局停机后再无成交）",
+        "D3_zero_variance": "月度收益样本标准差 < 1e-10，或非零月份 < 3",
+        "applied_at": "在任何选择（CSCV 选臂）之前，从该腿的 arm 池里整体移除",
+        "declared_before": "以上规则在看到任何 PBO/DSR 数字之前写死在 report_tools/panel.py",
+        "thresholds": {
+          "min_nonzero_months": 3,
+          "supported_cadence_minutes": [
+            60,
+            1
+          ],
+          "terminal_flat_abs_tol": 1e-09,
+          "terminal_flat_min_days": 30,
+          "terminal_flat_rel_tol": 1e-12,
+          "zero_variance_tol": 1e-10
+        }
+      },
+      "headline": {
+        "max_adg": {
+          "ranking": [
+            {
+              "adg": 0.2586169710932893,
+              "arm_id": "A_risk_geometry|c4__pre",
+              "score": 0.2586169710932893,
+              "worst_drawdown": 0.30244194
+            },
+            {
+              "adg": 0.09301169402074794,
+              "arm_id": "A_risk_geometry|a_allow037__pre",
+              "score": 0.09301169402074794,
+              "worst_drawdown": 0.47726750000000007
+            },
+            {
+              "adg": -0.17945968947212287,
+              "arm_id": "A_risk_geometry|a_allow000__pre",
+              "score": -0.17945968947212287,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": -0.19120073106199986,
+              "arm_id": "A_risk_geometry|b_cool24__pre",
+              "score": -0.19120073106199986,
+              "worst_drawdown": 0.70835676
+            },
+            {
+              "adg": -0.2098873059265043,
+              "arm_id": "A_risk_geometry|b_cool48__pre",
+              "score": -0.2098873059265043,
+              "worst_drawdown": 0.72671194
+            },
+            {
+              "adg": -0.25277524011849895,
+              "arm_id": "A_risk_geometry|b_cool72__pre",
+              "score": -0.25277524011849895,
+              "worst_drawdown": 0.7487012
+            },
+            {
+              "adg": -0.2559723338413703,
+              "arm_id": "A_risk_geometry|c2__pre",
+              "score": -0.2559723338413703,
+              "worst_drawdown": 0.73184587
+            },
+            {
+              "adg": -0.29070317055156325,
+              "arm_id": "A_risk_geometry|a_allow000_twe250__pre",
+              "score": -0.29070317055156325,
+              "worst_drawdown": 0.7582778
+            },
+            {
+              "adg": -0.298436605967876,
+              "arm_id": "A_risk_geometry|c3__pre",
+              "score": -0.298436605967876,
+              "worst_drawdown": 0.85988252
+            }
+          ],
+          "selection": "max_adg",
+          "winner": "A_risk_geometry|c4__pre",
+          "winner_adg": 0.2586169710932893,
+          "winner_score": 0.2586169710932893,
+          "winner_worst_drawdown": 0.30244194
+        },
+        "max_adg_x_1_minus_dd": {
+          "ranking": [
+            {
+              "adg": 0.2586169710932893,
+              "arm_id": "A_risk_geometry|c4__pre",
+              "score": 0.18040035263891097,
+              "worst_drawdown": 0.30244194
+            },
+            {
+              "adg": 0.09301169402074794,
+              "arm_id": "A_risk_geometry|a_allow037__pre",
+              "score": 0.04862023534470061,
+              "worst_drawdown": 0.47726750000000007
+            },
+            {
+              "adg": -0.298436605967876,
+              "arm_id": "A_risk_geometry|c3__pre",
+              "score": -0.04181618516797175,
+              "worst_drawdown": 0.85988252
+            },
+            {
+              "adg": -0.17945968947212287,
+              "arm_id": "A_risk_geometry|a_allow000__pre",
+              "score": -0.05408521126671393,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": -0.19120073106199986,
+              "arm_id": "A_risk_geometry|b_cool24__pre",
+              "score": -0.05576240069729028,
+              "worst_drawdown": 0.70835676
+            },
+            {
+              "adg": -0.2098873059265043,
+              "arm_id": "A_risk_geometry|b_cool48__pre",
+              "score": -0.05735969465528087,
+              "worst_drawdown": 0.72671194
+            },
+            {
+              "adg": -0.25277524011849895,
+              "arm_id": "A_risk_geometry|b_cool72__pre",
+              "score": -0.06352211451149066,
+              "worst_drawdown": 0.7487012
+            },
+            {
+              "adg": -0.2559723338413703,
+              "arm_id": "A_risk_geometry|c2__pre",
+              "score": -0.06864003848530222,
+              "worst_drawdown": 0.73184587
+            },
+            {
+              "adg": -0.29070317055156325,
+              "arm_id": "A_risk_geometry|a_allow000_twe250__pre",
+              "score": -0.07026940993269908,
+              "worst_drawdown": 0.7582778
+            }
+          ],
+          "selection": "max_adg_x_1_minus_dd",
+          "winner": "A_risk_geometry|c4__pre",
+          "winner_adg": 0.2586169710932893,
+          "winner_score": 0.18040035263891097,
+          "winner_worst_drawdown": 0.30244194
+        }
+      },
+      "leg": "pre",
+      "months": [
+        "2021-04",
+        "2021-05",
+        "2021-06",
+        "2021-07",
+        "2021-08",
+        "2021-09",
+        "2021-10",
+        "2021-11",
+        "2021-12",
+        "2022-01",
+        "2022-02",
+        "2022-03",
+        "2022-04",
+        "2022-05",
+        "2022-06",
+        "2022-07",
+        "2022-08",
+        "2022-09",
+        "2022-10",
+        "2022-11",
+        "2022-12",
+        "2023-01",
+        "2023-02",
+        "2023-03",
+        "2023-04",
+        "2023-05",
+        "2023-06",
+        "2023-07",
+        "2023-08",
+        "2023-09"
+      ],
+      "n_arms_in_pool": 10,
+      "n_arms_removed": 1,
+      "n_arms_used": 9,
+      "n_months": 30,
+      "pool": "poolA_risk_geometry",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__pre"
+        ],
+        "D3_zero_variance": [
+          "c1__pre"
+        ]
+      }
+    },
+    "poolB_ext_union__ext": {
+      "arm_ids": [
+        "A_risk_geometry|a_allow000__ext",
+        "A_risk_geometry|a_allow000_twe200__ext",
+        "A_risk_geometry|a_allow000_twe250__ext",
+        "A_risk_geometry|a_allow010__ext",
+        "A_risk_geometry|a_allow020__ext",
+        "A_risk_geometry|b_cool24__ext",
+        "A_risk_geometry|b_cool48__ext",
+        "A_risk_geometry|b_cool72__ext",
+        "A_risk_geometry|b_ema15__ext",
+        "A_risk_geometry|b_lossgate050__ext",
+        "A_risk_geometry|b_red015__ext",
+        "A_risk_geometry|c2__ext",
+        "A_risk_geometry|c3__ext",
+        "A_risk_geometry|c4__ext",
+        "B_10k_replay|twe100_10k__ext",
+        "B_10k_replay|twe300_10k_allowance0__ext",
+        "C_account_guard|g_user12h__ext",
+        "C_account_guard|g_user24h__ext"
+      ],
+      "cscv": {
+        "max_adg_x_1_minus_dd|S10": {
+          "distinct_is_winners": 5,
+          "is_oos_intercept": 0.034059710389653615,
+          "is_oos_pearson": 0.15280740353341193,
+          "is_oos_slope": 0.33151865566885785,
+          "is_oos_spearman_mean": 0.22355043945953038,
+          "is_selected_score_mean": 0.6614280181071431,
+          "is_selected_score_median": 0.6591953103109109,
+          "logit_mean": 0.3627049469886705,
+          "logit_median": 1.0296194171811581,
+          "logit_q05": -1.6739764335716716,
+          "logit_q95": 2.1400661634962708,
+          "most_frequent_is_best": [
+            [
+              "B_10k_replay|twe300_10k_allowance0__ext",
+              126
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              104
+            ],
+            [
+              "C_account_guard|g_user12h__ext",
+              15
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              5
+            ],
+            [
+              "C_account_guard|g_user24h__ext",
+              2
+            ]
+          ],
+          "n_blocks": 10,
+          "oos_selected_percentile_mean": 0.5728905597326649,
+          "oos_selected_percentile_median": 0.7368421052631579,
+          "oos_selected_score_mean": 0.2533354377742506,
+          "oos_selected_score_median": 0.2039271185236126,
+          "pbo": 0.3968253968253968,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 252
+        },
+        "max_adg_x_1_minus_dd|S12": {
+          "distinct_is_winners": 5,
+          "is_oos_intercept": 0.8448311776886539,
+          "is_oos_pearson": -0.3739379049964423,
+          "is_oos_slope": -0.8395164915629769,
+          "is_oos_spearman_mean": 0.24847500983864623,
+          "is_selected_score_mean": 0.672976413918775,
+          "is_selected_score_median": 0.6637439284725464,
+          "logit_mean": 0.4430698475278689,
+          "logit_median": 1.0296194171811581,
+          "logit_q05": -1.6739764335716716,
+          "logit_q95": 1.6739764335716711,
+          "most_frequent_is_best": [
+            [
+              "B_10k_replay|twe300_10k_allowance0__ext",
+              462
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              357
+            ],
+            [
+              "C_account_guard|g_user12h__ext",
+              73
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              21
+            ],
+            [
+              "C_account_guard|g_user24h__ext",
+              11
+            ]
+          ],
+          "n_blocks": 12,
+          "oos_selected_percentile_mean": 0.5922191843244473,
+          "oos_selected_percentile_median": 0.7368421052631579,
+          "oos_selected_score_mean": 0.27985637977093064,
+          "oos_selected_score_median": 0.23196980660952976,
+          "pbo": 0.37445887445887444,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 924
+        },
+        "max_adg_x_1_minus_dd|S16": {
+          "distinct_is_winners": 5,
+          "is_oos_intercept": 0.8082692453135552,
+          "is_oos_pearson": -0.4428744503396144,
+          "is_oos_slope": -0.7661211513191317,
+          "is_oos_spearman_mean": 0.294418437393644,
+          "is_selected_score_mean": 0.6835072170145451,
+          "is_selected_score_median": 0.6604335817643981,
+          "logit_mean": 0.338314720327861,
+          "logit_median": 0.5389965007326868,
+          "logit_q05": -1.6739764335716716,
+          "logit_q95": 1.6739764335716711,
+          "most_frequent_is_best": [
+            [
+              "B_10k_replay|twe300_10k_allowance0__ext",
+              6435
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              5025
+            ],
+            [
+              "C_account_guard|g_user12h__ext",
+              755
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              330
+            ],
+            [
+              "C_account_guard|g_user24h__ext",
+              325
+            ]
+          ],
+          "n_blocks": 16,
+          "oos_selected_percentile_mean": 0.57173761910604,
+          "oos_selected_percentile_median": 0.631578947368421,
+          "oos_selected_score_mean": 0.2846199092794361,
+          "oos_selected_score_median": 0.25591343847889036,
+          "pbo": 0.3775446775446775,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 12870
+        },
+        "max_adg_x_1_minus_dd|S8": {
+          "distinct_is_winners": 4,
+          "is_oos_intercept": -0.21957326601656738,
+          "is_oos_pearson": 0.3724613269795518,
+          "is_oos_slope": 0.7172003981042984,
+          "is_oos_spearman_mean": 0.21174734356552538,
+          "is_selected_score_mean": 0.6526889299405889,
+          "is_selected_score_median": 0.6400950225388703,
+          "logit_mean": 0.3513266341378642,
+          "logit_median": 1.0296194171811581,
+          "logit_q05": -1.6739764335716716,
+          "logit_q95": 1.6739764335716711,
+          "most_frequent_is_best": [
+            [
+              "B_10k_replay|twe300_10k_allowance0__ext",
+              35
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              29
+            ],
+            [
+              "C_account_guard|g_user12h__ext",
+              5
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              1
+            ]
+          ],
+          "n_blocks": 8,
+          "oos_selected_percentile_mean": 0.5721804511278196,
+          "oos_selected_percentile_median": 0.7368421052631579,
+          "oos_selected_score_mean": 0.24853549437509176,
+          "oos_selected_score_median": 0.22412757754441465,
+          "pbo": 0.4142857142857143,
+          "score_definition": "ADG × (1 − 样本内月份链式权益的最差回撤)",
+          "selection": "max_adg_x_1_minus_dd",
+          "selection_label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+          "splits": 70
+        },
+        "max_adg|S10": {
+          "distinct_is_winners": 5,
+          "is_oos_intercept": 0.004907690333507561,
+          "is_oos_pearson": 0.1499674504882747,
+          "is_oos_slope": 0.3611954610384434,
+          "is_oos_spearman_mean": 0.20528335301062575,
+          "is_selected_score_mean": 0.6919987653874575,
+          "is_selected_score_median": 0.6863074126773718,
+          "logit_mean": 0.09135444528383836,
+          "logit_median": 1.0296194171811581,
+          "logit_q05": -2.890371757896165,
+          "logit_q95": 2.1400661634962708,
+          "most_frequent_is_best": [
+            [
+              "B_10k_replay|twe300_10k_allowance0__ext",
+              126
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              81
+            ],
+            [
+              "C_account_guard|g_user12h__ext",
+              24
+            ],
+            [
+              "C_account_guard|g_user24h__ext",
+              19
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              2
+            ]
+          ],
+          "n_blocks": 10,
+          "oos_selected_percentile_mean": 0.5534670008354218,
+          "oos_selected_percentile_median": 0.7368421052631579,
+          "oos_selected_score_mean": 0.25485450343566374,
+          "oos_selected_score_median": 0.3571841369611426,
+          "pbo": 0.3412698412698413,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 252
+        },
+        "max_adg|S12": {
+          "distinct_is_winners": 5,
+          "is_oos_intercept": 0.9239909986634228,
+          "is_oos_pearson": -0.3833445974496543,
+          "is_oos_slope": -0.9286141387078359,
+          "is_oos_spearman_mean": 0.2121391005688526,
+          "is_selected_score_mean": 0.7051966731537247,
+          "is_selected_score_median": 0.6889975635887395,
+          "logit_mean": 0.07843493587285588,
+          "logit_median": 1.0296194171811581,
+          "logit_q05": -2.890371757896165,
+          "logit_q95": 1.6739764335716711,
+          "most_frequent_is_best": [
+            [
+              "B_10k_replay|twe300_10k_allowance0__ext",
+              462
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              273
+            ],
+            [
+              "C_account_guard|g_user12h__ext",
+              88
+            ],
+            [
+              "C_account_guard|g_user24h__ext",
+              85
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              16
+            ]
+          ],
+          "n_blocks": 12,
+          "oos_selected_percentile_mean": 0.5565048986101616,
+          "oos_selected_percentile_median": 0.7368421052631579,
+          "oos_selected_score_mean": 0.2691353974031452,
+          "oos_selected_score_median": 0.37354753205145685,
+          "pbo": 0.29653679653679654,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 924
+        },
+        "max_adg|S16": {
+          "distinct_is_winners": 5,
+          "is_oos_intercept": 0.8675693925486037,
+          "is_oos_pearson": -0.43956272676431957,
+          "is_oos_slope": -0.8235203430132232,
+          "is_oos_spearman_mean": 0.2283630969581383,
+          "is_selected_score_mean": 0.7177534148464345,
+          "is_selected_score_median": 0.6907400599598378,
+          "logit_mean": 0.03222274710000326,
+          "logit_median": 1.0296194171811581,
+          "logit_q05": -2.890371757896165,
+          "logit_q95": 1.6739764335716711,
+          "most_frequent_is_best": [
+            [
+              "B_10k_replay|twe300_10k_allowance0__ext",
+              6435
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              3685
+            ],
+            [
+              "C_account_guard|g_user24h__ext",
+              1369
+            ],
+            [
+              "C_account_guard|g_user12h__ext",
+              1290
+            ],
+            [
+              "A_risk_geometry|a_allow020__ext",
+              91
+            ]
+          ],
+          "n_blocks": 16,
+          "oos_selected_percentile_mean": 0.5425591951907741,
+          "oos_selected_percentile_median": 0.7368421052631579,
+          "oos_selected_score_mean": 0.2764848541553567,
+          "oos_selected_score_median": 0.3532322161257253,
+          "pbo": 0.34514374514374513,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 12870
+        },
+        "max_adg|S8": {
+          "distinct_is_winners": 4,
+          "is_oos_intercept": -0.31144236930266905,
+          "is_oos_pearson": 0.3919910074415645,
+          "is_oos_slope": 0.8344833623134463,
+          "is_oos_spearman_mean": 0.21381345926800477,
+          "is_selected_score_mean": 0.6834138548913979,
+          "is_selected_score_median": 0.6722048315546301,
+          "logit_mean": 0.2022847914745468,
+          "logit_median": 1.0296194171811581,
+          "logit_q05": -2.890371757896165,
+          "logit_q95": 1.9303257850301996,
+          "most_frequent_is_best": [
+            [
+              "B_10k_replay|twe300_10k_allowance0__ext",
+              35
+            ],
+            [
+              "A_risk_geometry|c3__ext",
+              23
+            ],
+            [
+              "C_account_guard|g_user12h__ext",
+              7
+            ],
+            [
+              "C_account_guard|g_user24h__ext",
+              5
+            ]
+          ],
+          "n_blocks": 8,
+          "oos_selected_percentile_mean": 0.5661654135338348,
+          "oos_selected_percentile_median": 0.7368421052631579,
+          "oos_selected_score_mean": 0.2588551221786985,
+          "oos_selected_score_median": 0.32091398837954044,
+          "pbo": 0.34285714285714286,
+          "score_definition": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）",
+          "selection": "max_adg",
+          "selection_label": "max ADG（样本内年化几何增长最大）",
+          "splits": 70
+        }
+      },
+      "degeneracy_rule": {
+        "D0_no_equity_series": "arm 没有 balance_and_equity.csv.gz（无法重算月度序列）",
+        "D0_unexpected_cadence": "权益采样间隔不是 (60, 1) 分钟",
+        "D1_truncated": "arm 的月份集合与同腿的众数月份集合不同（强平或数据集裁剪提前结束）",
+        "D2_terminal_halt": "末段权益恒定段 ≥ 30 天（终局停机后再无成交）",
+        "D3_zero_variance": "月度收益样本标准差 < 1e-10，或非零月份 < 3",
+        "applied_at": "在任何选择（CSCV 选臂）之前，从该腿的 arm 池里整体移除",
+        "declared_before": "以上规则在看到任何 PBO/DSR 数字之前写死在 report_tools/panel.py",
+        "thresholds": {
+          "min_nonzero_months": 3,
+          "supported_cadence_minutes": [
+            60,
+            1
+          ],
+          "terminal_flat_abs_tol": 1e-09,
+          "terminal_flat_min_days": 30,
+          "terminal_flat_rel_tol": 1e-12,
+          "zero_variance_tol": 1e-10
+        }
+      },
+      "headline": {
+        "max_adg": {
+          "ranking": [
+            {
+              "adg": 0.6249675461824791,
+              "arm_id": "B_10k_replay|twe300_10k_allowance0__ext",
+              "score": 0.6249675461824791,
+              "worst_drawdown": 0.05362122118513368
+            },
+            {
+              "adg": 0.49444860070476526,
+              "arm_id": "A_risk_geometry|c4__ext",
+              "score": 0.49444860070476526,
+              "worst_drawdown": 0.30244194
+            },
+            {
+              "adg": 0.4584358263753048,
+              "arm_id": "C_account_guard|g_user12h__ext",
+              "score": 0.4584358263753048,
+              "worst_drawdown": 0.47726750000000007
+            },
+            {
+              "adg": 0.45310065591592874,
+              "arm_id": "C_account_guard|g_user24h__ext",
+              "score": 0.45310065591592874,
+              "worst_drawdown": 0.4842086
+            },
+            {
+              "adg": 0.3063668431983795,
+              "arm_id": "A_risk_geometry|b_red015__ext",
+              "score": 0.3063668431983795,
+              "worst_drawdown": 0.39731035000000003
+            },
+            {
+              "adg": 0.2380884829632952,
+              "arm_id": "B_10k_replay|twe100_10k__ext",
+              "score": 0.2380884829632952,
+              "worst_drawdown": 0.28432017
+            },
+            {
+              "adg": 0.22649745254749898,
+              "arm_id": "A_risk_geometry|a_allow020__ext",
+              "score": 0.22649745254749898,
+              "worst_drawdown": 0.6839771699999999
+            },
+            {
+              "adg": 0.20553609682679297,
+              "arm_id": "A_risk_geometry|b_cool24__ext",
+              "score": 0.20553609682679297,
+              "worst_drawdown": 0.70835676
+            },
+            {
+              "adg": 0.19757341788940952,
+              "arm_id": "A_risk_geometry|a_allow010__ext",
+              "score": 0.19757341788940952,
+              "worst_drawdown": 0.6404771
+            },
+            {
+              "adg": 0.16907410699541536,
+              "arm_id": "A_risk_geometry|c3__ext",
+              "score": 0.16907410699541536,
+              "worst_drawdown": 0.85988252
+            },
+            {
+              "adg": 0.16574111770317757,
+              "arm_id": "A_risk_geometry|a_allow000__ext",
+              "score": 0.16574111770317757,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": 0.16574111770317757,
+              "arm_id": "A_risk_geometry|b_lossgate050__ext",
+              "score": 0.16574111770317757,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": 0.14490077611316576,
+              "arm_id": "A_risk_geometry|b_cool48__ext",
+              "score": 0.14490077611316576,
+              "worst_drawdown": 0.72671194
+            },
+            {
+              "adg": 0.13054071664273015,
+              "arm_id": "A_risk_geometry|a_allow000_twe200__ext",
+              "score": 0.13054071664273015,
+              "worst_drawdown": 0.5474427
+            },
+            {
+              "adg": 0.12230988876394733,
+              "arm_id": "A_risk_geometry|b_cool72__ext",
+              "score": 0.12230988876394733,
+              "worst_drawdown": 0.7487012
+            },
+            {
+              "adg": 0.11282324453260562,
+              "arm_id": "A_risk_geometry|b_ema15__ext",
+              "score": 0.11282324453260562,
+              "worst_drawdown": 0.6335292699999999
+            },
+            {
+              "adg": 0.09318751785283985,
+              "arm_id": "A_risk_geometry|a_allow000_twe250__ext",
+              "score": 0.09318751785283985,
+              "worst_drawdown": 0.7582778
+            },
+            {
+              "adg": 0.05032537065119813,
+              "arm_id": "A_risk_geometry|c2__ext",
+              "score": 0.05032537065119813,
+              "worst_drawdown": 0.73184587
+            }
+          ],
+          "selection": "max_adg",
+          "winner": "B_10k_replay|twe300_10k_allowance0__ext",
+          "winner_adg": 0.6249675461824791,
+          "winner_score": 0.6249675461824791,
+          "winner_worst_drawdown": 0.05362122118513368
+        },
+        "max_adg_x_1_minus_dd": {
+          "ranking": [
+            {
+              "adg": 0.6249675461824791,
+              "arm_id": "B_10k_replay|twe300_10k_allowance0__ext",
+              "score": 0.5914560231550982,
+              "worst_drawdown": 0.05362122118513368
+            },
+            {
+              "adg": 0.49444860070476526,
+              "arm_id": "A_risk_geometry|c4__ext",
+              "score": 0.3449066066773307,
+              "worst_drawdown": 0.30244194
+            },
+            {
+              "adg": 0.4584358263753048,
+              "arm_id": "C_account_guard|g_user12h__ext",
+              "score": 0.23963930561072896,
+              "worst_drawdown": 0.47726750000000007
+            },
+            {
+              "adg": 0.45310065591592874,
+              "arm_id": "C_account_guard|g_user24h__ext",
+              "score": 0.23370542165579516,
+              "worst_drawdown": 0.4842086
+            },
+            {
+              "adg": 0.3063668431983795,
+              "arm_id": "A_risk_geometry|b_red015__ext",
+              "score": 0.1846441254988362,
+              "worst_drawdown": 0.39731035000000003
+            },
+            {
+              "adg": 0.2380884829632952,
+              "arm_id": "B_10k_replay|twe100_10k__ext",
+              "score": 0.17039512501212903,
+              "worst_drawdown": 0.28432017
+            },
+            {
+              "adg": 0.22649745254749898,
+              "arm_id": "A_risk_geometry|a_allow020__ext",
+              "score": 0.07157836594185135,
+              "worst_drawdown": 0.6839771699999999
+            },
+            {
+              "adg": 0.19757341788940952,
+              "arm_id": "A_risk_geometry|a_allow010__ext",
+              "score": 0.07103216816251239,
+              "worst_drawdown": 0.6404771
+            },
+            {
+              "adg": 0.20553609682679297,
+              "arm_id": "A_risk_geometry|b_cool24__ext",
+              "score": 0.05994321321551961,
+              "worst_drawdown": 0.70835676
+            },
+            {
+              "adg": 0.13054071664273015,
+              "arm_id": "A_risk_geometry|a_allow000_twe200__ext",
+              "score": 0.05907715426389903,
+              "worst_drawdown": 0.5474427
+            },
+            {
+              "adg": 0.16574111770317757,
+              "arm_id": "A_risk_geometry|a_allow000__ext",
+              "score": 0.04995073485820414,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": 0.16574111770317757,
+              "arm_id": "A_risk_geometry|b_lossgate050__ext",
+              "score": 0.04995073485820414,
+              "worst_drawdown": 0.6986219499999999
+            },
+            {
+              "adg": 0.11282324453260562,
+              "arm_id": "A_risk_geometry|b_ema15__ext",
+              "score": 0.041346416784832495,
+              "worst_drawdown": 0.6335292699999999
+            },
+            {
+              "adg": 0.14490077611316576,
+              "arm_id": "A_risk_geometry|b_cool48__ext",
+              "score": 0.03959965199646142,
+              "worst_drawdown": 0.72671194
+            },
+            {
+              "adg": 0.12230988876394733,
+              "arm_id": "A_risk_geometry|b_cool72__ext",
+              "score": 0.03073632827451345,
+              "worst_drawdown": 0.7487012
+            },
+            {
+              "adg": 0.16907410699541536,
+              "arm_id": "A_risk_geometry|c3__ext",
+              "score": 0.023690237805447975,
+              "worst_drawdown": 0.85988252
+            },
+            {
+              "adg": 0.09318751785283985,
+              "arm_id": "A_risk_geometry|a_allow000_twe250__ext",
+              "score": 0.022525491827927725,
+              "worst_drawdown": 0.7582778
+            },
+            {
+              "adg": 0.05032537065119813,
+              "arm_id": "A_risk_geometry|c2__ext",
+              "score": 0.013494955983899567,
+              "worst_drawdown": 0.73184587
+            }
+          ],
+          "selection": "max_adg_x_1_minus_dd",
+          "winner": "B_10k_replay|twe300_10k_allowance0__ext",
+          "winner_adg": 0.6249675461824791,
+          "winner_score": 0.5914560231550982,
+          "winner_worst_drawdown": 0.05362122118513368
+        }
+      },
+      "leg": "ext",
+      "months": [
+        "2021-04",
+        "2021-05",
+        "2021-06",
+        "2021-07",
+        "2021-08",
+        "2021-09",
+        "2021-10",
+        "2021-11",
+        "2021-12",
+        "2022-01",
+        "2022-02",
+        "2022-03",
+        "2022-04",
+        "2022-05",
+        "2022-06",
+        "2022-07",
+        "2022-08",
+        "2022-09",
+        "2022-10",
+        "2022-11",
+        "2022-12",
+        "2023-01",
+        "2023-02",
+        "2023-03",
+        "2023-04",
+        "2023-05",
+        "2023-06",
+        "2023-07",
+        "2023-08",
+        "2023-09",
+        "2023-10",
+        "2023-11",
+        "2023-12",
+        "2024-01",
+        "2024-02",
+        "2024-03",
+        "2024-04",
+        "2024-05",
+        "2024-06",
+        "2024-07",
+        "2024-08",
+        "2024-09",
+        "2024-10",
+        "2024-11",
+        "2024-12",
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07",
+        "2026-08",
+        "2026-09"
+      ],
+      "n_arms_in_pool": 28,
+      "n_arms_removed": 10,
+      "n_arms_used": 18,
+      "n_months": 66,
+      "pool": "poolB_ext_union",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__ext",
+          "g_orange_only__ext",
+          "g_slow_ema__ext",
+          "g_soft_orange__ext",
+          "twe300_10k__ext",
+          "twe300_10k_floor__ext",
+          "twe300_10k_never__ext"
+        ],
+        "D2_terminal_halt": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "g_ladder40__ext"
+        ],
+        "D3_zero_variance": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "c1__ext",
+          "g_ladder40__ext",
+          "g_orange_only__ext",
+          "g_slow_ema__ext",
+          "g_soft_orange__ext",
+          "twe300_10k__ext",
+          "twe300_10k_floor__ext",
+          "twe300_10k_never__ext"
+        ]
+      }
+    }
+  },
+  "selection_conventions": {
+    "max_adg": {
+      "label": "max ADG（样本内年化几何增长最大）",
+      "score": "ADG = prod(1+r)^(12/n_months) − 1，在样本内月份上计算（1+r 下限截断 1e-12）"
+    },
+    "max_adg_x_1_minus_dd": {
+      "label": "max ADG×(1−最差回撤)（样本内风险调整后最大）",
+      "score": "ADG × (1 − 样本内月份链式权益的最差回撤)"
+    }
+  }
+}

@@ -1,0 +1,1593 @@
+{
+  "conventions": {
+    "block_edges": "edges[i] = floor(i·M/K)：整数运算，余数落在最早的块",
+    "ranks": "并列值取平均名次（真实存在：多条保护未触发时权益曲线逐位相同）",
+    "spearman": "对平均名次求 Pearson（标准并列修正 Spearman）"
+  },
+  "fold_counts": [
+    3,
+    6
+  ],
+  "generated_by": "report_tools/walkforward.py --stage folds",
+  "j4_rule": "预注册 J4：样本内冠军在样本外的分位 ≤ 0.50，且折叠间排名的平均 Spearman ≥ 0.50",
+  "panels": {
+    "poolA_risk_geometry__3y": {
+      "K3": {
+        "fold_months": [
+          {
+            "fold": 0,
+            "months": [
+              "2023-09",
+              "2024-08"
+            ],
+            "n_months": 12
+          },
+          {
+            "fold": 1,
+            "months": [
+              "2024-09",
+              "2025-08"
+            ],
+            "n_months": 12
+          },
+          {
+            "fold": 2,
+            "months": [
+              "2025-09",
+              "2026-09"
+            ],
+            "n_months": 13
+          }
+        ],
+        "j4_percentile_bar": 0.5,
+        "j4_percentile_measured": 0.0,
+        "j4_spearman_bar": 0.5,
+        "j4_spearman_measured": 0.6241342707698624,
+        "max_pairwise_spearman": 0.8580599610458887,
+        "mean_out_of_fold_percentile_best0": 0.0,
+        "mean_pairwise_spearman": 0.6241342707698624,
+        "min_pairwise_spearman": 0.45526315789473687,
+        "n_folds": 3,
+        "pairwise_spearman": [
+          {
+            "folds": [
+              0,
+              1
+            ],
+            "spearman": 0.8580599610458887
+          },
+          {
+            "folds": [
+              0,
+              2
+            ],
+            "spearman": 0.5590796933689618
+          },
+          {
+            "folds": [
+              1,
+              2
+            ],
+            "spearman": 0.45526315789473687
+          }
+        ],
+        "per_fold": [
+          {
+            "fold": 0,
+            "in_fold_winner": "A_risk_geometry|c1__3y",
+            "in_fold_winner_score": 1.0157409999999998,
+            "months": [
+              "2023-09",
+              "2024-08"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 12,
+            "out_of_fold_omega": 0.9444444444444444,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 0.866978926780213
+          },
+          {
+            "fold": 1,
+            "in_fold_winner": "A_risk_geometry|c1__3y",
+            "in_fold_winner_score": 1.016281655232493,
+            "months": [
+              "2024-09",
+              "2025-08"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 12,
+            "out_of_fold_omega": 0.9444444444444444,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 0.8667386121860534
+          },
+          {
+            "fold": 2,
+            "in_fold_winner": "A_risk_geometry|c1__3y",
+            "in_fold_winner_score": 0.7389927453991607,
+            "months": [
+              "2025-09",
+              "2026-09"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 13,
+            "out_of_fold_omega": 0.9444444444444444,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 1.0160113094920873
+          }
+        ],
+        "share_of_folds_winner_in_top_half": 1.0,
+        "worst_out_of_fold_omega": 0.9444444444444444,
+        "worst_out_of_fold_percentile_best0": 0.0
+      },
+      "K6": {
+        "fold_months": [
+          {
+            "fold": 0,
+            "months": [
+              "2023-09",
+              "2024-02"
+            ],
+            "n_months": 6
+          },
+          {
+            "fold": 1,
+            "months": [
+              "2024-03",
+              "2024-08"
+            ],
+            "n_months": 6
+          },
+          {
+            "fold": 2,
+            "months": [
+              "2024-09",
+              "2025-02"
+            ],
+            "n_months": 6
+          },
+          {
+            "fold": 3,
+            "months": [
+              "2025-03",
+              "2025-08"
+            ],
+            "n_months": 6
+          },
+          {
+            "fold": 4,
+            "months": [
+              "2025-09",
+              "2026-02"
+            ],
+            "n_months": 6
+          },
+          {
+            "fold": 5,
+            "months": [
+              "2026-03",
+              "2026-09"
+            ],
+            "n_months": 7
+          }
+        ],
+        "j4_percentile_bar": 0.5,
+        "j4_percentile_measured": 0.1875,
+        "j4_spearman_bar": 0.5,
+        "j4_spearman_measured": 0.6668631222618772,
+        "max_pairwise_spearman": 0.97336176831143,
+        "mean_out_of_fold_percentile_best0": 0.03125,
+        "mean_pairwise_spearman": 0.6668631222618772,
+        "min_pairwise_spearman": 0.07105263157894737,
+        "n_folds": 6,
+        "pairwise_spearman": [
+          {
+            "folds": [
+              0,
+              1
+            ],
+            "spearman": 0.8153851999561424
+          },
+          {
+            "folds": [
+              0,
+              2
+            ],
+            "spearman": 0.9514690777574512
+          },
+          {
+            "folds": [
+              0,
+              3
+            ],
+            "spearman": 0.833222920695109
+          },
+          {
+            "folds": [
+              0,
+              4
+            ],
+            "spearman": 0.8002239931428274
+          },
+          {
+            "folds": [
+              0,
+              5
+            ],
+            "spearman": 0.2694912416769659
+          },
+          {
+            "folds": [
+              1,
+              2
+            ],
+            "spearman": 0.8232012751283995
+          },
+          {
+            "folds": [
+              1,
+              3
+            ],
+            "spearman": 0.97336176831143
+          },
+          {
+            "folds": [
+              1,
+              4
+            ],
+            "spearman": 0.8848743348285727
+          },
+          {
+            "folds": [
+              1,
+              5
+            ],
+            "spearman": 0.37540123295757627
+          },
+          {
+            "folds": [
+              2,
+              3
+            ],
+            "spearman": 0.8763157894736842
+          },
+          {
+            "folds": [
+              2,
+              4
+            ],
+            "spearman": 0.6763157894736842
+          },
+          {
+            "folds": [
+              2,
+              5
+            ],
+            "spearman": 0.41578947368421054
+          },
+          {
+            "folds": [
+              3,
+              4
+            ],
+            "spearman": 0.8236842105263158
+          },
+          {
+            "folds": [
+              3,
+              5
+            ],
+            "spearman": 0.4131578947368421
+          },
+          {
+            "folds": [
+              4,
+              5
+            ],
+            "spearman": 0.07105263157894737
+          }
+        ],
+        "per_fold": [
+          {
+            "fold": 0,
+            "in_fold_winner": "A_risk_geometry|c1__3y",
+            "in_fold_winner_score": 0.8337769305680398,
+            "months": [
+              "2023-09",
+              "2024-02"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 6,
+            "out_of_fold_omega": 0.9444444444444444,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 0.9299063262970166
+          },
+          {
+            "fold": 1,
+            "in_fold_winner": "A_risk_geometry|c1__3y",
+            "in_fold_winner_score": 1.2157612037481345,
+            "months": [
+              "2024-03",
+              "2024-08"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 6,
+            "out_of_fold_omega": 0.9444444444444444,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 0.8605061527319795
+          },
+          {
+            "fold": 2,
+            "in_fold_winner": "A_risk_geometry|a_allow020__3y",
+            "in_fold_winner_score": 1.6007823709301015,
+            "months": [
+              "2024-09",
+              "2025-02"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 6,
+            "out_of_fold_omega": 0.7777777777777778,
+            "out_of_fold_percentile_best0": 0.1875,
+            "out_of_fold_rank_best1": 4.0,
+            "out_of_fold_score": 0.5851864519149861
+          },
+          {
+            "fold": 3,
+            "in_fold_winner": "A_risk_geometry|c1__3y",
+            "in_fold_winner_score": 0.6067040478580861,
+            "months": [
+              "2025-03",
+              "2025-08"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 6,
+            "out_of_fold_omega": 0.9444444444444444,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 0.9799214562682401
+          },
+          {
+            "fold": 4,
+            "in_fold_winner": "A_risk_geometry|c1__3y",
+            "in_fold_winner_score": 1.0881704076657228,
+            "months": [
+              "2025-09",
+              "2026-02"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 6,
+            "out_of_fold_omega": 0.9444444444444444,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 0.8819857888632565
+          },
+          {
+            "fold": 5,
+            "in_fold_winner": "A_risk_geometry|c1__3y",
+            "in_fold_winner_score": 0.48655916514775965,
+            "months": [
+              "2026-03",
+              "2026-09"
+            ],
+            "n_arms_ranked": 17,
+            "n_months": 7,
+            "out_of_fold_omega": 0.9444444444444444,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 1.0302408350243244
+          }
+        ],
+        "share_of_folds_winner_in_top_half": 1.0,
+        "worst_out_of_fold_omega": 0.7777777777777778,
+        "worst_out_of_fold_percentile_best0": 0.1875
+      },
+      "leg": "3y",
+      "n_arms_removed": 0,
+      "n_arms_used": 17,
+      "n_months": 37,
+      "pool": "poolA_risk_geometry",
+      "primary": "K6",
+      "removed_by_reason": {}
+    },
+    "poolA_risk_geometry__ext": {
+      "K3": {
+        "fold_months": [
+          {
+            "fold": 0,
+            "months": [
+              "2021-04",
+              "2023-01"
+            ],
+            "n_months": 22
+          },
+          {
+            "fold": 1,
+            "months": [
+              "2023-02",
+              "2024-11"
+            ],
+            "n_months": 22
+          },
+          {
+            "fold": 2,
+            "months": [
+              "2024-12",
+              "2026-09"
+            ],
+            "n_months": 22
+          }
+        ],
+        "j4_percentile_bar": 0.5,
+        "j4_percentile_measured": 0.8461538461538461,
+        "j4_spearman_bar": 0.5,
+        "j4_spearman_measured": 0.10719530102790015,
+        "max_pairwise_spearman": 0.24669603524229075,
+        "mean_out_of_fold_percentile_best0": 0.5384615384615384,
+        "mean_pairwise_spearman": 0.10719530102790015,
+        "min_pairwise_spearman": -0.10572687224669604,
+        "n_folds": 3,
+        "pairwise_spearman": [
+          {
+            "folds": [
+              0,
+              1
+            ],
+            "spearman": 0.18061674008810572
+          },
+          {
+            "folds": [
+              0,
+              2
+            ],
+            "spearman": -0.10572687224669604
+          },
+          {
+            "folds": [
+              1,
+              2
+            ],
+            "spearman": 0.24669603524229075
+          }
+        ],
+        "per_fold": [
+          {
+            "fold": 0,
+            "in_fold_winner": "A_risk_geometry|c4__ext",
+            "in_fold_winner_score": 0.2958906578653193,
+            "months": [
+              "2021-04",
+              "2023-01"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 22,
+            "out_of_fold_omega": 0.8666666666666667,
+            "out_of_fold_percentile_best0": 0.07692307692307693,
+            "out_of_fold_rank_best1": 2.0,
+            "out_of_fold_score": 0.6048605242914078
+          },
+          {
+            "fold": 1,
+            "in_fold_winner": "A_risk_geometry|c3__ext",
+            "in_fold_winner_score": 0.6114659049122391,
+            "months": [
+              "2023-02",
+              "2024-11"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 22,
+            "out_of_fold_omega": 0.2,
+            "out_of_fold_percentile_best0": 0.8461538461538461,
+            "out_of_fold_rank_best1": 12.0,
+            "out_of_fold_score": -0.004244985848978811
+          },
+          {
+            "fold": 2,
+            "in_fold_winner": "A_risk_geometry|c3__ext",
+            "in_fold_winner_score": 0.7007298089615988,
+            "months": [
+              "2024-12",
+              "2026-09"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 22,
+            "out_of_fold_omega": 0.3333333333333333,
+            "out_of_fold_percentile_best0": 0.6923076923076923,
+            "out_of_fold_rank_best1": 10.0,
+            "out_of_fold_score": -0.03072859462380939
+          }
+        ],
+        "share_of_folds_winner_in_top_half": 0.3333333333333333,
+        "worst_out_of_fold_omega": 0.2,
+        "worst_out_of_fold_percentile_best0": 0.8461538461538461
+      },
+      "K6": {
+        "fold_months": [
+          {
+            "fold": 0,
+            "months": [
+              "2021-04",
+              "2022-02"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 1,
+            "months": [
+              "2022-03",
+              "2023-01"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 2,
+            "months": [
+              "2023-02",
+              "2023-12"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 3,
+            "months": [
+              "2024-01",
+              "2024-11"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 4,
+            "months": [
+              "2024-12",
+              "2025-10"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 5,
+            "months": [
+              "2025-11",
+              "2026-09"
+            ],
+            "n_months": 11
+          }
+        ],
+        "j4_percentile_bar": 0.5,
+        "j4_percentile_measured": 0.8461538461538461,
+        "j4_spearman_bar": 0.5,
+        "j4_spearman_measured": 0.2293685756240822,
+        "max_pairwise_spearman": 0.9427312775330396,
+        "mean_out_of_fold_percentile_best0": 0.3974358974358974,
+        "mean_pairwise_spearman": 0.2293685756240822,
+        "min_pairwise_spearman": -0.31277533039647576,
+        "n_folds": 6,
+        "pairwise_spearman": [
+          {
+            "folds": [
+              0,
+              1
+            ],
+            "spearman": -0.2687224669603524
+          },
+          {
+            "folds": [
+              0,
+              2
+            ],
+            "spearman": 0.14977973568281938
+          },
+          {
+            "folds": [
+              0,
+              3
+            ],
+            "spearman": 0.14977973568281938
+          },
+          {
+            "folds": [
+              0,
+              4
+            ],
+            "spearman": 0.1894273127753304
+          },
+          {
+            "folds": [
+              0,
+              5
+            ],
+            "spearman": -0.31277533039647576
+          },
+          {
+            "folds": [
+              1,
+              2
+            ],
+            "spearman": 0.8502202643171806
+          },
+          {
+            "folds": [
+              1,
+              3
+            ],
+            "spearman": -0.14537444933920704
+          },
+          {
+            "folds": [
+              1,
+              4
+            ],
+            "spearman": 0.8281938325991189
+          },
+          {
+            "folds": [
+              1,
+              5
+            ],
+            "spearman": 0.2907488986784141
+          },
+          {
+            "folds": [
+              2,
+              3
+            ],
+            "spearman": 0.06167400881057269
+          },
+          {
+            "folds": [
+              2,
+              4
+            ],
+            "spearman": 0.9427312775330396
+          },
+          {
+            "folds": [
+              2,
+              5
+            ],
+            "spearman": 0.3568281938325991
+          },
+          {
+            "folds": [
+              3,
+              4
+            ],
+            "spearman": 0.048458149779735685
+          },
+          {
+            "folds": [
+              3,
+              5
+            ],
+            "spearman": 0.18061674008810572
+          },
+          {
+            "folds": [
+              4,
+              5
+            ],
+            "spearman": 0.11894273127753303
+          }
+        ],
+        "per_fold": [
+          {
+            "fold": 0,
+            "in_fold_winner": "A_risk_geometry|c4__ext",
+            "in_fold_winner_score": 0.31949830024601145,
+            "months": [
+              "2021-04",
+              "2022-02"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 11,
+            "out_of_fold_omega": 0.8666666666666667,
+            "out_of_fold_percentile_best0": 0.07692307692307693,
+            "out_of_fold_rank_best1": 2.0,
+            "out_of_fold_score": 0.5321292798178967
+          },
+          {
+            "fold": 1,
+            "in_fold_winner": "A_risk_geometry|c3__ext",
+            "in_fold_winner_score": 0.34179207515026366,
+            "months": [
+              "2022-03",
+              "2023-01"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 11,
+            "out_of_fold_omega": 0.4666666666666667,
+            "out_of_fold_percentile_best0": 0.5384615384615384,
+            "out_of_fold_rank_best1": 8.0,
+            "out_of_fold_score": 0.13729572212585905
+          },
+          {
+            "fold": 2,
+            "in_fold_winner": "A_risk_geometry|a_allow020__ext",
+            "in_fold_winner_score": 0.340373740282655,
+            "months": [
+              "2023-02",
+              "2023-12"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 11,
+            "out_of_fold_omega": 0.8,
+            "out_of_fold_percentile_best0": 0.15384615384615385,
+            "out_of_fold_rank_best1": 3.0,
+            "out_of_fold_score": 0.20491052623507877
+          },
+          {
+            "fold": 3,
+            "in_fold_winner": "A_risk_geometry|c3__ext",
+            "in_fold_winner_score": 0.9677789644140615,
+            "months": [
+              "2024-01",
+              "2024-11"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 11,
+            "out_of_fold_omega": 0.2,
+            "out_of_fold_percentile_best0": 0.8461538461538461,
+            "out_of_fold_rank_best1": 12.0,
+            "out_of_fold_score": 0.053453056042999325
+          },
+          {
+            "fold": 4,
+            "in_fold_winner": "A_risk_geometry|a_allow020__ext",
+            "in_fold_winner_score": 1.0060555893266163,
+            "months": [
+              "2024-12",
+              "2025-10"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 11,
+            "out_of_fold_omega": 0.7333333333333333,
+            "out_of_fold_percentile_best0": 0.23076923076923078,
+            "out_of_fold_rank_best1": 4.0,
+            "out_of_fold_score": 0.11155610402977434
+          },
+          {
+            "fold": 5,
+            "in_fold_winner": "A_risk_geometry|c3__ext",
+            "in_fold_winner_score": 0.5617468853655769,
+            "months": [
+              "2025-11",
+              "2026-09"
+            ],
+            "n_arms_ranked": 14,
+            "n_months": 11,
+            "out_of_fold_omega": 0.4666666666666667,
+            "out_of_fold_percentile_best0": 0.5384615384615384,
+            "out_of_fold_rank_best1": 8.0,
+            "out_of_fold_score": 0.1032865413370958
+          }
+        ],
+        "share_of_folds_winner_in_top_half": 0.5,
+        "worst_out_of_fold_omega": 0.2,
+        "worst_out_of_fold_percentile_best0": 0.8461538461538461
+      },
+      "leg": "ext",
+      "n_arms_removed": 3,
+      "n_arms_used": 14,
+      "n_months": 66,
+      "pool": "poolA_risk_geometry",
+      "primary": "K6",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__ext"
+        ],
+        "D2_terminal_halt": [
+          "b_term055__ext",
+          "b_term070__ext"
+        ],
+        "D3_zero_variance": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "c1__ext"
+        ]
+      }
+    },
+    "poolA_risk_geometry__pre": {
+      "K3": {
+        "fold_months": [
+          {
+            "fold": 0,
+            "months": [
+              "2021-04",
+              "2022-01"
+            ],
+            "n_months": 10
+          },
+          {
+            "fold": 1,
+            "months": [
+              "2022-02",
+              "2022-11"
+            ],
+            "n_months": 10
+          },
+          {
+            "fold": 2,
+            "months": [
+              "2022-12",
+              "2023-09"
+            ],
+            "n_months": 10
+          }
+        ],
+        "j4_percentile_bar": 0.5,
+        "j4_percentile_measured": 1.0,
+        "j4_spearman_bar": 0.5,
+        "j4_spearman_measured": 0.1277777777777778,
+        "max_pairwise_spearman": 0.38333333333333336,
+        "mean_out_of_fold_percentile_best0": 0.4166666666666667,
+        "mean_pairwise_spearman": 0.1277777777777778,
+        "min_pairwise_spearman": -0.2,
+        "n_folds": 3,
+        "pairwise_spearman": [
+          {
+            "folds": [
+              0,
+              1
+            ],
+            "spearman": -0.2
+          },
+          {
+            "folds": [
+              0,
+              2
+            ],
+            "spearman": 0.38333333333333336
+          },
+          {
+            "folds": [
+              1,
+              2
+            ],
+            "spearman": 0.2
+          }
+        ],
+        "per_fold": [
+          {
+            "fold": 0,
+            "in_fold_winner": "A_risk_geometry|c4__pre",
+            "in_fold_winner_score": 0.20778688895276187,
+            "months": [
+              "2021-04",
+              "2022-01"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 10,
+            "out_of_fold_omega": 0.8,
+            "out_of_fold_percentile_best0": 0.125,
+            "out_of_fold_rank_best1": 2.0,
+            "out_of_fold_score": 0.28482867219362973
+          },
+          {
+            "fold": 1,
+            "in_fold_winner": "A_risk_geometry|c3__pre",
+            "in_fold_winner_score": 0.4623912482585928,
+            "months": [
+              "2022-02",
+              "2022-11"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 10,
+            "out_of_fold_omega": 0.1,
+            "out_of_fold_percentile_best0": 1.0,
+            "out_of_fold_rank_best1": 9.0,
+            "out_of_fold_score": -0.5140757298690253
+          },
+          {
+            "fold": 2,
+            "in_fold_winner": "A_risk_geometry|a_allow037__pre",
+            "in_fold_winner_score": 0.20312819777432378,
+            "months": [
+              "2022-12",
+              "2023-09"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 10,
+            "out_of_fold_omega": 0.8,
+            "out_of_fold_percentile_best0": 0.125,
+            "out_of_fold_rank_best1": 2.0,
+            "out_of_fold_score": 0.041792580019754055
+          }
+        ],
+        "share_of_folds_winner_in_top_half": 0.6666666666666666,
+        "worst_out_of_fold_omega": 0.1,
+        "worst_out_of_fold_percentile_best0": 1.0
+      },
+      "K6": {
+        "fold_months": [
+          {
+            "fold": 0,
+            "months": [
+              "2021-04",
+              "2021-08"
+            ],
+            "n_months": 5
+          },
+          {
+            "fold": 1,
+            "months": [
+              "2021-09",
+              "2022-01"
+            ],
+            "n_months": 5
+          },
+          {
+            "fold": 2,
+            "months": [
+              "2022-02",
+              "2022-06"
+            ],
+            "n_months": 5
+          },
+          {
+            "fold": 3,
+            "months": [
+              "2022-07",
+              "2022-11"
+            ],
+            "n_months": 5
+          },
+          {
+            "fold": 4,
+            "months": [
+              "2022-12",
+              "2023-04"
+            ],
+            "n_months": 5
+          },
+          {
+            "fold": 5,
+            "months": [
+              "2023-05",
+              "2023-09"
+            ],
+            "n_months": 5
+          }
+        ],
+        "j4_percentile_bar": 0.5,
+        "j4_percentile_measured": 1.0,
+        "j4_spearman_bar": 0.5,
+        "j4_spearman_measured": 0.3133333333333334,
+        "max_pairwise_spearman": 0.8166666666666667,
+        "mean_out_of_fold_percentile_best0": 0.3958333333333333,
+        "mean_pairwise_spearman": 0.3133333333333334,
+        "min_pairwise_spearman": -0.4,
+        "n_folds": 6,
+        "pairwise_spearman": [
+          {
+            "folds": [
+              0,
+              1
+            ],
+            "spearman": 0.35
+          },
+          {
+            "folds": [
+              0,
+              2
+            ],
+            "spearman": 0.3333333333333333
+          },
+          {
+            "folds": [
+              0,
+              3
+            ],
+            "spearman": -0.4
+          },
+          {
+            "folds": [
+              0,
+              4
+            ],
+            "spearman": 0.23333333333333334
+          },
+          {
+            "folds": [
+              0,
+              5
+            ],
+            "spearman": 0.6166666666666667
+          },
+          {
+            "folds": [
+              1,
+              2
+            ],
+            "spearman": 0.6666666666666666
+          },
+          {
+            "folds": [
+              1,
+              3
+            ],
+            "spearman": 0.2
+          },
+          {
+            "folds": [
+              1,
+              4
+            ],
+            "spearman": 0.8166666666666667
+          },
+          {
+            "folds": [
+              1,
+              5
+            ],
+            "spearman": 0.5833333333333334
+          },
+          {
+            "folds": [
+              2,
+              3
+            ],
+            "spearman": 0.08333333333333333
+          },
+          {
+            "folds": [
+              2,
+              4
+            ],
+            "spearman": 0.4666666666666667
+          },
+          {
+            "folds": [
+              2,
+              5
+            ],
+            "spearman": 0.05
+          },
+          {
+            "folds": [
+              3,
+              4
+            ],
+            "spearman": 0.13333333333333333
+          },
+          {
+            "folds": [
+              3,
+              5
+            ],
+            "spearman": -0.05
+          },
+          {
+            "folds": [
+              4,
+              5
+            ],
+            "spearman": 0.6166666666666667
+          }
+        ],
+        "per_fold": [
+          {
+            "fold": 0,
+            "in_fold_winner": "A_risk_geometry|c4__pre",
+            "in_fold_winner_score": -0.5006505169434379,
+            "months": [
+              "2021-04",
+              "2021-08"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 5,
+            "out_of_fold_omega": 0.8,
+            "out_of_fold_percentile_best0": 0.125,
+            "out_of_fold_rank_best1": 2.0,
+            "out_of_fold_score": 0.5142283717807938
+          },
+          {
+            "fold": 1,
+            "in_fold_winner": "A_risk_geometry|c3__pre",
+            "in_fold_winner_score": 2.4555523164051647,
+            "months": [
+              "2021-09",
+              "2022-01"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 5,
+            "out_of_fold_omega": 0.1,
+            "out_of_fold_percentile_best0": 1.0,
+            "out_of_fold_rank_best1": 9.0,
+            "out_of_fold_score": -0.4899922095643524
+          },
+          {
+            "fold": 2,
+            "in_fold_winner": "A_risk_geometry|c4__pre",
+            "in_fold_winner_score": 0.5759494539615901,
+            "months": [
+              "2022-02",
+              "2022-06"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 5,
+            "out_of_fold_omega": 0.9,
+            "out_of_fold_percentile_best0": 0.0,
+            "out_of_fold_rank_best1": 1.0,
+            "out_of_fold_score": 0.2032720899897602
+          },
+          {
+            "fold": 3,
+            "in_fold_winner": "A_risk_geometry|c3__pre",
+            "in_fold_winner_score": 0.38222439002055597,
+            "months": [
+              "2022-07",
+              "2022-11"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 5,
+            "out_of_fold_omega": 0.1,
+            "out_of_fold_percentile_best0": 1.0,
+            "out_of_fold_rank_best1": 9.0,
+            "out_of_fold_score": -0.38741748837859336
+          },
+          {
+            "fold": 4,
+            "in_fold_winner": "A_risk_geometry|a_allow037__pre",
+            "in_fold_winner_score": 0.35906345084102753,
+            "months": [
+              "2022-12",
+              "2023-04"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 5,
+            "out_of_fold_omega": 0.8,
+            "out_of_fold_percentile_best0": 0.125,
+            "out_of_fold_rank_best1": 2.0,
+            "out_of_fold_score": 0.046409860661836166
+          },
+          {
+            "fold": 5,
+            "in_fold_winner": "A_risk_geometry|a_allow037__pre",
+            "in_fold_winner_score": 0.06508453257566948,
+            "months": [
+              "2023-05",
+              "2023-09"
+            ],
+            "n_arms_ranked": 9,
+            "n_months": 5,
+            "out_of_fold_omega": 0.8,
+            "out_of_fold_percentile_best0": 0.125,
+            "out_of_fold_rank_best1": 2.0,
+            "out_of_fold_score": 0.09868439108938909
+          }
+        ],
+        "share_of_folds_winner_in_top_half": 0.6666666666666666,
+        "worst_out_of_fold_omega": 0.1,
+        "worst_out_of_fold_percentile_best0": 1.0
+      },
+      "leg": "pre",
+      "n_arms_removed": 1,
+      "n_arms_used": 9,
+      "n_months": 30,
+      "pool": "poolA_risk_geometry",
+      "primary": "K6",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__pre"
+        ],
+        "D3_zero_variance": [
+          "c1__pre"
+        ]
+      }
+    },
+    "poolB_ext_union__ext": {
+      "K3": {
+        "fold_months": [
+          {
+            "fold": 0,
+            "months": [
+              "2021-04",
+              "2023-01"
+            ],
+            "n_months": 22
+          },
+          {
+            "fold": 1,
+            "months": [
+              "2023-02",
+              "2024-11"
+            ],
+            "n_months": 22
+          },
+          {
+            "fold": 2,
+            "months": [
+              "2024-12",
+              "2026-09"
+            ],
+            "n_months": 22
+          }
+        ],
+        "j4_percentile_bar": 0.5,
+        "j4_percentile_measured": 0.7647058823529411,
+        "j4_spearman_bar": 0.5,
+        "j4_spearman_measured": 0.3340220385674931,
+        "max_pairwise_spearman": 0.6136363636363636,
+        "mean_out_of_fold_percentile_best0": 0.37254901960784315,
+        "mean_pairwise_spearman": 0.3340220385674931,
+        "min_pairwise_spearman": 0.08884297520661157,
+        "n_folds": 3,
+        "pairwise_spearman": [
+          {
+            "folds": [
+              0,
+              1
+            ],
+            "spearman": 0.29958677685950413
+          },
+          {
+            "folds": [
+              0,
+              2
+            ],
+            "spearman": 0.08884297520661157
+          },
+          {
+            "folds": [
+              1,
+              2
+            ],
+            "spearman": 0.6136363636363636
+          }
+        ],
+        "per_fold": [
+          {
+            "fold": 0,
+            "in_fold_winner": "B_10k_replay|twe300_10k_allowance0__ext",
+            "in_fold_winner_score": 0.7250057691552954,
+            "months": [
+              "2021-04",
+              "2023-01"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 22,
+            "out_of_fold_omega": 0.7368421052631579,
+            "out_of_fold_percentile_best0": 0.23529411764705882,
+            "out_of_fold_rank_best1": 5.0,
+            "out_of_fold_score": 0.5771455016224394
+          },
+          {
+            "fold": 1,
+            "in_fold_winner": "C_account_guard|g_user12h__ext",
+            "in_fold_winner_score": 0.7932388635833418,
+            "months": [
+              "2023-02",
+              "2024-11"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 22,
+            "out_of_fold_omega": 0.8421052631578947,
+            "out_of_fold_percentile_best0": 0.11764705882352941,
+            "out_of_fold_rank_best1": 3.0,
+            "out_of_fold_score": 0.315260916468058
+          },
+          {
+            "fold": 2,
+            "in_fold_winner": "A_risk_geometry|c3__ext",
+            "in_fold_winner_score": 0.7007298089615988,
+            "months": [
+              "2024-12",
+              "2026-09"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 22,
+            "out_of_fold_omega": 0.2631578947368421,
+            "out_of_fold_percentile_best0": 0.7647058823529411,
+            "out_of_fold_rank_best1": 14.0,
+            "out_of_fold_score": -0.03072859462380939
+          }
+        ],
+        "share_of_folds_winner_in_top_half": 0.6666666666666666,
+        "worst_out_of_fold_omega": 0.2631578947368421,
+        "worst_out_of_fold_percentile_best0": 0.7647058823529411
+      },
+      "K6": {
+        "fold_months": [
+          {
+            "fold": 0,
+            "months": [
+              "2021-04",
+              "2022-02"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 1,
+            "months": [
+              "2022-03",
+              "2023-01"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 2,
+            "months": [
+              "2023-02",
+              "2023-12"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 3,
+            "months": [
+              "2024-01",
+              "2024-11"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 4,
+            "months": [
+              "2024-12",
+              "2025-10"
+            ],
+            "n_months": 11
+          },
+          {
+            "fold": 5,
+            "months": [
+              "2025-11",
+              "2026-09"
+            ],
+            "n_months": 11
+          }
+        ],
+        "j4_percentile_bar": 0.5,
+        "j4_percentile_measured": 0.6470588235294118,
+        "j4_spearman_bar": 0.5,
+        "j4_spearman_measured": 0.19049586776859503,
+        "max_pairwise_spearman": 0.9731404958677686,
+        "mean_out_of_fold_percentile_best0": 0.3137254901960784,
+        "mean_pairwise_spearman": 0.19049586776859503,
+        "min_pairwise_spearman": -0.41735537190082644,
+        "n_folds": 6,
+        "pairwise_spearman": [
+          {
+            "folds": [
+              0,
+              1
+            ],
+            "spearman": -0.41735537190082644
+          },
+          {
+            "folds": [
+              0,
+              2
+            ],
+            "spearman": 0.16735537190082644
+          },
+          {
+            "folds": [
+              0,
+              3
+            ],
+            "spearman": 0.23760330578512398
+          },
+          {
+            "folds": [
+              0,
+              4
+            ],
+            "spearman": 0.19008264462809918
+          },
+          {
+            "folds": [
+              0,
+              5
+            ],
+            "spearman": -0.38016528925619836
+          },
+          {
+            "folds": [
+              1,
+              2
+            ],
+            "spearman": 0.35330578512396693
+          },
+          {
+            "folds": [
+              1,
+              3
+            ],
+            "spearman": -0.2190082644628099
+          },
+          {
+            "folds": [
+              1,
+              4
+            ],
+            "spearman": 0.33264462809917356
+          },
+          {
+            "folds": [
+              1,
+              5
+            ],
+            "spearman": 0.4462809917355372
+          },
+          {
+            "folds": [
+              2,
+              3
+            ],
+            "spearman": 0.5330578512396694
+          },
+          {
+            "folds": [
+              2,
+              4
+            ],
+            "spearman": 0.9731404958677686
+          },
+          {
+            "folds": [
+              2,
+              5
+            ],
+            "spearman": 0.12396694214876033
+          },
+          {
+            "folds": [
+              3,
+              4
+            ],
+            "spearman": 0.5247933884297521
+          },
+          {
+            "folds": [
+              3,
+              5
+            ],
+            "spearman": 0.028925619834710745
+          },
+          {
+            "folds": [
+              4,
+              5
+            ],
+            "spearman": -0.0371900826446281
+          }
+        ],
+        "per_fold": [
+          {
+            "fold": 0,
+            "in_fold_winner": "B_10k_replay|twe300_10k_allowance0__ext",
+            "in_fold_winner_score": 1.3183880607229512,
+            "months": [
+              "2021-04",
+              "2022-02"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 11,
+            "out_of_fold_omega": 0.7368421052631579,
+            "out_of_fold_percentile_best0": 0.23529411764705882,
+            "out_of_fold_rank_best1": 5.0,
+            "out_of_fold_score": 0.5134790151156392
+          },
+          {
+            "fold": 1,
+            "in_fold_winner": "A_risk_geometry|c3__ext",
+            "in_fold_winner_score": 0.34179207515026366,
+            "months": [
+              "2022-03",
+              "2023-01"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 11,
+            "out_of_fold_omega": 0.3684210526315789,
+            "out_of_fold_percentile_best0": 0.6470588235294118,
+            "out_of_fold_rank_best1": 12.0,
+            "out_of_fold_score": 0.13729572212585905
+          },
+          {
+            "fold": 2,
+            "in_fold_winner": "C_account_guard|g_user12h__ext",
+            "in_fold_winner_score": 0.4105423321367956,
+            "months": [
+              "2023-02",
+              "2023-12"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 11,
+            "out_of_fold_omega": 0.8421052631578947,
+            "out_of_fold_percentile_best0": 0.11764705882352941,
+            "out_of_fold_rank_best1": 3.0,
+            "out_of_fold_score": 0.46820792567564595
+          },
+          {
+            "fold": 3,
+            "in_fold_winner": "C_account_guard|g_user12h__ext",
+            "in_fold_winner_score": 1.279765412636913,
+            "months": [
+              "2024-01",
+              "2024-11"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 11,
+            "out_of_fold_omega": 0.8421052631578947,
+            "out_of_fold_percentile_best0": 0.11764705882352941,
+            "out_of_fold_rank_best1": 3.0,
+            "out_of_fold_score": 0.3337878499725029
+          },
+          {
+            "fold": 4,
+            "in_fold_winner": "C_account_guard|g_user12h__ext",
+            "in_fold_winner_score": 1.21417105335735,
+            "months": [
+              "2024-12",
+              "2025-10"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 11,
+            "out_of_fold_omega": 0.8421052631578947,
+            "out_of_fold_percentile_best0": 0.11764705882352941,
+            "out_of_fold_rank_best1": 3.0,
+            "out_of_fold_score": 0.34159847295981005
+          },
+          {
+            "fold": 5,
+            "in_fold_winner": "A_risk_geometry|c3__ext",
+            "in_fold_winner_score": 0.5617468853655769,
+            "months": [
+              "2025-11",
+              "2026-09"
+            ],
+            "n_arms_ranked": 18,
+            "n_months": 11,
+            "out_of_fold_omega": 0.3684210526315789,
+            "out_of_fold_percentile_best0": 0.6470588235294118,
+            "out_of_fold_rank_best1": 12.0,
+            "out_of_fold_score": 0.1032865413370958
+          }
+        ],
+        "share_of_folds_winner_in_top_half": 0.6666666666666666,
+        "worst_out_of_fold_omega": 0.3684210526315789,
+        "worst_out_of_fold_percentile_best0": 0.6470588235294118
+      },
+      "leg": "ext",
+      "n_arms_removed": 10,
+      "n_arms_used": 18,
+      "n_months": 66,
+      "pool": "poolB_ext_union",
+      "primary": "K6",
+      "removed_by_reason": {
+        "D1_truncated": [
+          "c1__ext",
+          "g_orange_only__ext",
+          "g_slow_ema__ext",
+          "g_soft_orange__ext",
+          "twe300_10k__ext",
+          "twe300_10k_floor__ext",
+          "twe300_10k_never__ext"
+        ],
+        "D2_terminal_halt": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "g_ladder40__ext"
+        ],
+        "D3_zero_variance": [
+          "b_term055__ext",
+          "b_term070__ext",
+          "c1__ext",
+          "g_ladder40__ext",
+          "g_orange_only__ext",
+          "g_slow_ema__ext",
+          "g_soft_orange__ext",
+          "twe300_10k__ext",
+          "twe300_10k_floor__ext",
+          "twe300_10k_never__ext"
+        ]
+      }
+    }
+  },
+  "percentile_convention": "out_of_fold_percentile_best0 = (rank_best1 − 1)/(n_arms − 1)：**0 = 最好、1 = 最差**，所以「不超过第 50 百分位」= 落在样本外前半区 = percentile ≤ 0.50。out_of_fold_omega = rank_best1/(n_arms+1) 是 CSCV 口径（≤ 0.5 = 下半区），两列都给出以避免读法歧义。",
+  "primary_folds": 6,
+  "rank_metric": "ADG = prod(1+r)^(12/n_months) − 1，仅在当期月份上计算"
+}
